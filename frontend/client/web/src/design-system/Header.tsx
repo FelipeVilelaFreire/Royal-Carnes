@@ -6,7 +6,7 @@ import { Button } from "./Button";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
 export interface PortalHeaderProps {
-  activeTab?: "cortes" | "minha-caixa" | "hero";
+  activeTab?: "cortes" | "minha-caixa" | "hero" | "meu-clube" | "minha-conta";
   themeMode?: "light" | "dark";
   onToggleTheme?: () => void;
   onNavigate?: (path: string) => void;
@@ -60,9 +60,10 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
   const navItems = [
-    { key: "hero", label: "Início", path: "/" },
+    { key: "hero", label: "Início", path: "/hero" },
     { key: "cortes", label: "Cortes", path: "/cortes" },
-    { key: "minha-caixa", label: "Royal Box", path: "/minha-caixa" }
+    { key: "minha-caixa", label: "Royal Box", path: "/minha-caixa" },
+    { key: "meu-clube", label: "Minha Conta", path: "/minha-conta" }
   ];
 
   return (
@@ -180,7 +181,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           </Button>
 
           <div
-            onClick={() => onNavigate ? onNavigate("/minha-caixa") : (window.location.href = "/minha-caixa")}
+            onClick={() => onNavigate ? onNavigate("/minha-conta") : (window.location.href = "/minha-conta")}
             style={{
               display: "flex",
               alignItems: "center",

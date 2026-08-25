@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { FlameIcon, BoxIcon, CartIcon, UserIcon } from "./Icons";
 
 export interface BottomTabBarProps {
-  activeTab?: "home" | "hero" | "cortes" | "minha-caixa" | "perfil";
+  activeTab?: "home" | "hero" | "cortes" | "minha-caixa" | "perfil" | "meu-clube" | "minha-conta";
   onNavigate?: (path: string) => void;
   isDark?: boolean;
 }
@@ -38,10 +38,10 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   };
 
   const tabs = [
-    { key: "hero", label: "Início", path: "/", icon: FlameIcon },
+    { key: "hero", label: "Início", path: "/hero", icon: FlameIcon },
     { key: "cortes", label: "Cortes", path: "/cortes", icon: BoxIcon },
     { key: "minha-caixa", label: "Caixa", path: "/minha-caixa", icon: CartIcon },
-    { key: "perfil", label: "Perfil", path: "/minha-caixa", icon: UserIcon }
+    { key: "meu-clube", label: "Conta", path: "/minha-conta", icon: UserIcon }
   ];
 
   return (
@@ -64,7 +64,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
     >
       {tabs.map((tab) => {
         const IconComponent = tab.icon;
-        const isActive = activeTab === tab.key || (activeTab === "home" && tab.key === "hero");
+        const isActive = activeTab === tab.key || (activeTab === "home" && tab.key === "hero") || (activeTab === "minha-conta" && tab.key === "meu-clube");
         const iconColor = isActive ? colors.copper : colors.textMuted;
         return (
           <div
