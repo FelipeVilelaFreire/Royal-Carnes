@@ -428,12 +428,13 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                       hoverable
                       isDark={isDark}
                       style={{
-                        padding: "16px 20px",
+                        padding: "18px 24px",
                         borderRadius: "16px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        gap: "20px"
+                        gap: "24px",
+                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -457,17 +458,17 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                         </span>
 
                         {qty > 0 ? (
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px", background: tokens.background, border: `1px solid ${tokens.border}`, borderRadius: "9999px", padding: "6px 14px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px", background: tokens.background, border: `1px solid ${tokens.copper}`, borderRadius: "9999px", padding: "6px 16px", boxShadow: "0 4px 12px rgba(184, 115, 51, 0.2)", transition: "all 0.3s ease" }}>
                             <button
                               onClick={() => handleRemoveFromCart(p.id)}
-                              style={{ background: "transparent", border: "none", color: tokens.text, fontWeight: "700", cursor: "pointer", fontSize: "16px" }}
+                              style={{ background: "transparent", border: "none", color: tokens.text, fontWeight: "700", cursor: "pointer", fontSize: "18px", width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}
                             >
                               -
                             </button>
-                            <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>{qty}</span>
+                            <span style={{ fontSize: "15px", fontWeight: "700", color: tokens.copper }}>{qty}</span>
                             <button
                               onClick={() => handleAddToCart(p)}
-                              style={{ background: "transparent", border: "none", color: tokens.text, fontWeight: "700", cursor: "pointer", fontSize: "16px" }}
+                              style={{ background: "transparent", border: "none", color: tokens.text, fontWeight: "700", cursor: "pointer", fontSize: "18px", width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}
                             >
                               +
                             </button>
@@ -478,6 +479,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                             size="sm"
                             isDark={isDark}
                             onClick={() => handleAddToCart(p)}
+                            style={{ transition: "all 0.3s ease" }}
                           >
                             ADICIONAR
                           </Button>
