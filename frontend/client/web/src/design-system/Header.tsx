@@ -60,10 +60,10 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
-  // Apenas Cortes e Royal Box no menu (Início é o logo, Minha Conta é o botão de perfil)
+  // Apenas Cortes e Royal Delivery no menu (Início é o logo, Minha Conta é o botão de perfil)
   const navItems = [
     { key: "portal-cortes", label: "Cortes", path: "/portal-cortes" },
-    { key: "portal-minha-caixa", label: "Royal Box", path: "/portal-minha-caixa" }
+    { key: "portal-minha-caixa", label: "Royal Delivery", path: "/portal-minha-caixa" }
   ];
 
   return (

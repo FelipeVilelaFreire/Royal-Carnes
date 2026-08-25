@@ -181,7 +181,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
           {/* TAB 1: PAINEL GERAL */}
           {activeTab === "painel" && (
             <>
-              {/* Seção 01: Status da Royal Box */}
+              {/* Seção 01: Status do Royal Delivery */}
               <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px", flex: 1, minWidth: "280px" }}>
@@ -191,7 +191,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                        Royal Box
+                        Royal Delivery
                       </h2>
                       <Badge variant="copper">ATIVA</Badge>
                     </div>
@@ -486,7 +486,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     Meus Endereços
                   </h3>
                   <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
-                    Gerencie os locais de entrega para suas caixas da Royal Box e pedidos avulsos.
+                    Gerencie os locais de entrega para seus pedidos do Royal Delivery e compras avulsas.
                   </p>
                 </div>
                 <Button variant="accent" size="sm">
@@ -751,7 +751,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     2. Garantia de Frio & Controle de Qualidade
                   </h4>
                   <p style={{ margin: 0 }}>
-                    Todas as caixas da Royal Box são despachadas com embalagem térmica de alta densidade e placas de gel refrigerante atóxico que mantêm a temperatura das carnes a -2°C por até 48 horas de transporte.
+                    Todas as caixas do Royal Delivery são despachadas com embalagem térmica de alta densidade e placas de gel refrigerante atóxico que mantêm a temperatura das carnes a -2°C por até 48 horas de transporte.
                   </p>
                 </div>
 

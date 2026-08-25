@@ -55,7 +55,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
         onNavigate={onNavigate}
       />
 
-      {/* 2. Main Content Mestre da Página Royal Box */}
+      {/* 2. Main Content Mestre da Página Royal Delivery */}
       <main
         style={{
           flex: 1,
@@ -82,7 +82,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
               color: tokens.text
             }}
           >
-            Royal Box
+            Royal Delivery
           </h1>
           <p
             style={{
@@ -94,7 +94,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
               color: tokens.textMuted
             }}
           >
-            Tudo sobre sua Royal Box, em um só lugar.
+            Tudo sobre o seu Royal Delivery, em um só lugar.
           </p>
 
           {/* Seletor de Modalidade da Royal Box: ASSINATURA vs AVULSO */}
@@ -171,12 +171,12 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                 gap: "40px"
               }}
             >
-              {/* Section 01 - Current Royal Box */}
+              {/* Section 01 - Current Royal Delivery */}
               <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ overflow: "hidden", borderRadius: "8px" }}>
                 <div style={{ position: "relative", height: "260px", background: tokens.surfaceContainer, overflow: "hidden" }}>
                   <img
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuClZNZiTlsTQl9mhYlCtEwbjdxcq80wC6JW9G2TKsW3LGQvgPwf4xoGpyd9J9phgMq_c92L-xwG21pM6BYXP8BpnRRMM5jKpTmTI6Nvtd4zLcXovrVII_bYx1KX1UxYNTVWNJ7b5Wu4Z7Ti0uFuIEe5N6mRnSa_QkIkFPdsLDSFQJmdvrSgr6AkZkSrYvaa17HHwpmmqLLrNnjH46Hgz1psAu5sI6Ia1rSHzs3t0sBfXEktHzFjb6NH"
-                    alt="Royal Box"
+                    alt="Royal Delivery"
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                   <div style={{ position: "absolute", top: "16px", left: "16px", display: "flex", gap: "8px" }}>
@@ -189,7 +189,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", paddingBottom: "24px", borderBottom: `1px solid ${tokens.border}`, marginBottom: "28px" }}>
                     <div>
                       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "600", margin: "0 0 6px 0", color: tokens.text }}>
-                        Sua Próxima Royal Box
+                        Seu Próximo Royal Delivery
                       </h2>
                       <p style={{ fontSize: "15px", color: tokens.textMuted, margin: 0 }}>
                         Entrega prevista para: <strong style={{ color: tokens.text, fontWeight: "600" }}>12 de setembro</strong>
