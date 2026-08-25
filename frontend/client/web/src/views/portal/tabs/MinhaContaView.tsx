@@ -60,6 +60,13 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
+  const handleTabSelect = (tabId: string) => {
+    setActiveTab(tabId);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const sidebarLinks = [
     { id: "painel", label: "Painel Geral" },
     { id: "assinatura", label: "Minha Assinatura" },
@@ -241,7 +248,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
               return (
                 <button
                   key={link.id}
-                  onClick={() => setActiveTab(link.id)}
+                  onClick={() => handleTabSelect(link.id)}
                   style={{
                     background: "transparent",
                     border: "none",
