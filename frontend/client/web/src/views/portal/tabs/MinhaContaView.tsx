@@ -21,6 +21,12 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
   });
   const [activeTab, setActiveTab] = useState<string>("painel");
 
+  // Estado do Plano de Assinatura & Modal
+  const [currentPlan, setCurrentPlan] = useState<"essential" | "pro" | "elite">("pro");
+  const [isPlansModalOpen, setIsPlansModalOpen] = useState<boolean>(false);
+  const [selectedPlanModal, setSelectedPlanModal] = useState<"essential" | "pro" | "elite">("pro");
+  const [planSuccessMessage, setPlanSuccessMessage] = useState<string>("");
+
   // Estado dos dados do perfil
   const [personalData, setPersonalData] = useState({
     name: "Felipe Vilela",
@@ -56,6 +62,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
   const sidebarLinks = [
     { id: "painel", label: "Painel Geral" },
+    { id: "assinatura", label: "Minha Assinatura" },
     { id: "dados", label: "Seus Dados" },
     { id: "enderecos", label: "Endereços" },
     { id: "pagamentos", label: "Pagamentos" },
@@ -68,6 +75,42 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
     e.preventDefault();
     setIsSavedData(true);
     setTimeout(() => setIsSavedData(false), 3000);
+  };
+
+  const handleConfirmPlanChange = () => {
+    setCurrentPlan(selectedPlanModal);
+    setPlanSuccessMessage(`Plano alterado para ROYAL ${selectedPlanModal.toUpperCase()} com sucesso!`);
+    setTimeout(() => {
+      setPlanSuccessMessage("");
+      setIsPlansModalOpen(false);
+    }, 2000);
+  };
+
+  const planDetails = {
+    essential: {
+      name: "ROYAL ESSENTIAL",
+      price: "490,00",
+      cuts: "3 cortes por caixa",
+      weight: "Até 3.0kg total",
+      acc: "1 complemento",
+      benefits: ["Frete Refrigerado Standard", "Acesso aos Cortes Prime", "Atendimento via Chat"]
+    },
+    pro: {
+      name: "ROYAL PRO",
+      price: "875,00",
+      cuts: "6 cortes por caixa",
+      weight: "Até 5.0kg total",
+      acc: "3 complementos",
+      benefits: ["Frete Refrigerado Prioritário", "Acesso Antecipado Wagyu A5", "Brinde Faca Artesanal", "Desconto de 15% em Utensílios"]
+    },
+    elite: {
+      name: "ROYAL ELITE",
+      price: "1.450,00",
+      cuts: "10 cortes por caixa",
+      weight: "Até 8.0kg total",
+      acc: "5 complementos + Vinho",
+      benefits: ["Frete Semanal ou Mensal VIP", "Concierge Mestre Assador Dedicado", "Todos os Brindes Desbloqueados", "20% OFF em Utensílios"]
+    }
   };
 
   return (
@@ -138,30 +181,42 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
             </p>
           </div>
 
-          {/* Badge do Plano Ativo na Sidebar */}
+          {/* Card Resumo do Plano Ativo na Sidebar */}
           <div
             style={{
               background: tokens.surfaceContainer,
               border: `1px solid ${tokens.border}`,
               borderRadius: "14px",
-              padding: "16px",
+              padding: "18px",
               display: "flex",
               flexDirection: "column",
-              gap: "8px"
+              gap: "10px"
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: tokens.textMuted }}>
-                Seu Plano
+                Seu Plano Ativo
               </span>
-              <Badge variant="copper">ROYAL PRO</Badge>
+              <Badge variant="copper">ROYAL {currentPlan.toUpperCase()}</Badge>
             </div>
-            <p style={{ fontSize: "13px", fontWeight: "600", color: tokens.text, margin: 0 }}>
-              Frequência: Mensal
+            <p style={{ fontSize: "14px", fontWeight: "700", color: tokens.text, margin: 0 }}>
+              R$ {planDetails[currentPlan].price} / mês
             </p>
-            <span style={{ fontSize: "12px", color: tokens.copper, fontWeight: "700" }}>
-              R$ 875,00 / mês
-            </span>
+            <button
+              onClick={() => setIsPlansModalOpen(true)}
+              style={{
+                background: "transparent",
+                border: "none",
+                textAlign: "left",
+                padding: 0,
+                fontSize: "12px",
+                fontWeight: "700",
+                color: tokens.copper,
+                cursor: "pointer"
+              }}
+            >
+              Ver todos os planos ➔
+            </button>
           </div>
 
           <nav
@@ -230,10 +285,10 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         {/* Conteúdo Dinâmico na Direita (Muda conforme a Tab Selecionada) */}
         <section style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
           
-          {/* TAB 1: PAINEL GERAL DE ASSINATURA & LIMITES */}
+          {/* TAB 1: PAINEL GERAL */}
           {activeTab === "painel" && (
             <>
-              {/* Card 1: Status Geral do Plano Royal Pro */}
+              {/* Card Status do Plano */}
               <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px", flex: 1, minWidth: "280px" }}>
@@ -243,7 +298,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                        ROYAL PRO
+                        ROYAL {currentPlan.toUpperCase()}
                       </h2>
                       <Badge variant="copper">ATIVA</Badge>
                     </div>
@@ -272,7 +327,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                           Valor
                         </span>
                         <p style={{ fontSize: "18px", fontWeight: "700", color: tokens.copper, margin: "2px 0 0 0" }}>
-                          R$ 875 <span style={{ fontSize: "13px", fontWeight: "400", color: tokens.textMuted }}>/ mês</span>
+                          R$ {planDetails[currentPlan].price} <span style={{ fontSize: "13px", fontWeight: "400", color: tokens.textMuted }}>/ mês</span>
                         </p>
                       </div>
                     </div>
@@ -282,14 +337,14 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     <Button variant="accent" size="md" onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
                       Ver minha caixa
                     </Button>
-                    <Button variant="outline" size="md" isDark={isDark} onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
+                    <Button variant="outline" size="md" isDark={isDark} onClick={() => setIsPlansModalOpen(true)}>
                       Gerenciar assinatura
                     </Button>
                   </div>
                 </div>
               </Card>
 
-              {/* Card 2: Seu Uso Neste Ciclo (Limites do Plano Royal Pro) */}
+              {/* Card Uso Neste Ciclo */}
               <div
                 style={{
                   background: tokens.surfaceContainer,
@@ -315,9 +370,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   </span>
                 </div>
 
-                {/* Progress Bars dos Limites */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
-                  {/* Cortes Utilizados */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
@@ -330,12 +383,8 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
                       <div style={{ width: "66%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
                     </div>
-                    <span style={{ fontSize: "12px", color: tokens.textMuted }}>
-                      2 cortes restantes para atingir a cota
-                    </span>
                   </div>
 
-                  {/* Capacidade de Peso */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
@@ -348,12 +397,8 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
                       <div style={{ width: "76%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
                     </div>
-                    <span style={{ fontSize: "12px", color: tokens.textMuted }}>
-                      1.2kg disponíveis sem excedente
-                    </span>
                   </div>
 
-                  {/* Complementos Artesanais */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
@@ -366,13 +411,9 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
                       <div style={{ width: "66%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
                     </div>
-                    <span style={{ fontSize: "12px", color: tokens.textMuted }}>
-                      1 complemento disponível no ciclo
-                    </span>
                   </div>
                 </div>
 
-                {/* Banner Comercial de Upgrade de Plano */}
                 <div
                   style={{
                     background: isDark ? "rgba(184, 115, 51, 0.1)" : "rgba(184, 115, 51, 0.05)",
@@ -387,67 +428,15 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   }}
                 >
                   <span style={{ fontSize: "14px", color: tokens.text }}>
-                    Precisa de mais cortes e peso por ciclo? Conheça o <strong>ROYAL ELITE (10 cortes / 8.0kg / 5 complementos)</strong>.
+                    Precisa de mais cortes e peso por ciclo? Conheça os planos superiores.
                   </span>
-                  <Button variant="accent" size="sm" onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
+                  <Button variant="accent" size="sm" onClick={() => setIsPlansModalOpen(true)}>
                     Fazer Upgrade ➔
                   </Button>
                 </div>
               </div>
 
-              {/* Card 3: Separação Clara de Limites do Plano vs Benefícios Exclusivos */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
-                
-                {/* Capacidades & Limites do Plano */}
-                <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "28px", borderRadius: "18px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.textMuted }}>
-                    CAPACIDADES DO PLANO ROYAL PRO
-                  </span>
-                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                    O que seu plano inclui
-                  </h4>
-                  <ul style={{ padding: 0, margin: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px", color: tokens.text }}>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Até 6 cortes nobres por caixa
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Limite de 5.0kg total por ciclo
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Até 3 complementos artesanais
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Frequência Mensal Flexível
-                    </li>
-                  </ul>
-                </Card>
-
-                {/* Benefícios Exclusivos de Membro */}
-                <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "28px", borderRadius: "18px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
-                    VANTAGENS EXCLUSIVAS
-                  </span>
-                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                    Seus Benefícios Desbloqueados
-                  </h4>
-                  <ul style={{ padding: 0, margin: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px", color: tokens.text }}>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Frete Refrigerado Prioritário (-2°C)
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Acesso Antecipado a Lotes Wagyu A5
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Brinde Faca Artesanal (85% Desbloqueado)
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Desconto de 15% em Utensílios
-                    </li>
-                  </ul>
-                </Card>
-              </div>
-
-              {/* Pedidos Recentes Gourmet */}
+              {/* Pedidos Recentes Gourmet — ALINHADOS À ESQUERDA & MENOS CENTRALIZADOS */}
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
@@ -462,40 +451,36 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {/* Pedido 1 */}
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                      <div style={{ width: "64px", height: "64px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
-                        <img
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTWZZGOFHbj0Sh572RQ-2vs3emWIEGZWsTB1lYtPYcSjPGcOa9mDPiwX1GCl8gPBNEHqbv95kZnUF7gTwJASw-4aHOZWp1IUKwwTioZC70OM608r9UjPQKMk5Jw4B1qibJodt1tlgo4WyBhdw3iIDeBFHpi2CQBi4BqAaFV2b7RZGuMUPGAkZOHP76xP0TR6KM5dqPFvrumlSXF85A9N100tBX7rkGd__CupxrUAHLYbt5YnwVk0e-"
-                          alt="Pedido #RD-8492"
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                        <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
-                          ROYAL DELIVERY • 24 AGO 2026
-                        </span>
-                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                          Pedido #RD-8492 — Selection Wagyu & Angus
-                        </h4>
-                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
-                          3 itens • 4.2kg • Tomahawk Prime & Wagyu A5 BMB 10+
-                        </span>
-                      </div>
+                  {/* Pedido 1 (Alinhado à esquerda) */}
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "24px", alignItems: "flex-start" }}>
+                    <div style={{ width: "72px", height: "72px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTWZZGOFHbj0Sh572RQ-2vs3emWIEGZWsTB1lYtPYcSjPGcOa9mDPiwX1GCl8gPBNEHqbv95kZnUF7gTwJASw-4aHOZWp1IUKwwTioZC70OM608r9UjPQKMk5Jw4B1qibJodt1tlgo4WyBhdw3iIDeBFHpi2CQBi4BqAaFV2b7RZGuMUPGAkZOHP76xP0TR6KM5dqPFvrumlSXF85A9N100tBX7rkGd__CupxrUAHLYbt5YnwVk0e-"
+                        alt="Pedido #RD-8492"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-                      <div style={{ textAlign: "right" }}>
-                        <span style={{ fontSize: "17px", fontWeight: "700", color: tokens.text, display: "block" }}>
-                          R$ 489,00
-                        </span>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
-                          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 8px #22C55E" }} />
-                          <span style={{ fontSize: "12px", fontWeight: "700", color: "#22C55E" }}>Entregue</span>
-                        </div>
-                      </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
+                        ROYAL DELIVERY • 24 AGO 2026
+                      </span>
+                      <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Pedido #RD-8492 — Selection Wagyu & Angus
+                      </h4>
+                      <span style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: "1.4" }}>
+                        3 itens • 4.2kg • Tomahawk Prime & Wagyu A5 BMB 10+
+                      </span>
+                    </div>
 
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
+                      <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.text }}>
+                        R$ 489,00
+                      </span>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 8px #22C55E" }} />
+                        <span style={{ fontSize: "12px", fontWeight: "700", color: "#22C55E" }}>Entregue</span>
+                      </div>
                       <Button
                         variant="outline"
                         size="sm"
@@ -507,40 +492,36 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     </div>
                   </Card>
 
-                  {/* Pedido 2 */}
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                      <div style={{ width: "64px", height: "64px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
-                        <img
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEyZehgZTv-CyocAVQn0YBZaQ9k5T1yspu9TOTY_a2Ecdie4GqgKNWW_cnd5ZAUuPMshFRWia6eq5Ej3-UQ2L2nImpVVKTr0yfEodgUEJQUsZVZLYiBoQliyrqEezNzVT5XxtmK1ozhqsDd4j-LQyV7RlT1CqQedpMs5qhbesB5PDF1_G10G7rQDZ3U7cedVIHcBedWSA27GA_gQjpXRlZttOTKwJI8hFUgSAUtoBMQmTuk7GfbhUo"
-                          alt="Caixa de Agosto"
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      </div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                        <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
-                          ROYAL DELIVERY • 12 AGO 2026 (RECORRÊNCIA)
-                        </span>
-                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                          Caixa de Agosto — Master Churrasco
-                        </h4>
-                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
-                          5 itens • 6.0kg • Picanha Steakhouse, Ancho & Brinde Faca
-                        </span>
-                      </div>
+                  {/* Pedido 2 (Alinhado à esquerda) */}
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "24px", alignItems: "flex-start" }}>
+                    <div style={{ width: "72px", height: "72px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEyZehgZTv-CyocAVQn0YBZaQ9k5T1yspu9TOTY_a2Ecdie4GqgKNWW_cnd5ZAUuPMshFRWia6eq5Ej3-UQ2L2nImpVVKTr0yfEodgUEJQUsZVZLYiBoQliyrqEezNzVT5XxtmK1ozhqsDd4j-LQyV7RlT1CqQedpMs5qhbesB5PDF1_G10G7rQDZ3U7cedVIHcBedWSA27GA_gQjpXRlZttOTKwJI8hFUgSAUtoBMQmTuk7GfbhUo"
+                        alt="Caixa de Agosto"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-                      <div style={{ textAlign: "right" }}>
-                        <span style={{ fontSize: "17px", fontWeight: "700", color: tokens.text, display: "block" }}>
-                          R$ 875,00
-                        </span>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
-                          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 8px #22C55E" }} />
-                          <span style={{ fontSize: "12px", fontWeight: "700", color: "#22C55E" }}>Entregue</span>
-                        </div>
-                      </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
+                        ROYAL DELIVERY • 12 AGO 2026 (RECORRÊNCIA)
+                      </span>
+                      <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Caixa de Agosto — Master Churrasco
+                      </h4>
+                      <span style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: "1.4" }}>
+                        5 itens • 6.0kg • Picanha Steakhouse, Ancho & Brinde Faca
+                      </span>
+                    </div>
 
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
+                      <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.text }}>
+                        R$ 875,00
+                      </span>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 8px #22C55E" }} />
+                        <span style={{ fontSize: "12px", fontWeight: "700", color: "#22C55E" }}>Entregue</span>
+                      </div>
                       <Button
                         variant="outline"
                         size="sm"
@@ -554,6 +535,117 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
               </div>
             </>
+          )}
+
+          {/* TAB DEDICADA: MINHA ASSINATURA & COMPARATIVO DE PLANOS */}
+          {activeTab === "assinatura" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+                <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+                  GERENCIAMENTO DO CLUBE
+                </span>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                  Sua Assinatura & Planos Royal Carnes
+                </h3>
+              </div>
+
+              {/* Status do Plano Ativo */}
+              <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "32px", borderRadius: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+                  <div>
+                    <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
+                      PLANO VINCULADO
+                    </span>
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "4px 0 0 0", color: tokens.text }}>
+                      {planDetails[currentPlan].name}
+                    </h4>
+                    <p style={{ fontSize: "14px", color: tokens.textMuted, margin: "4px 0 0 0" }}>
+                      Renovação automática em 12 de Setembro de 2026 por <strong style={{ color: tokens.copper }}>R$ {planDetails[currentPlan].price} / mês</strong>
+                    </p>
+                  </div>
+                  <Button variant="accent" size="md" onClick={() => setIsPlansModalOpen(true)}>
+                    Gerenciar ou Alterar Plano ➔
+                  </Button>
+                </div>
+              </Card>
+
+              {/* Comparativo de Planos */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "24px" }}>
+                {(["essential", "pro", "elite"] as const).map((planKey) => {
+                  const p = planDetails[planKey];
+                  const isCurrent = currentPlan === planKey;
+                  return (
+                    <Card
+                      key={planKey}
+                      variant="surface"
+                      bordered
+                      hoverable={false}
+                      isDark={isDark}
+                      style={{
+                        padding: "28px",
+                        borderRadius: "18px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        border: isCurrent ? `2px solid ${tokens.copper}` : `1px solid ${tokens.border}`,
+                        background: isCurrent ? (isDark ? "rgba(184, 115, 51, 0.08)" : "rgba(184, 115, 51, 0.04)") : tokens.surfaceContainer
+                      }}
+                    >
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", color: tokens.copper }}>
+                            PLANO CLUBE
+                          </span>
+                          {isCurrent && <Badge variant="copper">ATUAL</Badge>}
+                        </div>
+
+                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          {p.name}
+                        </h4>
+
+                        <span style={{ fontSize: "26px", fontWeight: "700", color: tokens.text }}>
+                          <span style={{ fontSize: "14px", marginRight: "2px" }}>R$</span>
+                          {p.price}
+                          <span style={{ fontSize: "12px", color: tokens.textMuted, fontWeight: "400" }}> /mês</span>
+                        </span>
+
+                        <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: tokens.text }}>
+                          <p style={{ margin: 0, fontWeight: "700" }}>🥩 {p.cuts}</p>
+                          <p style={{ margin: 0 }}>⚖️ {p.weight}</p>
+                          <p style={{ margin: 0 }}>🔪 {p.acc}</p>
+                        </div>
+
+                        <ul style={{ paddingLeft: "16px", margin: "8px 0 0 0", fontSize: "12px", color: tokens.textMuted, display: "flex", flexDirection: "column", gap: "6px" }}>
+                          {p.benefits.map((b, i) => (
+                            <li key={i}>{b}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div style={{ marginTop: "24px" }}>
+                        {isCurrent ? (
+                          <Button variant="outline" size="sm" isDark={isDark} style={{ width: "100%", opacity: 0.6, cursor: "default" }}>
+                            Seu Plano Atual
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="accent"
+                            size="sm"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setSelectedPlanModal(planKey);
+                              setIsPlansModalOpen(true);
+                            }}
+                          >
+                            Migrar para este plano
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
           )}
 
           {/* TAB 2: SEUS DADOS */}
@@ -983,6 +1075,154 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
         </section>
       </main>
+
+      {/* MODAL EXECUTIVO DE COMPARAÇÃO & TROCA DE PLANOS */}
+      {isPlansModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            background: "rgba(0, 0, 0, 0.75)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "24px"
+          }}
+          onClick={() => setIsPlansModalOpen(false)}
+        >
+          <div
+            style={{
+              background: tokens.surfaceContainer,
+              border: `1px solid ${tokens.border}`,
+              borderRadius: "24px",
+              padding: "40px",
+              maxWidth: "1000px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "32px",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.5)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
+                  GERENCIAMENTO DE ASSINATURA ROYAL CARNES
+                </span>
+                <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: "4px 0 0 0", color: tokens.text }}>
+                  Escolha o Plano Perfeito para o seu Churrasco
+                </h2>
+              </div>
+              <button
+                onClick={() => setIsPlansModalOpen(false)}
+                style={{
+                  background: "transparent",
+                  border: `1px solid ${tokens.border}`,
+                  borderRadius: "50%",
+                  width: "36px",
+                  height: "36px",
+                  color: tokens.text,
+                  fontSize: "18px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {planSuccessMessage && (
+              <div style={{ padding: "14px 20px", background: "rgba(34, 197, 94, 0.15)", border: "1px solid #22C55E", borderRadius: "12px", color: "#22C55E", fontSize: "14px", fontWeight: "700" }}>
+                ✓ {planSuccessMessage}
+              </div>
+            )}
+
+            {/* Grid dos 3 Planos no Modal */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "24px" }}>
+              {(["essential", "pro", "elite"] as const).map((planKey) => {
+                const p = planDetails[planKey];
+                const isSelected = selectedPlanModal === planKey;
+                const isCurrent = currentPlan === planKey;
+                return (
+                  <div
+                    key={planKey}
+                    onClick={() => setSelectedPlanModal(planKey)}
+                    style={{
+                      background: isSelected ? (isDark ? "rgba(184, 115, 51, 0.12)" : "rgba(184, 115, 51, 0.06)") : tokens.background,
+                      border: `2px solid ${isSelected ? tokens.copper : tokens.border}`,
+                      borderRadius: "18px",
+                      padding: "28px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", color: tokens.copper }}>
+                          {planKey === "pro" ? "MAIS POPULAR" : planKey === "elite" ? "EXCLUSIVO VIP" : "INICIAL"}
+                        </span>
+                        {isCurrent && <Badge variant="copper">ATUAL</Badge>}
+                      </div>
+
+                      <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        {p.name}
+                      </h4>
+
+                      <span style={{ fontSize: "28px", fontWeight: "700", color: tokens.copper }}>
+                        <span style={{ fontSize: "14px", marginRight: "2px" }}>R$</span>
+                        {p.price}
+                        <span style={{ fontSize: "12px", color: tokens.textMuted, fontWeight: "400" }}> /mês</span>
+                      </span>
+
+                      <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: tokens.text }}>
+                        <p style={{ margin: 0, fontWeight: "700" }}>🥩 {p.cuts}</p>
+                        <p style={{ margin: 0 }}>⚖️ {p.weight}</p>
+                        <p style={{ margin: 0 }}>🔪 {p.acc}</p>
+                      </div>
+
+                      <ul style={{ paddingLeft: "16px", margin: "8px 0 0 0", fontSize: "12px", color: tokens.textMuted, display: "flex", flexDirection: "column", gap: "6px" }}>
+                        {p.benefits.map((b, i) => (
+                          <li key={i}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div style={{ marginTop: "24px" }}>
+                      <input
+                        type="radio"
+                        name="plan_selection"
+                        checked={isSelected}
+                        onChange={() => setSelectedPlanModal(planKey)}
+                        style={{ accentColor: tokens.copper, width: "18px", height: "18px" }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Ações do Modal */}
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "16px", borderTop: `1px solid ${tokens.border}`, paddingTop: "24px" }}>
+              <Button variant="outline" size="md" isDark={isDark} onClick={() => setIsPlansModalOpen(false)}>
+                Cancelar
+              </Button>
+              <Button variant="accent" size="md" onClick={handleConfirmPlanChange}>
+                {selectedPlanModal === currentPlan ? "Manter Plano Atual" : `Confirmar Troca para ROYAL ${selectedPlanModal.toUpperCase()}`}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 3. BottomTabBar Mobile */}
       <BottomTabBar activeTab="portal-minha-conta" onNavigate={onNavigate} isDark={isDark} />
