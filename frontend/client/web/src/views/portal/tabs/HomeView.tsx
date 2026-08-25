@@ -197,7 +197,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       name: "Tábua Profissional de Madeira Teca",
       desc: "Madeira sustentável de alta densidade com canaleta para sulcos de suco.",
       price: "249,00",
-      image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1000&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?q=80&w=1000&auto=format&fit=crop"
     },
     {
       name: "Kit Sal de Parrilla & Chimichurri Gourmet",
