@@ -60,7 +60,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
-  // Apenas Cortes e Royal Delivery no menu (Início é o logo, Minha Conta é o botão de perfil)
+  // Apenas Cortes e Royal Delivery no menu (Início é a logo, Minha Conta é o botão de perfil)
   const navItems = [
     { key: "portal-cortes", label: "Cortes", path: "/portal-cortes" },
     { key: "portal-minha-caixa", label: "Royal Delivery", path: "/portal-minha-caixa" }
@@ -97,17 +97,18 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           alignItems: "center",
           justifyContent: "space-between",
           gap: "32px",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          height: "72px"
         }}
       >
-        {/* Esquerda: Logo Royal Carnes (Início) + Menu Lateral Esquerdo */}
-        <div style={{ display: "flex", alignItems: "center", gap: "40px" }}>
-          {/* Logo como Botão de Início (Perfeitamente Alinhado) */}
+        {/* Esquerda: Logo Royal Carnes + Divisor + Links Perfeitamente Alinhados */}
+        <div style={{ display: "flex", alignItems: "center", gap: "24px", height: "100%" }}>
+          {/* Logo "Royal Carnes" */}
           <span
             onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
             style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: isScrolled ? "24px" : "28px",
+              fontSize: isScrolled ? "24px" : "26px",
               fontWeight: "700",
               color: tokens.text,
               cursor: "pointer",
@@ -115,54 +116,81 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
               lineHeight: "1",
               display: "inline-flex",
               alignItems: "center",
-              height: "44px",
+              margin: 0,
+              padding: 0,
               transition: "font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             }}
           >
             Royal Carnes
           </span>
 
-          {/* Links da Navegação Lateral Esquerda (Alinhados na mesma linha) */}
-          <nav style={{ display: "flex", alignItems: "center", gap: "24px", height: "44px" }} className="hidden md:flex">
+          {/* Divisor Vertical Elegante */}
+          <div
+            className="hidden md:block"
+            style={{
+              width: "1px",
+              height: "22px",
+              background: tokens.border,
+              opacity: 0.6
+            }}
+          />
+
+          {/* Links da Navegação Alinhados com Efeito Pílula */}
+          <nav style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%" }} className="hidden md:flex">
             {navItems.map((item) => {
               const isActive = activeTab === item.key ||
                 (activeTab === "cortes" && item.key === "portal-cortes") ||
                 (activeTab === "minha-caixa" && item.key === "portal-minha-caixa");
               return (
-                <span
+                <button
                   key={item.key}
+                  type="button"
                   onClick={() => onNavigate ? onNavigate(item.path) : (window.location.href = item.path)}
                   style={{
+                    height: "38px",
+                    padding: "0 16px",
+                    borderRadius: "9999px",
+                    background: isActive ? (isDark ? "rgba(184, 115, 51, 0.15)" : "rgba(184, 115, 51, 0.1)") : "transparent",
+                    border: isActive ? `1px solid ${tokens.copper}` : "1px solid transparent",
+                    color: isActive ? tokens.copper : tokens.textMuted,
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "13px",
                     fontWeight: isActive ? "700" : "500",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: isActive ? tokens.copper : tokens.textMuted,
-                    borderBottom: isActive ? `2px solid ${tokens.copper}` : "2px solid transparent",
-                    paddingBottom: "4px",
-                    lineHeight: "1",
                     display: "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: "1",
                     cursor: "pointer",
                     transition: "all 0.2s ease"
                   }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = tokens.text;
+                      e.currentTarget.style.background = isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = tokens.textMuted;
+                      e.currentTarget.style.background = "transparent";
+                    }
+                  }}
                 >
                   {item.label}
-                </span>
+                </button>
               );
             })}
           </nav>
         </div>
 
         {/* Direita: Dark/Light & Botão de Perfil "Olá, Felipe" (AMBOS COM 44px DE ALTURA E MESMO TAMANHO) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", height: "44px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", height: "100%" }}>
           {/* Dark / Light Mode Toggle Button (44px) */}
           <button
             type="button"
             onClick={toggleTheme}
             style={{
-              height: "44px",
+              height: "42px",
               padding: "0 18px",
               borderRadius: "9999px",
               background: isDark ? "rgba(34, 31, 30, 0.7)" : "rgba(242, 241, 237, 0.7)",
@@ -207,7 +235,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
             type="button"
             onClick={() => onNavigate ? onNavigate("/portal-minha-conta") : (window.location.href = "/portal-minha-conta")}
             style={{
-              height: "44px",
+              height: "42px",
               padding: "0 18px 0 8px",
               borderRadius: "9999px",
               background: isDark ? "rgba(34, 31, 30, 0.7)" : "rgba(242, 241, 237, 0.7)",
