@@ -1003,12 +1003,12 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                           <CreditCardIcon size={20} color={tokens.copper} />
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
+                            <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: "700", margin: 0, color: tokens.text }}>
                               {invoice.desc}
-                            </span>
-                            <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "2px 8px", borderRadius: "4px" }}>
+                            </h4>
+                            <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "3px 10px", borderRadius: "6px", letterSpacing: "0.05em" }}>
                               {invoice.status}
                             </span>
                           </div>
@@ -1019,7 +1019,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       </div>
 
                       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                        <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.copper }}>
+                        <span style={{ fontSize: "20px", fontWeight: "700", color: tokens.copper }}>
                           R$ {invoice.amount}
                         </span>
 
