@@ -339,7 +339,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
       `}</style>
 
       <main
-        className="pedido-main"
+        className="pedido-main appear-on-scroll"
         style={{
           flex: 1,
           width: "100%",

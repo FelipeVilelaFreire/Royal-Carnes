@@ -102,6 +102,7 @@ export const HeroCortesView: React.FC<HeroCortesViewProps> = ({ onNavigate }) =>
 
       {/* 2. Conteúdo Principal "Cortes" */}
       <main
+        className="appear-on-scroll"
         style={{
           flex: 1,
           maxWidth: "1560px",

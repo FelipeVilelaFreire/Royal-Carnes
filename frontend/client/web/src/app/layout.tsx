@@ -1,4 +1,5 @@
 import React from "react";
+import { AppearOnScrollRuntime } from "../design-system/AppearOnScrollRuntime";
 
 export const metadata = {
   title: "Royal Carnes | Assinaturas, Box e Delivery para churrasco",
@@ -63,9 +64,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             color: var(--theme-text) !important;
             transition: background-color 0.25s ease, color 0.25s ease;
           }
+          .appear-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .appear-visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
         `}</style>
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
+        <AppearOnScrollRuntime />
         {children}
       </body>
     </html>

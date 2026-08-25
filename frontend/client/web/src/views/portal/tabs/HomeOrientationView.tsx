@@ -178,6 +178,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
 
       <main style={{ flex: 1, width: "100%" }}>
         <section
+          className="appear-on-scroll"
           style={{
             ...sectionShellStyle,
             padding: showHeader ? "44px 24px 30px" : "28px 24px 30px"
@@ -420,7 +421,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
           </div>
         </section>
 
-        <section style={sectionShellStyle}>
+        <section className="appear-on-scroll" style={sectionShellStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", gap: "20px", alignItems: "end", flexWrap: "wrap", marginBottom: "18px" }}>
             <div>
               <p style={{ margin: "0 0 8px", color: accent, fontSize: "12px", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>
@@ -459,7 +460,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
           </div>
         </section>
 
-        <section style={{ ...sectionShellStyle, paddingTop: "58px" }}>
+        <section className="appear-on-scroll" style={{ ...sectionShellStyle, paddingTop: "58px" }}>
           <div style={{ marginBottom: "26px", textAlign: "center" }}>
             <p style={{ margin: 0, color: accent, fontFamily: "'Playfair Display', serif", fontSize: "clamp(30px, 3vw, 44px)", fontWeight: 700, lineHeight: 1.05 }}>
               {strings.planSummary.badge}
@@ -531,7 +532,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
             </div>
         </section>
 
-        <section style={sectionShellStyle}>
+        <section className="appear-on-scroll" style={sectionShellStyle}>
           <div
             className="home-product-highlight-grid"
             style={{
@@ -645,7 +646,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
           </div>
         </section>
 
-        <section style={{ ...sectionShellStyle, padding: "36px 24px 72px" }}>
+        <section className="appear-on-scroll" style={{ ...sectionShellStyle, padding: "36px 24px 72px" }}>
           <div style={{ ...cardStyle, padding: "24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
             {strings.trust.map((label, index) => {
               const trustIcons = [CutMeatIcon, KnifeIcon, FlameIcon, SparklesIcon, SpicesIcon];

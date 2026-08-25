@@ -79,6 +79,7 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
       />
 
       <div
+        className="appear-on-scroll"
         style={{
           flex: 1,
           width: "100%",
