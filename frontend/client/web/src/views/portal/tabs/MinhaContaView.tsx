@@ -352,7 +352,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
               </Card>
 
-              {/* Card "USO DO CICLO DE SETEMBRO" (Com Ícones SVG de Alta Precisão - Sem Emojis) */}
+              {/* Card "USO DO CICLO DE SETEMBRO" (Com Medidores Nobres e Sem Quebras) */}
               <div
                 style={{
                   background: tokens.surfaceContainer,
@@ -378,8 +378,8 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   </span>
                 </div>
 
-                {/* Grid de Medidores de Capacidade com Ícones SVG */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "24px" }}>
+                {/* Grid de Medidores de Capacidade com Layout Espaçoso */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px" }}>
                   
                   {/* Item 1: Cortes Utilizados */}
                   <div
@@ -390,25 +390,30 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       padding: "20px",
                       display: "flex",
                       flexDirection: "column",
-                      gap: "14px"
+                      gap: "12px",
+                      boxShadow: isDark ? "0 4px 16px rgba(0,0,0,0.2)" : "0 4px 16px rgba(0,0,0,0.03)"
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <CutMeatIcon size={20} color={tokens.copper} />
-                        </div>
-                        <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
-                          Cortes Utilizados
-                        </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <CutMeatIcon size={20} color={tokens.copper} />
                       </div>
-                      <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>
-                        4 / 6 cortes
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        Cortes Utilizados
                       </span>
                     </div>
 
-                    <div style={{ width: "100%", height: "10px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
-                      <div style={{ width: "66%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px" }} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                      <span style={{ fontSize: "24px", fontWeight: "800", color: tokens.text }}>
+                        4 <span style={{ fontSize: "14px", fontWeight: "600", color: tokens.textMuted }}>/ 6 cortes</span>
+                      </span>
+                      <span style={{ fontSize: "12px", fontWeight: "700", color: tokens.copper }}>
+                        66%
+                      </span>
+                    </div>
+
+                    <div style={{ width: "100%", height: "8px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
+                      <div style={{ width: "66%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px", transition: "width 0.5s ease" }} />
                     </div>
                   </div>
 
@@ -421,29 +426,34 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       padding: "20px",
                       display: "flex",
                       flexDirection: "column",
-                      gap: "14px"
+                      gap: "12px",
+                      boxShadow: isDark ? "0 4px 16px rgba(0,0,0,0.2)" : "0 4px 16px rgba(0,0,0,0.03)"
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <ScaleIcon size={20} color={tokens.copper} />
-                        </div>
-                        <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
-                          Capacidade de Peso
-                        </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <ScaleIcon size={20} color={tokens.copper} />
                       </div>
-                      <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>
-                        3.8kg / 5.0kg
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        Capacidade de Peso
                       </span>
                     </div>
 
-                    <div style={{ width: "100%", height: "10px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
-                      <div style={{ width: "76%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px" }} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                      <span style={{ fontSize: "24px", fontWeight: "800", color: tokens.text }}>
+                        3.8kg <span style={{ fontSize: "14px", fontWeight: "600", color: tokens.textMuted }}>/ 5.0kg</span>
+                      </span>
+                      <span style={{ fontSize: "12px", fontWeight: "700", color: tokens.copper }}>
+                        76%
+                      </span>
+                    </div>
+
+                    <div style={{ width: "100%", height: "8px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
+                      <div style={{ width: "76%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px", transition: "width 0.5s ease" }} />
                     </div>
                   </div>
 
-                  {/* Item 3: Complementos Artesanais */}
+                  {/* Item 3: Complementos */}
                   <div
                     style={{
                       background: tokens.background,
@@ -452,25 +462,30 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       padding: "20px",
                       display: "flex",
                       flexDirection: "column",
-                      gap: "14px"
+                      gap: "12px",
+                      boxShadow: isDark ? "0 4px 16px rgba(0,0,0,0.2)" : "0 4px 16px rgba(0,0,0,0.03)"
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <KnifeIcon size={20} color={tokens.copper} />
-                        </div>
-                        <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
-                          Complementos
-                        </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <KnifeIcon size={20} color={tokens.copper} />
                       </div>
-                      <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>
-                        2 / 3 complementos
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        Complementos
                       </span>
                     </div>
 
-                    <div style={{ width: "100%", height: "10px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
-                      <div style={{ width: "66%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px" }} />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                      <span style={{ fontSize: "24px", fontWeight: "800", color: tokens.text }}>
+                        2 <span style={{ fontSize: "14px", fontWeight: "600", color: tokens.textMuted }}>/ 3 complementos</span>
+                      </span>
+                      <span style={{ fontSize: "12px", fontWeight: "700", color: tokens.copper }}>
+                        66%
+                      </span>
+                    </div>
+
+                    <div style={{ width: "100%", height: "8px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
+                      <div style={{ width: "66%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px", transition: "width 0.5s ease" }} />
                     </div>
                   </div>
 
@@ -490,7 +505,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     gap: "16px"
                   }}
                 >
-                  <span style={{ fontSize: "14px", color: tokens.text }}>
+                  <span style={{ fontSize: "14px", color: tokens.text, fontWeight: "500" }}>
                     Precisa de mais cortes e peso por ciclo? Conheça os planos superiores.
                   </span>
                   <Button variant="accent" size="sm" onClick={() => setIsPlansModalOpen(true)}>
