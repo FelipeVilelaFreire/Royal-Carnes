@@ -6,10 +6,13 @@ export const clientPtBR = {
   navigation: {
     home: "Home",
     cortes: "Cortes",
+    catalogo: "Catálogo",
+    produtos: "Produtos",
     royalBox: "Royal Box",
     royalDelivery: "Royal Delivery",
     minhaConta: "Minha Conta",
-    carrinho: "Carrinho"
+    carrinho: "Carrinho",
+    entrar: "Entrar"
   },
   authEmptyState: {
     title: "Entre para continuar",
@@ -26,23 +29,23 @@ export const clientPtBR = {
       ctaViewBox: "Ver minha caixa"
     },
     highlights: {
-      title: "Destaques dos Mestres",
+      title: "Destaques Royal Carnes",
       wagyu: {
-        title: "Wagyu A5 BMS 10+",
-        subtitle: "Marmoreio excepcional e sabor incomparável"
+        title: "Mais pedidos 2026",
+        subtitle: "Picanha, fraldinha, maminha e acompanhamentos"
       },
       dryAged: {
-        title: "Dry Aged 60D",
-        subtitle: "Intensidade, maturação controlada e complexidade"
+        title: "Churrasco para família",
+        subtitle: "Produtos, carvão e utensílios para uma compra completa"
       },
       angus: {
-        title: "Angus Prime",
-        subtitle: "Suculência máxima para a grelha"
+        title: "Linha nobre",
+        subtitle: "Picanha, baby beef, ancho e chorizo"
       }
     },
     exploreSection: {
-      title: "Explore Nossos Cortes",
-      categories: ["Wagyu", "Dry Aged", "Angus Prime", "Edições Especiais"]
+      title: "Explore nossos catálogos",
+      categories: ["Mais pedidos", "Família", "Linha nobre", "Espetinhos"]
     }
   },
   cortes: {
@@ -53,10 +56,10 @@ export const clientPtBR = {
     ctaAddBox: "Adicionar à minha caixa",
     ctaBuy: "Comprar",
     categories: {
-      wagyu: "Wagyu",
-      dryAged: "Dry Aged",
-      angus: "Angus Prime",
-      limited: "Edições Limitadas"
+      wagyu: "Mais pedidos",
+      dryAged: "Família",
+      angus: "Linha nobre",
+      limited: "Espetinhos"
     }
   },
   minhaCaixa: {
@@ -98,150 +101,149 @@ export const clientPtBR = {
   },
   landing: {
     hero: {
-      badge: "VAGAS LIMITADAS PARA NOVOS SÓCIOS",
-      title: "A Experiência Suprema do Churrasco em sua Casa",
-      subtitle: "Cortes premium selecionados pelos maiores mestres churrasqueiros, maturados à perfeição e entregues mensalmente com controle absoluto de temperatura. Elevando o fogo a uma arte.",
-      ctaPlans: "Assinar Agora",
-      ctaShowcase: "Conhecer A Seleção"
+      badge: "ROYAL CARNES EM CASA",
+      title: "Royal Carnes para o churrasco acontecer sem improviso",
+      subtitle: "Escolha entre assinatura fechada, Royal Box mensal personalizada ou Royal Delivery avulso.",
+      ctaPlans: "Entender como funciona",
+      ctaShowcase: "Ver catálogo"
     },
     differentials: {
       badge: "PROVA & DIFERENCIAIS",
       title: "Por que o Royal Prime?",
       coldChain: {
-        title: "Cadeia de Frio -2°C",
-        description: "Cortes embalados a vácuo em caixas térmicas com gel ultra-resfriante garantindo frescor absoluto até a sua geladeira."
+        title: "Churrasco completo",
+        description: "Cortes, acompanhamentos, carvão e utensílios em uma experiência organizada para comprar melhor."
       },
       curatorship: {
-        title: "Curadoria Angus & Wagyu",
-        description: "Seleção exclusiva de carnes com alto grau de marmoreio (BMB 8+), rastreabilidade garantida e maturação controlada."
+        title: "Catálogos fáceis de navegar",
+        description: "Vitrines como Mais pedidos, Família, Linha nobre e Espetinhos ajudam o cliente a decidir."
       },
       flexibility: {
-        title: "Zero Fidelidade",
-        description: "Total liberdade. Pause a entrega quando for viajar, troque de plano ou cancele a qualquer momento em 1 clique."
+        title: "Três formas de comprar",
+        description: "Assinatura fechada, Royal Box recorrente mensal e Royal Delivery avulso."
       }
     },
     showcase: {
-      badge: "ALTA GASTRONOMIA",
-      title: "A Curadoria dos Mestres",
-      subtitle: "Uma prévia dos cortes nobres selecionados mensalmente pelos maiores especialistas em fogo.",
+      badge: "CATÁLOGOS ROYAL",
+      title: "Vitrines para cada tipo de churrasco",
+      subtitle: "Catálogos editoriais ajudam o cliente a comprar por ocasião, preferência e necessidade.",
       tomahawk: {
-        badge: "Corte Signature",
-        title: "Tomahawk Angus Prime",
-        description: "Peça de costela com osso longo exposto, suculência extrema e sabor marcante para a grelha."
+        badge: "Catálogo",
+        title: "Mais pedidos 2026",
+        description: "Picanha, fraldinha, maminha, pão de alho e linguiça toscana."
       },
       wagyu: {
-        badge: "Marmoreio BMB 10+",
-        title: "Wagyu A5 Striploin",
-        description: "O ápice da carne bovina mundial. Textura que derrete na boca com gordura intramuscular perfeita."
+        badge: "Vitrine",
+        title: "Churrasco para família",
+        description: "Produtos, acompanhamentos, carvão e utensílios para resolver o churrasco completo."
       },
       picanha: {
-        badge: "Churrasco Master",
-        title: "Picanha & Ribeye Cap",
-        description: "Capa de gordura uniforme, maciez incomparável e o verdadeiro aroma do churrasco de alta linha."
+        badge: "Premium",
+        title: "Linha nobre",
+        description: "Picanha, baby beef, ancho, chorizo e cortes especiais."
       }
     },
     steps: {
       badge: "PASSO A PASSO",
-      title: "Como Funciona a Assinatura",
+      title: "Três formas de comprar na Royal Carnes",
       step1: {
         number: "1",
-        title: "Escolha o seu Perfil",
-        description: "Selecione a modalidade de cortes que melhor atende o seu churrasco e rotina gastronômica."
+        title: "Assinatura fechada",
+        description: "Escolha Basic, Premium ou Pro, com limite, benefícios e preço fixo."
       },
       step2: {
         number: "2",
-        title: "Box Térmica Exclusiva",
-        description: "Receba mensalmente sua caixa refrigerada com selo de garantia de frio e cortes embalados a vácuo."
+        title: "Royal Box",
+        description: "Monte uma caixa personalizada uma vez e receba todo mês no dia escolhido."
       },
       step3: {
         number: "3",
-        title: "O Fogo e a Mesa",
-        description: "Aproveite descontos exclusivos na loja de avulsos, harmonizações de bebidas e brindes artesanais."
+        title: "Royal Delivery",
+        description: "Faça um pedido avulso, escolha endereço, frete e finalize para receber agora."
       }
     },
     plans: {
-      badge: "PLANOS EXCLUSIVOS",
-      title: "Escolha a sua Experiência",
-      subtitle: "Alterne o plano ou cancele a qualquer momento sem contrato de fidelidade.",
+      badge: "PRODUTOS",
+      title: "Escolha como quer receber",
+      subtitle: "Assinatura fechada, Royal Box personalizada mensal ou Royal Delivery avulso.",
       billingMonthly: "Cobrança Mensal",
       billingAnnual: "Cobrança Anual",
-      annualDiscountBadge: "20% OFF",
+      annualDiscountBadge: "ANUAL",
       annualBanner: {
         savings: "Até R$ 1.680 de Economia",
         savingsDesc: "Desconto de 20% aplicado diretamente em todas as 12 caixas do ano.",
-        gift: "Faca Artesanal Grátis",
-        giftDesc: "Brinde exclusivo enviado imediatamente na sua 1ª caixa do ano.",
+        gift: "Royal Box personalizada",
+        giftDesc: "Monte a composicao e receba todo mes no dia escolhido.",
         priceLock: "Preço Congelado 12 Meses",
         priceLockDesc: "Garantia contra reajustes de inflação durante todo o período."
       },
       essential: {
-        badge: "Cotidiano Prime",
-        title: "Plano Essencial",
-        subtitle: "Para quem busca cortes nobres para o dia a dia e refeições especiais.",
-        monthlyPrice: "189",
-        annualPrice: "150",
-        annualSavings: "Economize R$ 468/ano",
+        badge: "Assinatura fechada",
+        title: "Basic",
+        subtitle: "Plano de entrada para quatro produtos de melhor custo-benefício.",
+        monthlyPrice: "300",
+        annualPrice: "289",
+        annualSavings: "Plano anual",
         features: [
-          "3.5kg de cortes nobres selecionados",
-          "Ancho, Chorizo e Fraldinha Angus",
-          "15% OFF em todo o e-commerce",
-          "Frete fixo promocional"
+          "Escolha 4 produtos",
+          "Produtos do grupo Basic",
+          "Formato por produto: espeto, peca, isca ou fatiado",
+          "Pagamento mensal ou anual"
         ],
-        cta: "Assinar Essencial"
+        cta: "Ver Basic"
       },
       master: {
-        badge: "Churrasco Supremo",
-        tagFeatured: "🔥 MAIS VENDIDO",
-        title: "Master Churrasco",
-        subtitle: "Seleção completa para os apaixonados por grelha e encontros de fim de semana.",
-        monthlyPrice: "349",
-        annualPrice: "279",
-        annualSavings: "Economize R$ 840/ano",
+        badge: "Mais equilibrado",
+        tagFeatured: "MAIS PEDIDO",
+        title: "Premium",
+        subtitle: "Mais escolhas, cortes premium, carvão incluso e temperos selecionados.",
+        monthlyPrice: "500",
+        annualPrice: "489",
+        annualSavings: "Plano anual",
         features: [
-          "6.0kg de cortes nobres para churrasco",
-          "Picanha Steakhouse, Tomahawk & Ribeye",
-          "20% OFF na loja de cortes avulsos",
-          "FRETE GRÁTIS para todo o Brasil",
-          "Faca Artesanal de presente na 1ª box"
+          "Escolha 6 produtos",
+          "Inclui Basic, Picanha e Contra file",
+          "Inclui 2 pacotes de carvao",
+          "Escolha ate 2 temperos"
         ],
-        cta: "Assinar Master Churrasco"
+        cta: "Ver Premium"
       },
       wagyu: {
-        badge: "Alta Gastronomia",
-        title: "Exclusive Wagyu",
-        subtitle: "Cortes raros de altíssimo grau de marmoreio e maturação Dry Aged.",
-        monthlyPrice: "699",
-        annualPrice: "559",
-        annualSavings: "Economize R$ 1.680/ano",
+        badge: "Linha nobre",
+        title: "Pro",
+        subtitle: "Mais variedade, cortes nobres, faca inclusa e maior liberdade de complementos.",
+        monthlyPrice: "800",
+        annualPrice: "789",
+        annualSavings: "Plano anual",
         features: [
-          "4.5kg de cortes raros e maturados",
-          "Steak Wagyu A5 BMB 10+ & T-Bone Dry Aged",
-          "25% OFF + Sommelier de Carnes dedicado",
-          "Atendimento VIP & Envio Prioritário"
+          "Escolha 8 produtos",
+          "Inclui Basic, Premium, Chorizo e linha nobre",
+          "Escolha ate 5 pacotes de carvao",
+          "Recebe Faca Royal e escolhe ate 4 temperos"
         ],
-        cta: "Assinar Exclusive"
+        cta: "Ver Pro"
       }
     },
     gift: {
-      badge: "🎁 BRINDE EXCLUSIVO DO SÓCIO",
-      title: "Ganhe a Faca Artesanal Prime em Aço Inox",
-      description: "Ao assinar o clube hoje, receba no seu primeiro mês uma faca profissional de churrasco forjada artesanalmente com cabo de madeira nobre e bainha de couro legítimo.",
-      cta: "Garantir Meu Brinde no WhatsApp"
+      badge: "ROYAL BOX",
+      title: "Monte uma vez. Receba todo mês.",
+      description: "A Royal Box e a assinatura personalizada da Royal Carnes. Escolha produtos, formatos, carvão, utensílios, endereço e dia do mês.",
+      cta: "Montar Royal Box"
     },
     faq: {
       badge: "TRANSPARÊNCIA TOTAL",
       title: "Perguntas Frequentes",
       q1: {
-        question: "Como as carnes são entregues e mantidas geladas?",
-        answer: "Todas as peças são embaladas a vácuo individualmente e acondicionadas em caixas térmicas de alta densidade acompanhadas de placas de gel atóxico ultracongelante que mantêm a temperatura abaixo de -2°C por até 48 horas de transporte."
+        question: "Quais formas de compra existem?",
+        answer: "A Royal Carnes trabalha com Assinatura fechada, Royal Box recorrente mensal e Royal Delivery avulso."
       },
       q2: {
-        question: "Existe carência ou contrato de fidelidade?",
-        answer: "Não! Você tem liberdade total. É possível pausar temporariamente a assinatura quando for viajar, mudar a modalidade dos cortes ou cancelar a qualquer momento sem multa."
+        question: "O que e a Royal Box?",
+        answer: "Royal Box e uma caixa personalizada recorrente. O cliente monta a composicao, escolhe o dia do mes e recebe aquela box mensalmente."
       },
       q3: {
-        question: "Como funciona o brinde do Kit de Boas-Vindas?",
-        answer: "Ao concluir a primeira assinatura de qualquer um dos nossos planos, a Faca Artesanal Prime em aço inox é enviada automaticamente junto com a sua primeira caixa de cortes."
+        question: "Qual a diferenca entre Royal Box e Royal Delivery?",
+        answer: "A Royal Box e mensal e recorrente. O Royal Delivery e avulso, com pedido feito na hora, endereco escolhido e valor de delivery."
       }
     }
   },
@@ -273,7 +275,7 @@ export const clientPtBR = {
     catalogScreen: {
       badge: "LOJA VIP",
       title: "Cortes Avulsos",
-      items: [{ name: "Wagyu A5", price: "R$ 299", oldPrice: "R$ 375", weight: "1.0kg", icon: "🥩" }],
+      items: [{ name: "Picanha", price: "R$ 114", oldPrice: "R$ 129", weight: "1.0kg", icon: "StoreIcon" }],
       ctaAdd: "Adicionar"
     },
     settingsScreen: {

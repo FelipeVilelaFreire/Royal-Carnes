@@ -12,7 +12,7 @@ export interface NavItemConfig {
   iconName?: string;
 }
 
-// 🥩 Navegação da LANDING PAGE (Pública - Scroll Anchors)
+// Navegacao da LANDING PAGE (Publica - Scroll Anchors)
 export const clientNavigation: NavItemConfig[] = [
   { key: "hero", label: "Início", type: "scroll", targetId: "hero", iconName: "flame" },
   { key: "clube", label: "O Clube", type: "scroll", targetId: "clube", iconName: "sparkles" },
@@ -22,11 +22,9 @@ export const clientNavigation: NavItemConfig[] = [
   { key: "faq", label: "FAQ", type: "scroll", targetId: "faq", iconName: "question" }
 ];
 
-// Navegacao do portal logado: loja primeiro, conta depois.
+// Navegacao publica do portal MVP: vitrine, catalogo e produtos.
 export const portalNavigation: NavItemConfig[] = [
   { key: "home", label: clientPtBR.navigation.home, type: "route", routeKey: "home", iconName: "flame" },
-  { key: "cortes", label: clientPtBR.navigation.cortes, type: "route", routeKey: "cortes", iconName: "store" },
-  { key: "minhaCaixa", label: clientPtBR.navigation.royalBox, type: "route", routeKey: "minhaCaixa", iconName: "box" },
-  { key: "royalDelivery", label: clientPtBR.navigation.royalDelivery, type: "route", routeKey: "royalDelivery", iconName: "truck" },
-  { key: "meuClube", label: clientPtBR.navigation.minhaConta, type: "route", routeKey: "meuClube", iconName: "user" }
+  { key: "cortes", label: clientPtBR.navigation.catalogo, type: "route", routeKey: "cortes", iconName: "store" },
+  { key: "produtos", label: clientPtBR.navigation.produtos, type: "route", routeKey: "produtos", iconName: "box" }
 ];

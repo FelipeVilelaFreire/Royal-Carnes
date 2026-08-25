@@ -10,7 +10,7 @@ export const landingPageConfig = {
       usefulColumns: 17,             // 17 colunas de 20 no Desktop (1.5 de sobra nas pontas)
       outerOffset: 1.5,
       leftColSpan: 10.5,             // 10.5 colunas para Título, Frase e Botões
-      rightColSpan: 6.5,             // 6.5 colunas para o Showcase da Carne Wagyu A5
+      rightColSpan: 6.5,             // 6.5 colunas para o showcase de catalogos Royal
       minHeightRecipe: "heroPeek",   // calc(90vh - headerOffset)
       paddingYToken: "3XL"
     },
@@ -32,7 +32,7 @@ export const landingPageConfig = {
       }
     },
     media: {
-      showcaseImage: sharedAssets.client.wagyuShowcase,
+      showcaseImage: sharedAssets.client.heroBackground,
       backgroundImage: sharedAssets.client.heroBackground
     }
   },
@@ -50,21 +50,18 @@ export const landingPageConfig = {
       {
         id: "dryaged",
         iconKey: "badgeDryAged",
-        iconEmoji: "⏳",
         titleKey: "landing.benefits.dryAged.title",
         descriptionKey: "landing.benefits.dryAged.description"
       },
       {
         id: "vacuum",
         iconKey: "badgeVacuum",
-        iconEmoji: "📦",
         titleKey: "landing.benefits.vacuum.title",
         descriptionKey: "landing.benefits.vacuum.description"
       },
       {
         id: "refrigerated",
         iconKey: "logisticsBoxIcon",
-        iconEmoji: "🚚",
         titleKey: "landing.benefits.shipping.title",
         descriptionKey: "landing.benefits.shipping.description"
       }

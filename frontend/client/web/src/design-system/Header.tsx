@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { SunIcon, MoonIcon, ChevronDownIcon } from "./Icons";
+import { SunIcon, MoonIcon } from "./Icons";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
 export interface PortalHeaderProps {
-  activeTab?: "cortes" | "minha-caixa" | "hero" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
+  activeTab?: "home" | "cortes" | "produtos" | "minha-caixa" | "hero" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
   themeMode?: "light" | "dark";
   onToggleTheme?: () => void;
   onNavigate?: (path: string) => void;
@@ -60,10 +60,10 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
-  // Apenas Cortes e Royal Delivery no menu (Início é a logo, Minha Conta é o botão de perfil)
   const navItems = [
-    { key: "portal-cortes", label: "Cortes", path: "/portal-cortes" },
-    { key: "portal-minha-caixa", label: "Royal Delivery", path: "/portal-minha-caixa" }
+    { key: "portal-home", label: "Home", path: "/home" },
+    { key: "portal-cortes", label: "Catálogo", path: "/cortes" },
+    { key: "produtos", label: "Produtos", path: "/produtos" }
   ];
 
   return (
@@ -105,7 +105,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
         <div style={{ display: "flex", alignItems: "center", gap: "24px", height: "100%" }}>
           {/* Logo "Royal Carnes" */}
           <span
-            onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
+            onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
             style={{
               fontFamily: "'Playfair Display', serif",
               fontSize: isScrolled ? "24px" : "26px",
@@ -139,7 +139,9 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           <nav style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%" }} className="hidden md:flex">
             {navItems.map((item) => {
               const isActive = activeTab === item.key ||
+                (activeTab === "home" && item.key === "portal-home") ||
                 (activeTab === "cortes" && item.key === "portal-cortes") ||
+                (activeTab === "produtos" && item.key === "produtos") ||
                 (activeTab === "minha-caixa" && item.key === "portal-minha-caixa");
               return (
                 <button
@@ -183,7 +185,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           </nav>
         </div>
 
-        {/* Direita: Dark/Light & Botão de Perfil "Olá, Felipe" (AMBOS COM 44px DE ALTURA E MESMO TAMANHO) */}
+        {/* Direita: Dark/Light & Entrar */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", height: "100%" }}>
           {/* Dark / Light Mode Toggle Button (44px) */}
           <button
@@ -230,19 +232,22 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
             )}
           </button>
 
-          {/* Botão de Perfil com Arrow (EXATAMENTE 44px DE ALTURA) */}
           <button
             type="button"
-            onClick={() => onNavigate ? onNavigate("/portal-minha-conta") : (window.location.href = "/portal-minha-conta")}
+            onClick={() => undefined}
             style={{
               height: "42px",
-              padding: "0 18px 0 8px",
+              padding: "0 20px",
               borderRadius: "9999px",
-              background: isDark ? "rgba(34, 31, 30, 0.7)" : "rgba(242, 241, 237, 0.7)",
-              border: `1px solid ${tokens.border}`,
+              background: tokens.copper,
+              border: `1px solid ${tokens.copper}`,
+              color: "#FFFFFF",
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "13px",
+              fontWeight: "800",
               display: "inline-flex",
               alignItems: "center",
-              gap: "10px",
+              justifyContent: "center",
               cursor: "pointer",
               backdropFilter: "blur(12px)",
               transition: "all 0.2s ease",
@@ -250,35 +255,16 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = tokens.copper;
+              e.currentTarget.style.filter = "brightness(1.08)";
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = tokens.border;
+              e.currentTarget.style.borderColor = tokens.copper;
+              e.currentTarget.style.filter = "brightness(1)";
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9GX9-wSgnhxVigO2yvOzh-a_61c_vrpYnTl2axgfjJ5HRsI2-DMGw074me7DD73uL0qoFDTU3TfGPWx1GtaW2Ae5dT-b-QYhOhnF6lux4f4QHDmYWMS4QaOo12oFF0T4zHN7ubPcdfOwWhVdZhS_EJpJBG_BZJ6b2XzhUYVQmgsBdMsuz7PjZdupV1Gji0Pr0-p0R1uShZtfS_c_zZrl1vqBZkFFrPqQGIduN0fLricgKByJM7_Va"
-              alt="Felipe"
-              style={{
-                width: "30px",
-                height: "30px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: `1px solid ${tokens.copper}`
-              }}
-            />
-
-            <div style={{ display: "flex", flexDirection: "column", textAlign: "left", lineHeight: "1.1" }}>
-              <span style={{ fontSize: "11px", color: tokens.textMuted, fontWeight: "500" }}>
-                Olá, Felipe
-              </span>
-              <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
-                Minha Conta
-              </span>
-            </div>
-
-            <ChevronDownIcon size={14} color={tokens.copper} style={{ marginLeft: "2px" }} />
+            Entrar
           </button>
         </div>
       </div>

@@ -21,7 +21,10 @@ PrimeCutClub/
     │   ├── SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md
     │   └── MOCK_AND_ENV_ARCHITECTURE.md
     │
-    └── architecture/                          <-- 📐 2. VISÃO DE ARQUITETURA & DESIGN SYSTEM
+    ├── product/                               <-- 🧭 2. ESCOPO DE PRODUTO DO MVP
+    │   └── ROYAL_CARNES_MVP_PRODUCT_SCOPE.md
+    │
+    └── architecture/                          <-- 📐 3. VISÃO DE ARQUITETURA & DESIGN SYSTEM
         ├── STITCH_PROMPTS_AND_DESIGN_SYSTEM.md
         ├── EXECUTION_ROADMAPPING_SEQUENCE.md
         ├── PHASE_1_COMPATIBILITY_CONTRACT.md
@@ -43,7 +46,17 @@ Documentos que regem o código e a estrutura em tempo de execução:
 
 ---
 
-## 📐 2. Visão de Arquitetura & Design System (`docs/architecture/`)
+## 🧭 2. Escopo de Produto (`docs/product/`)
+
+Documentos que registram o combinado de negocio e fluxo do MVP:
+
+| Documento | Função & Responsabilidade | Estado |
+|---|---|---|
+| [`ROYAL_CARNES_MVP_PRODUCT_SCOPE.md`](product/ROYAL_CARNES_MVP_PRODUCT_SCOPE.md) | Escopo atual do MVP: Landing, Home vitrine, Catalogo, Produtos, Assinatura fechada, Royal Box recorrente mensal e Royal Delivery avulso. | 🟢 Ativo |
+
+---
+
+## 📐 3. Visão de Arquitetura & Design System (`docs/architecture/`)
 
 Documentos que guiam o design, a evolução das UIs e a integração com o ServiceOS:
 
@@ -60,6 +73,7 @@ Documentos que guiam o design, a evolução das UIs e a integração com o Servi
 
 1. **`AGENTS.md`** *(Raiz)*: Entender as regras estritas (zero emojis, SVG icons, i18n-first, 20 colunas).
 2. **`docs/DOCS_ROADMAP.md`**: Mapeamento geral.
-3. **`docs/contracts/SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md`**: Como criar ou alterar telas sem hardcode.
-4. **`docs/contracts/CLIENT_SURFACE_SERVICES_CONTRACT.md`**: Como funciona a separação entre Landing e Portal.
-5. **`docs/architecture/STITCH_PROMPTS_AND_DESIGN_SYSTEM.md`**: Regras visuais e geração de interfaces.
+3. **`docs/product/ROYAL_CARNES_MVP_PRODUCT_SCOPE.md`**: Entender o produto antes de alterar telas, mocks ou fluxos.
+4. **`docs/contracts/SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md`**: Como criar ou alterar telas sem hardcode.
+5. **`docs/contracts/CLIENT_SURFACE_SERVICES_CONTRACT.md`**: Como funciona a separação entre Landing e Portal.
+6. **`docs/architecture/STITCH_PROMPTS_AND_DESIGN_SYSTEM.md`**: Regras visuais e geração de interfaces.

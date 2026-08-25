@@ -53,39 +53,39 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
   const showcaseCuts = [
     {
       id: "showcase-1",
-      name: "Tomahawk Angus Prime",
-      subtitle: "Peça de costela com osso longo exposto, suculência extrema e sabor marcante para a grelha.",
-      tag: "CORTE SIGNATURE",
-      image: "https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=1000&auto=format&fit=crop"
+      name: "Mais pedidos 2026",
+      subtitle: "Picanha, fraldinha, maminha, pão de alho e linguiça toscana em uma vitrine feita para escolher sem complicar.",
+      tag: "CATÁLOGO",
+      image: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=1000&q=80"
     },
     {
       id: "showcase-2",
-      name: "Wagyu A5 Striploin",
-      subtitle: "O ápice da carne bovina mundial. Textura que derrete na boca com gordura intramuscular perfeita.",
-      tag: "MARMOREIO BMB 10+",
-      image: "https://images.unsplash.com/photo-1546964124-0cce460f38ef?q=80&w=1000&auto=format&fit=crop"
+      name: "Churrasco para família",
+      subtitle: "Produtos, acompanhamentos, carvão e utensílios para resolver o churrasco completo em uma compra.",
+      tag: "VITRINE",
+      image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1000&q=80"
     },
     {
       id: "showcase-3",
-      name: "Picanha & Ribeye Cap",
-      subtitle: "Capa de gordura uniforme, maciez incomparável e o verdadeiro aroma do churrasco de alta linha.",
-      tag: "CHURRASCO MASTER",
-      image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=1000&auto=format&fit=crop"
+      name: "Linha nobre",
+      subtitle: "Picanha, baby beef, ancho, chorizo e cortes especiais para quem quer elevar a experiência.",
+      tag: "PREMIUM",
+      image: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=1000&q=80"
     }
   ];
 
   const faqItems = [
     {
-      q: "Como funciona a entrega refrigerada?",
-      a: "Todas as peças são embaladas a vácuo individualmente e acondicionadas em caixas térmicas de alta densidade acompanhadas de placas de gel atóxico ultracongelante que mantêm a temperatura abaixo de -2°C por até 48 horas de transporte."
+      q: "Quais formas de compra existem?",
+      a: "A Royal Carnes trabalha com Assinatura fechada, Royal Box recorrente mensal e Royal Delivery avulso. Cada uma resolve um momento diferente do cliente."
     },
     {
-      q: "Existe fidelidade ou multa de cancelamento?",
-      a: "Não! Você tem liberdade total. É possível pausar temporariamente a assinatura quando for viajar, mudar a modalidade dos cortes ou cancelar a qualquer momento em 1 clique sem taxa."
+      q: "O que e a Royal Box?",
+      a: "Royal Box e uma caixa personalizada recorrente. O cliente monta a composicao, escolhe o dia do mes e recebe aquela box mensalmente."
     },
     {
-      q: "Como recebo o brinde da Faca Artesanal Prime?",
-      a: "Ao concluir a primeira assinatura de qualquer um dos nossos planos, a Faca Artesanal Prime em aço inox com cabo de madeira nobre é enviada automaticamente junto com a sua primeira caixa de cortes."
+      q: "Qual a diferenca entre Royal Box e Royal Delivery?",
+      a: "A Royal Box e mensal e recorrente. O Royal Delivery e avulso, com pedido feito na hora, endereco escolhido e valor de delivery."
     }
   ];
 
@@ -196,7 +196,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               }}
             />
             <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.text }}>
-              VAGAS LIMITADAS PARA NOVOS SÓCIOS
+              ROYAL CARNES EM CASA
             </span>
           </div>
 
@@ -211,7 +211,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               margin: 0
             }}
           >
-            A Experiência Suprema do Churrasco em sua Casa
+            Royal Carnes para o churrasco acontecer sem improviso
           </h1>
 
           <p
@@ -223,12 +223,12 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               maxWidth: "720px"
             }}
           >
-            Cortes premium selecionados pelos maiores mestres churrasqueiros, maturados à perfeição e entregues mensalmente com controle absoluto de temperatura. Elevando o fogo a uma arte.
+            Escolha entre assinatura fechada, Royal Box mensal personalizada ou Royal Delivery avulso. Produtos, acompanhamentos, carvão e utensílios em uma experiência simples de entender.
           </p>
 
           <div style={{ display: "flex", gap: "16px", marginTop: "12px", flexWrap: "wrap", justifyContent: "center" }}>
             <button
-              onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
+              onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
               style={{
                 background: tokens.copper,
                 color: "#FFFFFF",
@@ -247,18 +247,17 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
                 gap: "8px"
               }}
             >
-              <span>Entrar no Portal do Sócio</span>
-              ➔
+              <span>Entender como funciona</span>
             </button>
 
             <Button
               variant="outline"
               size="lg"
               isDark={isDark}
-              onClick={() => onNavigate ? onNavigate("/portal-cortes") : (window.location.href = "/portal-cortes")}
+              onClick={() => onNavigate ? onNavigate("/cortes") : (window.location.href = "/cortes")}
               style={{ padding: "16px 36px", fontSize: "13px", borderRadius: "9999px" }}
             >
-              Conhecer A Seleção
+              Ver catálogo
             </Button>
           </div>
         </div>
@@ -304,10 +303,10 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               </div>
               <div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: "0 0 8px 0", color: tokens.text }}>
-                  Cadeia de Frio -2°C
+                  Churrasco completo
                 </h3>
                 <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-                  Cortes embalados a vácuo em caixas térmicas com gel ultra-resfriante garantindo frescor absoluto até a sua geladeira.
+                  A Royal Carnes organiza cortes, acompanhamentos, carvão e utensílios para facilitar a compra do churrasco inteiro.
                 </p>
               </div>
             </div>
@@ -334,10 +333,10 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               </div>
               <div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: "0 0 8px 0", color: tokens.text }}>
-                  Curadoria Angus & Wagyu
+                  Catálogos fáceis de navegar
                 </h3>
                 <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-                  Seleção exclusiva de carnes com alto grau de marmoreio (BMB 8+), rastreabilidade garantida e maturação controlada.
+                  Vitrines como Mais pedidos, Churrasco para família, Linha nobre e Espetinhos ajudam o cliente a encontrar o que precisa.
                 </p>
               </div>
             </div>
@@ -364,10 +363,10 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               </div>
               <div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: "0 0 8px 0", color: tokens.text }}>
-                  Zero Fidelidade
+                  Três jeitos de comprar
                 </h3>
                 <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-                  Total liberdade. Pause a entrega quando for viajar, troque de plano ou cancele a qualquer momento em 1 clique.
+                  Escolha plano fechado, monte uma Royal Box mensal ou faça um pedido avulso pelo Royal Delivery.
                 </p>
               </div>
             </div>
@@ -379,13 +378,13 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
       <section id="selecao" className="appear-on-scroll" style={{ padding: "80px 32px", maxWidth: "1440px", width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
         <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 48px auto" }}>
           <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "8px" }}>
-            ALTA GASTRONOMIA
+            CATÁLOGOS ROYAL
           </span>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "40px", fontWeight: "700", margin: "0 0 12px 0", color: tokens.text }}>
-            A Curadoria dos Mestres
+            Vitrines para cada tipo de churrasco
           </h2>
           <p style={{ fontSize: "16px", color: tokens.textMuted, margin: 0 }}>
-            Uma prévia dos cortes nobres selecionados mensalmente pelos maiores especialistas em fogo.
+            O catálogo não precisa ser uma lista fria. Ele pode guiar o cliente por momentos de compra, preferências e ocasiões.
           </p>
         </div>
 
@@ -411,7 +410,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* 5. Como Funciona a Assinatura (#como-funciona) */}
+      {/* 5. Como Funciona (#como-funciona) */}
       <section
         id="como-funciona"
         className="appear-on-scroll"
@@ -425,24 +424,38 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
         <div style={{ maxWidth: "1440px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 48px auto" }}>
             <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "8px" }}>
-              PASSO A PASSO
+              COMO FUNCIONA
             </span>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "40px", fontWeight: "700", margin: "0 0 12px 0", color: tokens.text }}>
-              Como Funciona a Assinatura
+              Três formas de comprar na Royal Carnes
             </h2>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "32px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "28px", alignItems: "stretch" }}>
+            <Card
+              variant="surface"
+              bordered
+              hoverable
+              isDark={isDark}
+              style={{
+                padding: "32px",
+                borderRadius: "20px",
+                minHeight: "360px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px"
+              }}
+            >
               <div
                 style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  background: tokens.copper,
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "14px",
+                  background: isDark ? "rgba(184, 115, 51, 0.16)" : "rgba(184, 115, 51, 0.1)",
                   color: "#FFFFFF",
+                  border: `1px solid ${tokens.copper}`,
                   fontFamily: "'Playfair Display', serif",
-                  fontSize: "24px",
+                  fontSize: "22px",
                   fontWeight: "700",
                   display: "flex",
                   alignItems: "center",
@@ -452,24 +465,65 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               >
                 1
               </div>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                Escolha o seu Perfil
-              </h3>
-              <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-                Selecione a modalidade de cortes que melhor atende o seu churrasco e rotina gastronômica.
-              </p>
-            </div>
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <span style={{ fontSize: "11px", fontWeight: "800", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
+                  Plano pronto
+                </span>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                  Assinatura fechada
+                </h3>
+                <p style={{ fontSize: "15px", color: tokens.textMuted, lineHeight: "1.55", margin: 0 }}>
+                  Para quem quer uma escolha guiada, com preço fixo e regras simples.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "auto" }}>
+                {["Basic, Premium ou Pro", "Limite de produtos por plano", "Formato de recebimento por produto"].map((item) => (
+                  <div key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
+                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: tokens.copper, flexShrink: 0 }} />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                variant="outline"
+                size="md"
+                isDark={isDark}
+                onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+                style={{ width: "100%", marginTop: "4px" }}
+              >
+                Conhecer planos
+              </Button>
+            </Card>
+
+            <Card
+              variant="surface"
+              bordered
+              hoverable
+              isDark={isDark}
+              style={{
+                padding: "32px",
+                borderRadius: "20px",
+                minHeight: "360px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+                border: `2px solid ${tokens.copper}`,
+                boxShadow: isDark ? "0 18px 42px rgba(184, 115, 51, 0.24)" : "0 18px 42px rgba(184, 115, 51, 0.14)"
+              }}
+            >
+              <div>
               <div
                 style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "14px",
                   background: tokens.copper,
                   color: "#FFFFFF",
                   fontFamily: "'Playfair Display', serif",
-                  fontSize: "24px",
+                  fontSize: "22px",
                   fontWeight: "700",
                   display: "flex",
                   alignItems: "center",
@@ -479,24 +533,63 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               >
                 2
               </div>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                Box Térmica Exclusiva
-              </h3>
-              <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-                Receba mensalmente sua caixa refrigerada com selo de garantia de frio e cortes embalados a vácuo.
-              </p>
-            </div>
+              </div>
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "16px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <span style={{ fontSize: "11px", fontWeight: "800", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
+                  Caixa recorrente
+                </span>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "30px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                  Royal Box
+                </h3>
+                <p style={{ fontSize: "15px", color: tokens.textMuted, lineHeight: "1.55", margin: 0 }}>
+                  Monte sua caixa uma vez e receba todo mês no dia escolhido.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "auto" }}>
+                {["Produtos do catálogo completo", "Carvão e utensílios à escolha", "Dia do mês e endereço mensal"].map((item) => (
+                  <div key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text, fontWeight: "600" }}>
+                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: tokens.copper, flexShrink: 0 }} />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                variant="accent"
+                size="md"
+                onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+                style={{ width: "100%", marginTop: "4px" }}
+              >
+                Montar minha Box
+              </Button>
+            </Card>
+
+            <Card
+              variant="surface"
+              bordered
+              hoverable
+              isDark={isDark}
+              style={{
+                padding: "32px",
+                borderRadius: "20px",
+                minHeight: "360px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px"
+              }}
+            >
               <div
                 style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  background: tokens.copper,
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "14px",
+                  background: isDark ? "rgba(184, 115, 51, 0.16)" : "rgba(184, 115, 51, 0.1)",
                   color: "#FFFFFF",
+                  border: `1px solid ${tokens.copper}`,
                   fontFamily: "'Playfair Display', serif",
-                  fontSize: "24px",
+                  fontSize: "22px",
                   fontWeight: "700",
                   display: "flex",
                   alignItems: "center",
@@ -506,13 +599,38 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               >
                 3
               </div>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                O Fogo e a Mesa
-              </h3>
-              <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-                Aproveite descontos exclusivos na loja de avulsos, harmonizações de bebidas e brindes artesanais.
-              </p>
-            </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <span style={{ fontSize: "11px", fontWeight: "800", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
+                  Pedido avulso
+                </span>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                  Royal Delivery
+                </h3>
+                <p style={{ fontSize: "15px", color: tokens.textMuted, lineHeight: "1.55", margin: 0 }}>
+                  Para comprar na hora, sem assinatura e com entrega no endereço escolhido.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "auto" }}>
+                {["Compra única", "Endereço e frete flexíveis", "Pode repetir o último pedido"].map((item) => (
+                  <div key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
+                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: tokens.copper, flexShrink: 0 }} />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                variant="outline"
+                size="md"
+                isDark={isDark}
+                onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+                style={{ width: "100%", marginTop: "4px" }}
+              >
+                Pedir avulso
+              </Button>
+            </Card>
           </div>
         </div>
       </section>
@@ -521,13 +639,13 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
       <section id="assinaturas" className="appear-on-scroll" style={{ padding: "80px 32px", maxWidth: "1440px", width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
         <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 40px auto" }}>
           <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "8px" }}>
-            PLANOS EXCLUSIVOS
+            PRODUTOS
           </span>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "40px", fontWeight: "700", margin: "0 0 12px 0", color: tokens.text }}>
-            Escolha a sua Experiência
+            Escolha como quer receber
           </h2>
           <p style={{ fontSize: "16px", color: tokens.textMuted, margin: "0 0 24px 0" }}>
-            Alterne o plano ou cancele a qualquer momento sem contrato de fidelidade.
+            Comece por uma assinatura fechada ou avance para montar uma Royal Box mensal ou um Royal Delivery avulso.
           </p>
 
           <div
@@ -578,7 +696,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
             >
               <span>Cobrança Anual</span>
               <span style={{ fontSize: "10px", background: "rgba(255,255,255,0.25)", padding: "2px 6px", borderRadius: "6px" }}>
-                20% OFF
+                ANUAL
               </span>
             </button>
           </div>
@@ -586,38 +704,38 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
 
         {/* Grid de 3 Cards de Assinatura */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", alignItems: "stretch", paddingTop: "20px" }}>
-          {/* Plano 1: Essencial */}
+          {/* Plano 1: Basic */}
           <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "36px", borderRadius: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <div>
               <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.textMuted }}>
-                Cotidiano Prime
+                Assinatura fechada
               </span>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "4px 0 8px 0", color: tokens.text }}>
-                Plano Essencial
+                Basic
               </h3>
               <p style={{ fontSize: "14px", color: tokens.textMuted, margin: "0 0 24px 0" }}>
-                Para quem busca cortes nobres para o dia a dia e refeições especiais.
+                Plano de entrada para escolher quatro produtos de melhor custo-benefício.
               </p>
 
               <div style={{ marginBottom: "28px" }}>
                 <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "42px", fontWeight: "700", color: tokens.text }}>
-                  R$ {billingCycle === "annual" ? "151" : "189"}
+                  R$ {billingCycle === "annual" ? "289" : "300"}
                 </span>
                 <span style={{ fontSize: "14px", color: tokens.textMuted }}>/mês</span>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", borderTop: `1px solid ${tokens.border}`, paddingTop: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> 3.5kg de cortes nobres selecionados
+                  <span style={{ color: tokens.copper }}>✓</span> Escolha 4 produtos
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> Ancho, Chorizo e Fraldinha Angus
+                  <span style={{ color: tokens.copper }}>✓</span> Produtos do grupo Basic
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> 15% OFF em todo o e-commerce
+                  <span style={{ color: tokens.copper }}>✓</span> Formato por produto: espeto, peca, isca ou fatiado
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> Frete fixo promocional
+                  <span style={{ color: tokens.copper }}>✓</span> Pagamento mensal ou anual
                 </div>
               </div>
             </div>
@@ -626,14 +744,14 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               variant="outline"
               size="md"
               isDark={isDark}
-              onClick={() => onNavigate ? onNavigate("/hero") : (window.location.href = "/hero")}
+              onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
               style={{ marginTop: "32px", width: "100%" }}
             >
-              Assinar Essencial
+              Ver Basic
             </Button>
           </Card>
 
-          {/* Plano 2: Master Churrasco (MAIS VENDIDO) */}
+          {/* Plano 2: Premium */}
           <Card
             variant="surface"
             bordered
@@ -652,40 +770,40 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                 <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
-                  Churrasco Supremo
+                  Mais equilibrado
                 </span>
-                <Badge variant="copper">🔥 MAIS VENDIDO</Badge>
+                <Badge variant="copper">MAIS PEDIDO</Badge>
               </div>
 
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "4px 0 8px 0", color: tokens.text }}>
-                Master Churrasco
+                Premium
               </h3>
               <p style={{ fontSize: "14px", color: tokens.textMuted, margin: "0 0 24px 0" }}>
-                Seleção completa para os apaixonados por grelha e encontros de fim de semana.
+                Mais escolhas, cortes premium, carvão incluso e temperos selecionados.
               </p>
 
               <div style={{ marginBottom: "28px" }}>
                 <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "42px", fontWeight: "700", color: tokens.copper }}>
-                  R$ {billingCycle === "annual" ? "279" : "349"}
+                  R$ {billingCycle === "annual" ? "489" : "500"}
                 </span>
                 <span style={{ fontSize: "14px", color: tokens.textMuted }}>/mês</span>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", borderTop: `1px solid ${tokens.border}`, paddingTop: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text, fontWeight: "600" }}>
-                  <span style={{ color: tokens.copper }}>✓</span> 6.0kg de cortes nobres para churrasco
+                  <span style={{ color: tokens.copper }}>✓</span> Escolha 6 produtos
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> Picanha Steakhouse, Tomahawk & Ribeye
+                  <span style={{ color: tokens.copper }}>✓</span> Inclui Basic, Picanha e Contra file
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> 20% OFF na loja de cortes avulsos
+                  <span style={{ color: tokens.copper }}>✓</span> Inclui 2 pacotes de carvao
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.copper, fontWeight: "700" }}>
-                  <span style={{ color: tokens.copper }}>✓</span> FRETE GRÁTIS para todo o Brasil
+                  <span style={{ color: tokens.copper }}>✓</span> Escolha ate 2 temperos
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text, fontWeight: "600" }}>
-                  <span style={{ color: tokens.copper }}>✓</span> Faca Artesanal de presente na 1ª box
+                  <span style={{ color: tokens.copper }}>✓</span> Formato de recebimento por produto
                 </div>
               </div>
             </div>
@@ -693,45 +811,45 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
             <Button
               variant="accent"
               size="md"
-              onClick={() => onNavigate ? onNavigate("/hero") : (window.location.href = "/hero")}
+              onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
               style={{ marginTop: "32px", width: "100%" }}
             >
-              Assinar Master Churrasco
+              Ver Premium
             </Button>
           </Card>
 
-          {/* Plano 3: Exclusive Wagyu */}
+          {/* Plano 3: Pro */}
           <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "36px", borderRadius: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <div>
               <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.textMuted }}>
-                Alta Gastronomia
+                Linha nobre
               </span>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "4px 0 8px 0", color: tokens.text }}>
-                Exclusive Wagyu
+                Pro
               </h3>
               <p style={{ fontSize: "14px", color: tokens.textMuted, margin: "0 0 24px 0" }}>
-                Cortes raros de altíssimo grau de marmoreio e maturação Dry Aged.
+                Para quem quer mais variedade, cortes nobres, faca inclusa e maior liberdade de complementos.
               </p>
 
               <div style={{ marginBottom: "28px" }}>
                 <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "42px", fontWeight: "700", color: tokens.text }}>
-                  R$ {billingCycle === "annual" ? "559" : "699"}
+                  R$ {billingCycle === "annual" ? "789" : "800"}
                 </span>
                 <span style={{ fontSize: "14px", color: tokens.textMuted }}>/mês</span>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", borderTop: `1px solid ${tokens.border}`, paddingTop: "20px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> 4.5kg de cortes raros e maturados
+                  <span style={{ color: tokens.copper }}>✓</span> Escolha 8 produtos
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> Steak Wagyu A5 BMB 10+ & T-Bone Dry Aged
+                  <span style={{ color: tokens.copper }}>✓</span> Inclui Basic, Premium, Chorizo e linha nobre
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> 25% OFF + Sommelier de Carnes dedicado
+                  <span style={{ color: tokens.copper }}>✓</span> Escolha ate 5 pacotes de carvao
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", color: tokens.text }}>
-                  <span style={{ color: tokens.copper }}>✓</span> Atendimento VIP & Envio Prioritário
+                  <span style={{ color: tokens.copper }}>✓</span> Recebe Faca Royal e escolhe ate 4 temperos
                 </div>
               </div>
             </div>
@@ -740,16 +858,16 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               variant="outline"
               size="md"
               isDark={isDark}
-              onClick={() => onNavigate ? onNavigate("/hero") : (window.location.href = "/hero")}
+              onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
               style={{ marginTop: "32px", width: "100%" }}
             >
-              Assinar Exclusive
+              Ver Pro
             </Button>
           </Card>
         </div>
       </section>
 
-      {/* 7. Brinde Exclusivo da Faca Artesanal */}
+      {/* 7. Royal Box recorrente */}
       <section
         className="appear-on-scroll"
         style={{
@@ -777,25 +895,25 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
           >
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <Badge variant="copper">🎁 BRINDE EXCLUSIVO DO SÓCIO</Badge>
+                <Badge variant="copper">ROYAL BOX</Badge>
               </div>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                Ganhe a Faca Artesanal Prime em Aço Inox
+                Monte uma vez. Receba todo mês.
               </h2>
               <p style={{ fontSize: "16px", color: tokens.textMuted, lineHeight: "1.6", margin: 0 }}>
-                Ao assinar o clube hoje, receba no seu primeiro mês uma faca profissional de churrasco forjada artesanalmente com cabo de madeira nobre e bainha de couro legítimo.
+                A Royal Box e a assinatura personalizada da Royal Carnes. Escolha produtos, cortes, carvão, utensílios, endereço e o dia do mês para receber sempre a mesma caixa.
               </p>
               <div>
-                <Button variant="accent" size="lg" onClick={() => onNavigate ? onNavigate("/hero") : (window.location.href = "/hero")}>
-                  Garantir Meu Brinde
+                <Button variant="accent" size="lg" onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}>
+                  Montar Royal Box
                 </Button>
               </div>
             </div>
 
             <div style={{ height: "280px", borderRadius: "16px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer }}>
               <img
-                src="https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=1000&q=80"
-                alt="Faca Artesanal de Churrasco"
+                src="https://images.unsplash.com/photo-1528712306091-ed0763094c98?auto=format&fit=crop&w=1000&q=80"
+                alt="Utensilios de preparo para Royal Box"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>

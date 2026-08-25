@@ -60,10 +60,10 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
   const publicNavItems = [
-    { label: "O Clube", href: "#clube" },
-    { label: "A Seleção", href: "#selecao" },
+    { label: "A Loja", href: "#clube" },
+    { label: "Catálogos", href: "#selecao" },
     { label: "Como Funciona", href: "#como-funciona" },
-    { label: "Assinaturas", href: "#assinaturas" },
+    { label: "Produtos", href: "#assinaturas" },
     { label: "FAQ", href: "#faq" }
   ];
 
@@ -198,9 +198,9 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
             )}
           </Button>
 
-          {/* Entrar no Portal -> Direciona para /portal-home */}
+          {/* Entrar no Portal -> Direciona para /home */}
           <button
-            onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
+            onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
             style={{
               background: "transparent",
               border: "none",
@@ -233,7 +233,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
               transition: "transform 0.2s ease"
             }}
           >
-            Seja Sócio
+            Ver Produtos
           </a>
         </div>
       </div>

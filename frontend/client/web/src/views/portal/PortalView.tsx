@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { AppShell } from "@foundation/shells/appshell";
 import { Button } from "@foundation/ui/Button";
 import { EmptyState } from "@foundation/ui/EmptyState";
-import { StoreIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
+import { MoonIcon, StoreIcon, SunIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
 import { portalNavigation } from "@/manifest/navigation";
 import { portalAppShellConfig } from "@/manifest/portal/appshell.config";
 import { clientRoutes } from "@/manifest/routes";
@@ -16,13 +16,20 @@ import { MinhaCaixaView } from "./tabs/MinhaCaixaView";
 import { MeuClubeView } from "./tabs/MeuClubeView";
 
 export interface PortalViewProps {
-  initialTab?: "home" | "cortes" | "minhaCaixa" | "royalDelivery" | "meuClube";
+  initialTab?: "home" | "cortes" | "produtos" | "minhaCaixa" | "royalDelivery" | "meuClube";
 }
 
 export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return "dark";
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,6 +42,7 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
 
   const getTabFromPath = (path: string) => {
     if (path === "/cortes") return "cortes";
+    if (path === "/produtos") return "produtos";
     if (path === "/minha-caixa") return "minhaCaixa";
     if (path === "/royal-delivery") return "royalDelivery";
     if (path === "/meu-clube" || path === "/minha-assinatura") return "meuClube";
@@ -94,6 +102,8 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     switch (activeScreenKey) {
       case "cortes":
         return <CortesView isMember={true} onNavigate={handleNavigate} />;
+      case "produtos":
+        return <MinhaCaixaView onNavigate={handleNavigate} />;
       case "minhaCaixa":
         return <MinhaCaixaView onNavigate={handleNavigate} />;
       case "royalDelivery":
@@ -118,18 +128,33 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     }
   };
 
+  const toggleTheme = () => {
+    const next = themeMode === "dark" ? "light" : "dark";
+    setThemeMode(next);
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-theme", next);
+      document.documentElement.style.backgroundColor = next === "dark" ? "#0B0908" : "#FCFBF7";
+      document.documentElement.style.color = next === "dark" ? "#E8E1DE" : "#1A1A1A";
+    }
+    localStorage.setItem("royal_prime_theme", next);
+    window.dispatchEvent(new Event("royal_theme_changed"));
+  };
+
   const renderHeaderActions = () => (
     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
       <Button
         appearance="outline"
         tone="neutral"
         size="sm"
-        onClick={() => handleNavigate(clientRoutes.cortes)}
+        onClick={toggleTheme}
       >
         <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
-          <StoreIcon size={16} />
-          {clientPtBR.navigation.carrinho}
+          {themeMode === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
+          {themeMode === "dark" ? "Light" : "Dark"}
         </span>
+      </Button>
+      <Button appearance="solid" tone="primary" size="sm" onClick={() => undefined}>
+        {clientPtBR.navigation.entrar}
       </Button>
     </div>
   );

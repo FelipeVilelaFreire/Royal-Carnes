@@ -2,46 +2,46 @@ import { SubscriptionPlan } from "../../contracts";
 
 export const mockPlans: SubscriptionPlan[] = [
   {
-    id: "plan-essential",
-    key: "essential",
-    name: "Essencial Barbecue",
-    tagline: "Cortes nobres essenciais para o seu churrasco mensal",
-    priceMonthly: 199.00,
-    priceAnnual: 179.00,
+    id: "plan-basic",
+    key: "basic",
+    name: "Basic",
+    tagline: "Assinatura fechada para o churrasco essencial",
+    priceMonthly: 300.00,
+    priceAnnual: 289.00,
     features: [
-      "4kg de cortes selecionados por mês",
-      "Picanha e Ancho maturados inclusos",
-      "Frete grátis para todo o estado",
-      "Receitas e dicas do assador em vídeo"
+      "Escolha 4 produtos do grupo Basic",
+      "Produtos de melhor custo-beneficio",
+      "Formato de recebimento por produto",
+      "Pagamento mensal ou anual"
     ]
   },
   {
-    id: "plan-master",
-    key: "master",
-    name: "Master Churrasco",
-    tagline: "A experiência completa de churrascaria no conforto de casa",
-    priceMonthly: 349.00,
-    priceAnnual: 319.00,
+    id: "plan-premium",
+    key: "premium",
+    name: "Premium",
+    tagline: "Produtos nobres, carvao incluso e temperos selecionados",
+    priceMonthly: 500.00,
+    priceAnnual: 489.00,
     recommended: true,
     features: [
-      "7kg de cortes nobres e especiais por mês",
-      "Prime Rib, Chorizo e Picanha Premium",
-      "Kit de sais de parrilla e carvão ecológico inclusos",
-      "Atendimento prioritário e escolha de data de entrega"
+      "Escolha 6 produtos dos grupos Basic e Premium",
+      "Inclui Picanha e Contra file",
+      "Inclui 2 pacotes de carvao",
+      "Escolha ate 2 temperos"
     ]
   },
   {
-    id: "plan-wagyu",
-    key: "wagyu",
-    name: "Exclusive Wagyu",
-    tagline: "Para apreciadores do mais alto nível do churrasco mundial",
-    priceMonthly: 699.00,
-    priceAnnual: 629.00,
+    id: "plan-pro",
+    key: "pro",
+    name: "Pro",
+    tagline: "Experiencia completa com linha nobre e utensilio incluso",
+    priceMonthly: 800.00,
+    priceAnnual: 789.00,
     features: [
-      "10kg de cortes super nobres incluindo Wagyu A5 importado",
-      "Degustações exclusivas e convites para workshops de parrilla",
-      "Entrega em caixa térmica VIP agendada",
-      "Sommelier de churrasco dedicado para harmonização"
+      "Escolha 8 produtos dos grupos Basic, Premium e Pro",
+      "Inclui Chorizo e produtos especiais",
+      "Escolha ate 5 pacotes de carvao",
+      "Recebe Faca Royal no pacote"
     ]
   }
 ];

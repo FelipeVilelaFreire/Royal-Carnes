@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FlameIcon, BoxIcon, CartIcon, UserIcon } from "./Icons";
+import { FlameIcon, BoxIcon, CartIcon } from "./Icons";
 
 export interface BottomTabBarProps {
-  activeTab?: "home" | "hero" | "cortes" | "minha-caixa" | "perfil" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
+  activeTab?: "home" | "hero" | "cortes" | "produtos" | "minha-caixa" | "perfil" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
   onNavigate?: (path: string) => void;
   isDark?: boolean;
 }
@@ -38,10 +38,9 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   };
 
   const tabs = [
-    { key: "portal-home", label: "Início", path: "/portal-home", icon: FlameIcon },
-    { key: "portal-cortes", label: "Cortes", path: "/portal-cortes", icon: BoxIcon },
-    { key: "portal-minha-caixa", label: "Caixa", path: "/portal-minha-caixa", icon: CartIcon },
-    { key: "portal-minha-conta", label: "Conta", path: "/portal-minha-conta", icon: UserIcon }
+    { key: "portal-home", label: "Home", path: "/home", icon: FlameIcon },
+    { key: "portal-cortes", label: "Catálogo", path: "/cortes", icon: BoxIcon },
+    { key: "produtos", label: "Produtos", path: "/produtos", icon: CartIcon }
   ];
 
   return (
@@ -64,7 +63,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
     >
       {tabs.map((tab) => {
         const IconComponent = tab.icon;
-        const isActive = activeTab === tab.key || (activeTab === "home" && tab.key === "portal-home") || (activeTab === "hero" && tab.key === "portal-home") || (activeTab === "minha-conta" && tab.key === "portal-minha-conta");
+        const isActive = activeTab === tab.key || (activeTab === "home" && tab.key === "portal-home") || (activeTab === "hero" && tab.key === "portal-home") || (activeTab === "cortes" && tab.key === "portal-cortes") || (activeTab === "minha-caixa" && tab.key === "produtos");
         const iconColor = isActive ? colors.copper : colors.textMuted;
         return (
           <div

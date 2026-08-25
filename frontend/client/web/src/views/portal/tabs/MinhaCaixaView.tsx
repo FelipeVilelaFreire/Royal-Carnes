@@ -160,7 +160,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
     >
       {/* 1. Header Único e Universal do Portal */}
       <PortalHeader
-        activeTab="minha-caixa"
+        activeTab="produtos"
         themeMode={themeMode}
         onToggleTheme={() => {
           const next = themeMode === "dark" ? "light" : "dark";

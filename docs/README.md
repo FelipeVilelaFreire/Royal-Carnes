@@ -16,3 +16,5 @@ Toda a documentação técnica, contratos de arquitetura e guias do design syste
   - `EXECUTION_ROADMAPPING_SEQUENCE.md`
   - `PHASE_1_COMPATIBILITY_CONTRACT.md`
   - `TARGET_ARCHITECTURE_DREAM_TREE.md`
+- 🧭 **[Escopo de Produto (`docs/product/`)](product/)**
+  - `ROYAL_CARNES_MVP_PRODUCT_SCOPE.md`

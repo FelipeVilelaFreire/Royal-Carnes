@@ -1,8 +1,8 @@
 import React from "react";
 
 export const metadata = {
-  title: "Royal Carnes | A Experiência Suprema do Churrasco em sua Casa",
-  description: "Cortes nobres selecionados pelos maiores mestres churrasqueiros, maturados à perfeição (Wagyu A5, Dry-Aged e Angus).",
+  title: "Royal Carnes | Assinaturas, Box e Delivery para churrasco",
+  description: "Produtos para churrasco, assinaturas fechadas, Royal Box mensal personalizada e Royal Delivery avulso.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
