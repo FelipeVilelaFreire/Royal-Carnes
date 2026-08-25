@@ -16,8 +16,6 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("relevance");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-  // Inicialmente 20 cards (5 linhas completas de 4 cards em desktop)
-  const [visibleCount, setVisibleCount] = useState<number>(20);
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
 
   const isDark = themeMode === "dark";
@@ -35,13 +33,6 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
       item.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
-  const displayedCuts = filteredCuts.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredCuts.length;
-
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 20);
-  };
 
   return (
     <div
@@ -137,10 +128,7 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
               return (
                 <li key={cat.id}>
                   <button
-                    onClick={() => {
-                      setActiveTab(cat.id);
-                      setVisibleCount(20);
-                    }}
+                    onClick={() => setActiveTab(cat.id)}
                     style={{
                       background: isActive ? tokens.copper : tokens.surfaceContainer,
                       color: isActive ? "#FFFFFF" : tokens.textMuted,
@@ -242,11 +230,11 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
         {/* Total de Resultados Disponíveis */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "14px", color: tokens.textMuted }}>
-            Exibindo <strong style={{ color: tokens.copper }}>{displayedCuts.length}</strong> de <strong style={{ color: tokens.text }}>{filteredCuts.length}</strong> cortes nobres disponíveis
+            Exibindo <strong style={{ color: tokens.copper }}>{filteredCuts.length}</strong> cortes nobres disponíveis
           </span>
         </div>
 
-        {/* 5. Product Grid (5 Linhas Completas de 4 Cards Inicialmente = 20 Cards) */}
+        {/* 5. Product Grid (Exibindo 100% dos 36 Cards Direta e Continuamente) */}
         <div
           style={{
             display: "grid",
@@ -255,7 +243,7 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
             width: "100%"
           }}
         >
-          {displayedCuts.map((cut) => {
+          {filteredCuts.map((cut) => {
             const isFav = Boolean(favorites[cut.id]);
             return (
               <article
@@ -439,42 +427,9 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
             );
           })}
         </div>
-
-        {/* 6. Botão "Carregar mais cortes" (Após scrollar pelas 5 primeiras linhas de 20 cards) */}
-        {hasMore && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", marginTop: "48px" }}>
-            <button
-              onClick={handleLoadMore}
-              style={{
-                background: tokens.copper,
-                color: "#FFFFFF",
-                border: "none",
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
-                fontWeight: "700",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                padding: "18px 48px",
-                borderRadius: "9999px",
-                cursor: "pointer",
-                boxShadow: "0 8px 24px rgba(184, 115, 51, 0.4)",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "12px",
-                transition: "all 0.2s ease"
-              }}
-            >
-              <span>Carregar mais cortes ({filteredCuts.length - visibleCount} restantes)</span>
-              <span style={{ fontSize: "16px" }}>↓</span>
-            </button>
-            <span style={{ fontSize: "13px", color: tokens.textMuted }}>
-              Exibindo <strong>{visibleCount}</strong> de <strong>{filteredCuts.length}</strong> produtos
-            </span>
-          </div>
-        )}
       </div>
 
-      {/* 7. BottomTabBar Mobile & Footer */}
+      {/* 6. BottomTabBar Mobile & Footer */}
       <BottomTabBar activeTab="portal-cortes" onNavigate={onNavigate} isDark={isDark} />
       <Footer onNavigate={onNavigate} isDark={isDark} />
     </div>
