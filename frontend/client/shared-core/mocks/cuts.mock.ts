@@ -144,10 +144,10 @@ export const mockCutsCatalog: CutProduct[] = [
     weight: "350g",
     price: 129.00,
     category: "angus",
-    line: "Cortes Bovinos Especiais",
+    line: "Linha Prime Angus",
     origin: "Uruguai",
     preparation: "Grelha / Frigideira",
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "cut-10",
