@@ -13,6 +13,25 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
   const [activeTab, setActiveTab] = useState<string>("painel");
 
+  // Estado dos dados do perfil
+  const [personalData, setPersonalData] = useState({
+    name: "Felipe Vilela",
+    email: "felipe@royalcarnes.com.br",
+    phone: "(11) 99999-8888",
+    cpf: "348.910.482-00",
+    birthdate: "1992-06-15",
+    preferredDoneness: "Ao Ponto para Mal Passado"
+  });
+  const [isSavedData, setIsSavedData] = useState<boolean>(false);
+
+  // Estado das notificacoes
+  const [notifications, setNotifications] = useState({
+    whatsapp: true,
+    email: true,
+    sms: false,
+    offers: true
+  });
+
   useEffect(() => {
     const stored = localStorage.getItem("royal_prime_theme");
     if (stored === "dark" || stored === "light") {
@@ -41,6 +60,12 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
     { id: "termos", label: "Termos" }
   ];
 
+  const handleSaveData = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavedData(true);
+    setTimeout(() => setIsSavedData(false), 3000);
+  };
+
   return (
     <div
       style={{
@@ -55,7 +80,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
     >
       {/* 1. Header Único Logado */}
       <PortalHeader
-        activeTab="meu-clube"
+        activeTab="portal-minha-conta"
         themeMode={themeMode}
         onToggleTheme={() => {
           const next = themeMode === "dark" ? "light" : "dark";
@@ -96,7 +121,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
               Minha Conta
             </h1>
             <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-              Olá, Felipe.<br />Gerencie sua experiência Royal Carnes.
+              Olá, {personalData.name.split(" ")[0]}.<br />Gerencie sua experiência Royal Carnes.
             </p>
           </div>
 
@@ -150,253 +175,603 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
           </nav>
         </aside>
 
-        {/* Área Central de Configurações da Conta */}
+        {/* Área Central de Conteúdo Dinâmico por Aba */}
         <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-          {/* Seção 01: Status da Royal Box */}
-          <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px", flex: 1, minWidth: "280px" }}>
-                <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.textMuted }}>
-                  SUA EXPERIÊNCIA ROYAL
-                </span>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                    Royal Box
-                  </h2>
-                  <Badge variant="copper">ATIVA</Badge>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "20px", marginTop: "8px" }}>
-                  <div>
-                    <span style={{ fontSize: "11px", color: tokens.textMuted, textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.08em" }}>
-                      Próxima Caixa
+          
+          {/* TAB 1: PAINEL GERAL */}
+          {activeTab === "painel" && (
+            <>
+              {/* Seção 01: Status da Royal Box */}
+              <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px", flex: 1, minWidth: "280px" }}>
+                    <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.textMuted }}>
+                      SUA EXPERIÊNCIA ROYAL
                     </span>
-                    <p style={{ fontSize: "15px", fontWeight: "600", color: tokens.text, margin: "4px 0 0 0" }}>
-                      12 de Setembro
-                    </p>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Royal Box
+                      </h2>
+                      <Badge variant="copper">ATIVA</Badge>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "20px", marginTop: "8px" }}>
+                      <div>
+                        <span style={{ fontSize: "11px", color: tokens.textMuted, textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.08em" }}>
+                          Próxima Caixa
+                        </span>
+                        <p style={{ fontSize: "15px", fontWeight: "600", color: tokens.text, margin: "4px 0 0 0" }}>
+                          12 de Setembro
+                        </p>
+                      </div>
+
+                      <div>
+                        <span style={{ fontSize: "11px", color: tokens.textMuted, textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.08em" }}>
+                          Frequência
+                        </span>
+                        <p style={{ fontSize: "15px", fontWeight: "600", color: tokens.text, margin: "4px 0 0 0" }}>
+                          Mensal
+                        </p>
+                      </div>
+
+                      <div>
+                        <span style={{ fontSize: "11px", color: tokens.textMuted, textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.08em" }}>
+                          Valor
+                        </span>
+                        <p style={{ fontSize: "18px", fontWeight: "700", color: tokens.copper, margin: "2px 0 0 0" }}>
+                          R$ 875 <span style={{ fontSize: "13px", fontWeight: "400", color: tokens.textMuted }}>/ mês</span>
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <span style={{ fontSize: "11px", color: tokens.textMuted, textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.08em" }}>
-                      Frequência
-                    </span>
-                    <p style={{ fontSize: "15px", fontWeight: "600", color: tokens.text, margin: "4px 0 0 0" }}>
-                      Mensal
-                    </p>
-                  </div>
-
-                  <div>
-                    <span style={{ fontSize: "11px", color: tokens.textMuted, textTransform: "uppercase", fontWeight: "700", letterSpacing: "0.08em" }}>
-                      Valor
-                    </span>
-                    <p style={{ fontSize: "18px", fontWeight: "700", color: tokens.copper, margin: "2px 0 0 0" }}>
-                      R$ 875 <span style={{ fontSize: "13px", fontWeight: "400", color: tokens.textMuted }}>/ mês</span>
-                    </p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "220px" }}>
+                    <Button variant="accent" size="md" onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
+                      Ver minha caixa
+                    </Button>
+                    <Button variant="outline" size="md" isDark={isDark} onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
+                      Gerenciar assinatura
+                    </Button>
                   </div>
                 </div>
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "220px" }}>
-                <Button variant="accent" size="md" onClick={() => onNavigate ? onNavigate("/minha-caixa") : (window.location.href = "/minha-caixa")}>
-                  Ver minha caixa
-                </Button>
-                <Button variant="outline" size="md" isDark={isDark} onClick={() => onNavigate ? onNavigate("/minha-caixa") : (window.location.href = "/minha-caixa")}>
-                  Gerenciar assinatura
-                </Button>
-              </div>
-            </div>
-          </Card>
-
-          {/* Seção 02: Seus Benefícios */}
-          <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                Seus Benefícios
-              </h3>
-            </div>
-
-            {/* Progresso do Benefício */}
-            <div
-              style={{
-                background: tokens.surfaceContainer,
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "16px",
-                padding: "24px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px"
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "12px" }}>
-                <div>
-                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.textMuted, display: "block", marginBottom: "4px" }}>
-                    PRÓXIMO BENEFÍCIO
-                  </span>
-                  <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                    Brinde Royal Exclusivo (Faca Artesanal)
-                  </h4>
-                </div>
-                <span style={{ fontSize: "14px", color: tokens.textMuted }}>
-                  Faltam <strong style={{ color: tokens.copper }}>R$ 87</strong> para desbloquear
-                </span>
-              </div>
-
-              <div style={{ width: "100%", height: "8px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
-                <div style={{ width: "85%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
-              </div>
-            </div>
-
-            {/* Grid dos 4 Cards de Benefício */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
-              <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                <GiftIcon size={24} color={tokens.copper} />
-                <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Brindes Especiais</h5>
-                <Badge variant="copper">Desbloqueado</Badge>
               </Card>
 
-              <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                <TruckIcon size={24} color={tokens.copper} />
-                <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Entrega Prioritária</h5>
-                <Badge variant="copper">Disponível</Badge>
-              </Card>
-
-              <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                <StarIcon size={24} color={tokens.textMuted} />
-                <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Acesso Antecipado</h5>
-                <Badge variant="limited">Em breve</Badge>
-              </Card>
-
-              <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                <StarIcon size={24} color={tokens.textMuted} />
-                <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Condições Exclusivas</h5>
-                <Badge variant="limited">Em breve</Badge>
-              </Card>
-            </div>
-          </section>
-
-          {/* Seção 03: Pedidos Recentes */}
-          <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                Pedidos Recentes
-              </h3>
-              <a href="#" style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper, textDecoration: "none" }}>
-                Ver todos os pedidos
-              </a>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* Pedido 1 */}
-              <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "14px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.textMuted }}>
-                    ROYAL DELIVERY • 24 AGO 2026
-                  </span>
-                  <span style={{ fontSize: "16px", fontWeight: "700", color: tokens.text }}>
-                    Pedido #RD-8492
-                  </span>
+              {/* Seção 02: Seus Benefícios */}
+              <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    Seus Benefícios
+                  </h3>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 14px", borderRadius: "9999px", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}` }}>
-                    <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22C55E" }} />
-                    <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.text }}>Entregue</span>
-                  </div>
-                  <Button variant="outline" size="sm" isDark={isDark}>
-                    Ver pedido
-                  </Button>
-                </div>
-              </Card>
-
-              {/* Pedido 2 */}
-              <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "14px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.textMuted }}>
-                    ROYAL BOX • 12 AGO 2026
-                  </span>
-                  <span style={{ fontSize: "16px", fontWeight: "700", color: tokens.text }}>
-                    Caixa de Agosto
-                  </span>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 14px", borderRadius: "9999px", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}` }}>
-                    <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22C55E" }} />
-                    <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.text }}>Entregue</span>
-                  </div>
-                  <Button variant="outline" size="sm" isDark={isDark}>
-                    Ver caixa
-                  </Button>
-                </div>
-              </Card>
-            </div>
-          </section>
-
-          {/* Seção 04: Endereços e Pagamentos */}
-          <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
-            {/* Endereço Principal */}
-            <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                  Endereço Principal
-                </h4>
-                <button style={{ background: "transparent", border: "none", color: tokens.copper, cursor: "pointer" }}>
-                  <EditIcon size={18} color={tokens.copper} />
-                </button>
-              </div>
-
-              <div style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.6" }}>
-                <p style={{ fontWeight: "700", color: tokens.text, margin: "0 0 4px 0" }}>Casa</p>
-                <p style={{ margin: 0 }}>Av. Visconde de Albuquerque, 1200, Apto 302</p>
-                <p style={{ margin: 0 }}>Leblon, Rio de Janeiro - RJ</p>
-                <p style={{ margin: 0 }}>CEP: 22450-000</p>
-              </div>
-            </Card>
-
-            {/* Pagamento Padrão */}
-            <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                  Pagamento Padrão
-                </h4>
-                <button style={{ background: "transparent", border: "none", color: tokens.copper, cursor: "pointer" }}>
-                  <EditIcon size={18} color={tokens.copper} />
-                </button>
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                {/* Progresso do Benefício */}
                 <div
                   style={{
-                    width: "48px",
-                    height: "36px",
-                    borderRadius: "8px",
                     background: tokens.surfaceContainer,
                     border: `1px solid ${tokens.border}`,
+                    borderRadius: "16px",
+                    padding: "24px",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0
+                    flexDirection: "column",
+                    gap: "16px"
                   }}
                 >
-                  <CreditCardIcon size={20} color={tokens.copper} />
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "12px" }}>
+                    <div>
+                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.textMuted, display: "block", marginBottom: "4px" }}>
+                        PRÓXIMO BENEFÍCIO
+                      </span>
+                      <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Brinde Royal Exclusivo (Faca Artesanal)
+                      </h4>
+                    </div>
+                    <span style={{ fontSize: "14px", color: tokens.textMuted }}>
+                      Faltam <strong style={{ color: tokens.copper }}>R$ 87</strong> para desbloquear
+                    </span>
+                  </div>
+
+                  <div style={{ width: "100%", height: "8px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
+                    <div style={{ width: "85%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+                  </div>
                 </div>
+
+                {/* Grid dos 4 Cards de Benefício */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
+                    <GiftIcon size={24} color={tokens.copper} />
+                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Brindes Especiais</h5>
+                    <Badge variant="copper">Desbloqueado</Badge>
+                  </Card>
+
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
+                    <TruckIcon size={24} color={tokens.copper} />
+                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Entrega Prioritária</h5>
+                    <Badge variant="copper">Disponível</Badge>
+                  </Card>
+
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
+                    <StarIcon size={24} color={tokens.textMuted} />
+                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Acesso Antecipado</h5>
+                    <Badge variant="limited">Em breve</Badge>
+                  </Card>
+
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
+                    <StarIcon size={24} color={tokens.textMuted} />
+                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Condições Exclusivas</h5>
+                    <Badge variant="limited">Em breve</Badge>
+                  </Card>
+                </div>
+              </section>
+
+              {/* Seção 03: Pedidos Recentes */}
+              <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    Pedidos Recentes
+                  </h3>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "14px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.textMuted }}>
+                        ROYAL DELIVERY • 24 AGO 2026
+                      </span>
+                      <span style={{ fontSize: "16px", fontWeight: "700", color: tokens.text }}>
+                        Pedido #RD-8492
+                      </span>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 14px", borderRadius: "9999px", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}` }}>
+                        <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22C55E" }} />
+                        <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.text }}>Entregue</span>
+                      </div>
+                      <Button variant="outline" size="sm" isDark={isDark}>
+                        Ver pedido
+                      </Button>
+                    </div>
+                  </Card>
+                </div>
+              </section>
+            </>
+          )}
+
+          {/* TAB 2: SEUS DADOS */}
+          {activeTab === "dados" && (
+            <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
+              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px", marginBottom: "28px" }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                  Seus Dados Pessoais
+                </h3>
+                <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                  Mantenha suas informações cadastrais atualizadas para entregas e comunicação.
+                </p>
+              </div>
+
+              <form onSubmit={handleSaveData} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>Nome Completo</label>
+                  <input
+                    type="text"
+                    value={personalData.name}
+                    onChange={(e) => setPersonalData({ ...personalData, name: e.target.value })}
+                    style={{
+                      background: tokens.surfaceContainer,
+                      color: tokens.text,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      outline: "none"
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>E-mail de Acesso</label>
+                  <input
+                    type="email"
+                    value={personalData.email}
+                    onChange={(e) => setPersonalData({ ...personalData, email: e.target.value })}
+                    style={{
+                      background: tokens.surfaceContainer,
+                      color: tokens.text,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      outline: "none"
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>WhatsApp / Celular</label>
+                  <input
+                    type="text"
+                    value={personalData.phone}
+                    onChange={(e) => setPersonalData({ ...personalData, phone: e.target.value })}
+                    style={{
+                      background: tokens.surfaceContainer,
+                      color: tokens.text,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      outline: "none"
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>CPF</label>
+                  <input
+                    type="text"
+                    value={personalData.cpf}
+                    disabled
+                    style={{
+                      background: tokens.surfaceContainer,
+                      color: tokens.textMuted,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      cursor: "not-allowed"
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>Data de Nascimento</label>
+                  <input
+                    type="date"
+                    value={personalData.birthdate}
+                    onChange={(e) => setPersonalData({ ...personalData, birthdate: e.target.value })}
+                    style={{
+                      background: tokens.surfaceContainer,
+                      color: tokens.text,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      outline: "none"
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>Ponto de Carne Preferido</label>
+                  <select
+                    value={personalData.preferredDoneness}
+                    onChange={(e) => setPersonalData({ ...personalData, preferredDoneness: e.target.value })}
+                    style={{
+                      background: tokens.surfaceContainer,
+                      color: tokens.text,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "10px",
+                      padding: "12px 16px",
+                      fontSize: "14px",
+                      outline: "none"
+                    }}
+                  >
+                    <option value="Mal Passado">Mal Passado (Selado & Vermelho)</option>
+                    <option value="Ao Ponto para Mal Passado">Ao Ponto para Mal Passado (Ideal)</option>
+                    <option value="Ao Ponto">Ao Ponto (Centro Rosado)</option>
+                    <option value="Bem Passado">Bem Passado</option>
+                  </select>
+                </div>
+
+                <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: "16px", marginTop: "12px" }}>
+                  <Button variant="accent" size="md" type="submit">
+                    Salvar Alterações
+                  </Button>
+                  {isSavedData && (
+                    <span style={{ fontSize: "14px", color: "#22C55E", fontWeight: "600", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <CheckIcon size={16} color="#22C55E" /> Dados salvos com sucesso!
+                    </span>
+                  )}
+                </div>
+              </form>
+            </Card>
+          )}
+
+          {/* TAB 3: ENDEREÇOS */}
+          {activeTab === "enderecos" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
                 <div>
-                  <p style={{ fontSize: "14px", fontWeight: "700", color: tokens.text, margin: "0 0 2px 0" }}>
-                    Mastercard final 4821
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                    Meus Endereços
+                  </h3>
+                  <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                    Gerencie os locais de entrega para suas caixas da Royal Box e pedidos avulsos.
                   </p>
-                  <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
-                    Expira em 10/2027
+                </div>
+                <Button variant="accent" size="sm">
+                  + Adicionar Endereço
+                </Button>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+                {/* Endereço 1 */}
+                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Casa
+                      </h4>
+                      <Badge variant="copper">PRINCIPAL</Badge>
+                    </div>
+                    <EditIcon size={18} color={tokens.copper} style={{ cursor: "pointer" }} />
+                  </div>
+
+                  <div style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.6" }}>
+                    <p style={{ fontWeight: "700", color: tokens.text, margin: "0 0 4px 0" }}>Felipe Vilela</p>
+                    <p style={{ margin: 0 }}>Av. Visconde de Albuquerque, 1200, Apto 302</p>
+                    <p style={{ margin: 0 }}>Leblon, Rio de Janeiro - RJ</p>
+                    <p style={{ margin: 0 }}>CEP: 22450-000 • Tel: (11) 99999-8888</p>
+                  </div>
+                </Card>
+
+                {/* Endereço 2 */}
+                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                      Escritório / Trabalho
+                    </h4>
+                    <EditIcon size={18} color={tokens.copper} style={{ cursor: "pointer" }} />
+                  </div>
+
+                  <div style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.6" }}>
+                    <p style={{ fontWeight: "700", color: tokens.text, margin: "0 0 4px 0" }}>Felipe Vilela</p>
+                    <p style={{ margin: 0 }}>Av. das Américas, 4200, Bloco 2, Sala 304</p>
+                    <p style={{ margin: 0 }}>Barra da Tijuca, Rio de Janeiro - RJ</p>
+                    <p style={{ margin: 0 }}>CEP: 22640-102</p>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: PAGAMENTOS */}
+          {activeTab === "pagamentos" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+                <div>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                    Formas de Pagamento
+                  </h3>
+                  <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                    Cartões de crédito e chaves PIX cadastradas para a sua assinatura.
+                  </p>
+                </div>
+                <Button variant="accent" size="sm">
+                  + Novo Cartão
+                </Button>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+                {/* Cartão 1 */}
+                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <CreditCardIcon size={24} color={tokens.copper} />
+                      <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Mastercard
+                      </h4>
+                    </div>
+                    <Badge variant="copper">PADRÃO</Badge>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "700", letterSpacing: "2px", color: tokens.text, margin: "0 0 4px 0" }}>
+                      •••• •••• •••• 4821
+                    </p>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Validade: 10/2028 • Titular: FELIPE V FREIRE
+                    </p>
+                  </div>
+                </Card>
+
+                {/* Cartão 2 */}
+                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <CreditCardIcon size={24} color={tokens.textMuted} />
+                      <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        Visa Infinite
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "700", letterSpacing: "2px", color: tokens.text, margin: "0 0 4px 0" }}>
+                      •••• •••• •••• 9012
+                    </p>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Validade: 04/2029 • Titular: FELIPE V FREIRE
+                    </p>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: NOTIFICAÇÕES */}
+          {activeTab === "notificacoes" && (
+            <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
+              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px", marginBottom: "28px" }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                  Preferências de Notificação
+                </h3>
+                <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                  Escolha como deseja ser avisado sobre o envio das suas caixas e novidades dos mestres.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "16px", borderBottom: `1px solid ${tokens.border}` }}>
+                  <div>
+                    <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: tokens.text }}>
+                      Alertas de Envio por WhatsApp
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Receba avisos em tempo real quando sua caixa sair para entrega com código de rastreamento.
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifications.whatsapp}
+                    onChange={(e) => setNotifications({ ...notifications, whatsapp: e.target.checked })}
+                    style={{ width: "20px", height: "20px", accentColor: tokens.copper, cursor: "pointer" }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "16px", borderBottom: `1px solid ${tokens.border}` }}>
+                  <div>
+                    <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: tokens.text }}>
+                      Curadoria Mensal por E-mail
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Ficha técnica dos cortes da sua próxima caixa e receitas exclusivas dos mestres.
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifications.email}
+                    onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })}
+                    style={{ width: "20px", height: "20px", accentColor: tokens.copper, cursor: "pointer" }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: tokens.text }}>
+                      Lotes Especiais & Cortes Raros (SMS)
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Alertas prioritários para pré-venda de lotes exclusivos de Wagyu A5.
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifications.sms}
+                    onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })}
+                    style={{ width: "20px", height: "20px", accentColor: tokens.copper, cursor: "pointer" }}
+                  />
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* TAB 6: PRIVACIDADE */}
+          {activeTab === "privacidade" && (
+            <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
+              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px", marginBottom: "28px" }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                  Privacidade & Segurança
+                </h3>
+                <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                  Controle a segurança da sua conta, credenciais de acesso e dados pessoais.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "20px", borderBottom: `1px solid ${tokens.border}` }}>
+                  <div>
+                    <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: tokens.text }}>
+                      Alterar Senha de Acesso
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Recomendamos alterar sua senha periodicamente para manter a conta segura.
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" isDark={isDark}>
+                    Alterar Senha
+                  </Button>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "20px", borderBottom: `1px solid ${tokens.border}` }}>
+                  <div>
+                    <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: tokens.text }}>
+                      Exportar Meus Dados (LGPD)
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Faça o download de um relatório completo com todas as suas compras e histórico.
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" isDark={isDark}>
+                    Baixar Dados (.JSON)
+                  </Button>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: "#EF4444" }}>
+                      Encerrar Conta Royal Prime
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                      Solicitar a exclusão permanente dos seus dados e cancelamento total da assinatura.
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" style={{ borderColor: "#EF4444", color: "#EF4444" }}>
+                    Excluir Conta
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* TAB 7: TERMOS */}
+          {activeTab === "termos" && (
+            <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
+              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px", marginBottom: "28px" }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                  Termos & Condições de Uso
+                </h3>
+                <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                  Regulamento do Clube de Assinaturas e Política de Privacidade Royal Carnes (Versão 2026.1).
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px", fontSize: "14px", color: tokens.textMuted, lineHeight: "1.7" }}>
+                <div>
+                  <h4 style={{ fontSize: "16px", fontWeight: "700", color: tokens.text, margin: "0 0 8px 0" }}>
+                    1. Condições de Assinatura & Recorrência
+                  </h4>
+                  <p style={{ margin: 0 }}>
+                    A assinatura do Clube Royal Carnes é renovada automaticamente a cada 30 dias na modalidade mensal. O sócio tem total liberdade para pausar a entrega ou cancelar o plano a qualquer momento sem cobrança de multa ou fidelidade.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style={{ fontSize: "16px", fontWeight: "700", color: tokens.text, margin: "0 0 8px 0" }}>
+                    2. Garantia de Frio & Controle de Qualidade
+                  </h4>
+                  <p style={{ margin: 0 }}>
+                    Todas as caixas da Royal Box são despachadas com embalagem térmica de alta densidade e placas de gel refrigerante atóxico que mantêm a temperatura das carnes a -2°C por até 48 horas de transporte.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style={{ fontSize: "16px", fontWeight: "700", color: tokens.text, margin: "0 0 8px 0" }}>
+                    3. Política de Privacidade & LGPD
+                  </h4>
+                  <p style={{ margin: 0 }}>
+                    Os dados cadastrais e de pagamento são protegidos por criptografia de ponta a ponta e armazenados sob rigorosos padrões da Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
                   </p>
                 </div>
               </div>
             </Card>
-          </section>
+          )}
+
         </div>
       </main>
 
       {/* 3. BottomTabBar Mobile */}
-      <BottomTabBar activeTab="meu-clube" onNavigate={onNavigate} isDark={isDark} />
+      <BottomTabBar activeTab="portal-minha-conta" onNavigate={onNavigate} isDark={isDark} />
 
       {/* 4. Footer */}
       <Footer onNavigate={onNavigate} isDark={isDark} />
