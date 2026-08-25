@@ -117,15 +117,44 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
           }
         `}</style>
 
-        {/* Sidebar Lateral Esquerda com Links das Abas */}
+        {/* Sidebar Lateral Esquerda com Links das Abas e Resumo do Plano */}
         <aside style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
           <div>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: "0 0 8px 0", color: tokens.text }}>
+            <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
+              ÁREA DE MEMBRO VIP
+            </span>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: "4px 0 8px 0", color: tokens.text }}>
               Minha Conta
             </h1>
             <p style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.5", margin: 0 }}>
-              Olá, {personalData.name.split(" ")[0]}.<br />Gerencie sua experiência Royal Carnes.
+              Olá, {personalData.name.split(" ")[0]}.<br />Gerencie seu plano e caixas do Royal Delivery.
             </p>
+          </div>
+
+          {/* Badge do Plano Ativo na Sidebar */}
+          <div
+            style={{
+              background: tokens.surfaceContainer,
+              border: `1px solid ${tokens.border}`,
+              borderRadius: "14px",
+              padding: "16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: tokens.textMuted }}>
+                Seu Plano
+              </span>
+              <Badge variant="copper">ROYAL PRO</Badge>
+            </div>
+            <p style={{ fontSize: "13px", fontWeight: "600", color: tokens.text, margin: 0 }}>
+              Frequência: Mensal
+            </p>
+            <span style={{ fontSize: "12px", color: tokens.copper, fontWeight: "700" }}>
+              R$ 875,00 / mês
+            </span>
           </div>
 
           <nav
@@ -194,20 +223,20 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         {/* Conteúdo Dinâmico na Direita (Muda conforme a Tab Selecionada) */}
         <section style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
           
-          {/* TAB 1: PAINEL GERAL */}
+          {/* TAB 1: PAINEL GERAL DE ASSINATURA & LIMITES */}
           {activeTab === "painel" && (
             <>
-              {/* Status do Royal Delivery */}
+              {/* Card 1: Status Geral do Plano Royal Pro */}
               <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "36px", borderRadius: "20px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "24px" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px", flex: 1, minWidth: "280px" }}>
                     <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.textMuted }}>
-                      SUA EXPERIÊNCIA ROYAL
+                      SEU PLANO MESTRE ATIVO
                     </span>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                        Royal Delivery
+                      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        ROYAL PRO
                       </h2>
                       <Badge variant="copper">ATIVA</Badge>
                     </div>
@@ -253,71 +282,162 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
               </Card>
 
-              {/* Seus Benefícios */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
-                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                    Seus Benefícios
-                  </h3>
+              {/* Card 2: Seu Uso Neste Ciclo (Limites do Plano Royal Pro) */}
+              <div
+                style={{
+                  background: tokens.surfaceContainer,
+                  border: `1px solid ${tokens.border}`,
+                  borderRadius: "20px",
+                  padding: "32px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "24px"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "12px" }}>
+                  <div>
+                    <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+                      USO DO CICLO DE SETEMBRO
+                    </span>
+                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                      Uso & Capacidade da Caixa
+                    </h3>
+                  </div>
+                  <span style={{ fontSize: "14px", color: tokens.textMuted }}>
+                    Você ainda pode adicionar <strong style={{ color: tokens.copper }}>2 cortes</strong> à sua próxima caixa.
+                  </span>
                 </div>
 
-                {/* Progresso do Benefício */}
-                <div
-                  style={{
-                    background: tokens.surfaceContainer,
-                    border: `1px solid ${tokens.border}`,
-                    borderRadius: "16px",
-                    padding: "24px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "16px"
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "12px" }}>
-                    <div>
-                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.textMuted, display: "block", marginBottom: "4px" }}>
-                        PRÓXIMO BENEFÍCIO
+                {/* Progress Bars dos Limites */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
+                  {/* Cortes Utilizados */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
+                        🥩 Cortes Utilizados
                       </span>
-                      <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                        Brinde Royal Exclusivo (Faca Artesanal)
-                      </h4>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper }}>
+                        4 / 6 cortes
+                      </span>
                     </div>
-                    <span style={{ fontSize: "14px", color: tokens.textMuted }}>
-                      Faltam <strong style={{ color: tokens.copper }}>R$ 87</strong> para desbloquear
+                    <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
+                      <div style={{ width: "66%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+                    </div>
+                    <span style={{ fontSize: "12px", color: tokens.textMuted }}>
+                      2 cortes restantes para atingir a cota
                     </span>
                   </div>
 
-                  <div style={{ width: "100%", height: "8px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
-                    <div style={{ width: "85%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+                  {/* Capacidade de Peso */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
+                        ⚖️ Capacidade de Peso
+                      </span>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper }}>
+                        3.8kg / 5.0kg
+                      </span>
+                    </div>
+                    <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
+                      <div style={{ width: "76%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+                    </div>
+                    <span style={{ fontSize: "12px", color: tokens.textMuted }}>
+                      1.2kg disponíveis sem excedente
+                    </span>
+                  </div>
+
+                  {/* Complementos Artesanais */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
+                        🔪 Complementos
+                      </span>
+                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper }}>
+                        2 / 3 complementos
+                      </span>
+                    </div>
+                    <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
+                      <div style={{ width: "66%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+                    </div>
+                    <span style={{ fontSize: "12px", color: tokens.textMuted }}>
+                      1 complemento disponível no ciclo
+                    </span>
                   </div>
                 </div>
 
-                {/* Grid de Benefícios */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "20px" }}>
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                    <GiftIcon size={24} color={tokens.copper} />
-                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Brindes Especiais</h5>
-                    <Badge variant="copper">Desbloqueado</Badge>
-                  </Card>
-
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                    <TruckIcon size={24} color={tokens.copper} />
-                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Entrega Prioritária</h5>
-                    <Badge variant="copper">Disponível</Badge>
-                  </Card>
-
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                    <StarIcon size={24} color={tokens.textMuted} />
-                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Acesso Antecipado</h5>
-                    <Badge variant="limited">Em breve</Badge>
-                  </Card>
-
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px", borderRadius: "14px", display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" }}>
-                    <StarIcon size={24} color={tokens.textMuted} />
-                    <h5 style={{ fontSize: "15px", fontWeight: "600", margin: 0, color: tokens.text }}>Condições Exclusivas</h5>
-                    <Badge variant="limited">Em breve</Badge>
-                  </Card>
+                {/* Banner Comercial de Upgrade de Plano */}
+                <div
+                  style={{
+                    background: isDark ? "rgba(184, 115, 51, 0.1)" : "rgba(184, 115, 51, 0.05)",
+                    border: `1px solid ${tokens.copper}`,
+                    borderRadius: "14px",
+                    padding: "16px 20px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "16px"
+                  }}
+                >
+                  <span style={{ fontSize: "14px", color: tokens.text }}>
+                    Precisa de mais cortes e peso por ciclo? Conheça o <strong>ROYAL ELITE (10 cortes / 8.0kg / 5 complementos)</strong>.
+                  </span>
+                  <Button variant="accent" size="sm" onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
+                    Fazer Upgrade ➔
+                  </Button>
                 </div>
+              </div>
+
+              {/* Card 3: Separação Clara de Limites do Plano vs Benefícios Exclusivos */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+                
+                {/* Capacidades & Limites do Plano */}
+                <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "28px", borderRadius: "18px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.textMuted }}>
+                    CAPACIDADES DO PLANO ROYAL PRO
+                  </span>
+                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    O que seu plano inclui
+                  </h4>
+                  <ul style={{ padding: 0, margin: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px", color: tokens.text }}>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Até 6 cortes nobres por caixa
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Limite de 5.0kg total por ciclo
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Até 3 complementos artesanais
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Frequência Mensal Flexível
+                    </li>
+                  </ul>
+                </Card>
+
+                {/* Benefícios Exclusivos de Membro */}
+                <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "28px", borderRadius: "18px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
+                    VANTAGENS EXCLUSIVAS
+                  </span>
+                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    Seus Benefícios Desbloqueados
+                  </h4>
+                  <ul style={{ padding: 0, margin: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px", color: tokens.text }}>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Frete Refrigerado Prioritário (-2°C)
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Acesso Antecipado a Lotes Wagyu A5
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Brinde Faca Artesanal (85% Desbloqueado)
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ color: tokens.copper, fontWeight: "700" }}>✓</span> Desconto de 15% em Utensílios
+                    </li>
+                  </ul>
+                </Card>
               </div>
 
               {/* Pedidos Recentes Gourmet */}
@@ -330,7 +450,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
                     style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper, cursor: "pointer" }}
                   >
-                    Ver historico completo ➔
+                    Ver histórico completo ➔
                   </span>
                 </div>
 
@@ -425,64 +545,6 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     </div>
                   </Card>
                 </div>
-              </div>
-
-              {/* Endereço Principal e Pagamento Padrão */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
-                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                      Endereço Principal
-                    </h4>
-                    <button style={{ background: "transparent", border: "none", color: tokens.copper, cursor: "pointer" }} onClick={() => setActiveTab("enderecos")}>
-                      <EditIcon size={18} color={tokens.copper} />
-                    </button>
-                  </div>
-
-                  <div style={{ fontSize: "14px", color: tokens.textMuted, lineHeight: "1.6" }}>
-                    <p style={{ fontWeight: "700", color: tokens.text, margin: "0 0 4px 0" }}>Casa</p>
-                    <p style={{ margin: 0 }}>Av. Visconde de Albuquerque, 1200, Apto 302</p>
-                    <p style={{ margin: 0 }}>Leblon, Rio de Janeiro - RJ</p>
-                    <p style={{ margin: 0 }}>CEP: 22450-000</p>
-                  </div>
-                </Card>
-
-                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "24px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                      Pagamento Padrão
-                    </h4>
-                    <button style={{ background: "transparent", border: "none", color: tokens.copper, cursor: "pointer" }} onClick={() => setActiveTab("pagamentos")}>
-                      <EditIcon size={18} color={tokens.copper} />
-                    </button>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <div
-                      style={{
-                        width: "48px",
-                        height: "36px",
-                        borderRadius: "8px",
-                        background: tokens.surfaceContainer,
-                        border: `1px solid ${tokens.border}`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0
-                      }}
-                    >
-                      <CreditCardIcon size={20} color={tokens.copper} />
-                    </div>
-                    <div>
-                      <p style={{ fontSize: "14px", fontWeight: "700", color: tokens.text, margin: "0 0 2px 0" }}>
-                        Mastercard final 4821
-                      </p>
-                      <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
-                        Expira em 10/2027
-                      </p>
-                    </div>
-                  </div>
-                </Card>
               </div>
             </>
           )}
