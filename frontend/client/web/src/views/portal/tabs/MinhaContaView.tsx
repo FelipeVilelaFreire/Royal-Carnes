@@ -1008,21 +1008,21 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         borderRadius: "16px",
                         display: "flex",
                         justifyContent: "space-between",
-                        alignItems: "center",
+                        alignItems: "flex-start",
                         flexWrap: "wrap",
                         gap: "16px"
                       }}
                     >
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px", textAlign: "left", alignItems: "flex-start" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text, textAlign: "left" }}>
                             {invoice.desc}
                           </h4>
                           <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "3px 10px", borderRadius: "6px", letterSpacing: "0.05em" }}>
                             {invoice.status}
                           </span>
                         </div>
-                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                        <span style={{ fontSize: "13px", color: tokens.textMuted, textAlign: "left" }}>
                           {invoice.date} • Cobrado no {invoice.card} • Id: {invoice.id}
                         </span>
                       </div>

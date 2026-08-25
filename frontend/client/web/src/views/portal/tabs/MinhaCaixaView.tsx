@@ -431,24 +431,24 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                         padding: "18px 24px",
                         borderRadius: "16px",
                         display: "flex",
-                        alignItems: "center",
+                        alignItems: "flex-start",
                         justifyContent: "space-between",
                         gap: "24px",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: "20px" }}>
                         {/* FOTO DA CARNE NO INÍCIO DO CARD */}
                         <div style={{ width: "96px", height: "80px", borderRadius: "12px", overflow: "hidden", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, flexShrink: 0 }}>
                           <img src={p.image} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         </div>
 
-                        {/* TÍTULO DA CARNE & DETALHES • PESO */}
+                        {/* TÍTULO DA CARNE & DETALHES • PESO ALINHADOS À ESQUERDA */}
                         <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
-                          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text, textAlign: "left" }}>
                             {p.name}
                           </h3>
-                          <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                          <span style={{ fontSize: "13px", color: tokens.textMuted, textAlign: "left" }}>
                             {p.subtitle} • {p.weight}
                           </span>
                         </div>
