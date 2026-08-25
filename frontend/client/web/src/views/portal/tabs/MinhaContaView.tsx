@@ -1013,18 +1013,24 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         gap: "16px"
                       }}
                     >
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                            {invoice.desc}
-                          </h4>
-                          <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "3px 10px", borderRadius: "6px", letterSpacing: "0.05em" }}>
-                            {invoice.status}
+                      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                        <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "rgba(184, 115, 51, 0.12)", border: `1px solid ${tokens.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          <CreditCardIcon size={20} color={tokens.copper} />
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                              {invoice.desc}
+                            </h4>
+                            <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "3px 10px", borderRadius: "6px", letterSpacing: "0.05em" }}>
+                              {invoice.status}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                            {invoice.date} • Cobrado no {invoice.card} • Id: {invoice.id}
                           </span>
                         </div>
-                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
-                          {invoice.date} • Cobrado no {invoice.card} • Id: {invoice.id}
-                        </span>
                       </div>
 
                       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>

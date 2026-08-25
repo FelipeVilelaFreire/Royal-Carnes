@@ -428,33 +428,35 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                       hoverable
                       isDark={isDark}
                       style={{
-                        padding: "20px 24px",
+                        padding: "18px 24px",
                         borderRadius: "16px",
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto auto",
-                        gap: "24px",
+                        display: "flex",
                         alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "24px",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                       }}
                     >
-                      {/* INÍCIO DO CARD: TÍTULO DA CARNE & DETALHES • PESO */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
-                        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                          {p.name}
-                        </h3>
-                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
-                          {p.subtitle} • {p.weight}
-                        </span>
-                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        {/* FOTO DA CARNE NO INÍCIO DO CARD */}
+                        <div style={{ width: "96px", height: "80px", borderRadius: "12px", overflow: "hidden", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, flexShrink: 0 }}>
+                          <img src={p.image} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        </div>
 
-                      {/* FOTO DA CARNE */}
-                      <div style={{ width: "84px", height: "68px", borderRadius: "10px", overflow: "hidden", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, flexShrink: 0 }}>
-                        <img src={p.image} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        {/* TÍTULO DA CARNE & DETALHES • PESO */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                            {p.name}
+                          </h3>
+                          <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                            {p.subtitle} • {p.weight}
+                          </span>
+                        </div>
                       </div>
 
                       {/* PREÇO E CONTROLES DE ADICIONAR / QUANTIDADE */}
-                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                        <span style={{ fontSize: "19px", fontWeight: "700", color: tokens.text }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                        <span style={{ fontSize: "20px", fontWeight: "700", color: tokens.text }}>
                           R$ {p.price.toFixed(2).replace(".", ",")}
                         </span>
 
