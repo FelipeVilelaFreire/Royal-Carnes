@@ -1,13 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PortalHeader, BottomTabBar, Footer } from "../../../design-system";
-import { Button } from "@foundation/ui/Button";
-import { Text } from "@foundation/ui/Text";
-import { Surface } from "@foundation/ui/Surface";
-import { SectionContainer } from "@foundation/ui/SectionContainer";
+import { PortalHeader, BottomTabBar, Footer, Button, Card, Badge } from "../../../design-system";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
-import { TruckIcon, SnowflakeIcon, StoreIcon } from "@foundation/ui/Icon/AppIcons";
+import { SearchIcon, CartIcon, ChevronDownIcon } from "../../../design-system/Icons";
 
 export interface HomeViewProps {
   onNavigate?: (path: string) => void;
@@ -15,6 +11,7 @@ export interface HomeViewProps {
 
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const stored = localStorage.getItem("royal_prime_theme");
@@ -34,42 +31,88 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
-  const nextBoxCuts = [
-    { name: "Wagyu A5 BMS 10+", detail: "400g" },
-    { name: "Dry Aged 60D", detail: "500g" },
-    { name: "Angus Prime", detail: "800g" }
+  const categories = [
+    { name: "Bovinos", icon: "🥩" },
+    { name: "Churrasco", icon: "🔥" },
+    { name: "Wagyu", icon: "💎" },
+    { name: "Dry Aged", icon: "⏳" },
+    { name: "Suínos", icon: "🐖" },
+    { name: "Aves", icon: "🐓" },
+    { name: "Complementos", icon: "🔪" },
+    { name: "Kits", icon: "📦" }
   ];
 
-  const recentCuts = [
-    { name: "Wagyu A5", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCTWZZGOFHbj0Sh572RQ-2vs3emWIEGZWsTB1lYtPYcSjPGcOa9mDPiwX1GCl8gPBNEHqbv95kZnUF7gTwJASw-4aHOZWp1IUKwwTioZC70OM608r9UjPQKMk5Jw4B1qibJodt1tlgo4WyBhdw3iIDeBFHpi2CQBi4BqAaFV2b7RZGuMUPGAkZOHP76xP0TR6KM5dqPFvrumlSXF85A9N100tBX7rkGd__CupxrUAHLYbt5YnwVk0e-" },
-    { name: "Picanha Angus", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCEyZehgZTv-CyocAVQn0YBZaQ9k5T1yspu9TOTY_a2Ecdie4GqgKNWW_cnd5ZAUuPMshFRWia6eq5Ej3-UQ2L2nImpVVKTr0yfEodgUEJQUsZVZLYiBoQliyrqEezNzVT5XxtmK1ozhqsDd4j-LQyV7RlT1CqQedpMs5qhbesB5PDF1_G10G7rQDZ3U7cedVIHcBedWSA27GA_gQjpXRlZttOTKwJI8hFUgSAUtoBMQmTuk7GfbhUo" },
-    { name: "Dry Aged Striploin", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBAXmVaYdHYrcmadhw4ffayWFLmhKi2Wd01VX122nq-EWMfpfWaDsfTtOw6SUDwD2zSMKVswdk9qzwlTlFxtQOeQgnrOZUW-jtSXa_5S-HMFUhv_yRdqTjCJUstW7NCphwZ7scNWhCjw886NxXFj0k8eSL3rlTnytlxayam_rLinCsnWw953m1QUtUq5wpOjswaTHak-xOTW1szoyzdDGluEtST7pB02z5xQml3yZWKrcenQKSfNRDj" }
+  const weeklyOffers = [
+    {
+      id: "offer-1",
+      name: "Picanha Angus",
+      portion: "Aprox. 1.2kg • Resfriado",
+      originalPrice: "189,90",
+      price: "149,90",
+      badge: "Oferta",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBroJrbE3Sp_7XDMtERJ-9z5OJSYK5EODpyLYKQTGEJssWhruw0wjKU1BlG5cV5iVKdQgisdcIYttpwq9gjy0YzlmOOto7AfHMD_0h1I1TZax7X5pQuGFHOAyHTZTDegKL1LxM1e0Grk0QGR8tq9O9XhvcrGRHLy_JygNYR9tar0wcphLhM3Oh7nafgpxGKQj5rKRJKYRuXmYk-BaQschmaZb604XTKLy6jsv83GszKJUbYW0MIkRJ8"
+    },
+    {
+      id: "offer-2",
+      name: "Bife Ancho Wagyu",
+      portion: "Aprox. 400g • Congelado",
+      originalPrice: "250,00",
+      price: "199,90",
+      badge: "Oferta",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCoaEBVAVqn9ij7ZU82DUcs7G-lOtPXsUgGiQX7VwjZ6RsduGy8hyLzeGFHtLGLDbUlaFORnLmZLaPTgjqg8xa29fAyKV36L7Ph_ESBef-v5BnWXGLrnvxYbPPDvxepFsaMgEPuZDz4-7xSuF8VJaErTNa78_nPxANCQsZ3dyuDsDsMZMMqED21eBrkSOZ6Yanv6_y_k11DR9vgAkdDJu_zaJ3lhrs7ljuk290MwqsWH_Rtf8_8Q1WX"
+    },
+    {
+      id: "offer-3",
+      name: "Medalhão de Mignon",
+      portion: "Aprox. 500g • Resfriado",
+      originalPrice: "110,00",
+      price: "89,90",
+      badge: "Oferta",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB31NCNxXWJ6l_zG3lmBLOOmT8uP-EN-NnrIy28kaloy6EZVetU2WGOkYZjUeYIdWI0pBY-YXdNvFFbl3gHaZzm2T-vp3WDS0iojfsII1G89EryaYK-AxDrP_zvKpqvTkzFphAPOLxp2LxLA0nvwazXHgTlj6oWFSG3r_UYS7tjbZ5W-Z4-p4zAO56tvJ_dfvwLnGO0lEMuFkjMgXCwcC9yLjIHQGz4aQOwAb1ZQDv42A4-KqmpXLPI"
+    },
+    {
+      id: "offer-4",
+      name: "Carré de Cordeiro",
+      portion: "Aprox. 800g • Congelado",
+      originalPrice: "145,00",
+      price: "119,90",
+      badge: "Oferta",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBIoB6uhSQ_mV9SWgU0p50xpbVwIOEV230_9UaEB9L0Q82pNKakb4GPREMpXOzFdNMp_-4-YiQ0U5QuUOTgKb9oXGsymnsDlldp3qljhPb6SwSM6cHkjDL0NnPM35nTGVXefUhD7H86Y6aWIesrJuc7QG1hl3j-W8g8PV5Lnj3GZBHRELNm_DJVQwGpPqE3gOojpye63rGSdRLB1-MBruc-UYBI-ilp7qHGT-GxWKWTgIBgPyLwv7kz"
+    }
   ];
 
-  const discoverCuts = [
+  const comboKits = [
     {
-      title: "Wagyu A5 BMS 10+",
-      origin: "Kagoshima, Japão",
-      descriptor: "Marmoreio inigualável, textura amanteigada que derrete na boca com um perfil de sabor rico e complexo.",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDtaHSRXvo_dlDspmo7ZmMeX4j2uubsZiorZU8s1oDAsn_qj-itWqK8_4qg35ewbMtTM5cLTUOSx5-E8sc9F0FKSY3cvXfPiNfR-McI8apaUZPvht2_2uO2kxg5Hf1jumOKaUpcxs52cf0qcm1iw5_Sxte5PQGb6IxrWr66-wWdenmA0QmWn8w0y9bnl2QHVFy_V5bB37cdig6EXjYtO1-HgE_feZ-Ii2DW5y_Pgxsl5clos9_xhjfU"
+      id: "kit-1",
+      title: "KIT CHURRASCO CLÁSSICO",
+      subtitle: "Perfeito para 4 a 6 pessoas. A essência do churrasco brasileiro.",
+      price: "249,00",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD8gj2S8eD_rN_YMeXXZDa2mre2zfSFo_y4pLwVWa1Dz1K6jAatYXshF7oiFDvadli4uBy6_aZiHzQ6QWE_1cYKxgGo5HLYtyPO1v0VoSmWvF3-sMjrgW8o_K2qKK9zRIElxG7h80uU8ejGabawWah2IHCtcD81v0kyygTdeiBVV9D4PxOrYysUPYhyh8Bm2vEj7q243qHNKdEyCck34Qe89bUeR9vP4P1VUf9AzhS98tTtgaKy1Xcz",
+      items: [
+        "1.2kg Picanha Angus",
+        "800g Linguiça Artesanal",
+        "500g Pão de Alho",
+        "Sal Grosso de Parrilla"
+      ]
     },
     {
-      title: "Dry Aged 60D",
-      origin: "Uruguai • Maturação 60 dias",
-      descriptor: "Notas amendoadas e sabor terroso intenso, desenvolvido através de 60 dias de maturação meticulosa.",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC5YXnTr9iDJTwWsNC6zH6S03vwIMrVNPSEGl1zkWtDh_NJwvW9xAAq2xhrdqfu6Epe65snbdjvwqz9Bha-8oKEOeXYXyzNcW2UDbe2xoJ5-6x88ayb30Zjsjhe6lrU4VOXa5q6JTYdujt3B4jsf-pVg9DjQm6pb8lY-39-NU-a8uqLmamhzOorjvutxGQgPODEB9Hx5fE9-ix4LXp1kwgOTCFHUjQnB39xNekh93pj4-2eqjlZV1eM"
-    },
-    {
-      title: "Tomahawk Angus Prime",
-      origin: "Brasil • 21 Dias",
-      descriptor: "Imponente e suculento, o osso alongado intensifica o sabor durante o preparo. Ideal para compartilhar.",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAAtXvHonLuyVMQpLEwWAQfdjsRKDwpM4iZ5p0vK2aOZOizl_9CAgang7O0rNEq59xNpLAvf4e0PdeBqHFThdWM9Z5_hbO3w85qkVbUd1VMN-yQft8WfYr9toHczJxOtTHk3GqDoU12gy_BUI5Qt1uMLHkKoAHDwnHfq3JxGx2DsBNXRrgnz4BhAAyUbarZbfOX8zRmclwYFNSIaQi2zPDIc3LHPTvWHtypko4vvjxe6_OX7UTrWxIB"
+      id: "kit-2",
+      title: "KIT CHURRASCO PREMIUM",
+      subtitle: "Para os paladares mais exigentes. Cortes nobres e marmoreio intenso.",
+      price: "589,00",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB0go_qBK-11s7dT1qlRdppRuGj2tgJpurABjCyW0W630WINI9nDKqXAX98D_m8_TIpLbOK3UfRdaZaidtj-KNVHkkdTlYBalPOVgYKt8YHabo7HdkdGzRE7V--s38lOZRByj4Tz3seGjNGfU7zVYMq_dpzE3R7sZEsqoNyHjvzEOwxDBmnf1CDEGZzVLiQovfNAJoHO_BcUiRea4KroKgLf1kmNsVNE68C6oUUevXB2xcwJCpF0TuZ",
+      items: [
+        "1 Tomahawk Duroc",
+        "2x Bife Ancho Wagyu",
+        "1kg Prime Rib Angus",
+        "Flor de Sal"
+      ]
     }
   ];
 
   return (
-    <div style={{ width: "100%", background: tokens.background, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* 1. Header Único Logado do Portal */}
+    <div style={{ width: "100%", background: tokens.background, color: tokens.text, minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
+      {/* 1. PortalHeader Logado com Navegação Alinhada */}
       <PortalHeader
         activeTab="portal-home"
         themeMode={themeMode}
@@ -82,244 +125,338 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         onNavigate={onNavigate}
       />
 
-      <main style={{ flex: 1, paddingBottom: "60px" }}>
-        {/* 01 — PERSONAL GREETING */}
-        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingTop: "20px", width: "100%" }}>
-            <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "44px", margin: 0, fontWeight: "700" }}>
-              Boa noite, Felipe.
-            </Text>
-            <Text variant="body" style={{ color: tokens.textMuted, fontSize: "16px" }}>
-              Seu próximo momento começa aqui.
-            </Text>
-          </div>
-        </SectionContainer>
-
-        {/* PRIMARY HIERARCHY: 02 - NEXT BOX & 03 - QUICK MEMBERSHIP SUMMARY */}
-        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", width: "100%", alignItems: "stretch" }}>
-            
-            {/* 02 — NEXT BOX (PRIMARY FEATURE) */}
-            <Surface
-              style={{
-                background: tokens.surface,
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "24px",
-                padding: "36px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                gap: "24px",
-                boxSizing: "border-box",
-                gridColumn: "span 2"
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
-                  <div>
-                    <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                      CAIXA DE SETEMBRO
-                    </span>
-                    <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "32px", margin: "4px 0 0 0", fontWeight: "700" }}>
-                      Minha próxima caixa
-                    </Text>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", background: tokens.surfaceContainer, padding: "6px 14px", borderRadius: "12px", border: `1px solid ${tokens.border}` }}>
-                    <TruckIcon size={18} color={tokens.copper} />
-                    <span style={{ color: tokens.text, fontSize: "13px", fontWeight: "600" }}>Entrega prevista para 12 de setembro</span>
-                  </div>
-                </div>
-
-                {/* Status */}
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", background: tokens.surfaceContainer, borderRadius: "12px", border: `1px solid ${tokens.border}` }}>
-                  <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: tokens.copper, boxShadow: `0 0 10px ${tokens.copper}` }} />
-                  <span style={{ color: tokens.text, fontSize: "14px", fontWeight: "600" }}>Status: Preparando sua caixa</span>
-                </div>
-
-                {/* Preview dos Cortes */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <span style={{ fontSize: "12px", color: tokens.textMuted, fontWeight: "600", textTransform: "uppercase", letterSpacing: "1px" }}>
-                    Cortes selecionados para esta caixa:
-                  </span>
-                  <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                    {nextBoxCuts.map((cut, idx) => (
-                      <div key={idx} style={{ background: "rgba(184, 115, 51, 0.08)", border: `1px solid rgba(184, 115, 51, 0.25)`, padding: "8px 16px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
-                        <StoreIcon size={16} color={tokens.copper} />
-                        <span style={{ color: tokens.text, fontSize: "14px", fontWeight: "600" }}>{cut.name}</span>
-                        <span style={{ color: tokens.copper, fontSize: "12px", fontWeight: "700" }}>({cut.detail})</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Status Timeline Compacta */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: `1px solid ${tokens.border}`, fontSize: "12px" }}>
-                  <span style={{ color: tokens.text, fontWeight: "600" }}>✓ Pedido confirmado</span>
-                  <span style={{ color: tokens.copper, fontWeight: "700" }}>● Preparando</span>
-                  <span style={{ color: tokens.textMuted }}>○ Embalando</span>
-                  <span style={{ color: tokens.textMuted }}>○ Em trânsito</span>
-                </div>
-              </div>
-
-              {/* Rodapé do Card */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "16px", borderTop: `1px solid ${tokens.border}` }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <SnowflakeIcon size={16} color={tokens.copper} />
-                  <span style={{ color: tokens.textMuted, fontSize: "12px", fontWeight: "600" }}>Cadeia de frio garantida (-2°C)</span>
-                </div>
-                <div style={{ display: "flex", gap: "12px" }}>
-                  <Button appearance="outline" tone="neutral" size="sm" onClick={() => onNavigate && onNavigate("/portal-minha-caixa")}>
-                    Alterar caixa
-                  </Button>
-                  <Button appearance="solid" tone="primary" size="sm" onClick={() => onNavigate && onNavigate("/portal-minha-caixa")}>
-                    Ver minha caixa ➔
-                  </Button>
-                </div>
-              </div>
-            </Surface>
-
-            {/* 03 — QUICK MEMBERSHIP SUMMARY */}
-            <Surface
-              style={{
-                background: tokens.surface,
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "24px",
-                padding: "36px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                gap: "20px",
-                boxSizing: "border-box"
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div>
-                  <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                    SEU CLUBE
-                  </span>
-                  <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "28px", margin: "4px 0 0 0", fontWeight: "700" }}>
-                    Royal Prime Monthly
-                  </Text>
-                </div>
-
-                <div style={{ display: "inline-block", background: "rgba(34, 197, 94, 0.15)", color: "#22C55E", fontSize: "12px", fontWeight: "700", padding: "4px 10px", borderRadius: "8px", width: "fit-content" }}>
-                  Membro ativo
-                </div>
-
-                <div style={{ borderLeft: `3px solid ${tokens.copper}`, paddingLeft: "14px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                  <span style={{ fontSize: "22px", fontWeight: "800", color: tokens.text }}>R$ 279 / mês</span>
-                  <span style={{ fontSize: "13px", color: tokens.textMuted }}>Próxima cobrança: 10 de setembro</span>
-                </div>
-              </div>
-
-              <Button appearance="outline" tone="neutral" size="sm" style={{ width: "100%" }} onClick={() => onNavigate && onNavigate("/portal-minha-conta")}>
-                Gerenciar assinatura
-              </Button>
-            </Surface>
-
-          </div>
-        </SectionContainer>
-
-        {/* SECONDARY HIERARCHY: 04 - RECENT BOX */}
-        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-          <Surface
+      {/* 2. Conteúdo Principal da Vitrine Marketplace Home */}
+      <main
+        style={{
+          flex: 1,
+          maxWidth: "1440px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "40px 32px 60px 32px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "56px",
+          boxSizing: "border-box"
+        }}
+      >
+        {/* Banner Promocional Hero Gourmet */}
+        <section
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "400px",
+            borderRadius: "20px",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            boxShadow: isDark ? "0 12px 36px rgba(0,0,0,0.4)" : "0 12px 36px rgba(0,0,0,0.08)"
+          }}
+        >
+          <div
             style={{
-              background: tokens.surface,
-              border: `1px solid ${tokens.border}`,
-              borderRadius: "24px",
-              padding: "32px",
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJo7TvJDAbbeLLTMbqRePs0aFEBkCPV2z9helaDKwynbBH5MFvI861Q5xdS7JFrGVx2RpyLcx3HiWs7UbtpaR31_U9i6Ep33QkcKEFs3ecAugbMl25q2L8R66Uxlx2hoSvpeuAy8DUteAWS7YSaPPpjoj2yZ5Sy4CDjYlDtbrHrefuxg5pD-wP-NVnB0Nk4PdMkYDq4RnfeIj25ix7RdWl474HVrJwAMppRVSqjM_TWvy7ouu0K034')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              zIndex: 0
+            }}
+          />
+
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: isDark
+                ? "linear-gradient(90deg, rgba(11, 9, 8, 0.95) 0%, rgba(11, 9, 8, 0.6) 60%, transparent 100%)"
+                : "linear-gradient(90deg, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.5) 60%, transparent 100%)",
+              zIndex: 1
+            }}
+          />
+
+          <div
+            style={{
+              position: "relative",
+              zIndex: 10,
+              padding: "48px",
+              maxWidth: "580px",
               display: "flex",
               flexDirection: "column",
-              gap: "24px",
-              boxSizing: "border-box",
+              alignItems: "flex-start",
+              gap: "16px",
+              color: "#FFFFFF"
+            }}
+          >
+            <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper }}>
+              OFERTAS DA SEMANA
+            </span>
+
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "48px",
+                fontWeight: "700",
+                lineHeight: "1.1",
+                letterSpacing: "-0.02em",
+                margin: 0,
+                color: "#FFFFFF"
+              }}
+            >
+              Cortes Selecionados com 20% OFF
+            </h2>
+
+            <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.8)", margin: 0, lineHeight: 1.5 }}>
+              Seleção exclusiva de carnes nobres com marbling elevado e entrega refrigerada em até 24 horas.
+            </p>
+
+            <button
+              onClick={() => onNavigate ? onNavigate("/portal-cortes") : (window.location.href = "/portal-cortes")}
+              style={{
+                marginTop: "12px",
+                background: tokens.copper,
+                color: "#FFFFFF",
+                border: "none",
+                padding: "14px 32px",
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "12px",
+                fontWeight: "700",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                borderRadius: "9999px",
+                cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(184, 115, 51, 0.4)",
+                transition: "all 0.2s ease"
+              }}
+            >
+              Ver Ofertas ➔
+            </button>
+          </div>
+        </section>
+
+        {/* Categorias Rápidas (Carrossel Horizontal com Hover Gourmet) */}
+        <section style={{ width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              overflowX: "auto",
+              paddingBottom: "12px",
+              WebkitOverflowScrolling: "touch"
+            }}
+          >
+            {categories.map((cat, idx) => (
+              <div
+                key={idx}
+                onClick={() => onNavigate ? onNavigate("/portal-cortes") : (window.location.href = "/portal-cortes")}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "12px",
+                  cursor: "pointer",
+                  minWidth: "90px"
+                }}
+              >
+                <div
+                  style={{
+                    width: "72px",
+                    height: "72px",
+                    borderRadius: "50%",
+                    background: tokens.surfaceContainer,
+                    border: `1px solid ${tokens.border}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "26px",
+                    transition: "all 0.3s ease"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = tokens.copper;
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.12)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = tokens.border;
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  {cat.icon}
+                </div>
+                <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.text }}>
+                  {cat.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Seção Ofertas da Semana (Grid de Cards de Produtos) */}
+        <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+            <div>
+              <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+                OPORTUNIDADES DO DIA
+              </span>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                Ofertas da Semana
+              </h3>
+            </div>
+
+            <span
+              onClick={() => onNavigate ? onNavigate("/portal-cortes") : (window.location.href = "/portal-cortes")}
+              style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper, cursor: "pointer" }}
+            >
+              Ver catálogo completo ➔
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "28px",
               width: "100%"
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                  ÚLTIMA CAIXA
-                </span>
-                <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "24px", margin: "2px 0 0 0", fontWeight: "700" }}>
-                  Caixa de Agosto — Entregue em 12 de agosto
-                </Text>
-              </div>
-              <span style={{ fontSize: "13px", color: tokens.copper, fontWeight: "700", cursor: "pointer" }} onClick={() => onNavigate && onNavigate("/portal-minha-caixa")}>
-                Ver caixa anterior ➔
-              </span>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
-              {recentCuts.map((cut, idx) => (
-                <div key={idx} style={{ display: "flex", alignItems: "center", gap: "14px", background: tokens.surfaceContainer, padding: "12px", borderRadius: "16px", border: `1px solid ${tokens.border}` }}>
-                  <img src={cut.image} alt={cut.name} style={{ width: "56px", height: "56px", borderRadius: "10px", objectFit: "cover" }} />
-                  <span style={{ color: tokens.text, fontSize: "15px", fontWeight: "600" }}>{cut.name}</span>
-                </div>
-              ))}
-            </div>
-          </Surface>
-        </SectionContainer>
-
-        {/* DISCOVERY HIERARCHY: 05 - DISCOVER PREMIUM CUTS */}
-        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
-            <div>
-              <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "36px", margin: 0, fontWeight: "700" }}>
-                Descubra novos cortes
-              </Text>
-              <Text variant="body" style={{ color: tokens.textMuted, fontSize: "16px", marginTop: "4px" }}>
-                Selecionados exclusivamente para membros Royal Prime.
-              </Text>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", width: "100%" }}>
-              {discoverCuts.map((item, idx) => (
-                <Surface
-                  key={idx}
-                  style={{
-                    background: tokens.surface,
-                    border: `1px solid ${tokens.border}`,
-                    borderRadius: "24px",
-                    overflow: "hidden",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    boxSizing: "border-box"
-                  }}
-                >
-                  <div style={{ height: "240px", overflow: "hidden" }}>
-                    <img src={item.image} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            {weeklyOffers.map((product) => (
+              <Card
+                key={product.id}
+                variant="surface"
+                bordered
+                hoverable
+                isDark={isDark}
+                style={{
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <div style={{ position: "relative", width: "100%", height: "240px", overflow: "hidden", background: tokens.surfaceContainer }}>
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" }}
+                    />
+                    <div style={{ position: "absolute", top: "12px", left: "12px" }}>
+                      <Badge variant="offer">{product.badge}</Badge>
+                    </div>
                   </div>
-                  <div style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "14px", flexGrow: 1 }}>
-                    <div>
-                      <Text variant="h3" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "22px", margin: 0, fontWeight: "700" }}>
-                        {item.title}
-                      </Text>
-                      <span style={{ fontSize: "12px", color: tokens.copper, fontWeight: "600", display: "block", marginTop: "2px" }}>
-                        {item.origin}
+
+                  <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                      {product.name}
+                    </h4>
+                    <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                      {product.portion}
+                    </span>
+
+                    <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span style={{ fontSize: "13px", textDecoration: "line-through", color: tokens.textMuted }}>
+                        R$ {product.originalPrice}
+                      </span>
+                      <span style={{ fontSize: "24px", fontWeight: "700", color: tokens.copper }}>
+                        <span style={{ fontSize: "14px", marginRight: "2px" }}>R$</span>
+                        {product.price}
                       </span>
                     </div>
-                    <Text variant="body" style={{ color: tokens.textMuted, fontSize: "14px", fontStyle: "italic", lineHeight: 1.6, flexGrow: 1 }}>
-                      "{item.descriptor}"
-                    </Text>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "14px", borderTop: `1px solid ${tokens.border}` }}>
-                      <span style={{ fontSize: "12px", color: tokens.textMuted }}>Disponível para você</span>
-                      <Button appearance="outline" tone="neutral" size="sm" onClick={() => onNavigate && onNavigate("/portal-cortes")}>
-                        Ver corte
-                      </Button>
-                    </div>
                   </div>
-                </Surface>
-              ))}
-            </div>
+                </div>
+
+                <div style={{ padding: "0 24px 24px 24px" }}>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    isDark={isDark}
+                    style={{ width: "100%" }}
+                    onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
+                  >
+                    Adicionar ao Pedido
+                  </Button>
+                </div>
+              </Card>
+            ))}
           </div>
-        </SectionContainer>
+        </section>
+
+        {/* Combos Curados (Kits para Churrasco) */}
+        <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+            <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+              SELEÇÃO PRONTA
+            </span>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
+              Combos Curados
+            </h3>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "32px" }}>
+            {comboKits.map((kit) => (
+              <Card
+                key={kit.id}
+                variant="surface"
+                bordered
+                hoverable
+                isDark={isDark}
+                style={{
+                  borderRadius: "20px",
+                  overflow: "hidden",
+                  display: "grid",
+                  gridTemplateColumns: "200px 1fr",
+                  gap: "0"
+                }}
+              >
+                <div style={{ height: "100%", overflow: "hidden", background: tokens.surfaceContainer }}>
+                  <img
+                    src={kit.image}
+                    alt={kit.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </div>
+
+                <div style={{ padding: "28px", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: "16px" }}>
+                  <div>
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                      {kit.title}
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: 1.4, margin: "0 0 16px 0" }}>
+                      {kit.subtitle}
+                    </p>
+
+                    <ul style={{ paddingLeft: "18px", margin: 0, fontSize: "13px", color: tokens.text, display: "flex", flexDirection: "column", gap: "4px" }}>
+                      {kit.items.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "16px", borderTop: `1px solid ${tokens.border}` }}>
+                    <span style={{ fontSize: "22px", fontWeight: "700", color: tokens.text }}>
+                      <span style={{ fontSize: "13px", marginRight: "2px" }}>R$</span>
+                      {kit.price}
+                    </span>
+                    <Button
+                      variant="accent"
+                      size="sm"
+                      onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
+                    >
+                      Adicionar Kit
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
       </main>
 
-      {/* 2. BottomTabBar Mobile */}
+      {/* 3. BottomTabBar Mobile */}
       <BottomTabBar activeTab="portal-home" onNavigate={onNavigate} isDark={isDark} />
 
-      {/* 3. Footer */}
+      {/* 4. Footer do Design System */}
       <Footer onNavigate={onNavigate} isDark={isDark} />
     </div>
   );
