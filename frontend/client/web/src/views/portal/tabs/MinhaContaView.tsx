@@ -1004,10 +1004,11 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       hoverable={false}
                       isDark={isDark}
                       style={{
-                        padding: "22px 28px",
+                        padding: "20px 24px",
                         borderRadius: "16px",
                         display: "flex",
                         flexDirection: "row",
+                        flexWrap: "nowrap",
                         justifyContent: "space-between",
                         alignItems: "center",
                         width: "100%",
@@ -1015,7 +1016,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         gap: "20px"
                       }}
                     >
-                      <div style={{ display: "flex", flexDirection: "column", gap: "6px", textAlign: "left", alignItems: "flex-start" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px", textAlign: "left", alignItems: "flex-start", flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text, textAlign: "left" }}>
                             {invoice.desc}
@@ -1029,7 +1030,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         </span>
                       </div>
 
-                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px", flexShrink: 0 }}>
                         <span style={{ fontSize: "20px", fontWeight: "700", color: tokens.copper }}>
                           R$ {invoice.amount}
                         </span>
