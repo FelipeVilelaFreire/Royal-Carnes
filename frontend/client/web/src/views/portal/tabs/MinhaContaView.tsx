@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { PortalHeader, BottomTabBar, Button, Card, Badge, Footer } from "../../../design-system";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
-import { CreditCardIcon, EditIcon, GiftIcon, TruckIcon, StarIcon, CheckIcon } from "../../../design-system/Icons";
+import { CreditCardIcon, EditIcon, GiftIcon, TruckIcon, StarIcon, CheckIcon, CutMeatIcon, ScaleIcon, KnifeIcon } from "../../../design-system/Icons";
 
 export interface MinhaContaViewProps {
   onNavigate?: (path: string) => void;
@@ -112,6 +112,14 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
       benefits: ["Frete Semanal ou Mensal VIP", "Concierge Mestre Assador Dedicado", "Todos os Brindes Desbloqueados", "20% OFF em Utensílios"]
     }
   };
+
+  // Histórico de Faturas & Pagamentos Mensais
+  const paymentHistory = [
+    { id: "INV-2026-08", date: "12 AGO 2026", desc: "Assinatura Royal Pro (Mensal)", amount: "875,00", card: "Mastercard final 4821", status: "PAGO" },
+    { id: "INV-2026-07", date: "12 JUL 2026", desc: "Assinatura Royal Pro (Mensal)", amount: "875,00", card: "Mastercard final 4821", status: "PAGO" },
+    { id: "INV-2026-06", date: "12 JUN 2026", desc: "Assinatura Royal Pro (Mensal)", amount: "875,00", card: "Mastercard final 4821", status: "PAGO" },
+    { id: "INV-2026-05", date: "12 MAI 2026", desc: "Assinatura Royal Pro (Mensal)", amount: "875,00", card: "Mastercard final 4821", status: "PAGO" }
+  ];
 
   return (
     <div
@@ -344,7 +352,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
               </Card>
 
-              {/* Card Uso Neste Ciclo */}
+              {/* Card "USO DO CICLO DE SETEMBRO" (Com Ícones SVG de Alta Precisão - Sem Emojis) */}
               <div
                 style={{
                   background: tokens.surfaceContainer,
@@ -353,7 +361,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   padding: "32px",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "24px"
+                  gap: "28px"
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "12px" }}>
@@ -361,7 +369,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
                       USO DO CICLO DE SETEMBRO
                     </span>
-                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
                       Uso & Capacidade da Caixa
                     </h3>
                   </div>
@@ -370,56 +378,111 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   </span>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
-                        🥩 Cortes Utilizados
-                      </span>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper }}>
+                {/* Grid de Medidores de Capacidade com Ícones SVG */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "24px" }}>
+                  
+                  {/* Item 1: Cortes Utilizados */}
+                  <div
+                    style={{
+                      background: tokens.background,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "16px",
+                      padding: "20px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "14px"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <CutMeatIcon size={20} color={tokens.copper} />
+                        </div>
+                        <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
+                          Cortes Utilizados
+                        </span>
+                      </div>
+                      <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>
                         4 / 6 cortes
                       </span>
                     </div>
-                    <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
-                      <div style={{ width: "66%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+
+                    <div style={{ width: "100%", height: "10px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
+                      <div style={{ width: "66%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px" }} />
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
-                        ⚖️ Capacidade de Peso
-                      </span>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper }}>
+                  {/* Item 2: Capacidade de Peso */}
+                  <div
+                    style={{
+                      background: tokens.background,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "16px",
+                      padding: "20px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "14px"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <ScaleIcon size={20} color={tokens.copper} />
+                        </div>
+                        <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
+                          Capacidade de Peso
+                        </span>
+                      </div>
+                      <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>
                         3.8kg / 5.0kg
                       </span>
                     </div>
-                    <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
-                      <div style={{ width: "76%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+
+                    <div style={{ width: "100%", height: "10px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
+                      <div style={{ width: "76%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px" }} />
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
-                        🔪 Complementos
-                      </span>
-                      <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper }}>
+                  {/* Item 3: Complementos Artesanais */}
+                  <div
+                    style={{
+                      background: tokens.background,
+                      border: `1px solid ${tokens.border}`,
+                      borderRadius: "16px",
+                      padding: "20px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "14px"
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(184, 115, 51, 0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <KnifeIcon size={20} color={tokens.copper} />
+                        </div>
+                        <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
+                          Complementos
+                        </span>
+                      </div>
+                      <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.copper }}>
                         2 / 3 complementos
                       </span>
                     </div>
-                    <div style={{ width: "100%", height: "10px", background: tokens.border, borderRadius: "9999px", overflow: "hidden" }}>
-                      <div style={{ width: "66%", height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+
+                    <div style={{ width: "100%", height: "10px", background: tokens.surfaceContainer, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
+                      <div style={{ width: "66%", height: "100%", background: `linear-gradient(90deg, ${tokens.copper} 0%, #D4AF37 100%)`, borderRadius: "9999px" }} />
                     </div>
                   </div>
+
                 </div>
 
+                {/* Banner de Upgrade Executivo */}
                 <div
                   style={{
                     background: isDark ? "rgba(184, 115, 51, 0.1)" : "rgba(184, 115, 51, 0.05)",
                     border: `1px solid ${tokens.copper}`,
                     borderRadius: "14px",
-                    padding: "16px 20px",
+                    padding: "18px 24px",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -537,7 +600,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
             </>
           )}
 
-          {/* TAB DEDICADA: MINHA ASSINATURA & COMPARATIVO DE PLANOS */}
+          {/* TAB DEDICADA: MINHA ASSINATURA */}
           {activeTab === "assinatura" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
               <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
@@ -610,9 +673,9 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         </span>
 
                         <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: tokens.text }}>
-                          <p style={{ margin: 0, fontWeight: "700" }}>🥩 {p.cuts}</p>
-                          <p style={{ margin: 0 }}>⚖️ {p.weight}</p>
-                          <p style={{ margin: 0 }}>🔪 {p.acc}</p>
+                          <p style={{ margin: 0, fontWeight: "700" }}>{p.cuts}</p>
+                          <p style={{ margin: 0 }}>{p.weight}</p>
+                          <p style={{ margin: 0 }}>{p.acc}</p>
                         </div>
 
                         <ul style={{ paddingLeft: "16px", margin: "8px 0 0 0", fontSize: "12px", color: tokens.textMuted, display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -843,64 +906,130 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
             </div>
           )}
 
-          {/* TAB 4: PAGAMENTOS */}
+          {/* TAB 4: PAGAMENTOS COM HISTÓRICO DE FATURAS E MENSALIDADES */}
           {activeTab === "pagamentos" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
-                <div>
-                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
-                    Formas de Pagamento
-                  </h3>
-                  <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
-                    Cartões de crédito e chaves PIX cadastradas para a sua assinatura.
-                  </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "36px" }}>
+              {/* Formas de Pagamento Cadastradas */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+                  <div>
+                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "0 0 6px 0", color: tokens.text }}>
+                      Formas de Pagamento
+                    </h3>
+                    <p style={{ fontSize: "14px", color: tokens.textMuted, margin: 0 }}>
+                      Cartões de crédito e chaves PIX cadastradas para a cobrança da sua assinatura.
+                    </p>
+                  </div>
+                  <Button variant="accent" size="sm">
+                    + Novo Cartão
+                  </Button>
                 </div>
-                <Button variant="accent" size="sm">
-                  + Novo Cartão
-                </Button>
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <CreditCardIcon size={24} color={tokens.copper} />
+                        <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          Mastercard
+                        </h4>
+                      </div>
+                      <Badge variant="copper">PADRÃO</Badge>
+                    </div>
+
+                    <div>
+                      <p style={{ fontSize: "18px", fontWeight: "700", letterSpacing: "2px", color: tokens.text, margin: "0 0 4px 0" }}>
+                        •••• •••• •••• 4821
+                      </p>
+                      <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                        Validade: 10/2028 • Titular: FELIPE V FREIRE
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <CreditCardIcon size={24} color={tokens.textMuted} />
+                        <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          Visa Infinite
+                        </h4>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p style={{ fontSize: "18px", fontWeight: "700", letterSpacing: "2px", color: tokens.text, margin: "0 0 4px 0" }}>
+                        •••• •••• •••• 9012
+                      </p>
+                      <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
+                        Validade: 04/2029 • Titular: FELIPE V FREIRE
+                      </p>
+                    </div>
+                  </Card>
+                </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
-                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <CreditCardIcon size={24} color={tokens.copper} />
-                      <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                        Mastercard
-                      </h4>
-                    </div>
-                    <Badge variant="copper">PADRÃO</Badge>
-                  </div>
+              {/* Histórico Completo de Faturas & Pagamentos Mensais */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+                    REGISTRO DE COBRANÇAS
+                  </span>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    Histórico de Faturas & Mensalidades
+                  </h3>
+                </div>
 
-                  <div>
-                    <p style={{ fontSize: "18px", fontWeight: "700", letterSpacing: "2px", color: tokens.text, margin: "0 0 4px 0" }}>
-                      •••• •••• •••• 4821
-                    </p>
-                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
-                      Validade: 10/2028 • Titular: FELIPE V FREIRE
-                    </p>
-                  </div>
-                </Card>
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                  {paymentHistory.map((invoice) => (
+                    <Card
+                      key={invoice.id}
+                      variant="surface"
+                      bordered
+                      hoverable={false}
+                      isDark={isDark}
+                      style={{
+                        padding: "20px 24px",
+                        borderRadius: "16px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: "16px"
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                        <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "rgba(184, 115, 51, 0.12)", border: `1px solid ${tokens.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          <CreditCardIcon size={20} color={tokens.copper} />
+                        </div>
 
-                <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "28px", borderRadius: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <CreditCardIcon size={24} color={tokens.textMuted} />
-                      <h4 style={{ fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                        Visa Infinite
-                      </h4>
-                    </div>
-                  </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <span style={{ fontSize: "14px", fontWeight: "700", color: tokens.text }}>
+                              {invoice.desc}
+                            </span>
+                            <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "2px 8px", borderRadius: "4px" }}>
+                              {invoice.status}
+                            </span>
+                          </div>
+                          <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                            {invoice.date} • Cobrado no {invoice.card} • Id: {invoice.id}
+                          </span>
+                        </div>
+                      </div>
 
-                  <div>
-                    <p style={{ fontSize: "18px", fontWeight: "700", letterSpacing: "2px", color: tokens.text, margin: "0 0 4px 0" }}>
-                      •••• •••• •••• 9012
-                    </p>
-                    <p style={{ fontSize: "13px", color: tokens.textMuted, margin: 0 }}>
-                      Validade: 04/2029 • Titular: FELIPE V FREIRE
-                    </p>
-                  </div>
-                </Card>
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.copper }}>
+                          R$ {invoice.amount}
+                        </span>
+
+                        <Button variant="outline" size="sm" isDark={isDark}>
+                          Baixar Comprovante PDF
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -1185,9 +1314,9 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       </span>
 
                       <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: tokens.text }}>
-                        <p style={{ margin: 0, fontWeight: "700" }}>🥩 {p.cuts}</p>
-                        <p style={{ margin: 0 }}>⚖️ {p.weight}</p>
-                        <p style={{ margin: 0 }}>🔪 {p.acc}</p>
+                        <p style={{ margin: 0, fontWeight: "700" }}>{p.cuts}</p>
+                        <p style={{ margin: 0 }}>{p.weight}</p>
+                        <p style={{ margin: 0 }}>{p.acc}</p>
                       </div>
 
                       <ul style={{ paddingLeft: "16px", margin: "8px 0 0 0", fontSize: "12px", color: tokens.textMuted, display: "flex", flexDirection: "column", gap: "6px" }}>

@@ -118,3 +118,24 @@ export const ChevronDownIcon: React.FC<IconProps> = ({ size = 16, color = "curre
     <polyline points="6 9 12 15 18 9" />
   </svg>
 );
+
+export const CutMeatIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+    <path d="M9 10c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3" />
+  </svg>
+);
+
+export const ScaleIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M12 3v18M3 7h18M6 7l-3 9h6L6 7zm12 0l-3 9h6l-3-9z" />
+  </svg>
+);
+
+export const KnifeIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M3 21l8-8M9 9l7-7a2 2 0 0 1 2.83 2.83L11.83 11.83" />
+    <path d="M15 5l4 4" />
+  </svg>
+);
+
