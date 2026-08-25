@@ -10,7 +10,13 @@ export interface MinhaContaViewProps {
 }
 
 export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) => {
-  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
+  const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return "dark";
+  });
   const [activeTab, setActiveTab] = useState<string>("painel");
 
   // Estado dos dados do perfil
@@ -33,10 +39,6 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
   });
 
   useEffect(() => {
-    const stored = localStorage.getItem("royal_prime_theme");
-    if (stored === "dark" || stored === "light") {
-      setThemeMode(stored);
-    }
     const handleThemeChange = () => {
       const current = localStorage.getItem("royal_prime_theme");
       if (current === "dark" || current === "light") {

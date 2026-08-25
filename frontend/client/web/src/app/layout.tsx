@@ -21,20 +21,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               (function() {
                 try {
                   var mode = localStorage.getItem('royal_prime_theme') || 'dark';
-                  if (mode === 'dark') {
-                    document.documentElement.style.backgroundColor = '#0B0908';
-                    document.documentElement.style.color = '#F5F3EF';
-                  } else {
-                    document.documentElement.style.backgroundColor = '#FCFBF7';
-                    document.documentElement.style.color = '#1A1A1A';
-                  }
+                  var bg = mode === 'dark' ? '#0B0908' : '#FCFBF7';
+                  var color = mode === 'dark' ? '#F5F3EF' : '#1A1A1A';
+                  document.documentElement.style.backgroundColor = bg;
+                  document.documentElement.style.color = color;
                 } catch (e) {}
               })();
             `
           }}
         />
       </head>
-      <body style={{ margin: 0, padding: 0, background: "#0B0908", fontFamily: "'Inter', sans-serif", color: "#F5F3EF" }}>
+      <body style={{ margin: 0, padding: 0, backgroundColor: "inherit", color: "inherit", fontFamily: "'Inter', sans-serif", transition: "background-color 0.3s ease, color 0.3s ease" }}>
         {children}
       </body>
     </html>

@@ -10,14 +10,16 @@ export interface HomeViewProps {
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
-  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
+  const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return "dark";
+  });
   const [selectedCategory, setSelectedCategory] = useState<string>("todos");
 
   useEffect(() => {
-    const stored = localStorage.getItem("royal_prime_theme");
-    if (stored === "dark" || stored === "light") {
-      setThemeMode(stored);
-    }
     const handleThemeChange = () => {
       const current = localStorage.getItem("royal_prime_theme");
       if (current === "dark" || current === "light") {

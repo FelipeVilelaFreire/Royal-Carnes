@@ -16,7 +16,24 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("relevance");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
+  const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return "dark";
+  });
+
+  React.useEffect(() => {
+    const handleThemeChange = () => {
+      const current = localStorage.getItem("royal_prime_theme");
+      if (current === "dark" || current === "light") {
+        setThemeMode(current);
+      }
+    };
+    window.addEventListener("royal_theme_changed", handleThemeChange);
+    return () => window.removeEventListener("royal_theme_changed", handleThemeChange);
+  }, []);
 
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;

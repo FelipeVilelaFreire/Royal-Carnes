@@ -10,17 +10,19 @@ export interface HeroCortesViewProps {
 }
 
 export const HeroCortesView: React.FC<HeroCortesViewProps> = ({ onNavigate }) => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return "dark";
+  });
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("relevance");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const stored = localStorage.getItem("royal_prime_theme");
-    if (stored === "dark" || stored === "light") {
-      setThemeMode(stored);
-    }
     const handleThemeChange = () => {
       const current = localStorage.getItem("royal_prime_theme");
       if (current === "dark" || current === "light") {

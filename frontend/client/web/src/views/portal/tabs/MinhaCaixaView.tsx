@@ -9,14 +9,16 @@ export interface MinhaCaixaViewProps {
 }
 
 export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("light");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return "dark";
+  });
   const [boxMode, setBoxMode] = useState<"assinatura" | "avulso">("assinatura");
 
   useEffect(() => {
-    const stored = localStorage.getItem("royal_prime_theme");
-    if (stored === "dark" || stored === "light") {
-      setThemeMode(stored);
-    }
     const handleThemeChange = () => {
       const current = localStorage.getItem("royal_prime_theme");
       if (current === "dark" || current === "light") {
