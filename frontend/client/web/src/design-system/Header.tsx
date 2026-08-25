@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { SunIcon, MoonIcon } from "./Icons";
+import { SunIcon, MoonIcon, ChevronDownIcon } from "./Icons";
 import { Button } from "./Button";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
@@ -61,11 +61,10 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
+  // Apenas Cortes e Royal Box no menu (Início é o logo, Minha Conta é o botão de perfil)
   const navItems = [
-    { key: "portal-home", label: "Início", path: "/portal-home" },
     { key: "portal-cortes", label: "Cortes", path: "/portal-cortes" },
-    { key: "portal-minha-caixa", label: "Royal Box", path: "/portal-minha-caixa" },
-    { key: "portal-minha-conta", label: "Minha Conta", path: "/portal-minha-conta" }
+    { key: "portal-minha-caixa", label: "Royal Box", path: "/portal-minha-caixa" }
   ];
 
   return (
@@ -94,17 +93,17 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           width: "100%",
           maxWidth: "1600px",
           margin: "0 auto",
-          padding: isScrolled ? "10px 40px" : "18px 40px",
+          padding: isScrolled ? "10px 40px" : "16px 40px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "24px",
-          transition: "padding 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          gap: "32px",
           boxSizing: "border-box"
         }}
       >
-        {/* Esquerda: Logo Royal Carnes -> Direciona para /portal-home */}
-        <div style={{ display: "flex", alignItems: "center" }}>
+        {/* Esquerda: Logo Royal Carnes (Início) + Menu Lateral Esquerdo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "40px" }}>
+          {/* Logo como Botão de Início */}
           <span
             onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
             style={{
@@ -120,53 +119,41 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           >
             Royal Carnes
           </span>
+
+          {/* Links da Navegação Lateral Esquerda */}
+          <nav style={{ display: "flex", alignItems: "center", gap: "24px" }} className="hidden md:flex">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.key ||
+                (activeTab === "cortes" && item.key === "portal-cortes") ||
+                (activeTab === "minha-caixa" && item.key === "portal-minha-caixa");
+              return (
+                <span
+                  key={item.key}
+                  onClick={() => onNavigate ? onNavigate(item.path) : (window.location.href = item.path)}
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: isActive ? "700" : "500",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: isActive ? tokens.copper : tokens.textMuted,
+                    borderBottom: isActive ? `2px solid ${tokens.copper}` : "2px solid transparent",
+                    paddingBottom: "4px",
+                    lineHeight: 1,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  {item.label}
+                </span>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Centro: Links de Navegação Centralizados */}
-        <nav
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "32px",
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)"
-          }}
-          className="hidden md:flex"
-        >
-          {navItems.map((item) => {
-            const isActive = activeTab === item.key ||
-              (activeTab === "hero" && item.key === "portal-home") ||
-              (activeTab === "cortes" && item.key === "portal-cortes") ||
-              (activeTab === "minha-caixa" && item.key === "portal-minha-caixa") ||
-              (activeTab === "minha-conta" && item.key === "portal-minha-conta") ||
-              (activeTab === "meu-clube" && item.key === "portal-minha-conta");
-            return (
-              <span
-                key={item.key}
-                onClick={() => onNavigate ? onNavigate(item.path) : (window.location.href = item.path)}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
-                  fontWeight: "600",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: isActive ? tokens.copper : tokens.textMuted,
-                  borderBottom: isActive ? `2px solid ${tokens.copper}` : "2px solid transparent",
-                  paddingBottom: "4px",
-                  lineHeight: 1,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease"
-                }}
-              >
-                {item.label}
-              </span>
-            );
-          })}
-        </nav>
-
-        {/* Direita: Dark/Light & Perfil -> Direciona para /portal-minha-conta */}
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        {/* Direita: Dark/Light & Botão de Perfil "Olá, Felipe" com Arrow */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {/* Dark / Light Mode Toggle */}
           <Button
             variant="outline"
             size="sm"
@@ -187,31 +174,55 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
             )}
           </Button>
 
-          <div
+          {/* Botão de Perfil com Arrow */}
+          <button
+            type="button"
             onClick={() => onNavigate ? onNavigate("/portal-minha-conta") : (window.location.href = "/portal-minha-conta")}
             style={{
+              background: isDark ? "rgba(34, 31, 30, 0.7)" : "rgba(242, 241, 237, 0.7)",
+              border: `1px solid ${tokens.border}`,
+              borderRadius: "9999px",
+              padding: "6px 16px 6px 8px",
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              cursor: "pointer"
+              cursor: "pointer",
+              backdropFilter: "blur(12px)",
+              transition: "all 0.2s ease",
+              boxShadow: isDark ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.04)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = tokens.copper;
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = tokens.border;
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             <img
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9GX9-wSgnhxVigO2yvOzh-a_61c_vrpYnTl2axgfjJ5HRsI2-DMGw074me7DD73uL0qoFDTU3TfGPWx1GtaW2Ae5dT-b-QYhOhnF6lux4f4QHDmYWMS4QaOo12oFF0T4zHN7ubPcdfOwWhVdZhS_EJpJBG_BZJ6b2XzhUYVQmgsBdMsuz7PjZdupV1Gji0Pr0-p0R1uShZtfS_c_zZrl1vqBZkFFrPqQGIduN0fLricgKByJM7_Va"
               alt="Felipe"
               style={{
-                width: isScrolled ? "32px" : "36px",
-                height: isScrolled ? "32px" : "36px",
+                width: "32px",
+                height: "32px",
                 borderRadius: "50%",
                 objectFit: "cover",
-                border: `1px solid ${tokens.border}`,
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                border: `1px solid ${tokens.copper}`
               }}
             />
-            <span style={{ fontSize: "14px", fontWeight: "600", color: tokens.text }}>
-              Olá, Felipe
-            </span>
-          </div>
+
+            <div style={{ display: "flex", flexDirection: "column", textAlign: "left", lineHeight: 1.2 }}>
+              <span style={{ fontSize: "11px", color: tokens.textMuted, fontWeight: "500" }}>
+                Olá, Felipe
+              </span>
+              <span style={{ fontSize: "13px", fontWeight: "700", color: tokens.text }}>
+                Minha Conta
+              </span>
+            </div>
+
+            <ChevronDownIcon size={14} color={tokens.copper} style={{ marginLeft: "4px" }} />
+          </button>
         </div>
       </div>
     </header>

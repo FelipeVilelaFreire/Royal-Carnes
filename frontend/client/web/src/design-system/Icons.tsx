@@ -112,3 +112,9 @@ export const CreditCardIcon: React.FC<IconProps> = ({ size = 20, color = "curren
     <line x1="1" y1="10" x2="23" y2="10" />
   </svg>
 );
+
+export const ChevronDownIcon: React.FC<IconProps> = ({ size = 16, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
