@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { SunIcon, MoonIcon, ChevronDownIcon } from "./Icons";
-import { Button } from "./Button";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
 export interface PortalHeaderProps {
@@ -93,7 +92,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           width: "100%",
           maxWidth: "1600px",
           margin: "0 auto",
-          padding: isScrolled ? "10px 40px" : "16px 40px",
+          padding: isScrolled ? "12px 40px" : "16px 40px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -103,7 +102,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
       >
         {/* Esquerda: Logo Royal Carnes (Início) + Menu Lateral Esquerdo */}
         <div style={{ display: "flex", alignItems: "center", gap: "40px" }}>
-          {/* Logo como Botão de Início */}
+          {/* Logo como Botão de Início (Perfeitamente Alinhado) */}
           <span
             onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
             style={{
@@ -113,15 +112,18 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
               color: tokens.text,
               cursor: "pointer",
               letterSpacing: "-0.02em",
-              lineHeight: 1,
+              lineHeight: "1",
+              display: "inline-flex",
+              alignItems: "center",
+              height: "44px",
               transition: "font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             }}
           >
             Royal Carnes
           </span>
 
-          {/* Links da Navegação Lateral Esquerda */}
-          <nav style={{ display: "flex", alignItems: "center", gap: "24px" }} className="hidden md:flex">
+          {/* Links da Navegação Lateral Esquerda (Alinhados na mesma linha) */}
+          <nav style={{ display: "flex", alignItems: "center", gap: "24px", height: "44px" }} className="hidden md:flex">
             {navItems.map((item) => {
               const isActive = activeTab === item.key ||
                 (activeTab === "cortes" && item.key === "portal-cortes") ||
@@ -139,7 +141,9 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
                     color: isActive ? tokens.copper : tokens.textMuted,
                     borderBottom: isActive ? `2px solid ${tokens.copper}` : "2px solid transparent",
                     paddingBottom: "4px",
-                    lineHeight: 1,
+                    lineHeight: "1",
+                    display: "inline-flex",
+                    alignItems: "center",
                     cursor: "pointer",
                     transition: "all 0.2s ease"
                   }}
@@ -151,45 +155,70 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           </nav>
         </div>
 
-        {/* Direita: Dark/Light & Botão de Perfil "Olá, Felipe" com Arrow */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* Dark / Light Mode Toggle */}
-          <Button
-            variant="outline"
-            size="sm"
-            isDark={isDark}
+        {/* Direita: Dark/Light & Botão de Perfil "Olá, Felipe" (AMBOS COM 44px DE ALTURA E MESMO TAMANHO) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", height: "44px" }}>
+          {/* Dark / Light Mode Toggle Button (44px) */}
+          <button
+            type="button"
             onClick={toggleTheme}
-            style={{ borderRadius: "9999px", padding: isScrolled ? "5px 12px" : "6px 14px" }}
+            style={{
+              height: "44px",
+              padding: "0 18px",
+              borderRadius: "9999px",
+              background: isDark ? "rgba(34, 31, 30, 0.7)" : "rgba(242, 241, 237, 0.7)",
+              border: `1px solid ${tokens.border}`,
+              color: tokens.text,
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "13px",
+              fontWeight: "600",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              cursor: "pointer",
+              backdropFilter: "blur(12px)",
+              transition: "all 0.2s ease",
+              boxSizing: "border-box"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = tokens.copper;
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = tokens.border;
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
           >
             {isDark ? (
               <>
-                <SunIcon size={15} color={tokens.copper} />
+                <SunIcon size={16} color={tokens.copper} />
                 <span>Light</span>
               </>
             ) : (
               <>
-                <MoonIcon size={15} color={tokens.copper} />
+                <MoonIcon size={16} color={tokens.copper} />
                 <span>Dark</span>
               </>
             )}
-          </Button>
+          </button>
 
-          {/* Botão de Perfil com Arrow */}
+          {/* Botão de Perfil com Arrow (EXATAMENTE 44px DE ALTURA) */}
           <button
             type="button"
             onClick={() => onNavigate ? onNavigate("/portal-minha-conta") : (window.location.href = "/portal-minha-conta")}
             style={{
+              height: "44px",
+              padding: "0 18px 0 8px",
+              borderRadius: "9999px",
               background: isDark ? "rgba(34, 31, 30, 0.7)" : "rgba(242, 241, 237, 0.7)",
               border: `1px solid ${tokens.border}`,
-              borderRadius: "9999px",
-              padding: "6px 16px 6px 8px",
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
               gap: "10px",
               cursor: "pointer",
               backdropFilter: "blur(12px)",
               transition: "all 0.2s ease",
-              boxShadow: isDark ? "0 2px 8px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.04)"
+              boxSizing: "border-box"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = tokens.copper;
@@ -204,15 +233,15 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9GX9-wSgnhxVigO2yvOzh-a_61c_vrpYnTl2axgfjJ5HRsI2-DMGw074me7DD73uL0qoFDTU3TfGPWx1GtaW2Ae5dT-b-QYhOhnF6lux4f4QHDmYWMS4QaOo12oFF0T4zHN7ubPcdfOwWhVdZhS_EJpJBG_BZJ6b2XzhUYVQmgsBdMsuz7PjZdupV1Gji0Pr0-p0R1uShZtfS_c_zZrl1vqBZkFFrPqQGIduN0fLricgKByJM7_Va"
               alt="Felipe"
               style={{
-                width: "32px",
-                height: "32px",
+                width: "30px",
+                height: "30px",
                 borderRadius: "50%",
                 objectFit: "cover",
                 border: `1px solid ${tokens.copper}`
               }}
             />
 
-            <div style={{ display: "flex", flexDirection: "column", textAlign: "left", lineHeight: 1.2 }}>
+            <div style={{ display: "flex", flexDirection: "column", textAlign: "left", lineHeight: "1.1" }}>
               <span style={{ fontSize: "11px", color: tokens.textMuted, fontWeight: "500" }}>
                 Olá, Felipe
               </span>
@@ -221,7 +250,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
               </span>
             </div>
 
-            <ChevronDownIcon size={14} color={tokens.copper} style={{ marginLeft: "4px" }} />
+            <ChevronDownIcon size={14} color={tokens.copper} style={{ marginLeft: "2px" }} />
           </button>
         </div>
       </div>
