@@ -191,19 +191,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       name: "Faca Artesanal Prime Aço Inox",
       desc: "Lâmina de 10 polegadas forjada à mão com cabo de madeira nobre e bainha em couro.",
       price: "299,00",
-      image: "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=1000&q=80"
+      image: "https://images.unsplash.com/photo-1593618998160-e34014e67546?q=80&w=1000&auto=format&fit=crop"
     },
     {
       name: "Tábua Profissional de Madeira Teca",
       desc: "Madeira sustentável de alta densidade com canaleta para sulcos de suco.",
       price: "249,00",
-      image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1000&q=80"
+      image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=1000&auto=format&fit=crop"
     },
     {
       name: "Kit Sal de Parrilla & Chimichurri Gourmet",
       desc: "Sais especiais triturados para parrilla e tempero artesanal patagônico.",
       price: "89,00",
-      image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1000&q=80"
+      image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=1000&auto=format&fit=crop"
     }
   ];
 
