@@ -139,3 +139,33 @@ export const KnifeIcon: React.FC<IconProps> = ({ size = 20, color = "currentColo
   </svg>
 );
 
+export const SparklesIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M12 3l1.91 5.09L19 10l-5.09 1.91L12 17l-1.91-5.09L5 10l5.09-1.91L12 3z" />
+    <path d="M5 3l.95 2.55L8.5 6.5 5.95 7.45 5 10l-.95-2.55L1.5 6.5l2.55-.95L5 3z" />
+  </svg>
+);
+
+export const DiamondIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M6 3h12l4 6-10 12L2 9z" />
+    <path d="M11 3l-4 6 5 12 5-12-4-6" />
+    <line x1="2" y1="9" x2="22" y2="9" />
+  </svg>
+);
+
+export const ClockIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+export const PorkIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20 12A8 8 0 1 0 4 12a8 8 0 0 0 16 0z" />
+    <path d="M10 11h4M12 9v4" />
+  </svg>
+);
+
+
