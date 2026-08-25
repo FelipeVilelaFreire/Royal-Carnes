@@ -304,32 +304,107 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
               </section>
 
-              {/* Seção 03: Pedidos Recentes */}
+              {/* Seção 03: Pedidos Recentes Gourmet */}
               <section style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
                     Pedidos Recentes
                   </h3>
+                  <span
+                    onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
+                    style={{ fontSize: "13px", fontWeight: "700", color: tokens.copper, cursor: "pointer" }}
+                  >
+                    Ver historico completo ➔
+                  </span>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "14px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.textMuted }}>
-                        ROYAL DELIVERY • 24 AGO 2026
-                      </span>
-                      <span style={{ fontSize: "16px", fontWeight: "700", color: tokens.text }}>
-                        Pedido #RD-8492
-                      </span>
+                  {/* Pedido 1: Avulso */}
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                      <div style={{ width: "64px", height: "64px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
+                        <img
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTWZZGOFHbj0Sh572RQ-2vs3emWIEGZWsTB1lYtPYcSjPGcOa9mDPiwX1GCl8gPBNEHqbv95kZnUF7gTwJASw-4aHOZWp1IUKwwTioZC70OM608r9UjPQKMk5Jw4B1qibJodt1tlgo4WyBhdw3iIDeBFHpi2CQBi4BqAaFV2b7RZGuMUPGAkZOHP76xP0TR6KM5dqPFvrumlSXF85A9N100tBX7rkGd__CupxrUAHLYbt5YnwVk0e-"
+                          alt="Pedido #RD-8492"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
+                          ROYAL DELIVERY • 24 AGO 2026
+                        </span>
+                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          Pedido #RD-8492 — Selection Wagyu & Angus
+                        </h4>
+                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                          3 itens • 4.2kg • Tomahawk Prime & Wagyu A5 BMB 10+
+                        </span>
+                      </div>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 14px", borderRadius: "9999px", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}` }}>
-                        <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22C55E" }} />
-                        <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.text }}>Entregue</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                      <div style={{ textAlign: "right" }}>
+                        <span style={{ fontSize: "17px", fontWeight: "700", color: tokens.text, display: "block" }}>
+                          R$ 489,00
+                        </span>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
+                          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 8px #22C55E" }} />
+                          <span style={{ fontSize: "12px", fontWeight: "700", color: "#22C55E" }}>Entregue</span>
+                        </div>
                       </div>
-                      <Button variant="outline" size="sm" isDark={isDark}>
-                        Ver pedido
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        isDark={isDark}
+                        onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
+                      >
+                        Ver detalhes
+                      </Button>
+                    </div>
+                  </Card>
+
+                  {/* Pedido 2: Recorrência Mensal */}
+                  <Card variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                      <div style={{ width: "64px", height: "64px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
+                        <img
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEyZehgZTv-CyocAVQn0YBZaQ9k5T1yspu9TOTY_a2Ecdie4GqgKNWW_cnd5ZAUuPMshFRWia6eq5Ej3-UQ2L2nImpVVKTr0yfEodgUEJQUsZVZLYiBoQliyrqEezNzVT5XxtmK1ozhqsDd4j-LQyV7RlT1CqQedpMs5qhbesB5PDF1_G10G7rQDZ3U7cedVIHcBedWSA27GA_gQjpXRlZttOTKwJI8hFUgSAUtoBMQmTuk7GfbhUo"
+                          alt="Caixa de Agosto"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
+                          ROYAL DELIVERY • 12 AGO 2026 (RECORRÊNCIA)
+                        </span>
+                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                          Caixa de Agosto — Master Churrasco
+                        </h4>
+                        <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                          5 itens • 6.0kg • Picanha Steakhouse, Ancho & Brinde Faca
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                      <div style={{ textAlign: "right" }}>
+                        <span style={{ fontSize: "17px", fontWeight: "700", color: tokens.text, display: "block" }}>
+                          R$ 875,00
+                        </span>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
+                          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 8px #22C55E" }} />
+                          <span style={{ fontSize: "12px", fontWeight: "700", color: "#22C55E" }}>Entregue</span>
+                        </div>
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        isDark={isDark}
+                        onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
+                      >
+                        Ver detalhes
                       </Button>
                     </div>
                   </Card>
