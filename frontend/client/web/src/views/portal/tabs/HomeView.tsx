@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { PortalHeader, BottomTabBar, Footer, Button, Card, Badge } from "../../../design-system";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { StarIcon } from "../../../design-system/Icons";
 
 export interface HomeViewProps {
   onNavigate?: (path: string) => void;
@@ -90,7 +91,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     }
   ];
 
-  // 2. Colecao Rara Wagyu A5 Japao
+  // 2. Coleção Rara Wagyu A5 Japão
   const wagyuCollection = [
     {
       id: "wagyu-1",
@@ -124,7 +125,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     }
   ];
 
-  // 3. Maturacao Especial Dry Aged
+  // 3. Maturação Especial Dry Aged
   const dryAgedCollection = [
     {
       id: "dry-1",
@@ -185,7 +186,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     }
   ];
 
-  // 5. Utensílios & Acessórios
+  // 5. Utensílios & Acessórios Gourmet (Imagem da Tábua Teca em Madeira Nobre Real)
   const accessories = [
     {
       name: "Faca Artesanal Prime Aço Inox",
@@ -195,7 +196,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     },
     {
       name: "Tábua Profissional de Madeira Teca",
-      desc: "Madeira sustentável de alta densidade com canaleta para sulcos de suco.",
+      desc: "Madeira sustentável de alta densidade com canaleta para sulcos de suco de carne.",
       price: "249,00",
       image: "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?q=80&w=1000&auto=format&fit=crop"
     },
@@ -204,6 +205,53 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       desc: "Sais especiais triturados para parrilla e tempero artesanal patagônico.",
       price: "89,00",
       image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=1000&auto=format&fit=crop"
+    }
+  ];
+
+  // 6. Harmonização de Vinhos & Rótulos Exclusivos
+  const wines = [
+    {
+      name: "Cabernet Sauvignon Reserva Royal 2020",
+      vintage: "Vale do Maipo, Chile • 750ml",
+      desc: "Taninos firmes e notas de frutas negras. A harmonização perfeita com Wagyu A5 e Tomahawk.",
+      price: "189,00",
+      image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Malbec Mendoza Gran Reserva 2019",
+      vintage: "Mendoza, Argentina • 750ml",
+      desc: "Encorpado com aromas de ameixa e carvalho. Ideal para acompanhar Picanha e Bife de Chorizo.",
+      price: "210,00",
+      image: "https://images.unsplash.com/photo-1558001373-7b93ee48ffa0?q=80&w=1000&auto=format&fit=crop"
+    },
+    {
+      name: "Syrah Patagônico Mestre Assador 2021",
+      vintage: "Patagônia, Argentina • 750ml",
+      desc: "Especiarias marcantes com toque defumado. Combinação impecável com cordeiro e suínos Duroc.",
+      price: "165,00",
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=1000&auto=format&fit=crop"
+    }
+  ];
+
+  // 7. Depoimentos dos Sócios Club Royal
+  const testimonials = [
+    {
+      name: "Dr. Marcelo Arantes",
+      role: "Sócio VIP desde 2024",
+      comment: "A carne chega rigorosamente gelada a -2°C, com um marbling inacreditável. O Wagyu A5 é a melhor experiência gastronômica da minha casa.",
+      rating: 5
+    },
+    {
+      name: "Eduardo & Camile Fonseca",
+      role: "Plano Mensal Master",
+      comment: "O Kit Churrasco Premium transformou nossos fins de semana. O Tomahawk com a tábua de teca é um show à parte para os convidados.",
+      rating: 5
+    },
+    {
+      name: "Rodrigo Mendonça",
+      role: "Assinante Royal Delivery",
+      comment: "Praticidade de escolher os cortes no portal e receber em embalagem térmica no dia seguinte. Atendimento e curadoria impecáveis.",
+      rating: 5
     }
   ];
 
@@ -413,7 +461,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </div>
         </section>
 
-        {/* NÍVEL 3: DESTAQUES DA GRELHA (PICANHA, TOMAHAWK, CHORIZO) */}
+        {/* NÍVEL 3: DESTAQUES DA GRELHA */}
         <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
             <div>
@@ -507,7 +555,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </div>
         </section>
 
-        {/* NÍVEL 4: COLEÇÃO RARA WAGYU A5 JAPÃO (MARMOREIO BMB 10+) */}
+        {/* NÍVEL 4: COLEÇÃO RARA WAGYU A5 JAPÃO */}
         <section
           style={{
             background: tokens.surfaceContainer,
@@ -713,7 +761,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </div>
         </section>
 
-        {/* NÍVEL 7: UTENSÍLIOS & ACESSÓRIOS DE PARRILLA */}
+        {/* NÍVEL 7: UTENSÍLIOS & ACESSÓRIOS GOURMET (IMAGEM CORRETA DE TÁBUA DE TECA EM MADEIRA NOBRE) */}
         <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
             <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
@@ -728,7 +776,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             {accessories.map((acc, i) => (
               <Card key={i} variant="surface" bordered hoverable isDark={isDark} style={{ borderRadius: "18px", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
-                  <div style={{ height: "200px", overflow: "hidden", background: tokens.surfaceContainer }}>
+                  <div style={{ height: "220px", overflow: "hidden", background: tokens.surfaceContainer }}>
                     <img src={acc.image} alt={acc.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                   <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -758,6 +806,141 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             ))}
           </div>
         </section>
+
+        {/* NÍVEL 8: HARMONIZAÇÃO DE VINHOS NOBRES */}
+        <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+            <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+              🍷 SOMMELIER SELECTION
+            </span>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
+              Harmonização & Vinhos Especiais
+            </h3>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "28px" }}>
+            {wines.map((wine, i) => (
+              <Card key={i} variant="surface" bordered hoverable isDark={isDark} style={{ borderRadius: "18px", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <div>
+                  <div style={{ height: "240px", overflow: "hidden", background: tokens.surfaceContainer }}>
+                    <img src={wine.image} alt={wine.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                  <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <span style={{ fontSize: "11px", fontWeight: "700", color: tokens.copper, textTransform: "uppercase" }}>
+                      {wine.vintage}
+                    </span>
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                      {wine.name}
+                    </h4>
+                    <p style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: 1.4, margin: 0 }}>
+                      {wine.desc}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ padding: "0 24px 24px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "22px", fontWeight: "700", color: tokens.text }}>
+                    R$ {wine.price}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    isDark={isDark}
+                    onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}
+                  >
+                    Adicionar Vinho
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* NÍVEL 9: MESTRE ASSADOR PRESENCIAL & BANNER VIP */}
+        <section
+          style={{
+            background: isDark ? "linear-gradient(135deg, #1C1815 0%, #0B0908 100%)" : "linear-gradient(135deg, #F2F1ED 0%, #FCFBF7 100%)",
+            border: `1px solid ${tokens.border}`,
+            borderRadius: "24px",
+            padding: "56px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "40px",
+            flexWrap: "wrap"
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "600px" }}>
+            <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper }}>
+              👨‍🍳 SERVIÇO VIP CONCIERGE
+            </span>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "38px", fontWeight: "700", margin: 0, color: tokens.text }}>
+              Mestre Assador Presencial no seu Evento
+            </h2>
+            <p style={{ fontSize: "16px", color: tokens.textMuted, lineHeight: 1.6, margin: 0 }}>
+              Oferecemos atendimento exclusivo com chefs especialistas em fogo de chão, parrilla argentina e cortes Dry Aged para celebrações corporativas e jantares privados.
+            </p>
+            <div style={{ marginTop: "12px" }}>
+              <Button variant="accent" size="md">
+                Solicitar Orçamento VIP
+              </Button>
+            </div>
+          </div>
+
+          <div
+            style={{
+              width: "280px",
+              height: "200px",
+              borderRadius: "16px",
+              overflow: "hidden",
+              border: `1px solid ${tokens.border}`,
+              flexShrink: 0
+            }}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop"
+              alt="Mestre Assador VIP"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        </section>
+
+        {/* NÍVEL 10: DEPOIMENTOS DE SÓCIOS CLUB ROYAL */}
+        <section style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "16px" }}>
+            <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+              ⭐ AVALIAÇÕES VERIFICADAS
+            </span>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: "700", margin: 0, color: tokens.text }}>
+              Experiência dos Nossos Sócios VIP
+            </h3>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "28px" }}>
+            {testimonials.map((t, i) => (
+              <Card key={i} variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "28px", borderRadius: "18px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "flex", gap: "4px" }}>
+                  {[...Array(t.rating)].map((_, idx) => (
+                    <StarIcon key={idx} size={18} color={tokens.copper} />
+                  ))}
+                </div>
+                <p style={{ fontSize: "14px", color: tokens.text, lineHeight: 1.6, fontStyle: "italic", margin: 0 }}>
+                  "{t.comment}"
+                </p>
+                <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px" }}>
+                  <h5 style={{ fontSize: "15px", fontWeight: "700", margin: "0 0 2px 0", color: tokens.text }}>
+                    {t.name}
+                  </h5>
+                  <span style={{ fontSize: "12px", color: tokens.copper, fontWeight: "600" }}>
+                    {t.role}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+
       </main>
 
       {/* 3. BottomTabBar Mobile */}
