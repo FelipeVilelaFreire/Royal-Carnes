@@ -7,8 +7,8 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@shared-core': path.resolve(__dirname, '../shared-core'),
-      '@foundation': path.resolve(__dirname, '../foundation')
+      '@shared-core': path.resolve(__dirname, '../../shared-core'),
+      '@foundation': path.resolve(__dirname, '../../foundation')
     };
     return config;
   }

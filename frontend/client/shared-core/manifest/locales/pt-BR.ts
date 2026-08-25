@@ -238,29 +238,34 @@ export const clientPtBR = {
         ctaProducts: "Conhecer produtos",
         catalogCardTitle: "Primeiro, olhe os cortes",
         catalogCardDescription: "O catálogo serve como vitrine: cortes, temperos, carvão, utensílios, disponibilidade por plano e opções que entram na Box ou no Delivery.",
-        catalogCardCta: "Abrir catálogo"
+        catalogCardCta: "Abrir catálogo",
+        stats: [
+          { value: "3", label: "formas de compra" },
+          { value: "3kg a 8kg", label: "de carnes nos planos" },
+          { value: "Box mensal", label: "com dia escolhido" }
+        ]
       },
       paths: [
         {
           title: "Assinatura fechada",
           eyebrow: "Basic, Premium ou Pro",
-          description: "Escolha um plano com preço fechado, limite de produtos e benefícios definidos.",
+          description: "Escolha um plano com preço fechado, kg de carne, carvão, temperos e benefícios definidos.",
           cta: "Conhecer planos",
-          bullets: ["Mensal ou anual", "Produtos por plano", "Formato de preparo"]
+          bullets: ["3kg, 5kg ou 8kg de carnes", "Carvão incluso por kg", "Formato de preparo"]
         },
         {
           title: "Royal Box",
           eyebrow: "Caixa recorrente",
           description: "Monte uma caixa personalizada uma vez e receba todo mês no dia escolhido.",
           cta: "Montar minha Box",
-          bullets: ["Todo mês", "Carnes, carvão e utensílios", "Frete grátis"]
+          bullets: ["Todo mês", "Produtos, carvão e utensílios", "Dia de entrega fixo"]
         },
         {
           title: "Royal Delivery",
           eyebrow: "Pedido avulso",
           description: "Peça agora com a mesma liberdade da Box, mas sem recorrência mensal.",
           cta: "Pedir avulso",
-          bullets: ["Entrega no endereço escolhido", "Frete selecionável", "Repetir último pedido"]
+          bullets: ["Endereço escolhido", "Frete selecionável", "Repetir último pedido"]
         }
       ],
       catalogs: {
@@ -279,6 +284,10 @@ export const clientPtBR = {
           {
             title: "Linha nobre",
             description: "Picanha, ancho, chorizo, contra-filé, baby beef e cortes especiais."
+          },
+          {
+            title: "Espetinhos e acompanhamentos",
+            description: "Espetinhos, pão de alho, queijo coalho, linguiças, carvão e itens para completar a mesa."
           }
         ]
       },
@@ -291,28 +300,28 @@ export const clientPtBR = {
             name: "Basic",
             price: "R$ 300/mês",
             annual: "R$ 289 no anual",
-            details: ["4 produtos", "Carnes mais acessíveis", "Escolha do formato"]
+            details: ["3kg de carnes", "3kg de carvão", "1 tempero base"]
           },
           {
             name: "Premium",
             price: "R$ 500/mês",
             annual: "R$ 489 no anual",
-            details: ["6 produtos", "Picanha e contra-filé", "2 carvões e até 2 temperos"]
+            details: ["5kg de carnes", "5kg de carvão", "1 acompanhamento"]
           },
           {
             name: "Pro",
             price: "R$ 800/mês",
             annual: "R$ 789 no anual",
-            details: ["8 produtos", "Chorizo e linha nobre", "Até 5 carvões e faca inclusa"]
+            details: ["8kg de carnes", "10kg de carvão", "1 utensílio Royal"]
           }
         ]
       },
       royalBox: {
         badge: "Royal Box",
         title: "Monte uma vez. Receba todo mês.",
-        description: "A Box é uma recorrência personalizada: o cliente define produtos, quantidades, formatos de corte, carvão, utensílios e o dia do mês. Depois, aquela caixa vira o padrão de entrega mensal.",
-        cta: "Ver Royal Box",
-        features: ["Carnes do estoque", "Cortes e formatos", "Carvão livre", "Utensílios"]
+        description: "A Royal Box é a assinatura personalizada da Royal Carnes. Escolha produtos, cortes, carvão, utensílios, endereço e o dia do mês para receber sempre a mesma caixa.",
+        cta: "Montar Royal Box",
+        features: ["Caixa recorrente", "Dia do mês", "Produtos e cortes", "Carvão e utensílios"]
       },
       delivery: {
         badge: "Royal Delivery",

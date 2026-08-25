@@ -343,7 +343,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         style={{
           flex: 1,
           width: "100%",
-          maxWidth: "1440px",
+          maxWidth: "1560px",
           margin: "0 auto",
           padding: showHeader ? "42px 28px 80px" : "28px 28px 80px",
           boxSizing: "border-box"

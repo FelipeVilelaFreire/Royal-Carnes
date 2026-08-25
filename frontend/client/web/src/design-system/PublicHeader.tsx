@@ -64,6 +64,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
     { label: "Catálogos", href: "#selecao" },
     { label: "Como Funciona", href: "#como-funciona" },
     { label: "Produtos", href: "#assinaturas" },
+    { label: "Royal Box", href: "#royal-box" },
     { label: "FAQ", href: "#faq" }
   ];
 
@@ -145,7 +146,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "32px",
+            gap: "24px",
             position: "absolute",
             left: "50%",
             transform: "translateX(-50%)"

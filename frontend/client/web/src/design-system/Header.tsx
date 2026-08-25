@@ -89,7 +89,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
       <div
         style={{
           width: "100%",
-          maxWidth: "1600px",
+          maxWidth: "1760px",
           margin: "0 auto",
           padding: isScrolled ? "12px 40px" : "16px 40px",
           display: "flex",

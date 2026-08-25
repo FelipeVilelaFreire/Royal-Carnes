@@ -491,7 +491,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
                 variant="outline"
                 size="md"
                 isDark={isDark}
-                onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+                onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
                 style={{ width: "100%", marginTop: "4px" }}
               >
                 Conhecer planos
@@ -559,7 +559,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               <Button
                 variant="accent"
                 size="md"
-                onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+                onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
                 style={{ width: "100%", marginTop: "4px" }}
               >
                 Montar minha Box
@@ -625,7 +625,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
                 variant="outline"
                 size="md"
                 isDark={isDark}
-                onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+                onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
                 style={{ width: "100%", marginTop: "4px" }}
               >
                 Pedir avulso
@@ -744,7 +744,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               variant="outline"
               size="md"
               isDark={isDark}
-              onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+              onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
               style={{ marginTop: "32px", width: "100%" }}
             >
               Ver Basic
@@ -811,7 +811,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
             <Button
               variant="accent"
               size="md"
-              onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+              onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
               style={{ marginTop: "32px", width: "100%" }}
             >
               Ver Premium
@@ -858,7 +858,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               variant="outline"
               size="md"
               isDark={isDark}
-              onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}
+              onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}
               style={{ marginTop: "32px", width: "100%" }}
             >
               Ver Pro
@@ -869,6 +869,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
 
       {/* 7. Royal Box recorrente */}
       <section
+        id="royal-box"
         className="appear-on-scroll"
         style={{
           background: tokens.surfaceContainer,
@@ -877,44 +878,44 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
           padding: "80px 32px"
         }}
       >
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "1440px", width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
           <Card
             variant="surface"
             bordered
             hoverable={false}
             isDark={isDark}
             style={{
-              padding: "48px",
+              padding: "52px",
               borderRadius: "24px",
               background: isDark ? "rgba(26, 24, 23, 0.9)" : "rgba(242, 241, 237, 0.9)",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "40px",
+              gridTemplateColumns: "minmax(340px, 0.95fr) minmax(420px, 1.05fr)",
+              gap: "44px",
               alignItems: "center"
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
               <div>
                 <Badge variant="copper">ROYAL BOX</Badge>
               </div>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: 0, color: tokens.text }}>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(40px, 4.2vw, 60px)", fontWeight: "700", lineHeight: 1.04, margin: 0, color: tokens.text }}>
                 Monte uma vez. Receba todo mês.
               </h2>
-              <p style={{ fontSize: "16px", color: tokens.textMuted, lineHeight: "1.6", margin: 0 }}>
+              <p style={{ fontSize: "18px", color: tokens.textMuted, lineHeight: "1.62", margin: 0 }}>
                 A Royal Box e a assinatura personalizada da Royal Carnes. Escolha produtos, cortes, carvão, utensílios, endereço e o dia do mês para receber sempre a mesma caixa.
               </p>
               <div>
-                <Button variant="accent" size="lg" onClick={() => onNavigate ? onNavigate("/produtos") : (window.location.href = "/produtos")}>
+                <Button variant="accent" size="lg" onClick={() => onNavigate ? onNavigate("/home") : (window.location.href = "/home")}>
                   Montar Royal Box
                 </Button>
               </div>
             </div>
 
-            <div style={{ height: "280px", borderRadius: "16px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer }}>
+            <div style={{ height: "360px", borderRadius: "18px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer }}>
               <img
-                src="https://images.unsplash.com/photo-1528712306091-ed0763094c98?auto=format&fit=crop&w=1000&q=80"
+                src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=1400&q=84"
                 alt="Utensilios de preparo para Royal Box"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
               />
             </div>
           </Card>

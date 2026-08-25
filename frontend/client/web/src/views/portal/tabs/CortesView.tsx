@@ -82,7 +82,7 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
         style={{
           flex: 1,
           width: "100%",
-          maxWidth: "1440px",
+          maxWidth: "1560px",
           margin: "0 auto",
           padding: "40px 32px 80px 32px",
           display: "flex",
