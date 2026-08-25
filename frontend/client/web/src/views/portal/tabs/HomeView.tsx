@@ -12,6 +12,8 @@ export interface HomeViewProps {
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
     if (typeof window !== "undefined") {
+      const attr = document.documentElement.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
       const stored = localStorage.getItem("royal_prime_theme");
       if (stored === "dark" || stored === "light") return stored;
     }
@@ -266,6 +268,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         onToggleTheme={() => {
           const next = themeMode === "dark" ? "light" : "dark";
           setThemeMode(next);
+          if (typeof document !== "undefined") {
+            document.documentElement.setAttribute("data-theme", next);
+            document.documentElement.style.backgroundColor = next === "dark" ? "#0B0908" : "#FCFBF7";
+            document.documentElement.style.color = next === "dark" ? "#E8E1DE" : "#1A1A1A";
+          }
           localStorage.setItem("royal_prime_theme", next);
           window.dispatchEvent(new Event("royal_theme_changed"));
         }}

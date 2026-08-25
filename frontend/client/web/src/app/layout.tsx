@@ -21,8 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               (function() {
                 try {
                   var mode = localStorage.getItem('royal_prime_theme') || 'dark';
-                  var bg = mode === 'dark' ? '#0B0908' : '#FCFBF7';
-                  var color = mode === 'dark' ? '#F5F3EF' : '#1A1A1A';
+                  document.documentElement.setAttribute('data-theme', mode);
+                  var isDark = mode === 'dark';
+                  var bg = isDark ? '#0B0908' : '#FCFBF7';
+                  var color = isDark ? '#E8E1DE' : '#1A1A1A';
                   document.documentElement.style.backgroundColor = bg;
                   document.documentElement.style.color = color;
                 } catch (e) {}
@@ -30,8 +32,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `
           }}
         />
+        <style>{`
+          :root {
+            --theme-bg: #0B0908;
+            --theme-text: #E8E1DE;
+            --theme-surface: #151312;
+            --theme-surface-container: #1A1817;
+            --theme-border: #2A2624;
+            --theme-copper: #B87333;
+            --theme-text-muted: #D4C4B0;
+          }
+          html[data-theme="light"] {
+            --theme-bg: #FCFBF7;
+            --theme-text: #1A1A1A;
+            --theme-surface: #FCFBF7;
+            --theme-surface-container: #F2F1ED;
+            --theme-border: #D1D1D1;
+            --theme-copper: #B87333;
+            --theme-text-muted: #4A4A4A;
+          }
+          html, body {
+            background-color: var(--theme-bg) !important;
+            color: var(--theme-text) !important;
+            transition: background-color 0.25s ease, color 0.25s ease;
+          }
+        `}</style>
       </head>
-      <body style={{ margin: 0, padding: 0, backgroundColor: "inherit", color: "inherit", fontFamily: "'Inter', sans-serif", transition: "background-color 0.3s ease, color 0.3s ease" }}>
+      <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
         {children}
       </body>
     </html>
