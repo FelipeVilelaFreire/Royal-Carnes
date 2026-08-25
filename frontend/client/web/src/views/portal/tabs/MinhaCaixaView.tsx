@@ -239,8 +239,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                   gap: "16px",
                   cursor: "pointer",
                   textAlign: "left",
-                  transition: "all 0.2s ease",
-                  position: "relative"
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                 }}
               >
                 <div
@@ -253,7 +252,8 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    flexShrink: 0
+                    flexShrink: 0,
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                   }}
                 >
                   <CartIcon size={22} />
@@ -266,54 +266,58 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                     Pedido único para entrega imediata.
                   </p>
                 </div>
-                <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: `2px solid ${boxMode === "avulso" ? tokens.copper : tokens.border}`, background: boxMode === "avulso" ? tokens.copper : "transparent" }} />
+                <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: `2px solid ${boxMode === "avulso" ? tokens.copper : tokens.border}`, background: boxMode === "avulso" ? tokens.copper : "transparent", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }} />
               </button>
 
-              {/* Botão Assinatura */}
+              {/* Botão Assinatura (Com RECOMENDADO no topo interno do card) */}
               <button
                 onClick={() => setBoxMode("assinatura")}
                 style={{
                   background: boxMode === "assinatura" ? tokens.surfaceContainer : tokens.background,
                   border: `2px solid ${boxMode === "assinatura" ? tokens.copper : tokens.border}`,
                   borderRadius: "16px",
-                  padding: "20px",
+                  padding: "16px 20px",
                   display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
+                  flexDirection: "column",
+                  gap: "10px",
                   cursor: "pointer",
                   textAlign: "left",
-                  transition: "all 0.2s ease",
-                  position: "relative"
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                 }}
               >
-                <div style={{ position: "absolute", top: "-10px", right: "16px" }}>
-                  <Badge variant="copper">RECOMENDADO</Badge>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                  <span style={{ fontSize: "10px", fontWeight: "800", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper, background: "rgba(184, 115, 51, 0.15)", padding: "2px 8px", borderRadius: "4px" }}>
+                    RECOMENDADO
+                  </span>
+                  <div style={{ width: "18px", height: "18px", borderRadius: "50%", border: `2px solid ${boxMode === "assinatura" ? tokens.copper : tokens.border}`, background: boxMode === "assinatura" ? tokens.copper : "transparent", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }} />
                 </div>
 
-                <div
-                  style={{
-                    width: "44px",
-                    height: "44px",
-                    borderRadius: "12px",
-                    background: boxMode === "assinatura" ? tokens.copper : tokens.surfaceContainer,
-                    color: boxMode === "assinatura" ? "#FFFFFF" : tokens.text,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0
-                  }}
-                >
-                  <BoxIcon size={22} />
+                <div style={{ display: "flex", alignItems: "center", gap: "14px", width: "100%" }}>
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "12px",
+                      background: boxMode === "assinatura" ? tokens.copper : tokens.surfaceContainer,
+                      color: boxMode === "assinatura" ? "#FFFFFF" : tokens.text,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                    }}
+                  >
+                    <BoxIcon size={22} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: "14px", fontWeight: "700", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 2px 0", color: tokens.text }}>
+                      ASSINATURA
+                    </h3>
+                    <p style={{ fontSize: "12px", color: tokens.textMuted, margin: 0 }}>
+                      Benefícios exclusivos, recorrente.
+                    </p>
+                  </div>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: "14px", fontWeight: "700", letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 4px 0", color: tokens.text }}>
-                    ASSINATURA
-                  </h3>
-                  <p style={{ fontSize: "12px", color: tokens.textMuted, margin: 0 }}>
-                    Benefícios exclusivos, recorrente.
-                  </p>
-                </div>
-                <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: `2px solid ${boxMode === "assinatura" ? tokens.copper : tokens.border}`, background: boxMode === "assinatura" ? tokens.copper : "transparent" }} />
               </button>
             </div>
 
@@ -339,7 +343,7 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                   </span>
                 </div>
                 <div style={{ width: "100%", height: "8px", background: tokens.background, borderRadius: "9999px", overflow: "hidden", border: `1px solid ${tokens.border}` }}>
-                  <div style={{ width: `${Math.min((totalCutsCount / 6) * 100, 100)}%`, height: "100%", background: tokens.copper, borderRadius: "9999px" }} />
+                  <div style={{ width: `${Math.min((totalCutsCount / 6) * 100, 100)}%`, height: "100%", background: tokens.copper, borderRadius: "9999px", transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)" }} />
                 </div>
               </div>
             )}
