@@ -23,6 +23,9 @@ export const mockCutCategories = [
   { id: "category-pro-cuts", name: "Nobre" },
   { id: "category-poultry-pork", name: "Frango e suinos" },
   { id: "category-skewers", name: "Espetinhos" },
+  { id: "category-seasonings", name: "Temperos" },
+  { id: "category-charcoal", name: "Carvao" },
+  { id: "category-utensils", name: "Utensilios" },
   { id: "category-kits", name: "Combos" }
 ];
 
@@ -32,6 +35,9 @@ const lineByCategory: Record<string, string> = {
   "category-pro-cuts": "Linha nobre",
   "category-poultry-pork": "Frango e suinos",
   "category-skewers": "Espetinhos e acompanhamentos",
+  "category-seasonings": "Temperos Royal",
+  "category-charcoal": "Carvao e preparo",
+  "category-utensils": "Utensilios de churrasco",
   "category-kits": "Combos Royal"
 };
 
@@ -41,11 +47,13 @@ const preparationByCategory: Record<string, string> = {
   "category-pro-cuts": "Parrilla / Grelha alta",
   "category-poultry-pork": "Grelha / Espeto / Assado",
   "category-skewers": "Espeto / Grelha",
+  "category-seasonings": "Finalizacao / Marinada",
+  "category-charcoal": "Brasa / Defumacao",
+  "category-utensils": "Preparo / Servico",
   "category-kits": "Churrasqueira"
 };
 
 export const mockCutsCatalog: CutProduct[] = productsMock
-  .filter((product) => product.kind === "meat" || product.categoryId === "category-skewers" || product.categoryId === "category-kits")
   .map((product) => ({
     id: product.id,
     name: product.name,

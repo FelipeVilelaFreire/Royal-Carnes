@@ -7,7 +7,7 @@ export const clientPtBR = {
     home: "Home",
     cortes: "Cortes",
     catalogo: "Catálogo",
-    produtos: "Produtos",
+    produtos: "Pedido",
     royalBox: "Royal Box",
     royalDelivery: "Royal Delivery",
     minhaConta: "Minha Conta",
@@ -22,6 +22,188 @@ export const clientPtBR = {
   royalDelivery: {
     emptyTitle: "Royal Delivery",
     emptyDescription: "A montagem avulsa do Royal Delivery entra aqui: carnes, formato, utensílios, carvão, endereço e pagamento."
+  },
+  pedido: {
+    hero: {
+      badge: "Pedido Royal Carnes",
+      title: "Monte seu pedido",
+      description: "Escolha primeiro o tipo de compra. Depois selecione produtos, compare categorias e acompanhe o resumo da montagem.",
+      searchPlaceholder: "Buscar produto",
+      filterLabel: "Filtrar",
+      clearFilters: "Limpar filtros"
+    },
+    modes: {
+      subscription: {
+        title: "Assinatura fechada",
+        eyebrow: "Basic, Premium ou Pro",
+        description: "Planos com preço fixo, limites claros e produtos liberados por categoria.",
+        details: ["Escolha o plano", "Selecione produtos do plano", "Receba mensal ou anual"]
+      },
+      royalBox: {
+        title: "Royal Box",
+        eyebrow: "Recorrente mensal",
+        description: "Uma caixa personalizada que o cliente monta uma vez e recebe todo mês.",
+        details: ["Todo o estoque Royal", "Dia do mês escolhido", "Carvão e utensílios"]
+      },
+      royalDelivery: {
+        title: "Royal Delivery",
+        eyebrow: "Pedido avulso",
+        description: "Compra livre para receber agora, com endereço e frete definidos no pedido.",
+        details: ["Sem recorrência", "Endereço flexível", "Repetir último pedido"]
+      }
+    },
+    plans: {
+      title: "Escolha um plano",
+      subtitle: "Na assinatura fechada, o plano define o limite e quais produtos aparecem no grid."
+    },
+      catalog: {
+        title: "Produtos disponíveis",
+        subtitle: "Primeira camada do configurador: produtos, categorias, preço e disponibilidade.",
+        emptyTitle: "Nenhum produto encontrado",
+        emptyDescription: "Ajuste a busca ou selecione outra categoria.",
+        foundLabel: "itens encontrados"
+      },
+    productCard: {
+      fromLabel: "A partir de",
+      categoryLabel: "Categoria",
+      select: "Selecionar",
+      selected: "Selecionado",
+      add: "Adicionar",
+      quantitySuffix: "un.",
+      availableForSubscription: "Assinatura",
+      availableForBox: "Box",
+      availableForDelivery: "Delivery"
+    },
+    filters: {
+      modalTitle: "Filtrar produtos",
+      categoryTitle: "Categoria",
+      allCategories: "Todas as categorias",
+      close: "Fechar",
+      apply: "Aplicar"
+    },
+    summary: {
+      title: "Resumo",
+      empty: "Escolha uma modalidade para começar.",
+      selectedMode: "Modalidade",
+      selectedPlan: "Plano",
+      selectedItems: "Itens selecionados",
+      selectedLimit: "Itens escolhidos",
+      fixedPlanPrice: "Preço fixo do plano",
+      variableEstimate: "Estimativa",
+      noVariableEstimate: "Na assinatura fechada, o valor não muda conforme os produtos selecionados.",
+      meatUsage: "carnes",
+      charcoalUsage: "carvão",
+      seasoningUsage: "temperos",
+      sideUsage: "acompanhamentos",
+      utensilUsage: "utensílios",
+      deliveryAddress: "Endereço",
+      recurrenceDay: "Recorrência",
+      selectedFreight: "Frete",
+      selectedPayment: "Pagamento",
+      remove: "Remover",
+      estimate: "Estimativa",
+      nextStep: "Continuar montagem",
+      paymentNextStep: "Ir para pagamento",
+      finishStep: "Finalizar pedido",
+      placeholder: "Na próxima etapa entram quantidades, cortes, recorrência, endereço e frete."
+    },
+    steps: {
+      montagem: "Montagem",
+      entrega: "Entrega",
+      pagamento: "Pagamento",
+      resumo: "Resumo"
+    },
+    deliveryStep: {
+      badge: "Etapa 2",
+      title: "Entrega e recorrência",
+      description: "Confirme para onde o pedido vai e como essa modalidade deve ser entregue.",
+      back: "Voltar para montagem",
+      next: "Continuar para pagamento",
+      common: {
+        addressTitle: "Endereço de entrega",
+        addressLabel: "Endereço principal",
+        addressValue: "Rua das Palmeiras, 120 - Centro",
+        addressHint: "Usado como padrão para este fluxo. Você pode trocar antes de finalizar.",
+        removeAddress: "Remover",
+        addAddress: "Adicionar outro endereço",
+        newAddressTitle: "Novo endereço",
+        zipCode: "CEP",
+        street: "Rua",
+        number: "Número",
+        neighborhood: "Bairro",
+        city: "Cidade",
+        complement: "Complemento",
+        saveAddress: "Salvar endereço",
+        cancelAddress: "Cancelar",
+        notesTitle: "Observações",
+        notesPlaceholder: "Ex: deixar embalado por tipo de corte, horário preferencial ou ponto de referência."
+      },
+      subscription: {
+        title: "Assinatura fechada",
+        description: "Entrega vinculada ao cadastro do cliente. A forma de pagamento e ciclo de cobrança entram na próxima etapa.",
+        fields: ["Usar endereço do cadastro", "Entrega recorrente da assinatura", "Preferências gerais do pacote"]
+      },
+      royalBox: {
+        title: "Royal Box",
+        description: "A Box fica recorrente no dia escolhido do mês, com a mesma composição montada na etapa anterior.",
+        deliveryDayLabel: "Dia do mês",
+        deliveryDayPrefix: "Todo dia",
+        deliveryDayHint: "Escolha o dia fixo em que a caixa será preparada para entrega mensal.",
+        fields: ["Endereço mensal da Box", "Receber todo mês nesse dia", "Observações da caixa"]
+      },
+      royalDelivery: {
+        title: "Royal Delivery",
+        description: "Pedido avulso para entrega agora, com endereço flexível e frete definido antes do pagamento.",
+        freightLabel: "Frete",
+        calculatedFreight: "Frete calculado",
+        includedFreight: "Frete incluso",
+        pickup: "Retirada",
+        standardDelivery: "Entrega padrão",
+        expressDelivery: "Entrega expressa",
+        repeatLastOrder: "Repetir último pedido futuramente",
+        fields: ["Entregar neste endereço", "Selecionar frete", "Observações do pedido"]
+      }
+    },
+    paymentStep: {
+      badge: "Etapa 3",
+      title: "Pagamento",
+      description: "Escolha como o cliente pretende finalizar. Por enquanto é uma etapa mockada para validar o fluxo do pedido.",
+      back: "Voltar para entrega",
+      next: "Continuar para resumo",
+      methodsTitle: "Forma de pagamento",
+      recurrenceTitle: "Cobrança recorrente",
+      recurrenceDescription: "Para assinatura e Royal Box, o cartão pode ficar como método padrão das próximas cobranças.",
+      installmentsTitle: "Parcelamento",
+      installmentsSuffix: "x sem juros",
+      totalTitle: "Total desta etapa",
+      paymentMockNotice: "Pagamento ainda não processa cobrança real neste MVP.",
+      methods: {
+        pix: "Pix",
+        pixDescription: "Gera uma chave mockada para pagamento rápido.",
+        creditCard: "Cartão de crédito",
+        creditCardDescription: "Melhor opção para cobrança recorrente e confirmação automática.",
+        debitCard: "Cartão de débito",
+        debitCardDescription: "Pagamento avulso direto para pedidos de Delivery.",
+        whatsapp: "Finalizar pelo WhatsApp",
+        whatsappDescription: "Envia a montagem para atendimento concluir manualmente."
+      }
+    },
+    reviewStep: {
+      badge: "Etapa 4",
+      title: "Resumo final",
+      description: "Revise a modalidade, os itens, a entrega e o pagamento antes de finalizar.",
+      back: "Voltar para pagamento",
+      finish: "Finalizar pedido",
+      orderTitle: "Pedido",
+      deliveryTitle: "Entrega",
+      paymentTitle: "Pagamento",
+      itemsTitle: "Itens escolhidos",
+      limitsTitle: "Disponibilidade do plano",
+      totalTitle: "Total",
+      emptyItems: "Nenhum item selecionado ainda.",
+      fixedPlanHint: "Valor fixo da assinatura selecionada.",
+      variableOrderHint: "Estimativa com produtos e frete selecionados."
+    }
   },
   home: {
     hero: {
@@ -46,6 +228,100 @@ export const clientPtBR = {
     exploreSection: {
       title: "Explore nossos catálogos",
       categories: ["Mais pedidos", "Família", "Linha nobre", "Espetinhos"]
+    },
+    orientation: {
+      hero: {
+        badge: "Home Royal Carnes",
+        title: "Escolha o caminho do seu churrasco",
+        description: "Veja o catálogo, entenda os produtos e escolha entre plano fechado, caixa recorrente personalizada ou pedido avulso.",
+        ctaCatalog: "Ver catálogo",
+        ctaProducts: "Conhecer produtos",
+        catalogCardTitle: "Primeiro, olhe os cortes",
+        catalogCardDescription: "O catálogo serve como vitrine: cortes, temperos, carvão, utensílios, disponibilidade por plano e opções que entram na Box ou no Delivery.",
+        catalogCardCta: "Abrir catálogo"
+      },
+      paths: [
+        {
+          title: "Assinatura fechada",
+          eyebrow: "Basic, Premium ou Pro",
+          description: "Escolha um plano com preço fechado, limite de produtos e benefícios definidos.",
+          cta: "Conhecer planos",
+          bullets: ["Mensal ou anual", "Produtos por plano", "Formato de preparo"]
+        },
+        {
+          title: "Royal Box",
+          eyebrow: "Caixa recorrente",
+          description: "Monte uma caixa personalizada uma vez e receba todo mês no dia escolhido.",
+          cta: "Montar minha Box",
+          bullets: ["Todo mês", "Carnes, carvão e utensílios", "Frete grátis"]
+        },
+        {
+          title: "Royal Delivery",
+          eyebrow: "Pedido avulso",
+          description: "Peça agora com a mesma liberdade da Box, mas sem recorrência mensal.",
+          cta: "Pedir avulso",
+          bullets: ["Entrega no endereço escolhido", "Frete selecionável", "Repetir último pedido"]
+        }
+      ],
+      catalogs: {
+        badge: "Catálogos",
+        title: "Vitrines para começar",
+        cta: "Ver tudo",
+        items: [
+          {
+            title: "Mais pedidos 2026",
+            description: "Picanha, maminha, fraldinha, linguiça toscana e pão de alho."
+          },
+          {
+            title: "Churrasco família",
+            description: "Cortes versáteis, frango temperado, queijo coalho, combos e acompanhamentos."
+          },
+          {
+            title: "Linha nobre",
+            description: "Picanha, ancho, chorizo, contra-filé, baby beef e cortes especiais."
+          }
+        ]
+      },
+      planSummary: {
+        badge: "Assinatura fechada",
+        title: "Resumo dos planos",
+        cta: "Comparar planos",
+        plans: [
+          {
+            name: "Basic",
+            price: "R$ 300/mês",
+            annual: "R$ 289 no anual",
+            details: ["4 produtos", "Carnes mais acessíveis", "Escolha do formato"]
+          },
+          {
+            name: "Premium",
+            price: "R$ 500/mês",
+            annual: "R$ 489 no anual",
+            details: ["6 produtos", "Picanha e contra-filé", "2 carvões e até 2 temperos"]
+          },
+          {
+            name: "Pro",
+            price: "R$ 800/mês",
+            annual: "R$ 789 no anual",
+            details: ["8 produtos", "Chorizo e linha nobre", "Até 5 carvões e faca inclusa"]
+          }
+        ]
+      },
+      royalBox: {
+        badge: "Royal Box",
+        title: "Monte uma vez. Receba todo mês.",
+        description: "A Box é uma recorrência personalizada: o cliente define produtos, quantidades, formatos de corte, carvão, utensílios e o dia do mês. Depois, aquela caixa vira o padrão de entrega mensal.",
+        cta: "Ver Royal Box",
+        features: ["Carnes do estoque", "Cortes e formatos", "Carvão livre", "Utensílios"]
+      },
+      delivery: {
+        badge: "Royal Delivery",
+        title: "Peça avulso agora",
+        description: "O Delivery usa a mesma lógica livre da Box, mas para um pedido único: escolha os produtos, informe o endereço, selecione o frete e finalize para receber sem assinatura.",
+        cta: "Ver pedido avulso",
+        features: ["Pedido único", "Endereço flexível", "Frete selecionável", "Último pedido"]
+      },
+      trust: ["Cortes brasileiros", "Preparo escolhido", "Temperos e carvão", "Curadoria Royal", "Complementos"]
     }
   },
   cortes: {

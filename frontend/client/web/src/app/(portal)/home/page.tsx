@@ -2,9 +2,9 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { HomeView } from "../../../views/portal/tabs/HomeView";
+import { HomeOrientationView } from "../../../views/portal/tabs/HomeOrientationView";
 
 export default function HomePage() {
   const router = useRouter();
-  return <HomeView onNavigate={(path) => router.push(path)} />;
+  return <HomeOrientationView onNavigate={(path) => router.push(path)} />;
 }

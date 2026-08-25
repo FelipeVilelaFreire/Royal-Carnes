@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PortalHeader, BottomTabBar, Button, Card, Input, Badge, Select, Footer } from "../../design-system";
+import { PortalHeader, BottomTabBar, Card, Input, Badge, Select, Footer } from "../../design-system";
 import { mockCutCategories, mockCutsCatalog } from "@/mocks/cuts.mock";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
@@ -331,29 +331,23 @@ export const HeroCortesView: React.FC<HeroCortesViewProps> = ({ onNavigate }) =>
                 </div>
 
                 <div style={{ padding: "0 24px 24px 24px" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      {cut.originalPrice && (
-                        <span style={{ fontSize: "13px", textDecoration: "line-through", color: tokens.textMuted }}>
-                          R$ {cut.originalPrice.toFixed(2).replace(".", ",")}
-                        </span>
-                      )}
-                      <span
-                        style={{
-                          fontFamily: "'Inter', sans-serif",
-                          fontSize: "22px",
-                          fontWeight: "700",
-                          color: tokens.copper
-                        }}
-                      >
-                        <span style={{ fontSize: "14px", marginRight: "2px" }}>R$</span>
-                        {cut.price.toFixed(2).replace(".", ",")}
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {cut.originalPrice && (
+                      <span style={{ fontSize: "13px", textDecoration: "line-through", color: tokens.textMuted }}>
+                        R$ {cut.originalPrice.toFixed(2).replace(".", ",")}
                       </span>
-                    </div>
-
-                    <Button variant="primary" size="sm" isDark={isDark} onClick={() => onNavigate ? onNavigate("/portal-minha-caixa") : (window.location.href = "/portal-minha-caixa")}>
-                      Adicionar
-                    </Button>
+                    )}
+                    <span
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "22px",
+                        fontWeight: "700",
+                        color: tokens.copper
+                      }}
+                    >
+                      <span style={{ fontSize: "14px", marginRight: "2px" }}>R$</span>
+                      {cut.price.toFixed(2).replace(".", ",")}
+                    </span>
                   </div>
                 </div>
               </Card>

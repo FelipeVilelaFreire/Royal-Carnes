@@ -61,9 +61,8 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
   const navItems = [
-    { key: "portal-home", label: "Home", path: "/home" },
     { key: "portal-cortes", label: "Catálogo", path: "/cortes" },
-    { key: "produtos", label: "Produtos", path: "/produtos" }
+    { key: "produtos", label: "Pedido", path: "/produtos" }
   ];
 
   return (

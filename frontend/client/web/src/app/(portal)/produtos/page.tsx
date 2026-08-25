@@ -2,9 +2,9 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { MinhaCaixaView } from "../../../views/portal/tabs/MinhaCaixaView";
+import { PedidoView } from "../../../views/portal/tabs/PedidoView";
 
 export default function ProdutosPage() {
   const router = useRouter();
-  return <MinhaCaixaView onNavigate={(path) => router.push(path)} />;
+  return <PedidoView onNavigate={(path) => router.push(path)} />;
 }

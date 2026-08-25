@@ -10,8 +10,9 @@ import { portalNavigation } from "@/manifest/navigation";
 import { portalAppShellConfig } from "@/manifest/portal/appshell.config";
 import { clientRoutes } from "@/manifest/routes";
 import { clientPtBR } from "@/manifest/locales/pt-BR";
-import { HomeView } from "./tabs/HomeView";
+import { HomeOrientationView } from "./tabs/HomeOrientationView";
 import { CortesView } from "./tabs/CortesView";
+import { PedidoView } from "./tabs/PedidoView";
 import { MinhaCaixaView } from "./tabs/MinhaCaixaView";
 import { MeuClubeView } from "./tabs/MeuClubeView";
 
@@ -103,7 +104,7 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
       case "cortes":
         return <CortesView isMember={true} onNavigate={handleNavigate} />;
       case "produtos":
-        return <MinhaCaixaView onNavigate={handleNavigate} />;
+        return <PedidoView onNavigate={handleNavigate} showHeader={false} />;
       case "minhaCaixa":
         return <MinhaCaixaView onNavigate={handleNavigate} />;
       case "royalDelivery":
@@ -124,7 +125,7 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
         return <MeuClubeView onNavigate={handleNavigate} />;
       case "home":
       default:
-        return <HomeView onNavigate={handleNavigate} />;
+        return <HomeOrientationView onNavigate={handleNavigate} showHeader={false} />;
     }
   };
 

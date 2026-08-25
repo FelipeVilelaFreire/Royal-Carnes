@@ -10,18 +10,22 @@ export const catalogSubscriptionPlansMock: SubscriptionPlanMock[] = [
     monthlyPrice: 300,
     annualMonthlyPrice: 289,
     billingModes: ["monthly", "annual"],
-    productSelectionLimit: 4,
+    productSelectionLimit: 3,
+    proteinKgLimit: 3,
     allowedPlanTiers: ["basic"],
-    includedCharcoalPackages: 0,
-    seasoningSelectionLimit: 0,
+    includedCharcoalPackages: 1,
+    charcoalKgLimit: 3,
+    seasoningSelectionLimit: 1,
+    sideSelectionLimit: 0,
+    utensilSelectionLimit: 0,
     includesUtensilProductIds: [],
     shipping: "included",
-    description: "Plano promocional com produtos de entrada e escolha do formato de recebimento.",
+    description: "Plano promocional para churrasco simples, com proteina, carvao e tempero base.",
     features: [
-      "Escolha 4 produtos do grupo Basic",
-      "Produtos com melhor custo-beneficio",
-      "Formato de recebimento por produto",
-      "Pagamento mensal ou anual"
+      "Ate 3 kg de proteina do grupo Basic",
+      "Inclui 3 kg de carvao",
+      "Inclui 1 tempero base",
+      "Formato de recebimento por produto"
     ]
   },
   {
@@ -32,19 +36,23 @@ export const catalogSubscriptionPlansMock: SubscriptionPlanMock[] = [
     monthlyPrice: 500,
     annualMonthlyPrice: 489,
     billingModes: ["monthly", "annual"],
-    productSelectionLimit: 6,
+    productSelectionLimit: 5,
+    proteinKgLimit: 5,
     allowedPlanTiers: ["basic", "premium"],
-    includedCharcoalPackages: 2,
+    includedCharcoalPackages: 1,
+    charcoalKgLimit: 5,
     seasoningSelectionLimit: 2,
+    sideSelectionLimit: 1,
+    utensilSelectionLimit: 0,
     includesUtensilProductIds: [],
     shipping: "included",
-    description: "Plano com os produtos Basic, cortes premium, carvao incluso e selecao de temperos.",
+    description: "Plano com cortes premium, carvao suficiente e acompanhamentos para um churrasco completo.",
     features: [
-      "Escolha 6 produtos dos grupos Basic e Premium",
-      "Inclui Picanha e Contra file",
-      "Inclui 2 pacotes de carvao",
+      "Ate 5 kg de proteina dos grupos Basic e Premium",
+      "Libera Picanha, Contra file, Baby beef e Ancho",
+      "Inclui 5 kg de carvao",
       "Escolha ate 2 temperos",
-      "Formato de recebimento por produto"
+      "Inclui 1 acompanhamento simples"
     ]
   },
   {
@@ -56,19 +64,23 @@ export const catalogSubscriptionPlansMock: SubscriptionPlanMock[] = [
     annualMonthlyPrice: 789,
     billingModes: ["monthly", "annual"],
     productSelectionLimit: 8,
+    proteinKgLimit: 8,
     allowedPlanTiers: ["basic", "premium", "pro"],
     includedCharcoalPackages: 0,
-    charcoalMaxQuantity: 5,
+    charcoalMaxQuantity: 10,
+    charcoalKgLimit: 10,
     seasoningSelectionLimit: 4,
+    sideSelectionLimit: 2,
+    utensilSelectionLimit: 1,
     includesUtensilProductIds: ["product-faca-royal"],
     shipping: "included",
     description: "Plano com todo o catalogo de assinatura, produtos especiais, utensilio incluso e maior liberdade de complementos.",
     features: [
-      "Escolha 8 produtos dos grupos Basic, Premium e Pro",
-      "Inclui Chorizo e produtos especiais",
-      "Escolha ate 5 pacotes de carvao",
-      "Escolha ate 4 temperos",
-      "Recebe Faca Royal no pacote"
+      "Ate 8 kg de proteina dos grupos Basic, Premium e Pro",
+      "Libera Chorizo, Prime rib e produtos especiais",
+      "Inclui ate 10 kg de carvao ou briquete",
+      "Escolha ate 4 temperos e 2 acompanhamentos",
+      "Inclui 1 utensilio Royal"
     ]
   }
 ];

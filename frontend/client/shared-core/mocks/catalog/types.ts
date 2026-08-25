@@ -70,10 +70,14 @@ export type SubscriptionPlanMock = {
   annualMonthlyPrice: number;
   billingModes: BillingMode[];
   productSelectionLimit: number;
+  proteinKgLimit: number;
   allowedPlanTiers: SubscriptionTier[];
   includedCharcoalPackages: number;
   charcoalMaxQuantity?: number;
+  charcoalKgLimit: number;
   seasoningSelectionLimit: number;
+  sideSelectionLimit: number;
+  utensilSelectionLimit: number;
   includesUtensilProductIds: string[];
   shipping: ShippingPolicy;
   description: string;

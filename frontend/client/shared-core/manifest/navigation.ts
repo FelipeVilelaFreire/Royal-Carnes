@@ -24,7 +24,6 @@ export const clientNavigation: NavItemConfig[] = [
 
 // Navegacao publica do portal MVP: vitrine, catalogo e produtos.
 export const portalNavigation: NavItemConfig[] = [
-  { key: "home", label: clientPtBR.navigation.home, type: "route", routeKey: "home", iconName: "flame" },
   { key: "cortes", label: clientPtBR.navigation.catalogo, type: "route", routeKey: "cortes", iconName: "store" },
   { key: "produtos", label: clientPtBR.navigation.produtos, type: "route", routeKey: "produtos", iconName: "box" }
 ];

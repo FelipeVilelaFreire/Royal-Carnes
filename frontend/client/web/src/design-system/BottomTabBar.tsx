@@ -40,7 +40,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   const tabs = [
     { key: "portal-home", label: "Home", path: "/home", icon: FlameIcon },
     { key: "portal-cortes", label: "Catálogo", path: "/cortes", icon: BoxIcon },
-    { key: "produtos", label: "Produtos", path: "/produtos", icon: CartIcon }
+    { key: "produtos", label: "Pedido", path: "/produtos", icon: CartIcon }
   ];
 
   return (
