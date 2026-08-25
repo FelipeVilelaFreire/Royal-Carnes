@@ -1004,13 +1004,15 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       hoverable={false}
                       isDark={isDark}
                       style={{
-                        padding: "20px 24px",
+                        padding: "22px 28px",
                         borderRadius: "16px",
                         display: "flex",
+                        flexDirection: "row",
                         justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        flexWrap: "wrap",
-                        gap: "16px"
+                        alignItems: "center",
+                        width: "100%",
+                        boxSizing: "border-box",
+                        gap: "20px"
                       }}
                     >
                       <div style={{ display: "flex", flexDirection: "column", gap: "6px", textAlign: "left", alignItems: "flex-start" }}>

@@ -431,13 +431,16 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
                         padding: "18px 24px",
                         borderRadius: "16px",
                         display: "flex",
-                        alignItems: "flex-start",
+                        flexDirection: "row",
+                        alignItems: "center",
                         justifyContent: "space-between",
+                        width: "100%",
+                        boxSizing: "border-box",
                         gap: "24px",
                         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
                         {/* FOTO DA CARNE NO INÍCIO DO CARD */}
                         <div style={{ width: "96px", height: "80px", borderRadius: "12px", overflow: "hidden", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, flexShrink: 0 }}>
                           <img src={p.image} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
