@@ -16,17 +16,17 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
   onToggleTheme,
   onNavigate
 }) => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return propThemeMode || "dark";
+  });
+
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("royal_prime_theme");
-    if (stored === "dark" || stored === "light") {
-      setThemeMode(stored);
-    } else if (propThemeMode) {
-      setThemeMode(propThemeMode);
-    }
-
     const handleThemeChange = () => {
       const current = localStorage.getItem("royal_prime_theme");
       if (current === "dark" || current === "light") {
@@ -44,12 +44,14 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("royal_theme_changed", handleThemeChange);
     };
-  }, [propThemeMode]);
+  }, []);
 
   const toggleTheme = () => {
     const nextMode = themeMode === "dark" ? "light" : "dark";
     setThemeMode(nextMode);
     localStorage.setItem("royal_prime_theme", nextMode);
+    document.documentElement.style.backgroundColor = nextMode === "dark" ? "#0B0908" : "#FCFBF7";
+    document.documentElement.style.color = nextMode === "dark" ? "#F5F3EF" : "#1A1A1A";
     window.dispatchEvent(new Event("royal_theme_changed"));
     if (onToggleTheme) onToggleTheme();
   };
@@ -196,9 +198,9 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
             )}
           </Button>
 
-          {/* Entrar no Portal */}
+          {/* Entrar no Portal -> Direciona para /portal-home */}
           <button
-            onClick={() => onNavigate ? onNavigate("/minha-caixa") : (window.location.href = "/minha-caixa")}
+            onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
             style={{
               background: "transparent",
               border: "none",

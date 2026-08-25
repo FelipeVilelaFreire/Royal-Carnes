@@ -6,29 +6,29 @@ import { Button } from "./Button";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
 export interface PortalHeaderProps {
-  activeTab?: "cortes" | "minha-caixa" | "hero" | "meu-clube" | "minha-conta";
+  activeTab?: "cortes" | "minha-caixa" | "hero" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
   themeMode?: "light" | "dark";
   onToggleTheme?: () => void;
   onNavigate?: (path: string) => void;
 }
 
 export const PortalHeader: React.FC<PortalHeaderProps> = ({
-  activeTab = "hero",
+  activeTab = "portal-home",
   themeMode: propThemeMode,
   onToggleTheme,
   onNavigate
 }) => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("light");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("royal_prime_theme");
+      if (stored === "dark" || stored === "light") return stored;
+    }
+    return propThemeMode || "dark";
+  });
+
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("royal_prime_theme");
-    if (stored === "dark" || stored === "light") {
-      setThemeMode(stored);
-    } else if (propThemeMode) {
-      setThemeMode(propThemeMode);
-    }
-
     const handleThemeChange = () => {
       const current = localStorage.getItem("royal_prime_theme");
       if (current === "dark" || current === "light") {
@@ -46,12 +46,14 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("royal_theme_changed", handleThemeChange);
     };
-  }, [propThemeMode]);
+  }, []);
 
   const toggleTheme = () => {
     const nextMode = themeMode === "dark" ? "light" : "dark";
     setThemeMode(nextMode);
     localStorage.setItem("royal_prime_theme", nextMode);
+    document.documentElement.style.backgroundColor = nextMode === "dark" ? "#0B0908" : "#FCFBF7";
+    document.documentElement.style.color = nextMode === "dark" ? "#F5F3EF" : "#1A1A1A";
     window.dispatchEvent(new Event("royal_theme_changed"));
     if (onToggleTheme) onToggleTheme();
   };
@@ -60,10 +62,10 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
   const navItems = [
-    { key: "hero", label: "Início", path: "/hero" },
-    { key: "cortes", label: "Cortes", path: "/cortes" },
-    { key: "minha-caixa", label: "Royal Box", path: "/minha-caixa" },
-    { key: "meu-clube", label: "Minha Conta", path: "/minha-conta" }
+    { key: "portal-home", label: "Início", path: "/portal-home" },
+    { key: "portal-cortes", label: "Cortes", path: "/portal-cortes" },
+    { key: "portal-minha-caixa", label: "Royal Box", path: "/portal-minha-caixa" },
+    { key: "portal-minha-conta", label: "Minha Conta", path: "/portal-minha-conta" }
   ];
 
   return (
@@ -101,10 +103,10 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           boxSizing: "border-box"
         }}
       >
-        {/* Esquerda: Logo Royal Carnes */}
+        {/* Esquerda: Logo Royal Carnes -> Direciona para /portal-home */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <span
-            onClick={() => onNavigate ? onNavigate("/") : (window.location.href = "/")}
+            onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
             style={{
               fontFamily: "'Playfair Display', serif",
               fontSize: isScrolled ? "24px" : "28px",
@@ -133,7 +135,12 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           className="hidden md:flex"
         >
           {navItems.map((item) => {
-            const isActive = activeTab === item.key;
+            const isActive = activeTab === item.key ||
+              (activeTab === "hero" && item.key === "portal-home") ||
+              (activeTab === "cortes" && item.key === "portal-cortes") ||
+              (activeTab === "minha-caixa" && item.key === "portal-minha-caixa") ||
+              (activeTab === "minha-conta" && item.key === "portal-minha-conta") ||
+              (activeTab === "meu-clube" && item.key === "portal-minha-conta");
             return (
               <span
                 key={item.key}
@@ -158,7 +165,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           })}
         </nav>
 
-        {/* Direita: Dark/Light & Perfil */}
+        {/* Direita: Dark/Light & Perfil -> Direciona para /portal-minha-conta */}
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <Button
             variant="outline"
@@ -181,7 +188,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
           </Button>
 
           <div
-            onClick={() => onNavigate ? onNavigate("/minha-conta") : (window.location.href = "/minha-conta")}
+            onClick={() => onNavigate ? onNavigate("/portal-minha-conta") : (window.location.href = "/portal-minha-conta")}
             style={{
               display: "flex",
               alignItems: "center",
