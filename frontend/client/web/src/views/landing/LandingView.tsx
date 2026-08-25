@@ -228,7 +228,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
 
           <div style={{ display: "flex", gap: "16px", marginTop: "12px", flexWrap: "wrap", justifyContent: "center" }}>
             <button
-              onClick={() => onNavigate ? onNavigate("/hero") : (window.location.href = "/hero")}
+              onClick={() => onNavigate ? onNavigate("/portal-home") : (window.location.href = "/portal-home")}
               style={{
                 background: tokens.copper,
                 color: "#FFFFFF",
@@ -255,7 +255,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
               variant="outline"
               size="lg"
               isDark={isDark}
-              onClick={() => onNavigate ? onNavigate("/cortes") : (window.location.href = "/cortes")}
+              onClick={() => onNavigate ? onNavigate("/portal-cortes") : (window.location.href = "/portal-cortes")}
               style={{ padding: "16px 36px", fontSize: "13px", borderRadius: "9999px" }}
             >
               Conhecer A Seleção

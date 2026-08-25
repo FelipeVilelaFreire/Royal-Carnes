@@ -1,18 +1,38 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { PortalHeader, BottomTabBar, Footer } from "../../../design-system";
 import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { clientThemeManifest } from "../../../manifest/theme.manifest";
-import { TruckIcon, SnowflakeIcon, CheckIcon, FlameIcon, StoreIcon } from "@foundation/ui/Icon/AppIcons";
+import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { TruckIcon, SnowflakeIcon, StoreIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface HomeViewProps {
   onNavigate?: (path: string) => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
-  const themeColors = clientThemeManifest.colors;
-  const { primary, text, textMuted, border, background, surface, surfaceContainer } = themeColors;
+  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("royal_prime_theme");
+    if (stored === "dark" || stored === "light") {
+      setThemeMode(stored);
+    }
+    const handleThemeChange = () => {
+      const current = localStorage.getItem("royal_prime_theme");
+      if (current === "dark" || current === "light") {
+        setThemeMode(current);
+      }
+    };
+    window.addEventListener("royal_theme_changed", handleThemeChange);
+    return () => window.removeEventListener("royal_theme_changed", handleThemeChange);
+  }, []);
+
+  const isDark = themeMode === "dark";
+  const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
 
   const nextBoxCuts = [
     { name: "Wagyu A5 BMS 10+", detail: "400g" },
@@ -47,245 +67,260 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
     }
   ];
 
-  const recentActivities = [
-    "Caixa de agosto entregue em 12 de agosto",
-    "Nova caixa programada para 12 de setembro",
-    "Wagyu A5 adicionado à sua lista de preferências"
-  ];
-
   return (
-    <div style={{ width: "100%", background: background || "#0B0908", paddingBottom: "60px" }}>
-      {/* 01 — PERSONAL GREETING */}
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingTop: "20px", width: "100%" }}>
-          <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "44px", margin: 0, fontWeight: "700" }}>
-            Boa noite, Felipe.
-          </Text>
-          <Text variant="body" style={{ color: textMuted, fontSize: "16px" }}>
-            Seu próximo momento começa aqui.
-          </Text>
-        </div>
-      </SectionContainer>
+    <div style={{ width: "100%", background: tokens.background, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* 1. Header Único Logado do Portal */}
+      <PortalHeader
+        activeTab="portal-home"
+        themeMode={themeMode}
+        onToggleTheme={() => {
+          const next = themeMode === "dark" ? "light" : "dark";
+          setThemeMode(next);
+          localStorage.setItem("royal_prime_theme", next);
+          window.dispatchEvent(new Event("royal_theme_changed"));
+        }}
+        onNavigate={onNavigate}
+      />
 
-      {/* PRIMARY HIERARCHY: 02 - NEXT BOX & 03 - QUICK MEMBERSHIP SUMMARY */}
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", width: "100%", alignItems: "stretch" }}>
-          
-          {/* 02 — NEXT BOX (PRIMARY FEATURE) */}
+      <main style={{ flex: 1, paddingBottom: "60px" }}>
+        {/* 01 — PERSONAL GREETING */}
+        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px", paddingTop: "20px", width: "100%" }}>
+            <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "44px", margin: 0, fontWeight: "700" }}>
+              Boa noite, Felipe.
+            </Text>
+            <Text variant="body" style={{ color: tokens.textMuted, fontSize: "16px" }}>
+              Seu próximo momento começa aqui.
+            </Text>
+          </div>
+        </SectionContainer>
+
+        {/* PRIMARY HIERARCHY: 02 - NEXT BOX & 03 - QUICK MEMBERSHIP SUMMARY */}
+        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", width: "100%", alignItems: "stretch" }}>
+            
+            {/* 02 — NEXT BOX (PRIMARY FEATURE) */}
+            <Surface
+              style={{
+                background: tokens.surface,
+                border: `1px solid ${tokens.border}`,
+                borderRadius: "24px",
+                padding: "36px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: "24px",
+                boxSizing: "border-box",
+                gridColumn: "span 2"
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+                  <div>
+                    <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
+                      CAIXA DE SETEMBRO
+                    </span>
+                    <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "32px", margin: "4px 0 0 0", fontWeight: "700" }}>
+                      Minha próxima caixa
+                    </Text>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", background: tokens.surfaceContainer, padding: "6px 14px", borderRadius: "12px", border: `1px solid ${tokens.border}` }}>
+                    <TruckIcon size={18} color={tokens.copper} />
+                    <span style={{ color: tokens.text, fontSize: "13px", fontWeight: "600" }}>Entrega prevista para 12 de setembro</span>
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", background: tokens.surfaceContainer, borderRadius: "12px", border: `1px solid ${tokens.border}` }}>
+                  <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: tokens.copper, boxShadow: `0 0 10px ${tokens.copper}` }} />
+                  <span style={{ color: tokens.text, fontSize: "14px", fontWeight: "600" }}>Status: Preparando sua caixa</span>
+                </div>
+
+                {/* Preview dos Cortes */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <span style={{ fontSize: "12px", color: tokens.textMuted, fontWeight: "600", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    Cortes selecionados para esta caixa:
+                  </span>
+                  <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                    {nextBoxCuts.map((cut, idx) => (
+                      <div key={idx} style={{ background: "rgba(184, 115, 51, 0.08)", border: `1px solid rgba(184, 115, 51, 0.25)`, padding: "8px 16px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+                        <StoreIcon size={16} color={tokens.copper} />
+                        <span style={{ color: tokens.text, fontSize: "14px", fontWeight: "600" }}>{cut.name}</span>
+                        <span style={{ color: tokens.copper, fontSize: "12px", fontWeight: "700" }}>({cut.detail})</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Status Timeline Compacta */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: `1px solid ${tokens.border}`, fontSize: "12px" }}>
+                  <span style={{ color: tokens.text, fontWeight: "600" }}>✓ Pedido confirmado</span>
+                  <span style={{ color: tokens.copper, fontWeight: "700" }}>● Preparando</span>
+                  <span style={{ color: tokens.textMuted }}>○ Embalando</span>
+                  <span style={{ color: tokens.textMuted }}>○ Em trânsito</span>
+                </div>
+              </div>
+
+              {/* Rodapé do Card */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "16px", borderTop: `1px solid ${tokens.border}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <SnowflakeIcon size={16} color={tokens.copper} />
+                  <span style={{ color: tokens.textMuted, fontSize: "12px", fontWeight: "600" }}>Cadeia de frio garantida (-2°C)</span>
+                </div>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <Button appearance="outline" tone="neutral" size="sm" onClick={() => onNavigate && onNavigate("/portal-minha-caixa")}>
+                    Alterar caixa
+                  </Button>
+                  <Button appearance="solid" tone="primary" size="sm" onClick={() => onNavigate && onNavigate("/portal-minha-caixa")}>
+                    Ver minha caixa ➔
+                  </Button>
+                </div>
+              </div>
+            </Surface>
+
+            {/* 03 — QUICK MEMBERSHIP SUMMARY */}
+            <Surface
+              style={{
+                background: tokens.surface,
+                border: `1px solid ${tokens.border}`,
+                borderRadius: "24px",
+                padding: "36px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: "20px",
+                boxSizing: "border-box"
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div>
+                  <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
+                    SEU CLUBE
+                  </span>
+                  <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "28px", margin: "4px 0 0 0", fontWeight: "700" }}>
+                    Royal Prime Monthly
+                  </Text>
+                </div>
+
+                <div style={{ display: "inline-block", background: "rgba(34, 197, 94, 0.15)", color: "#22C55E", fontSize: "12px", fontWeight: "700", padding: "4px 10px", borderRadius: "8px", width: "fit-content" }}>
+                  Membro ativo
+                </div>
+
+                <div style={{ borderLeft: `3px solid ${tokens.copper}`, paddingLeft: "14px", display: "flex", flexDirection: "column", gap: "2px" }}>
+                  <span style={{ fontSize: "22px", fontWeight: "800", color: tokens.text }}>R$ 279 / mês</span>
+                  <span style={{ fontSize: "13px", color: tokens.textMuted }}>Próxima cobrança: 10 de setembro</span>
+                </div>
+              </div>
+
+              <Button appearance="outline" tone="neutral" size="sm" style={{ width: "100%" }} onClick={() => onNavigate && onNavigate("/portal-minha-conta")}>
+                Gerenciar assinatura
+              </Button>
+            </Surface>
+
+          </div>
+        </SectionContainer>
+
+        {/* SECONDARY HIERARCHY: 04 - RECENT BOX */}
+        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
           <Surface
             style={{
-              background: surface,
-              border: `1px solid ${border}`,
+              background: tokens.surface,
+              border: `1px solid ${tokens.border}`,
               borderRadius: "24px",
-              padding: "36px",
+              padding: "32px",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-between",
               gap: "24px",
               boxSizing: "border-box",
-              gridColumn: "span 2"
+              width: "100%"
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
-                <div>
-                  <span style={{ color: primary, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                    CAIXA DE SETEMBRO
-                  </span>
-                  <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "32px", margin: "4px 0 0 0", fontWeight: "700" }}>
-                    Minha próxima caixa
-                  </Text>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", background: surfaceContainer || surface, padding: "6px 14px", borderRadius: "12px", border: `1px solid ${border}` }}>
-                  <TruckIcon size={18} color={primary} />
-                  <span style={{ color: text, fontSize: "13px", fontWeight: "600" }}>Entrega prevista para 12 de setembro</span>
-                </div>
-              </div>
-
-              {/* Status */}
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", background: surfaceContainer || surface, borderRadius: "12px", border: `1px solid ${border}` }}>
-                <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: primary, boxShadow: `0 0 10px ${primary}` }} />
-                <span style={{ color: text, fontSize: "14px", fontWeight: "600" }}>Status: Preparando sua caixa</span>
-              </div>
-
-              {/* Preview dos Cortes */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <span style={{ fontSize: "12px", color: textMuted, fontWeight: "600", textTransform: "uppercase", letterSpacing: "1px" }}>
-                  Cortes selecionados para esta caixa:
-                </span>
-                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                  {nextBoxCuts.map((cut, idx) => (
-                    <div key={idx} style={{ background: "rgba(255,198,101,0.08)", border: `1px solid rgba(255,198,101,0.25)`, padding: "8px 16px", borderRadius: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
-                      <StoreIcon size={16} color={primary} />
-                      <span style={{ color: text, fontSize: "14px", fontWeight: "600" }}>{cut.name}</span>
-                      <span style={{ color: primary, fontSize: "12px", fontWeight: "700" }}>({cut.detail})</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Status Timeline Compacta */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: `1px solid ${border}`, fontSize: "12px" }}>
-                <span style={{ color: text, fontWeight: "600" }}>✓ Pedido confirmado</span>
-                <span style={{ color: primary, fontWeight: "700" }}>● Preparando</span>
-                <span style={{ color: textMuted }}>○ Embalando</span>
-                <span style={{ color: textMuted }}>○ Em trânsito</span>
-              </div>
-            </div>
-
-            {/* Rodapé do Card */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "16px", borderTop: `1px solid ${border}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <SnowflakeIcon size={16} color={primary} />
-                <span style={{ color: textMuted, fontSize: "12px", fontWeight: "600" }}>Cadeia de frio garantida (-2°C)</span>
-              </div>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <Button appearance="outline" tone="neutral" size="sm" onClick={() => onNavigate && onNavigate("/minha-caixa")}>
-                  Alterar caixa
-                </Button>
-                <Button appearance="solid" tone="primary" size="sm" onClick={() => onNavigate && onNavigate("/minha-caixa")}>
-                  Ver minha caixa ➔
-                </Button>
-              </div>
-            </div>
-          </Surface>
-
-          {/* 03 — QUICK MEMBERSHIP SUMMARY */}
-          <Surface
-            style={{
-              background: surface,
-              border: `1px solid ${border}`,
-              borderRadius: "24px",
-              padding: "36px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              gap: "20px",
-              boxSizing: "border-box"
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <span style={{ color: primary, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                  SEU CLUBE
+                <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
+                  ÚLTIMA CAIXA
                 </span>
-                <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "28px", margin: "4px 0 0 0", fontWeight: "700" }}>
-                  Royal Prime Monthly
+                <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "24px", margin: "2px 0 0 0", fontWeight: "700" }}>
+                  Caixa de Agosto — Entregue em 12 de agosto
                 </Text>
               </div>
-
-              <div style={{ display: "inline-block", background: "rgba(34, 197, 94, 0.15)", color: "#22C55E", fontSize: "12px", fontWeight: "700", padding: "4px 10px", borderRadius: "8px", width: "fit-content" }}>
-                Membro ativo
-              </div>
-
-              <div style={{ borderLeft: `3px solid ${primary}`, paddingLeft: "14px", display: "flex", flexDirection: "column", gap: "2px" }}>
-                <span style={{ fontSize: "22px", fontWeight: "800", color: text }}>R$ 279 / mês</span>
-                <span style={{ fontSize: "13px", color: textMuted }}>Próxima cobrança: 10 de setembro</span>
-              </div>
+              <span style={{ fontSize: "13px", color: tokens.copper, fontWeight: "700", cursor: "pointer" }} onClick={() => onNavigate && onNavigate("/portal-minha-caixa")}>
+                Ver caixa anterior ➔
+              </span>
             </div>
 
-            <Button appearance="outline" tone="neutral" size="sm" style={{ width: "100%" }} onClick={() => onNavigate && onNavigate("/meu-clube")}>
-              Gerenciar assinatura
-            </Button>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
+              {recentCuts.map((cut, idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "center", gap: "14px", background: tokens.surfaceContainer, padding: "12px", borderRadius: "16px", border: `1px solid ${tokens.border}` }}>
+                  <img src={cut.image} alt={cut.name} style={{ width: "56px", height: "56px", borderRadius: "10px", objectFit: "cover" }} />
+                  <span style={{ color: tokens.text, fontSize: "15px", fontWeight: "600" }}>{cut.name}</span>
+                </div>
+              ))}
+            </div>
           </Surface>
+        </SectionContainer>
 
-        </div>
-      </SectionContainer>
-
-      {/* SECONDARY HIERARCHY: 04 - RECENT BOX */}
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <Surface
-          style={{
-            background: surface,
-            border: `1px solid ${border}`,
-            borderRadius: "24px",
-            padding: "32px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "24px",
-            boxSizing: "border-box",
-            width: "100%"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        {/* DISCOVERY HIERARCHY: 05 - DISCOVER PREMIUM CUTS */}
+        <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+          <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
             <div>
-              <span style={{ color: primary, fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                ÚLTIMA CAIXA
-              </span>
-              <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "24px", margin: "2px 0 0 0", fontWeight: "700" }}>
-                Caixa de Agosto — Entregue em 12 de agosto
+              <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "36px", margin: 0, fontWeight: "700" }}>
+                Descubra novos cortes
+              </Text>
+              <Text variant="body" style={{ color: tokens.textMuted, fontSize: "16px", marginTop: "4px" }}>
+                Selecionados exclusivamente para membros Royal Prime.
               </Text>
             </div>
-            <span style={{ fontSize: "13px", color: primary, fontWeight: "700", cursor: "pointer" }} onClick={() => onNavigate && onNavigate("/minha-caixa")}>
-              Ver caixa anterior ➔
-            </span>
-          </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
-            {recentCuts.map((cut, idx) => (
-              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "14px", background: surfaceContainer || surface, padding: "12px", borderRadius: "16px", border: `1px solid ${border}` }}>
-                <img src={cut.image} alt={cut.name} style={{ width: "56px", height: "56px", borderRadius: "10px", objectFit: "cover" }} />
-                <span style={{ color: text, fontSize: "15px", fontWeight: "600" }}>{cut.name}</span>
-              </div>
-            ))}
-          </div>
-        </Surface>
-      </SectionContainer>
-
-      {/* DISCOVERY HIERARCHY: 05 - DISCOVER PREMIUM CUTS */}
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
-          <div>
-            <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "36px", margin: 0, fontWeight: "700" }}>
-              Descubra novos cortes
-            </Text>
-            <Text variant="body" style={{ color: textMuted, fontSize: "16px", marginTop: "4px" }}>
-              Selecionados exclusivamente para membros Royal Prime.
-            </Text>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", width: "100%" }}>
-            {discoverCuts.map((item, idx) => (
-              <Surface
-                key={idx}
-                style={{
-                  background: surface,
-                  border: `1px solid ${border}`,
-                  borderRadius: "24px",
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  boxSizing: "border-box"
-                }}
-              >
-                <div style={{ height: "240px", overflow: "hidden" }}>
-                  <img src={item.image} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </div>
-                <div style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "14px", flexGrow: 1 }}>
-                  <div>
-                    <Text variant="h3" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "22px", margin: 0, fontWeight: "700" }}>
-                      {item.title}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", width: "100%" }}>
+              {discoverCuts.map((item, idx) => (
+                <Surface
+                  key={idx}
+                  style={{
+                    background: tokens.surface,
+                    border: `1px solid ${tokens.border}`,
+                    borderRadius: "24px",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxSizing: "border-box"
+                  }}
+                >
+                  <div style={{ height: "240px", overflow: "hidden" }}>
+                    <img src={item.image} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  </div>
+                  <div style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "14px", flexGrow: 1 }}>
+                    <div>
+                      <Text variant="h3" style={{ fontFamily: "'Playfair Display', serif", color: tokens.text, fontSize: "22px", margin: 0, fontWeight: "700" }}>
+                        {item.title}
+                      </Text>
+                      <span style={{ fontSize: "12px", color: tokens.copper, fontWeight: "600", display: "block", marginTop: "2px" }}>
+                        {item.origin}
+                      </span>
+                    </div>
+                    <Text variant="body" style={{ color: tokens.textMuted, fontSize: "14px", fontStyle: "italic", lineHeight: 1.6, flexGrow: 1 }}>
+                      "{item.descriptor}"
                     </Text>
-                    <span style={{ fontSize: "12px", color: primary, fontWeight: "600", display: "block", marginTop: "2px" }}>
-                      {item.origin}
-                    </span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "14px", borderTop: `1px solid ${tokens.border}` }}>
+                      <span style={{ fontSize: "12px", color: tokens.textMuted }}>Disponível para você</span>
+                      <Button appearance="outline" tone="neutral" size="sm" onClick={() => onNavigate && onNavigate("/portal-cortes")}>
+                        Ver corte
+                      </Button>
+                    </div>
                   </div>
-                  <Text variant="body" style={{ color: textMuted, fontSize: "14px", fontStyle: "italic", lineHeight: 1.6, flexGrow: 1 }}>
-                    "{item.descriptor}"
-                  </Text>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "14px", borderTop: `1px solid ${border}` }}>
-                    <span style={{ fontSize: "12px", color: textMuted }}>Disponível para você</span>
-                    <Button appearance="outline" tone="neutral" size="sm" onClick={() => onNavigate && onNavigate("/cortes")}>
-                      Ver corte
-                    </Button>
-                  </div>
-                </div>
-              </Surface>
-            ))}
+                </Surface>
+              ))}
+            </div>
           </div>
-        </div>
-      </SectionContainer>
+        </SectionContainer>
+      </main>
+
+      {/* 2. BottomTabBar Mobile */}
+      <BottomTabBar activeTab="portal-home" onNavigate={onNavigate} isDark={isDark} />
+
+      {/* 3. Footer */}
+      <Footer onNavigate={onNavigate} isDark={isDark} />
     </div>
   );
 };

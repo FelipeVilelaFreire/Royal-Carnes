@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 import { FlameIcon, BoxIcon, CartIcon, UserIcon } from "./Icons";
 
 export interface BottomTabBarProps {
-  activeTab?: "home" | "hero" | "cortes" | "minha-caixa" | "perfil" | "meu-clube" | "minha-conta";
+  activeTab?: "home" | "hero" | "cortes" | "minha-caixa" | "perfil" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
   onNavigate?: (path: string) => void;
   isDark?: boolean;
 }
 
 export const BottomTabBar: React.FC<BottomTabBarProps> = ({
-  activeTab = "hero",
+  activeTab = "portal-home",
   onNavigate,
   isDark = false
 }) => {
@@ -38,10 +38,10 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   };
 
   const tabs = [
-    { key: "hero", label: "Início", path: "/hero", icon: FlameIcon },
-    { key: "cortes", label: "Cortes", path: "/cortes", icon: BoxIcon },
-    { key: "minha-caixa", label: "Caixa", path: "/minha-caixa", icon: CartIcon },
-    { key: "meu-clube", label: "Conta", path: "/minha-conta", icon: UserIcon }
+    { key: "portal-home", label: "Início", path: "/portal-home", icon: FlameIcon },
+    { key: "portal-cortes", label: "Cortes", path: "/portal-cortes", icon: BoxIcon },
+    { key: "portal-minha-caixa", label: "Caixa", path: "/portal-minha-caixa", icon: CartIcon },
+    { key: "portal-minha-conta", label: "Conta", path: "/portal-minha-conta", icon: UserIcon }
   ];
 
   return (
@@ -64,7 +64,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
     >
       {tabs.map((tab) => {
         const IconComponent = tab.icon;
-        const isActive = activeTab === tab.key || (activeTab === "home" && tab.key === "hero") || (activeTab === "minha-conta" && tab.key === "meu-clube");
+        const isActive = activeTab === tab.key || (activeTab === "home" && tab.key === "portal-home") || (activeTab === "hero" && tab.key === "portal-home") || (activeTab === "minha-conta" && tab.key === "portal-minha-conta");
         const iconColor = isActive ? colors.copper : colors.textMuted;
         return (
           <div
