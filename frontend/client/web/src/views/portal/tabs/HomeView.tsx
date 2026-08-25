@@ -330,9 +330,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </div>
         </section>
 
-        {/* NÍVEL 2: FILTRO DE CATEGORIAS (OCUPANDO 100% DA LARGURA EM GRID RESPONSIVO) */}
-        <section style={{ width: "100%", display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        {/* NÍVEL 2: FILTRO DE CATEGORIAS (ESTILO CIRCULAR GOURMET A 100% DA LARGURA) */}
+        <section style={{ width: "100%", display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
             <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: 0, color: tokens.text }}>
               Navegue por Categoria
             </h3>
@@ -344,50 +344,70 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-              gap: "14px",
-              width: "100%"
+              gridTemplateColumns: "repeat(auto-fit, minmax(115px, 1fr))",
+              gap: "16px",
+              width: "100%",
+              justifyItems: "center"
             }}
           >
             {categories.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
-                <button
+                <div
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
                   style={{
-                    background: isActive ? tokens.copper : tokens.surfaceContainer,
-                    color: isActive ? "#FFFFFF" : tokens.text,
-                    border: `1px solid ${isActive ? tokens.copper : tokens.border}`,
-                    borderRadius: "14px",
-                    padding: "14px 16px",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center",
-                    gap: "8px",
+                    gap: "10px",
                     cursor: "pointer",
-                    boxShadow: isActive ? "0 6px 16px rgba(184, 115, 51, 0.3)" : "none",
-                    transition: "all 0.2s ease"
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = tokens.copper;
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.borderColor = tokens.border;
-                      e.currentTarget.style.transform = "translateY(0)";
-                    }
+                    width: "100%"
                   }}
                 >
-                  <span style={{ fontSize: "24px" }}>{cat.icon}</span>
-                  <span style={{ fontSize: "13px", fontWeight: isActive ? "700" : "600", whiteSpace: "nowrap" }}>
+                  <div
+                    style={{
+                      width: "76px",
+                      height: "76px",
+                      borderRadius: "50%",
+                      background: isActive ? tokens.copper : tokens.surfaceContainer,
+                      border: `2px solid ${isActive ? tokens.copper : tokens.border}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "30px",
+                      boxShadow: isActive ? "0 6px 20px rgba(184, 115, 51, 0.4)" : "none",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = tokens.copper;
+                        e.currentTarget.style.transform = "translateY(-4px)";
+                        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = tokens.border;
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "none";
+                      }
+                    }}
+                  >
+                    {cat.icon}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: isActive ? "700" : "600",
+                      color: isActive ? tokens.copper : tokens.text,
+                      textAlign: "center",
+                      lineHeight: "1.2"
+                    }}
+                  >
                     {cat.name}
                   </span>
-                </button>
+                </div>
               );
             })}
           </div>
