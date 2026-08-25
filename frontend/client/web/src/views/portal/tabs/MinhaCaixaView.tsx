@@ -493,30 +493,134 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
 
             {/* Histórico de Caixas Anteriores Entregues */}
             <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "16px" }}>
-              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px" }}>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "24px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                  Histórico de Caixas Anteriores
-                </h3>
+              <div style={{ borderBottom: `1px solid ${tokens.border}`, paddingBottom: "12px", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <div>
+                  <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper, display: "block", marginBottom: "4px" }}>
+                    RECORRÊNCIA DO CLUBE
+                  </span>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "24px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                    Histórico de Caixas Anteriores
+                  </h3>
+                </div>
+                <span style={{ fontSize: "13px", color: tokens.textMuted }}>
+                  Repita sua combinação favorita em 1 clique
+                </span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "20px", borderRadius: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <BoxIcon size={22} color={tokens.copper} />
-                    </div>
-                    <div>
-                      <span style={{ fontSize: "11px", fontWeight: "700", color: tokens.copper, textTransform: "uppercase" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {/* Caixa 1: Agosto */}
+                <Card
+                  variant="surface"
+                  bordered
+                  hoverable
+                  isDark={isDark}
+                  style={{
+                    padding: "20px 24px",
+                    borderRadius: "18px",
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr auto",
+                    gap: "24px",
+                    alignItems: "flex-start",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                  }}
+                >
+                  <div style={{ width: "76px", height: "76px", borderRadius: "12px", overflow: "hidden", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, flexShrink: 0 }}>
+                    <img
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEyZehgZTv-CyocAVQn0YBZaQ9k5T1yspu9TOTY_a2Ecdie4GqgKNWW_cnd5ZAUuPMshFRWia6eq5Ej3-UQ2L2nImpVVKTr0yfEodgUEJQUsZVZLYiBoQliyrqEezNzVT5XxtmK1ozhqsDd4j-LQyV7RlT1CqQedpMs5qhbesB5PDF1_G10G7rQDZ3U7cedVIHcBedWSA27GA_gQjpXRlZttOTKwJI8hFUgSAUtoBMQmTuk7GfbhUo"
+                      alt="Caixa de Agosto"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
                         ENTREGUE • 12 AGO 2026
                       </span>
-                      <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: "2px 0 0 0", color: tokens.text }}>
-                        Caixa de Agosto — Master Churrasco
-                      </h4>
+                      <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "2px 8px", borderRadius: "4px" }}>
+                        RECORRÊNCIA CONFIRMADA
+                      </span>
                     </div>
+
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "19px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                      Caixa de Agosto — Master Churrasco
+                    </h4>
+                    <span style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: "1.4" }}>
+                      5 itens • 6.0kg • Picanha Steakhouse, Ancho, Tomahawk & Brinde Faca Artesanal
+                    </span>
                   </div>
-                  <Button variant="outline" size="sm" isDark={isDark}>
-                    Repetir Caixa
-                  </Button>
+
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
+                    <span style={{ fontSize: "20px", fontWeight: "700", color: tokens.copper }}>
+                      R$ 875,00
+                    </span>
+                    <Button
+                      variant="accent"
+                      size="sm"
+                      onClick={() => alert("Combinação da Caixa de Agosto aplicada à sua próxima entrega!")}
+                      style={{ transition: "all 0.3s ease" }}
+                    >
+                      Repetir esta caixa ➔
+                    </Button>
+                  </div>
+                </Card>
+
+                {/* Caixa 2: Julho */}
+                <Card
+                  variant="surface"
+                  bordered
+                  hoverable
+                  isDark={isDark}
+                  style={{
+                    padding: "20px 24px",
+                    borderRadius: "18px",
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr auto",
+                    gap: "24px",
+                    alignItems: "flex-start",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                  }}
+                >
+                  <div style={{ width: "76px", height: "76px", borderRadius: "12px", overflow: "hidden", background: tokens.surfaceContainer, border: `1px solid ${tokens.border}`, flexShrink: 0 }}>
+                    <img
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTWZZGOFHbj0Sh572RQ-2vs3emWIEGZWsTB1lYtPYcSjPGcOa9mDPiwX1GCl8gPBNEHqbv95kZnUF7gTwJASw-4aHOZWp1IUKwwTioZC70OM608r9UjPQKMk5Jw4B1qibJodt1tlgo4WyBhdw3iIDeBFHpi2CQBi4BqAaFV2b7RZGuMUPGAkZOHP76xP0TR6KM5dqPFvrumlSXF85A9N100tBX7rkGd__CupxrUAHLYbt5YnwVk0e-"
+                      alt="Caixa de Julho"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
+                        ENTREGUE • 12 JUL 2026
+                      </span>
+                      <span style={{ fontSize: "11px", fontWeight: "700", color: "#22C55E", background: "rgba(34, 197, 94, 0.12)", padding: "2px 8px", borderRadius: "4px" }}>
+                        RECORRÊNCIA CONFIRMADA
+                      </span>
+                    </div>
+
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "19px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                      Caixa de Julho — Selection Wagyu & Angus
+                    </h4>
+                    <span style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: "1.4" }}>
+                      4 itens • 4.5kg • Wagyu A5 Striploin, Picanha Prime & Chorizo
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
+                    <span style={{ fontSize: "20px", fontWeight: "700", color: tokens.copper }}>
+                      R$ 780,00
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      isDark={isDark}
+                      onClick={() => alert("Combinação da Caixa de Julho aplicada à sua próxima entrega!")}
+                      style={{ transition: "all 0.3s ease" }}
+                    >
+                      Repetir esta caixa ➔
+                    </Button>
+                  </div>
                 </Card>
               </div>
             </div>
