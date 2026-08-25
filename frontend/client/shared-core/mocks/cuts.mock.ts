@@ -299,7 +299,7 @@ export const mockCutsCatalog: CutProduct[] = [
     line: "Linha Prime Angus",
     origin: "Argentina",
     preparation: "Parrilla Forte",
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "cut-21",
@@ -444,7 +444,7 @@ export const mockCutsCatalog: CutProduct[] = [
     line: "Linha Prime Angus",
     origin: "Brasil",
     preparation: "Grelha / Frigideira",
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=1000&auto=format&fit=crop"
   },
   {
     id: "cut-32",
