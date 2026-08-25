@@ -1,0 +1,44 @@
+:root {
+  /* Receitas de Superfície (Surface) */
+  --semicomposed--surface-bg: var(--theme--color-surface);
+  --semicomposed--surface-border: 1px solid rgba(255, 255, 255, 0.08);
+  --semicomposed--surface-radius: var(--theme--radius-lg);
+  --semicomposed--surface-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+  --semicomposed--glass-bg: rgba(30, 30, 30, 0.75);
+  --semicomposed--glass-border: 1px solid rgba(212, 175, 55, 0.25);
+  --semicomposed--glass-blur: blur(16px);
+
+  /* Receitas de Botão (Button) */
+  --semicomposed--button-radius: var(--theme--radius-md);
+
+  /* Appearance Solid */
+  --semicomposed--button-bg-solid: var(--theme--color-primary);
+  --semicomposed--button-color-solid: #121212;
+  --semicomposed--button-border-solid: none;
+
+  /* Appearance Glass */
+  --semicomposed--button-bg-glass: rgba(212, 175, 55, 0.15);
+  --semicomposed--button-color-glass: var(--theme--color-primary);
+  --semicomposed--button-border-glass: 1px solid var(--theme--color-primary);
+  --semicomposed--button-blur-glass: blur(12px);
+
+  /* Appearance Outline */
+  --semicomposed--button-bg-outline: transparent;
+  --semicomposed--button-color-outline: var(--theme--color-text);
+  --semicomposed--button-border-outline: 1px solid var(--theme--color-text-muted);
+}
+
+.surface-solid {
+  background: var(--semicomposed--surface-bg);
+  border: var(--semicomposed--surface-border);
+  border-radius: var(--semicomposed--surface-radius);
+  box-shadow: var(--semicomposed--surface-shadow);
+}
+
+.surface-glass {
+  background: var(--semicomposed--glass-bg);
+  border: var(--semicomposed--glass-border);
+  backdrop-filter: var(--semicomposed--glass-blur);
+  border-radius: var(--semicomposed--surface-radius);
+}

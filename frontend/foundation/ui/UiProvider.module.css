@@ -1,0 +1,27 @@
+.root {
+  --ui-glass-accent:var(--color-border);
+  --ui-glass-blur:18px;
+  --ui-glass-opacity:72%;
+  --ui-glass-material:
+    linear-gradient(145deg,color-mix(in srgb,var(--color-surface) 42%,transparent),color-mix(in srgb,var(--color-surface-muted) 18%,transparent) 52%,transparent 82%),
+    color-mix(in srgb,var(--ui-glass-surface-token,var(--color-surface)) var(--ui-glass-opacity),transparent);
+  --ui-glass-border:color-mix(in srgb,var(--ui-glass-border-token,var(--color-border)) 82%,transparent);
+  --ui-glass-filter:blur(var(--ui-glass-blur)) saturate(118%) contrast(102%);
+  --ui-glass-shadow:0 18px 52px color-mix(in srgb,var(--color-scrim) 16%,transparent),inset 0 1px 0 color-mix(in srgb,var(--color-surface-elevated) 34%,transparent),inset 0 -1px 0 color-mix(in srgb,var(--color-border) 28%,transparent);
+  --ui-glass-shadow-compact:0 8px 24px color-mix(in srgb,var(--color-scrim) 12%,transparent),inset 0 1px 0 color-mix(in srgb,var(--color-surface-elevated) 30%,transparent);
+}
+.root:global([data-ui-material="glass"]),.root :global([data-ui-material="glass"]) {
+  --ui-glass-material:
+    linear-gradient(145deg,color-mix(in srgb,var(--color-surface) 42%,transparent),color-mix(in srgb,var(--color-surface-muted) 18%,transparent) 52%,transparent 82%),
+    color-mix(in srgb,var(--ui-glass-surface-token,var(--color-surface)) var(--ui-glass-opacity),transparent);
+  --ui-glass-border:color-mix(in srgb,var(--ui-glass-border-token,var(--color-border)) 82%,transparent);
+  --ui-glass-filter:blur(var(--ui-glass-blur)) saturate(118%) contrast(102%);
+  --ui-glass-shadow:0 18px 52px color-mix(in srgb,var(--color-scrim) 16%,transparent),inset 0 1px 0 color-mix(in srgb,var(--color-surface-elevated) 34%,transparent),inset 0 -1px 0 color-mix(in srgb,var(--color-border) 28%,transparent);
+  --ui-glass-shadow-compact:0 8px 24px color-mix(in srgb,var(--color-scrim) 12%,transparent),inset 0 1px 0 color-mix(in srgb,var(--color-surface-elevated) 30%,transparent);
+}
+.root { font-family:var(--font-body); font-size:var(--font-size-md); line-height:var(--line-height-normal); min-height:inherit; position:relative; width:100%; }
+.root :is(h1,h2,h3,h4,h5,h6) { font-family:var(--font-heading); }
+.stage { min-height:inherit; transform-origin:top center; transition:border-radius var(--ui-background-stack-duration,220ms) cubic-bezier(.22,1,.36,1),transform var(--ui-background-stack-duration,220ms) cubic-bezier(.22,1,.36,1); width:100%; }
+.root[data-ui-background-scaled="true"] .stage { border-radius:32px; overflow:hidden; transform:scale(.94) translateY(calc(var(--motion-distance-lg,16px) * -1)); }
+.overlayHost { display:contents; }
+@media(prefers-reduced-motion:reduce){.stage{transition:none}}

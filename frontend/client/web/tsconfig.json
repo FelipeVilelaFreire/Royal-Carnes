@@ -1,0 +1,72 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/design-system/*": [
+        "src/design-system/*"
+      ],
+      "@/design-system": [
+        "src/design-system/index"
+      ],
+      "@/mocks/*": [
+        "../shared-core/mocks/*"
+      ],
+      "@/manifest/*": [
+        "../shared-core/manifest/*"
+      ],
+      "@/*": [
+        "./*"
+      ],
+      "@shared-core/*": [
+        "../../shared-core/*"
+      ],
+      "@foundation/*": [
+        "../../foundation/*"
+      ],
+      "@serviceos/ui-core": [
+        "../../foundation/ui/core"
+      ],
+      "@serviceos/semi-composed-core": [
+        "../../foundation/semi-composed/core"
+      ],
+      "@serviceos/semi-composed-web": [
+        "../../foundation/semi-composed"
+      ],
+      "@serviceos/theme-core": [
+        "../../foundation/tokens"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

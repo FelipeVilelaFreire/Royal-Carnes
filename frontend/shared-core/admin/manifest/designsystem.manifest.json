@@ -1,0 +1,13 @@
+{
+  "theme": {
+    "name": "PrimeCut Admin Operational Slate",
+    "tokens": {
+      "colorPrimary": "#2563EB",
+      "colorBackground": "#0F172A",
+      "colorSurface": "#1E293B",
+      "colorText": "#F8FAFC",
+      "colorTextMuted": "#94A3B8"
+    },
+    "surfaceDensity": "compact"
+  }
+}

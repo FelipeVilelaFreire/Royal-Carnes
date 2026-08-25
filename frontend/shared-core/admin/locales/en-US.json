@@ -1,0 +1,9 @@
+{
+  "adminDashboardTitle": "Prime Cut Club Back-office Operations",
+  "modSubscribers": "Active Subscribers",
+  "modDeliveries": "Dispatch Queue",
+  "modPlans": "Plans & Cuts",
+  "modAnalytics": "Recurring Revenue",
+  "btnExportBatch": "Export Delivery Batch",
+  "btnNewPlan": "Add Cut/Plan"
+}

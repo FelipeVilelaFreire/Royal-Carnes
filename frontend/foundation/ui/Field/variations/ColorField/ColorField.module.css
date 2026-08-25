@@ -1,0 +1,34 @@
+.content {
+  display: grid;
+  gap: var(--ui-color-field-content-gap);
+  min-width: 0;
+}
+
+.swatch {
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.tracker {
+  align-items: flex-end;
+  background: var(--ui-color-field-value);
+  border-radius: inherit;
+  box-sizing: border-box;
+  display: flex;
+  min-height: var(--ui-color-field-preview-height);
+  padding: var(--ui-color-field-content-gap);
+}
+
+.swatch[data-preview="bar"] .tracker {
+  align-items: center;
+}
+
+.picker {
+  cursor: pointer;
+  height: 100%;
+  inset: 0;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+}

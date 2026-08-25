@@ -1,0 +1,48 @@
+.divider {
+  box-sizing: border-box;
+  color: var(--ui-divider-color);
+  display: flex;
+  max-width: 100%;
+  min-width: 0;
+  transition:
+    margin var(--ui-divider-duration) var(--ui-divider-easing),
+    opacity var(--ui-divider-duration) var(--ui-divider-easing),
+    width var(--ui-divider-duration) var(--ui-divider-easing);
+}
+
+.line {
+  background: currentColor;
+  border-radius: var(--ui-divider-radius);
+  display: block;
+  opacity: var(--ui-divider-opacity);
+}
+
+.divider[data-width="full"] {
+  width: 100%;
+}
+
+.divider[data-width="content"] {
+  width: max-content;
+}
+
+.divider[data-orientation="horizontal"] {
+  align-items: center;
+  margin-block: var(--ui-divider-spacing);
+}
+
+.divider[data-orientation="horizontal"] .line {
+  block-size: var(--ui-divider-thickness);
+  inline-size: 100%;
+}
+
+.divider[data-orientation="vertical"] {
+  align-self: stretch;
+  justify-content: center;
+  margin-inline: var(--ui-divider-spacing);
+  width: var(--ui-divider-thickness);
+}
+
+.divider[data-orientation="vertical"] .line {
+  block-size: 100%;
+  inline-size: var(--ui-divider-thickness);
+}

@@ -1,0 +1,27 @@
+.field {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-field-control-gap);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.field[data-width="full"] {
+  width: 100%;
+}
+
+.field[data-width="content"] {
+  width: max-content;
+}
+
+.header,
+.feedback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-field-text-gap);
+}
+
+.controlSlot {
+  min-width: 0;
+}

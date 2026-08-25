@@ -1,0 +1,28 @@
+{
+  "modules": [
+    {
+      "key": "subscribers",
+      "label": "Assinantes",
+      "path": "/admin/subscribers",
+      "icon": "users"
+    },
+    {
+      "key": "deliveries",
+      "label": "Fila de Entregas",
+      "path": "/admin/deliveries",
+      "icon": "truck"
+    },
+    {
+      "key": "plans_management",
+      "label": "Gestão de Planos",
+      "path": "/admin/plans",
+      "icon": "package"
+    },
+    {
+      "key": "analytics",
+      "label": "Métricas & Faturamento",
+      "path": "/admin/analytics",
+      "icon": "bar-chart"
+    }
+  ]
+}
