@@ -5,11 +5,11 @@ export const adminPtBR = {
   },
   navigation: {
     dashboard: "Dashboard",
-    cortes: "Catálogo de Cortes",
-    caixas: "Despacho de Caixas",
-    socios: "Gestão de Sócios",
-    historico: "Histórico & Auditoria",
-    lixeira: "Lixeira",
+    produtos: "Produtos",
+    usuarios: "Usuários",
+    assinaturas: "Assinaturas",
+    pedidos: "Pedidos",
+    deliveries: "Deliveries",
     configuracoes: "Configurações"
   },
   common: {
@@ -29,10 +29,7 @@ export const adminPtBR = {
     statusActive: "Ativo",
     statusPending: "Pendente",
     statusPacking: "Embalagem",
-    statusPaused: "Pausado",
-    statusAvailable: "Disponível",
-    statusReserved: "Reservado",
-    statusSoldOut: "Esgotado"
+    statusPaused: "Pausado"
   },
   dashboard: {
     title: "Dashboard Operacional",
@@ -55,22 +52,62 @@ export const adminPtBR = {
       date: "Data"
     }
   },
-  cortes: {
-    title: "Catálogo de Cortes Premium",
-    subtitle: "Inventário de Wagyu A5, Dry-Aged, Picanha e cortes especiais de temporada",
-    ctaAdd: "+ Novo Corte",
+  produtos: {
+    title: "Catálogo de Produtos Nobres",
+    subtitle: "Gestão de inventário, maturação e disponibilidade do e-commerce.",
+    ctaAdd: "+ Novo Produto",
     tableHeaders: {
-      name: "Corte",
+      name: "Produto",
       category: "Categoria",
       aging: "Maturação",
       stock: "Estoque (kg)",
-      price: "Preço/kg",
+      price: "Preço",
       status: "Disponibilidade"
     }
   },
-  caixas: {
-    title: "Central de Expedição & Caixas Térmicas",
-    subtitle: "Fila de embalagem a vácuo, controle de temperatura -2°C e códigos de rastreio",
+  usuarios: {
+    title: "Gestão de Usuários & Clientes",
+    subtitle: "Cadastro base de clientes e membros ativos da plataforma.",
+    ctaAdd: "+ Novo Usuário",
+    tableHeaders: {
+      customerName: "Cliente",
+      email: "E-mail",
+      planName: "Plano Ativo",
+      priceMonthly: "Valor Mensal",
+      status: "Status",
+      joinedDate: "Membro Desde"
+    }
+  },
+  assinaturas: {
+    title: "Gestão de Assinaturas Royal Box",
+    subtitle: "Contratos ativos, planos (Royal Pro, Basic), renovações e ciclos.",
+    ctaAdd: "+ Nova Assinatura",
+    tableHeaders: {
+      customerName: "Sócio Assinante",
+      planName: "Plano Contratado",
+      priceMonthly: "Mensalidade",
+      cycleCurrent: "Ciclo Atual",
+      nextBillingDate: "Próxima Cobrança",
+      status: "Status"
+    }
+  },
+  pedidos: {
+    title: "Gestão de Pedidos Comerciais",
+    subtitle: "Acompanhamento de pedidos comerciais (#RD-8492, #RS-2026-09A/B) e histórico de compras.",
+    ctaAdd: "+ Novo Pedido",
+    tableHeaders: {
+      code: "Código #",
+      customerName: "Cliente",
+      kindLabel: "Tipo de Pedido",
+      summary: "Resumo dos Itens",
+      total: "Valor Total",
+      status: "Status",
+      createdAt: "Data do Pedido"
+    }
+  },
+  deliveries: {
+    title: "Esteira de Deliveries & Expedição Logística",
+    subtitle: "Fila de embalagem a vácuo, controle de temperatura -2°C e expedição de caixas físicas.",
     ctaBatchDispatch: "Iniciar Despacho em Lote",
     tableHeaders: {
       id: "Caixa #",
@@ -78,39 +115,6 @@ export const adminPtBR = {
       planName: "Plano",
       status: "Status Envio",
       scheduledDate: "Data Agendada"
-    }
-  },
-  socios: {
-    title: "Gestão de Sócios Assinantes",
-    subtitle: "Contratos ativos, histórico de cobranças e controle de retenção",
-    tableHeaders: {
-      customerName: "Cliente",
-      planName: "Plano",
-      priceMonthly: "Valor Mensal",
-      status: "Status",
-      joinedDate: "Data de Início"
-    }
-  },
-  historico: {
-    title: "Histórico & Auditoria do Sistema",
-    subtitle: "Registro imutável de eventos de despacho, auditoria e alterações da plataforma.",
-    tableHeaders: {
-      event: "Evento",
-      description: "Descrição",
-      actor: "Autor",
-      date: "Data"
-    }
-  },
-  lixeira: {
-    title: "Lixeira do Sistema",
-    subtitle: "Itens removidos recentemente com retenção temporária de 30 dias para recuperação.",
-    emptyText: "Nenhum item na lixeira.",
-    tableHeaders: {
-      title: "Item / Registro",
-      type: "Tipo",
-      deletedBy: "Removido por",
-      deletedAt: "Data Remoção",
-      retention: "Retenção"
     }
   },
   configuracoes: {

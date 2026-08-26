@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Badge, Button, Card } from "../../../legacy/design-system";
 import { AuthModal, PortalHeader, BottomTabBar, Footer } from "../../../legacy/app-shell";
-import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
 import { CreditCardIcon, EditIcon, GiftIcon, TruckIcon, StarIcon, CheckIcon, CutMeatIcon, ScaleIcon, KnifeIcon, UserIcon } from "../../../legacy/design-system/Icons";
 import { OrderDetailModal } from "../../../product-components/ecommerce";
 import {
@@ -148,6 +148,21 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
   const formatPlanPrice = (plan: SubscriptionPlanMock) => plan.monthlyPrice.toLocaleString("pt-BR");
   const formatOrderTotal = (order: { kind: string; payment: { totalLabel: string } }) =>
     order.kind === "subscriptionCycle" ? order.payment.totalLabel : `R$ ${order.payment.totalLabel}`;
+  const getStatusTokens = (status: RoyalCustomerOrder["status"]) => {
+    if (status === "delivered") return { color: themeTokens.colors.statusActive, background: isDark ? "rgba(16, 185, 129, 0.14)" : "rgba(16, 185, 129, 0.1)", border: "rgba(16, 185, 129, 0.32)" };
+    if (status === "cancelled") return { color: themeTokens.colors.statusCanceled, background: isDark ? "rgba(239, 68, 68, 0.14)" : "rgba(239, 68, 68, 0.1)", border: "rgba(239, 68, 68, 0.32)" };
+    if (status === "sentToStore") return { color: themeTokens.colors.statusPaused, background: isDark ? "rgba(245, 158, 11, 0.14)" : "rgba(245, 158, 11, 0.1)", border: "rgba(245, 158, 11, 0.32)" };
+    return { color: tokens.copper, background: isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)", border: isDark ? "rgba(184, 115, 51, 0.32)" : "rgba(184, 115, 51, 0.26)" };
+  };
+  const renderStatusPill = (order: RoyalCustomerOrder) => {
+    const statusTokens = getStatusTokens(order.status);
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "7px", width: "fit-content", border: `1px solid ${statusTokens.border}`, borderRadius: "999px", background: statusTokens.background, color: statusTokens.color, padding: "6px 10px", fontSize: "12px", fontWeight: 800 }}>
+        <span style={{ width: "7px", height: "7px", borderRadius: "999px", background: statusTokens.color, boxShadow: `0 0 8px ${statusTokens.color}` }} />
+        {royalOrderStatusLabels[order.status]}
+      </span>
+    );
+  };
   const usagePercent = (used: number, limit: number) => Math.round((used / limit) * 100);
   const getPlanLabel = (plan: SubscriptionPlanMock) => `Royal ${plan.name}`;
   const getPlanCapacitySummary = (plan: SubscriptionPlanMock) => [
@@ -822,7 +837,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         <span style={{ color: tokens.textMuted, fontSize: "12px", fontWeight: 800 }}>{currentOrder.code}</span>
                       </div>
                       <div>
-                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "24px", fontWeight: "700", margin: 0, color: tokens.text }}>
+                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "24px", fontWeight: "700", margin: 0, color: getStatusTokens(currentOrder.status).color }}>
                           {royalOrderStatusLabels[currentOrder.status]}
                         </h4>
                         <p style={{ margin: "6px 0 0", color: tokens.textMuted, fontSize: "14px", lineHeight: 1.5 }}>
@@ -852,7 +867,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                     <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "10px", background: tokens.background }}>
                       {currentOrder.timeline.map((step) => (
                         <div key={step.status} style={{ display: "flex", alignItems: "center", gap: "10px", color: step.completed ? tokens.text : tokens.textMuted, fontSize: "12px", fontWeight: step.completed ? 800 : 600 }}>
-                          <span style={{ width: "9px", height: "9px", borderRadius: "999px", background: step.completed ? tokens.copper : tokens.border, flexShrink: 0 }} />
+                          <span style={{ width: "9px", height: "9px", borderRadius: "999px", background: step.completed ? themeTokens.colors.statusActive : tokens.border, flexShrink: 0 }} />
                           {step.label}
                         </div>
                       ))}
@@ -883,10 +898,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.text }}>
                           {formatOrderTotal(order)}
                         </span>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: tokens.copper, boxShadow: `0 0 8px ${tokens.copper}` }} />
-                          <span style={{ fontSize: "12px", fontWeight: "700", color: tokens.copper }}>{royalOrderStatusLabels[order.status]}</span>
-                        </div>
+                        {renderStatusPill(order)}
                         <Button variant="outline" size="sm" isDark={isDark} onClick={() => setSelectedOrder(order)}>
                           Ver detalhes
                         </Button>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Input } from "../../../legacy/design-system";
-import { BottomTabBar, PortalHeader } from "../../../legacy/app-shell";
+import { AuthModal, BottomTabBar, PortalHeader } from "../../../legacy/app-shell";
 import {
   BoxIcon,
   CartIcon,
@@ -22,6 +22,8 @@ import {
   productCategoriesMock,
   productsMock
 } from "@/mocks/catalog";
+import { royalCustomerMock } from "@/mocks/customer.mock";
+import { royalCustomerOrdersMock } from "@/mocks/orders";
 import { freightOptionsMock, freightPoliciesMock, type FreightOptionKey } from "@/mocks/freight.mock";
 import { paymentInstallmentsMock, paymentMethodsMock, type PaymentMethodKey } from "@/mocks/payment.mock";
 import type { Product, ProductExperience, SubscriptionTier } from "@/mocks/catalog";
@@ -81,6 +83,14 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   const [selectedDeliveryDay, setSelectedDeliveryDay] = useState(10);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodKey>("creditCard");
   const [selectedInstallments, setSelectedInstallments] = useState(1);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isMockAuthenticated, setIsMockAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("royal_prime_mock_authenticated") === "true";
+    }
+    return false;
+  });
+  const [pendingStepAfterAuth, setPendingStepAfterAuth] = useState<PedidoStep | null>(null);
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -89,8 +99,15 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         setThemeMode(current);
       }
     };
+    const handleAuthChange = () => {
+      setIsMockAuthenticated(localStorage.getItem("royal_prime_mock_authenticated") === "true");
+    };
     window.addEventListener("royal_theme_changed", handleThemeChange);
-    return () => window.removeEventListener("royal_theme_changed", handleThemeChange);
+    window.addEventListener("royal_auth_changed", handleAuthChange);
+    return () => {
+      window.removeEventListener("royal_theme_changed", handleThemeChange);
+      window.removeEventListener("royal_auth_changed", handleAuthChange);
+    };
   }, []);
 
   const isDark = themeMode === "dark";
@@ -98,6 +115,22 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   const strings = clientPtBR.pedido;
   const selectedPlan = catalogSubscriptionPlansMock.find((plan) => plan.key === selectedPlanKey) || catalogSubscriptionPlansMock[0];
   const hasMode = Boolean(selectedMode);
+  const activeSubscription = isMockAuthenticated ? royalCustomerMock.activeSubscription : undefined;
+  const activeSubscriptionPlan = activeSubscription
+    ? catalogSubscriptionPlansMock.find((plan) => plan.key === activeSubscription.planKey)
+    : undefined;
+  const activeSubscriptionOrder = activeSubscription
+    ? royalCustomerOrdersMock.find((order) =>
+        order.customerId === royalCustomerMock.id &&
+        order.subscriptionId === activeSubscription.id &&
+        order.kind === "subscriptionCycle" &&
+        order.status !== "delivered" &&
+        order.status !== "cancelled"
+      )
+    : undefined;
+  const activeCycleUsage = activeSubscriptionOrder?.cycleUsage;
+  const activeSubscriptionLabel = activeSubscriptionPlan ? `Royal ${activeSubscriptionPlan.name}` : "";
+  const subscriptionSummaryUsage = selectedMode === "subscription" && activeCycleUsage ? activeCycleUsage : null;
   const deliveryCopy = selectedMode ? strings.deliveryStep[selectedMode] : null;
   const paymentCopy = strings.paymentStep;
   const reviewCopy = strings.reviewStep;
@@ -136,6 +169,23 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
       document.documentElement.setAttribute("data-theme", next);
     }
     window.dispatchEvent(new Event("royal_theme_changed"));
+  };
+
+  const requestProtectedStep = (step: PedidoStep) => {
+    if (isMockAuthenticated) {
+      setCurrentStep(step);
+      return;
+    }
+    setPendingStepAfterAuth(step);
+    setIsAuthModalOpen(true);
+  };
+
+  const handleAuthenticatedCheckout = () => {
+    setIsMockAuthenticated(true);
+    if (pendingStepAfterAuth) {
+      setCurrentStep(pendingStepAfterAuth);
+      setPendingStepAfterAuth(null);
+    }
   };
 
   const categoryById = useMemo(
@@ -420,6 +470,21 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
             const modeCopy = strings.modes[mode];
             const Icon = modeIcons[mode];
             const isActive = selectedMode === mode;
+            const isActiveSubscriptionMode = mode === "subscription" && Boolean(activeSubscription && activeSubscriptionPlan);
+            const modeEyebrow = isActiveSubscriptionMode ? activeSubscriptionLabel : modeCopy.eyebrow;
+            const modeTitle = isActiveSubscriptionMode ? strings.summary.activeSubscriptionMode : modeCopy.title;
+            const modeDescription = isActiveSubscriptionMode
+              ? `${strings.summary.activeCycleDescriptionPrefix} ${activeSubscriptionLabel}.`
+              : modeCopy.description;
+            const modeDetails = isActiveSubscriptionMode
+              ? [
+                  `${strings.summary.subscriptionRenewPrefix} ${activeSubscription?.nextBillingLabel}`,
+                  activeSubscription?.nextDeliveryLabel ? `${strings.summary.nextDeliveryPrefix} ${activeSubscription.nextDeliveryLabel}` : strings.summary.currentCycleFallback,
+                  activeCycleUsage
+                    ? `${formatMeasure(activeCycleUsage.weightKgUsed, "kg")}/${formatMeasure(activeCycleUsage.weightKgLimit, "kg")} ${strings.summary.cycleUsedSuffix}`
+                    : strings.summary.currentCycleFallback
+                ]
+              : modeCopy.details;
             return (
               <button
                 className="pedido-mode-card"
@@ -479,7 +544,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                           marginBottom: "7px"
                         }}
                       >
-                        {modeCopy.eyebrow}
+                        {modeEyebrow}
                       </span>
                       <span
                         style={{
@@ -491,8 +556,13 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                           lineHeight: 1.08
                         }}
                       >
-                        {modeCopy.title}
+                        {modeTitle}
                       </span>
+                      {isActiveSubscriptionMode ? (
+                        <span style={{ display: "inline-flex", width: "fit-content", marginTop: "8px", border: `1px solid ${tokens.copper}`, borderRadius: "999px", color: tokens.copper, padding: "5px 9px", fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                          {strings.summary.activeSubscriptionBadge}
+                        </span>
+                      ) : null}
                     </span>
                   </div>
                   {isActive ? (
@@ -515,12 +585,12 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
 
                 {!hasMode ? (
                   <p style={{ margin: 0, color: tokens.textMuted, fontSize: "15px", lineHeight: 1.6 }}>
-                    {modeCopy.description}
+                    {modeDescription}
                   </p>
                 ) : null}
 
                 <div style={{ display: hasMode ? "none" : "grid", gap: "10px" }}>
-                  {modeCopy.details.map((detail) => (
+                  {modeDetails.map((detail) => (
                     <span key={detail} style={{ display: "flex", alignItems: "center", gap: "9px", color: tokens.textMuted, fontSize: "13px" }}>
                       <CheckIcon size={14} color={tokens.copper} />
                       {detail}
@@ -1046,7 +1116,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <Button variant="outline" isDark={isDark} onClick={() => setCurrentStep("montagem")}>
                         {strings.deliveryStep.back}
                       </Button>
-                      <Button variant="primary" isDark={isDark} onClick={() => setCurrentStep("pagamento")}>
+                      <Button variant="primary" isDark={isDark} onClick={() => requestProtectedStep("pagamento")}>
                         {strings.deliveryStep.next}
                       </Button>
                     </div>
@@ -1238,7 +1308,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <Button variant="outline" isDark={isDark} onClick={() => setCurrentStep("entrega")}>
                         {paymentCopy.back}
                       </Button>
-                      <Button variant="primary" isDark={isDark} onClick={() => setCurrentStep("resumo")}>
+                      <Button variant="primary" isDark={isDark} onClick={() => requestProtectedStep("resumo")}>
                         {paymentCopy.next}
                       </Button>
                     </div>
@@ -1420,13 +1490,23 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
               <h2 style={{ margin: "0 0 16px", color: tokens.text, fontSize: "24px" }}>{strings.summary.title}</h2>
               {selectedMode ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <SummaryRow label={strings.summary.selectedMode} value={strings.modes[selectedMode].title} muted={tokens.textMuted} text={tokens.text} />
+                  <SummaryRow
+                    label={strings.summary.selectedMode}
+                    value={selectedMode === "subscription" && activeSubscription ? strings.summary.activeSubscriptionMode : strings.modes[selectedMode].title}
+                    muted={tokens.textMuted}
+                    text={tokens.text}
+                  />
                   {selectedMode === "subscription" ? (
-                    <SummaryRow label={strings.summary.selectedPlan} value={selectedPlan.name} muted={tokens.textMuted} text={tokens.text} />
+                    <SummaryRow
+                      label={activeSubscription ? strings.summary.linkedPlan : strings.summary.selectedPlan}
+                      value={activeSubscriptionLabel || selectedPlan.name}
+                      muted={tokens.textMuted}
+                      text={tokens.text}
+                    />
                   ) : null}
                   <SummaryRow
-                    label={selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
-                    value={String(selectedUnitsCount)}
+                    label={subscriptionSummaryUsage ? strings.summary.cycleCuts : selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
+                    value={subscriptionSummaryUsage ? `${subscriptionSummaryUsage.cutsUsed} / ${subscriptionSummaryUsage.cutsLimit}` : String(selectedUnitsCount)}
                     muted={tokens.textMuted}
                     text={tokens.text}
                   />
@@ -1491,31 +1571,41 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                     >
                       <SummaryRow
                         label={strings.summary.meatUsage}
-                        value={`${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`}
+                        value={subscriptionSummaryUsage
+                          ? `${formatMeasure(subscriptionSummaryUsage.weightKgUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
+                          : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
                       <SummaryRow
                         label={strings.summary.charcoalUsage}
-                        value={`${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`}
+                        value={subscriptionSummaryUsage
+                          ? `${formatMeasure(subscriptionSummaryUsage.charcoalKgUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
+                          : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
                       <SummaryRow
                         label={strings.summary.seasoningUsage}
-                        value={`${selectedSeasoningCount}/${selectedPlan.seasoningSelectionLimit}`}
+                        value={subscriptionSummaryUsage
+                          ? `${subscriptionSummaryUsage.seasoningsUsed}/${subscriptionSummaryUsage.seasoningsLimit}`
+                          : `${selectedSeasoningCount}/${selectedPlan.seasoningSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
                       <SummaryRow
                         label={strings.summary.sideUsage}
-                        value={`${selectedSideCount}/${selectedPlan.sideSelectionLimit}`}
+                        value={subscriptionSummaryUsage
+                          ? `${subscriptionSummaryUsage.sidesUsed}/${subscriptionSummaryUsage.sidesLimit}`
+                          : `${selectedSideCount}/${selectedPlan.sideSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
                       <SummaryRow
                         label={strings.summary.utensilUsage}
-                        value={`${selectedUtensilCount}/${selectedPlan.utensilSelectionLimit}`}
+                        value={subscriptionSummaryUsage
+                          ? `${subscriptionSummaryUsage.utensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
+                          : `${selectedUtensilCount}/${selectedPlan.utensilSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1554,11 +1644,15 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                   {selectedMode === "subscription" ? (
                     <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "16px" }}>
                       <span style={{ display: "block", color: tokens.textMuted, fontSize: "12px", fontWeight: 800, textTransform: "uppercase", marginBottom: "5px" }}>
-                        {strings.summary.fixedPlanPrice}
+                        {activeSubscription ? strings.summary.activeSubscriptionLabel : strings.summary.fixedPlanPrice}
                       </span>
-                      <strong style={{ color: tokens.text, fontSize: "28px" }}>{formatMoney(selectedPlan.monthlyPrice)}</strong>
+                      <strong style={{ color: tokens.text, fontSize: "28px" }}>
+                        {activeSubscriptionLabel || formatMoney(selectedPlan.monthlyPrice)}
+                      </strong>
                       <p style={{ margin: "8px 0 0", color: tokens.textMuted, fontSize: "13px", lineHeight: 1.45 }}>
-                        {strings.summary.noVariableEstimate}
+                        {activeSubscription
+                          ? `${strings.summary.subscriptionRenewPrefix} ${activeSubscription.nextBillingLabel}. ${strings.summary.activeSubscriptionHintSuffix}`
+                          : strings.summary.noVariableEstimate}
                       </p>
                     </div>
                   ) : (
@@ -1576,15 +1670,15 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                     fullWidth
                     onClick={() => {
                       if (currentStep === "montagem") {
-                        setCurrentStep("entrega");
+                        requestProtectedStep("entrega");
                         return;
                       }
                       if (currentStep === "entrega") {
-                        setCurrentStep("pagamento");
+                        requestProtectedStep("pagamento");
                         return;
                       }
                       if (currentStep === "pagamento") {
-                        setCurrentStep("resumo");
+                        requestProtectedStep("resumo");
                       }
                     }}
                   >
@@ -1605,6 +1699,16 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
       </main>
 
       <BottomTabBar activeTab="produtos" onNavigate={onNavigate} isDark={isDark} />
+      <AuthModal
+        open={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingStepAfterAuth(null);
+        }}
+        onAuthenticated={handleAuthenticatedCheckout}
+        isDark={isDark}
+        context="portal"
+      />
 
       {filterModalOpen ? (
         <div

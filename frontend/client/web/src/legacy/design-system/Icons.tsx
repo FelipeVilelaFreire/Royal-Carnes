@@ -26,6 +26,15 @@ export const CartIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor
   </svg>
 );
 
+export const ReceiptIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z" />
+    <line x1="9" y1="7" x2="15" y2="7" />
+    <line x1="9" y1="11" x2="15" y2="11" />
+    <line x1="9" y1="15" x2="13" y2="15" />
+  </svg>
+);
+
 export const SunIcon: React.FC<IconProps> = ({ size = 20, color = "currentColor", ...props }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <circle cx="12" cy="12" r="5" />
@@ -181,5 +190,4 @@ export const SpicesIcon: React.FC<IconProps> = ({ size = 20, color = "currentCol
     <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
   </svg>
 );
-
 

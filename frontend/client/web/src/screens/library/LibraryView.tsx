@@ -34,8 +34,7 @@ type ProductExampleRuntimeState = Record<string, {
   showImage: boolean;
   showName: boolean;
   showDescription: boolean;
-  showCategory: boolean;
-  showDetail: boolean;
+  showMeta: boolean;
   showBadge: boolean;
   showFavorite: boolean;
   showOriginalPrice: boolean;
@@ -57,8 +56,7 @@ const productItemInteractiveOptionKeys = new Set([
   "showImage",
   "showName",
   "showDescription",
-  "showCategory",
-  "showDetail",
+  "showMeta",
   "showFavorite",
   "showPrice",
   "showAction",
@@ -81,8 +79,7 @@ const createProductItemCardRuntimeConfig = (
   showImage: example.options.showImage,
   showName: example.options.showName,
   showDescription: example.options.showDescription,
-  showCategory: example.options.showCategory,
-  showDetail: example.options.showDetail,
+  showMeta: example.options.showMeta,
   showBadge: false,
   showFavorite: example.options.showFavorite,
   showOriginalPrice: example.options.showOriginalPrice,
@@ -128,8 +125,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
     if (key === "showImage") return productCardConfig.showImage ? "on" : "off";
     if (key === "showName") return productCardConfig.showName ? "on" : "off";
     if (key === "showDescription") return productCardConfig.showDescription ? "on" : "off";
-    if (key === "showCategory") return productCardConfig.showCategory ? "on" : "off";
-    if (key === "showDetail") return productCardConfig.showDetail ? "on" : "off";
+    if (key === "showMeta") return productCardConfig.showMeta ? "on" : "off";
     if (key === "showBadge") return productCardConfig.showBadge ? "on" : "off";
     if (key === "showFavorite") return productCardConfig.showFavorite ? "on" : "off";
     if (key === "showPrice") return productCardConfig.showPrice ? "on" : "off";
@@ -155,8 +151,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
       if (key === "showImage") return { ...current, showImage: !current.showImage };
       if (key === "showName") return { ...current, showName: !current.showName };
       if (key === "showDescription") return { ...current, showDescription: !current.showDescription };
-      if (key === "showCategory") return { ...current, showCategory: !current.showCategory };
-      if (key === "showDetail") return { ...current, showDetail: !current.showDetail };
+      if (key === "showMeta") return { ...current, showMeta: !current.showMeta };
       if (key === "showBadge") return { ...current, showBadge: !current.showBadge };
       if (key === "showFavorite") return { ...current, showFavorite: !current.showFavorite };
       if (key === "showOriginalPrice") return { ...current, showOriginalPrice: !current.showOriginalPrice, originalPrice: current.originalPrice ?? 129.9 };
@@ -268,8 +263,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                     showImage={productCardConfig.showImage}
                     showName={productCardConfig.showName}
                     showDescription={productCardConfig.showDescription}
-                    showCategory={productCardConfig.showCategory}
-                    showDetail={productCardConfig.showDetail}
+                    showMeta={productCardConfig.showMeta}
                     showBadge={productCardConfig.showBadge}
                     showFavorite={productCardConfig.showFavorite}
                     showOriginalPrice={productCardConfig.showOriginalPrice}

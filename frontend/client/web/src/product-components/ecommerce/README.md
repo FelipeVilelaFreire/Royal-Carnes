@@ -32,8 +32,7 @@ O manifest controla as variacoes principais:
 - mostrar ou esconder imagem;
 - mostrar ou esconder titulo;
 - mostrar ou esconder descricao;
-- mostrar ou esconder categoria;
-- mostrar ou esconder detalhe;
+- mostrar ou esconder metadata do produto;
 - mostrar ou esconder badge;
 - mostrar ou esconder favorito;
 - com ou sem preco;
@@ -53,7 +52,7 @@ Composicao do `ProductItemCard`:
 
 - media: imagem do produto;
 - header: badge, favorito e indicador de selecao;
-- body: nome, descricao, categoria e detalhe;
+- body: nome, descricao e metadata;
 - commerce: preco, preco original e label de preco;
 - actions: acao primaria ou stepper de quantidade.
 
@@ -62,7 +61,7 @@ O card deve responder a opcoes de chamada. Exemplo: uma tela pode esconder preco
 Convencao importante:
 
 - `name`, `image`, `description`, `categoryLabel`, `detailLabel`, `price`, `originalPrice` e labels sao dados;
-- `showName`, `showImage`, `showDescription`, `showCategory`, `showDetail`, `showPrice`, `showOriginalPrice`, `showAction`, `showBadge` e `showFavorite` sao opcoes de composicao;
+- `showName`, `showImage`, `showDescription`, `showMeta`, `showPrice`, `showOriginalPrice`, `showAction`, `showBadge` e `showFavorite` sao opcoes de composicao;
 - `selected`, `quantity` e `favorite` sao estado do fluxo consumidor.
 
 No manifest, `optionGroups` e a fonte para a `/library` mostrar todas as opcoes funcionais do componente. Cada opcao declara o controle esperado e o dono:

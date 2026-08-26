@@ -10,7 +10,7 @@ export const clientPtBR = {
     produtos: "Montar Box",
     royalBox: "Royal Box",
     royalDelivery: "Royal Delivery",
-    meusPedidos: "Entregas",
+    meusPedidos: "Meus Pedidos",
     minhaConta: "Minha Conta",
     carrinho: "Carrinho",
     entrar: "Entrar",
@@ -91,7 +91,7 @@ export const clientPtBR = {
     emptyDescription: "A montagem avulsa do Royal Delivery entra aqui: carnes, formato, utensílios, carvão, endereço e pagamento."
   },
   meusPedidos: {
-    title: "Minhas Entregas",
+    title: "Meus Pedidos",
     subtitle: "Acompanhe suas compras, caixas e entregas Royal Delivery.",
     stats: {
       activeOrders: "Pedidos em andamento",
@@ -115,7 +115,7 @@ export const clientPtBR = {
       action: "Editar ciclo"
     },
     history: {
-      title: "Historico de Entregas",
+      title: "Historico de Pedidos",
       type: "Tipo",
       date: "Data",
       status: "Status",
@@ -186,6 +186,17 @@ export const clientPtBR = {
     summary: {
       title: "Resumo",
       empty: "Escolha uma modalidade para começar.",
+      activeSubscriptionMode: "Minha assinatura",
+      activeSubscriptionBadge: "Plano ativo",
+      activeSubscriptionLabel: "Assinatura ativa",
+      linkedPlan: "Plano vinculado",
+      currentCycleFallback: "Uso do ciclo liberado",
+      activeCycleDescriptionPrefix: "Ciclo atual vinculado ao plano",
+      subscriptionRenewPrefix: "Renova em",
+      nextDeliveryPrefix: "Proxima entrega em",
+      cycleUsedSuffix: "usados no ciclo",
+      activeSubscriptionHintSuffix: "Este pedido entra no ciclo atual da assinatura.",
+      cycleCuts: "Cortes do ciclo",
       selectedMode: "Modalidade",
       selectedPlan: "Plano",
       selectedItems: "Itens selecionados",

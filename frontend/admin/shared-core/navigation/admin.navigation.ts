@@ -1,8 +1,10 @@
 export interface AdminNavigationItem {
   key: string;
+  label: string;
   labelKey: string;
   screenKey: string;
   routeKey: string;
+  routePath?: string;
   order: number;
   placements: {
     header: boolean;
@@ -16,44 +18,72 @@ export interface AdminNavigationItem {
 export const adminNavigation: AdminNavigationItem[] = [
   {
     key: "dashboard",
-    labelKey: "admin.navigation.dashboard",
+    label: "Dashboard",
+    labelKey: "navigation.dashboard",
     screenKey: "dashboard",
-    routeKey: "/admin",
+    routeKey: "dashboard",
+    routePath: "/admin",
     order: 0,
-    placements: {
-      header: false,
-      sidebar: true,
-      drawer: false,
-      bottomBar: false,
-      footer: false
-    }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
   },
   {
-    key: "subscribers",
-    labelKey: "admin.navigation.subscribers",
-    screenKey: "subscribers",
-    routeKey: "/admin/assinantes",
+    key: "produtos",
+    label: "Produtos",
+    labelKey: "navigation.produtos",
+    screenKey: "produtos",
+    routeKey: "produtos",
+    routePath: "/produtos",
     order: 1,
-    placements: {
-      header: false,
-      sidebar: true,
-      drawer: false,
-      bottomBar: false,
-      footer: false
-    }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+  },
+  {
+    key: "usuarios",
+    label: "Usuários",
+    labelKey: "navigation.usuarios",
+    screenKey: "usuarios",
+    routeKey: "usuarios",
+    routePath: "/usuarios",
+    order: 2,
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+  },
+  {
+    key: "assinaturas",
+    label: "Assinaturas",
+    labelKey: "navigation.assinaturas",
+    screenKey: "assinaturas",
+    routeKey: "assinaturas",
+    routePath: "/assinaturas",
+    order: 3,
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+  },
+  {
+    key: "pedidos",
+    label: "Pedidos",
+    labelKey: "navigation.pedidos",
+    screenKey: "pedidos",
+    routeKey: "pedidos",
+    routePath: "/pedidos",
+    order: 4,
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
   },
   {
     key: "deliveries",
-    labelKey: "admin.navigation.deliveries",
+    label: "Deliveries",
+    labelKey: "navigation.deliveries",
     screenKey: "deliveries",
-    routeKey: "/admin/expedicao",
-    order: 2,
-    placements: {
-      header: false,
-      sidebar: true,
-      drawer: false,
-      bottomBar: false,
-      footer: false
-    }
+    routeKey: "deliveries",
+    routePath: "/deliveries",
+    order: 5,
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+  },
+  {
+    key: "configuracoes",
+    label: "Configurações",
+    labelKey: "navigation.configuracoes",
+    screenKey: "configuracoes",
+    routeKey: "configuracoes",
+    routePath: "/configuracoes",
+    order: 6,
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
   }
 ];

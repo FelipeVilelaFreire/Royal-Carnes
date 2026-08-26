@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FlameIcon, BoxIcon, CartIcon, TruckIcon, UserIcon } from "../design-system/Icons";
+import { FlameIcon, BoxIcon, CartIcon, ReceiptIcon, UserIcon } from "../design-system/Icons";
 import { clientPtBR } from "@/locales/pt-BR";
 
 export interface BottomTabBarProps {
@@ -42,7 +42,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
     { key: "portal-home", label: "Home", path: "/home", icon: FlameIcon },
     { key: "portal-cortes", label: "Catálogo", path: "/cortes", icon: BoxIcon },
     { key: "produtos", label: clientPtBR.navigation.produtos, path: "/produtos", icon: CartIcon },
-    { key: "meus-pedidos", label: clientPtBR.navigation.meusPedidos, path: "/meus-pedidos", icon: TruckIcon },
+    { key: "meus-pedidos", label: clientPtBR.navigation.meusPedidos, path: "/meus-pedidos", icon: ReceiptIcon },
     { key: "minha-conta", label: "Conta", path: "/minha-conta", icon: UserIcon }
   ];
 

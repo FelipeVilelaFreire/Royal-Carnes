@@ -186,7 +186,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
           </Card>
         </main>
       ) : (
-      <main className="meus-pedidos-main" style={{ flex: 1, maxWidth: "1280px", width: "100%", margin: "0 auto", padding: "46px 32px 120px", boxSizing: "border-box", animation: "meusPedidosAppear 0.34s ease both" }}>
+      <main className="meus-pedidos-main" style={{ flex: 1, maxWidth: "1440px", width: "100%", margin: "0 auto", padding: "46px 32px 120px", boxSizing: "border-box", animation: "meusPedidosAppear 0.34s ease both" }}>
         <header style={{ marginBottom: "26px" }}>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(40px, 6vw, 64px)", lineHeight: 1.05, margin: 0, color: tokens.text }}>
             {strings.title}
@@ -216,10 +216,10 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
               <div style={{ display: "grid", gridTemplateColumns: `repeat(${currentOrder.timeline.length}, minmax(90px, 1fr))`, gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
                 {currentOrder.timeline.map((step) => (
                   <div key={step.status} style={{ minWidth: "96px", display: "flex", flexDirection: "column", gap: "8px", alignItems: "center", textAlign: "center" }}>
-                    <span style={{ width: "26px", height: "26px", borderRadius: "999px", border: `2px solid ${step.completed ? tokens.copper : tokens.border}`, background: step.completed ? tokens.copper : tokens.surfaceContainer, display: "grid", placeItems: "center" }}>
+                    <span style={{ width: "26px", height: "26px", borderRadius: "999px", border: `2px solid ${step.completed ? themeTokens.colors.statusActive : tokens.border}`, background: step.completed ? themeTokens.colors.statusActive : tokens.surfaceContainer, display: "grid", placeItems: "center" }}>
                       {step.completed && <CheckIcon size={14} color="#FFFFFF" />}
                     </span>
-                    <span style={{ color: step.completed ? tokens.text : tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>{step.label}</span>
+                    <span style={{ color: step.completed ? themeTokens.colors.statusActive : tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>{step.label}</span>
                   </div>
                 ))}
               </div>

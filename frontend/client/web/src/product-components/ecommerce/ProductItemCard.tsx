@@ -19,6 +19,7 @@ export interface ProductItemCardProps {
   showImage?: boolean;
   showName?: boolean;
   showDescription?: boolean;
+  showMeta?: boolean;
   showCategory?: boolean;
   showDetail?: boolean;
   showBadge?: boolean;
@@ -69,6 +70,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   showImage = true,
   showName = true,
   showDescription = true,
+  showMeta = true,
   showCategory = true,
   showDetail = true,
   showBadge = true,
@@ -91,7 +93,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   tokens
 }) => {
   const hasPrice = showPrice && typeof price === "number";
-  const hasMeta = showCategory || (showDetail && detailLabel);
+  const hasMeta = showMeta && (showCategory || (showDetail && detailLabel));
   const metaLabel = [
     showCategory ? categoryLabel : null,
     showDetail && detailLabel ? detailLabel : null

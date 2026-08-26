@@ -4,28 +4,54 @@ import { injectThemeTokens } from "@foundation/tokens/resolver";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { adminNavigation } from "@/navigation/admin.navigation";
 import { adminAppShellConfig } from "@/manifests/adminAppShell.config";
-import { adminRoutes, getRoutePathByAction } from "@/manifests/routes";
+import { adminRoutes, adminRouteAliases, getRoutePathByAction } from "@/manifests/routes";
 import { adminPtBR } from "@/locales/pt-BR";
 
 import { dashboardConfig } from "@/manifests/pages/dashboard.config";
-import { cortesConfig } from "@/manifests/pages/cortes.config";
-import { caixasConfig } from "@/manifests/pages/caixas.config";
-import { sociosConfig } from "@/manifests/pages/socios.config";
-import { historyConfig } from "@/manifests/pages/history.config";
-import { trashConfig } from "@/manifests/pages/trash.config";
+import { produtosConfig } from "@/manifests/pages/produtos.config";
+import { usuariosConfig } from "@/manifests/pages/usuarios.config";
+import { assinaturasConfig } from "@/manifests/pages/assinaturas.config";
+import { pedidosConfig } from "@/manifests/pages/pedidos.config";
+import { deliveriesConfig } from "@/manifests/pages/deliveries.config";
 import { settingsConfig } from "@/manifests/pages/settings.config";
 
 import { DashboardPage } from "./engines/rendering/screen-types/dashboard/DashboardPage";
 import { ListPage } from "./engines/rendering/screen-types/standard/pages/ListPage";
 import { AddPage } from "./engines/rendering/screen-types/standard/pages/AddPage";
 import { DetailPage } from "./engines/rendering/screen-types/standard/pages/DetailPage";
-import { HistoryPage } from "./engines/rendering/screen-types/history/HistoryPage";
-import { TrashPage } from "./engines/rendering/screen-types/trash/TrashPage";
 import { SettingsPage } from "./engines/rendering/screen-types/settings/SettingsPage";
 
+function resolveScreenKeyFromPath(pathname: string): { screenKey: string; action: "list" | "detail" | "create" } {
+  const cleanPath = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  
+  let action: "list" | "detail" | "create" = "list";
+  let basePath = cleanPath;
+
+  if (cleanPath.endsWith("/novo")) {
+    action = "create";
+    basePath = cleanPath.replace(/\/novo$/, "");
+  } else if (cleanPath.endsWith("/detalhes")) {
+    action = "detail";
+    basePath = cleanPath.replace(/\/detalhes$/, "");
+  }
+
+  if (adminRouteAliases[basePath]) {
+    return { screenKey: adminRouteAliases[basePath], action };
+  }
+
+  for (const [alias, screenKey] of Object.entries(adminRouteAliases)) {
+    if (alias !== "/" && basePath.startsWith(alias)) {
+      return { screenKey, action };
+    }
+  }
+
+  return { screenKey: "dashboard", action };
+}
+
 export const App: React.FC = () => {
-  const [activeScreenKey, setActiveScreenKey] = useState<string>("dashboard");
-  const [routeAction, setRouteAction] = useState<"list" | "detail" | "create">("list");
+  const initialResolved = resolveScreenKeyFromPath(window.location.pathname);
+  const [activeScreenKey, setActiveScreenKey] = useState<string>(initialResolved.screenKey);
+  const [routeAction, setRouteAction] = useState<"list" | "detail" | "create">(initialResolved.action);
   const [selectedRow, setSelectedRow] = useState<any>(null);
 
   const activeRoutePath = adminRoutes[activeScreenKey as keyof typeof adminRoutes] || adminRoutes.dashboard;
@@ -35,40 +61,21 @@ export const App: React.FC = () => {
     injectThemeTokens("admin", adminThemeManifest);
 
     const handlePopState = () => {
-      const path = window.location.pathname;
-      if (path.endsWith("/novo")) {
-        setRouteAction("create");
-      } else if (path.endsWith("/detalhes")) {
-        setRouteAction("detail");
-      } else {
-        setRouteAction("list");
-      }
+      const resolved = resolveScreenKeyFromPath(window.location.pathname);
+      setActiveScreenKey(resolved.screenKey);
+      setRouteAction(resolved.action);
     };
+
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const handleNavigate = (routePath: string) => {
-    setRouteAction("list");
+    const resolved = resolveScreenKeyFromPath(routePath);
+    setActiveScreenKey(resolved.screenKey);
+    setRouteAction(resolved.action);
     setSelectedRow(null);
-
-    const foundByPath = adminNavigation.find(
-      (item) => item.routeKey && adminRoutes[item.routeKey] === routePath
-    );
-    if (foundByPath) {
-      setActiveScreenKey(foundByPath.key);
-      window.history.pushState({}, "", routePath);
-      return;
-    }
-
-    const foundByKey = adminNavigation.find(
-      (item) => item.key === routePath || `/${item.key}` === routePath
-    );
-    if (foundByKey) {
-      setActiveScreenKey(foundByKey.key);
-      const targetPath = adminRoutes[foundByKey.routeKey as keyof typeof adminRoutes] || routePath;
-      window.history.pushState({}, "", targetPath);
-    }
+    window.history.pushState({}, "", routePath);
   };
 
   const handleCreateNew = () => {
@@ -92,27 +99,23 @@ export const App: React.FC = () => {
   };
 
   const renderActiveScreenEngine = () => {
+    // 1. Dashboard (ScreenType: dashboard)
     if (activeScreenKey === "dashboard") {
       return <DashboardPage config={dashboardConfig as any} />;
     }
 
-    if (activeScreenKey === "history" || activeScreenKey === "historico") {
-      return <HistoryPage config={historyConfig} />;
-    }
-
-    if (activeScreenKey === "trash" || activeScreenKey === "lixeira") {
-      return <TrashPage config={trashConfig} />;
-    }
-
-    if (activeScreenKey === "configuracoes") {
+    // 2. Configurações (ScreenType: settings)
+    if (activeScreenKey === "configuracoes" || activeScreenKey === "settings") {
       return <SettingsPage config={settingsConfig} />;
     }
 
-    // Resolution para entidades Standard
+    // 3. Entidades Padrão (ScreenType: standard -> produtos, usuarios, assinaturas, pedidos, deliveries)
     let activeConfig: any = null;
-    if (activeScreenKey === "cortes") activeConfig = cortesConfig;
-    if (activeScreenKey === "caixas") activeConfig = caixasConfig;
-    if (activeScreenKey === "socios") activeConfig = sociosConfig;
+    if (activeScreenKey === "produtos") activeConfig = produtosConfig;
+    if (activeScreenKey === "usuarios") activeConfig = usuariosConfig;
+    if (activeScreenKey === "assinaturas") activeConfig = assinaturasConfig;
+    if (activeScreenKey === "pedidos") activeConfig = pedidosConfig;
+    if (activeScreenKey === "deliveries") activeConfig = deliveriesConfig;
 
     if (activeConfig) {
       if (routeAction === "create") {
@@ -151,6 +154,7 @@ export const App: React.FC = () => {
 
   return (
     <AppShell
+      mode="admin"
       config={adminAppShellConfig}
       brandName={adminPtBR.brand.name}
       brandLogo="/assets/brand/royal-prime-logo.jpg"

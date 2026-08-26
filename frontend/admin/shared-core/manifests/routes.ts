@@ -1,9 +1,34 @@
 export const adminRoutes = {
   dashboard: "/admin",
-  subscribers: "/admin/assinantes",
-  subscriberDetail: "/admin/assinantes/:id",
-  deliveries: "/admin/expedicao",
-  plans: "/admin/planos"
+  produtos: "/produtos",
+  usuarios: "/usuarios",
+  assinaturas: "/assinaturas",
+  pedidos: "/pedidos",
+  deliveries: "/deliveries",
+  configuracoes: "/configuracoes"
+};
+
+export const adminRouteAliases: Record<string, string> = {
+  "/admin": "dashboard",
+  "/": "dashboard",
+  "/dashboard": "dashboard",
+  "/produtos": "produtos",
+  "/cortes": "produtos",
+  "/admin/produtos": "produtos",
+  "/usuarios": "usuarios",
+  "/subscribers": "usuarios",
+  "/socios": "usuarios",
+  "/admin/assinantes": "usuarios",
+  "/assinaturas": "assinaturas",
+  "/admin/assinaturas": "assinaturas",
+  "/pedidos": "pedidos",
+  "/orders": "pedidos",
+  "/admin/pedidos": "pedidos",
+  "/deliveries": "deliveries",
+  "/admin/expedicao": "deliveries",
+  "/caixas": "deliveries",
+  "/configuracoes": "configuracoes",
+  "/settings": "configuracoes"
 };
 
 export function getRoutePathByAction(routeKey: string, action: string) {

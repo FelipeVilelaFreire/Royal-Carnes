@@ -11,8 +11,7 @@ type ProductItemCardOptionKey =
   | "showImage"
   | "showName"
   | "showDescription"
-  | "showCategory"
-  | "showDetail"
+  | "showMeta"
   | "showBadge"
   | "showFavorite"
   | "showOriginalPrice"
@@ -86,7 +85,7 @@ export const productItemCardManifest = {
     },
     body: {
       slots: ["name", "description", "categoryLabel", "detailLabel"],
-      visibleProps: ["showName", "showDescription", "showCategory", "showDetail"]
+      visibleProps: ["showName", "showDescription", "showMeta"]
     },
     commerce: {
       slots: ["price", "originalPrice", "priceLabel"],
@@ -121,13 +120,7 @@ export const productItemCardManifest = {
           owner: "product-component"
         },
         {
-          key: "showCategory",
-          control: "boolean",
-          defaultValue: true,
-          owner: "product-component"
-        },
-        {
-          key: "showDetail",
+          key: "showMeta",
           control: "boolean",
           defaultValue: true,
           owner: "product-component"
@@ -219,8 +212,7 @@ export const productItemCardManifest = {
       "showImage",
       "showName",
       "showDescription",
-      "showCategory",
-      "showDetail",
+      "showMeta",
       "showBadge",
       "showFavorite",
       "showOriginalPrice",
@@ -262,8 +254,7 @@ export const productItemCardManifest = {
         showImage: false,
         showName: true,
         showDescription: true,
-        showCategory: true,
-        showDetail: true,
+        showMeta: true,
         showBadge: true,
         showFavorite: true,
         showOriginalPrice: false,
@@ -288,8 +279,7 @@ export const productItemCardManifest = {
         showImage: true,
         showName: true,
         showDescription: true,
-        showCategory: true,
-        showDetail: true,
+        showMeta: true,
         showBadge: true,
         showFavorite: false,
         showOriginalPrice: false,
@@ -314,8 +304,7 @@ export const productItemCardManifest = {
         showImage: true,
         showName: true,
         showDescription: true,
-        showCategory: true,
-        showDetail: true,
+        showMeta: true,
         showBadge: true,
         showFavorite: true,
         showOriginalPrice: false,
@@ -340,8 +329,7 @@ export const productItemCardManifest = {
         showImage: true,
         showName: true,
         showDescription: true,
-        showCategory: true,
-        showDetail: true,
+        showMeta: true,
         showBadge: true,
         showFavorite: true,
         showOriginalPrice: false,
@@ -366,8 +354,7 @@ export const productItemCardManifest = {
         showImage: false,
         showName: true,
         showDescription: true,
-        showCategory: true,
-        showDetail: true,
+        showMeta: true,
         showBadge: true,
         showFavorite: false,
         showOriginalPrice: false,
@@ -392,8 +379,7 @@ export const productItemCardManifest = {
         showImage: true,
         showName: true,
         showDescription: false,
-        showCategory: true,
-        showDetail: false,
+        showMeta: true,
         showBadge: true,
         showFavorite: true,
         showOriginalPrice: true,
