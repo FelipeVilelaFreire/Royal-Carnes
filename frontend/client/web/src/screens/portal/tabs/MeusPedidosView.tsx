@@ -3,8 +3,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Badge, Button, Card } from "../../../legacy/design-system";
 import { AuthModal, BottomTabBar, PortalHeader } from "../../../legacy/app-shell";
-import { BoxIcon, CheckIcon, StarIcon, TruckIcon, UserIcon } from "../../../legacy/design-system/Icons";
-import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { CheckIcon, UserIcon } from "../../../legacy/design-system/Icons";
+import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
+import { OrderDetailModal } from "../../../product-components/ecommerce";
 import { clientPtBR } from "@/locales/pt-BR";
 import { catalogSubscriptionPlansMock } from "@/mocks/catalog";
 import { royalCustomerOrdersMock, royalOrderKindLabels, royalOrderStatusLabels, type RoyalCustomerOrder } from "@/mocks/orders";
@@ -33,6 +34,8 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
     }
     return false;
   });
+  const [selectedOrder, setSelectedOrder] = useState<RoyalCustomerOrder | null>(null);
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -42,12 +45,18 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
     const handleAuthChange = () => {
       setIsMockAuthenticated(localStorage.getItem("royal_prime_mock_authenticated") === "true");
     };
+    const handleResize = () => {
+      setIsMobileScreen(window.innerWidth <= 768);
+    };
 
+    handleResize();
     window.addEventListener("royal_theme_changed", handleThemeChange);
     window.addEventListener("royal_auth_changed", handleAuthChange);
+    window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("royal_theme_changed", handleThemeChange);
       window.removeEventListener("royal_auth_changed", handleAuthChange);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -61,19 +70,26 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
   const currentOrder = customerOrders.find((order) => activeStatuses.has(order.status)) || customerOrders[0];
   const currentSubscriptionOrder = customerOrders.find((order) => order.kind === "subscriptionCycle" && activeStatuses.has(order.status));
   const currentPlan = catalogSubscriptionPlansMock.find((plan) => plan.key === royalCustomerMock.activeSubscription?.planKey);
-  const activeOrdersCount = customerOrders.filter((order) => activeStatuses.has(order.status)).length;
-  const deliveredOrdersCount = customerOrders.filter((order) => order.status === "delivered").length;
-  const lastRating = customerOrders.find((order) => order.rating)?.rating?.score || 0;
-
-  const statCards = [
-    { label: strings.stats.activeOrders, value: String(activeOrdersCount), icon: TruckIcon },
-    { label: strings.stats.nextBox, value: royalCustomerMock.activeSubscription?.nextDeliveryLabel || "-", icon: BoxIcon },
-    { label: strings.stats.lastRating, value: lastRating ? `${lastRating}/5` : "-", icon: StarIcon },
-    { label: strings.stats.deliveredOrders, value: String(deliveredOrdersCount), icon: CheckIcon }
-  ];
 
   const formatOrderTotal = (order: RoyalCustomerOrder) =>
     order.kind === "subscriptionCycle" ? order.payment.totalLabel : `R$ ${order.payment.totalLabel}`;
+
+  const getStatusTokens = (status: RoyalCustomerOrder["status"]) => {
+    if (status === "delivered") return { color: themeTokens.colors.statusActive, background: isDark ? "rgba(16, 185, 129, 0.14)" : "rgba(16, 185, 129, 0.1)", border: "rgba(16, 185, 129, 0.32)" };
+    if (status === "cancelled") return { color: themeTokens.colors.statusCanceled, background: isDark ? "rgba(239, 68, 68, 0.14)" : "rgba(239, 68, 68, 0.1)", border: "rgba(239, 68, 68, 0.32)" };
+    if (status === "sentToStore") return { color: themeTokens.colors.statusPaused, background: isDark ? "rgba(245, 158, 11, 0.14)" : "rgba(245, 158, 11, 0.1)", border: "rgba(245, 158, 11, 0.32)" };
+    return { color: tokens.copper, background: isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)", border: isDark ? "rgba(184, 115, 51, 0.32)" : "rgba(184, 115, 51, 0.26)" };
+  };
+
+  const renderStatusPill = (order: RoyalCustomerOrder) => {
+    const statusTokens = getStatusTokens(order.status);
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "7px", width: "fit-content", border: `1px solid ${statusTokens.border}`, borderRadius: "999px", background: statusTokens.background, color: statusTokens.color, padding: "7px 10px", fontSize: "11px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <span style={{ width: "7px", height: "7px", borderRadius: "999px", background: statusTokens.color }} />
+        {royalOrderStatusLabels[order.status]}
+      </span>
+    );
+  };
 
   const toggleTheme = () => {
     const next = themeMode === "dark" ? "light" : "dark";
@@ -89,17 +105,12 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
 
   const renderOrderActions = (order: RoyalCustomerOrder) => (
     <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", flexWrap: "wrap" }}>
-      <Button variant="outline" size="sm" isDark={isDark}>
+      <Button variant="outline" size="sm" isDark={isDark} onClick={() => setSelectedOrder(order)}>
         {strings.history.details}
       </Button>
       {order.status === "delivered" && !order.rating && (
         <Button variant="outline" size="sm" isDark={isDark}>
           {strings.history.review}
-        </Button>
-      )}
-      {order.kind === "royalDelivery" && (
-        <Button variant="accent" size="sm">
-          {strings.history.repeat}
         </Button>
       )}
     </div>
@@ -124,19 +135,33 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
           .meus-pedidos-main {
             padding-left: 16px !important;
             padding-right: 16px !important;
-            padding-bottom: 96px !important;
+            padding-top: 24px !important;
+            padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
           }
 
           .meus-pedidos-current {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+
+          .meus-pedidos-order-body {
             grid-template-columns: 1fr !important;
           }
 
           .meus-pedidos-history-row {
             grid-template-columns: 1fr !important;
+            gap: 12px !important;
           }
 
           .meus-pedidos-history-actions {
             align-items: flex-start !important;
+            justify-content: flex-start !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .portal-header {
+            display: none !important;
           }
         }
       `}</style>
@@ -171,21 +196,6 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
           </p>
         </header>
 
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "14px", marginBottom: "28px" }}>
-          {statCards.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={stat.label} variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "18px", borderRadius: "10px", minHeight: "126px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", color: tokens.textMuted }}>
-                  <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase" }}>{stat.label}</span>
-                  <Icon size={18} color={tokens.copper} />
-                </div>
-                <strong style={{ fontSize: "26px", color: tokens.text }}>{stat.value}</strong>
-              </Card>
-            );
-          })}
-        </section>
-
         <section className="meus-pedidos-current" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.45fr) minmax(320px, 0.55fr)", gap: "24px", marginBottom: "34px", alignItems: "stretch" }}>
           <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "28px", borderRadius: "12px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: "20px", borderBottom: `1px solid ${tokens.border}`, paddingBottom: "18px", marginBottom: "22px", flexWrap: "wrap" }}>
@@ -214,7 +224,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
                 ))}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "minmax(160px, 0.45fr) minmax(0, 1fr)", gap: "18px" }}>
+              <div className="meus-pedidos-order-body" style={{ display: "grid", gridTemplateColumns: "minmax(160px, 0.45fr) minmax(0, 1fr)", gap: "18px" }}>
                 <div style={{ background: tokens.background, border: `1px solid ${tokens.border}`, borderRadius: "10px", padding: "18px", textAlign: "center" }}>
                   <span style={{ display: "block", color: tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>{strings.currentOrder.deliveryCode}</span>
                   <strong style={{ display: "block", color: tokens.copper, fontSize: "40px", letterSpacing: "0.12em", marginTop: "8px" }}>{currentOrder.delivery.deliveryCode || "-"}</strong>
@@ -264,7 +274,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
                   <span style={{ color: tokens.textMuted, fontSize: "12px" }}>{order.code} - {order.title}</span>
                 </div>
                 <span style={{ color: tokens.text }}>{order.createdAtLabel}</span>
-                <span style={{ color: tokens.copper, fontWeight: 800 }}>{royalOrderStatusLabels[order.status]}</span>
+                {renderStatusPill(order)}
                 <strong style={{ color: tokens.text }}>{formatOrderTotal(order)}</strong>
                 <div className="meus-pedidos-history-actions" style={{ display: "flex", justifyContent: "flex-end" }}>
                   {renderOrderActions(order)}
@@ -277,6 +287,13 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
       )}
 
       <BottomTabBar activeTab="meus-pedidos" onNavigate={onNavigate} isDark={isDark} />
+      <OrderDetailModal
+        open={Boolean(selectedOrder)}
+        onClose={() => setSelectedOrder(null)}
+        order={selectedOrder}
+        isDark={isDark}
+        isMobile={isMobileScreen}
+      />
       <AuthModal
         open={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}

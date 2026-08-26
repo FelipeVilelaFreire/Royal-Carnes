@@ -126,3 +126,28 @@ Uso previsto:
 - plano escolhido;
 - pagamento escolhido;
 - total estimado.
+
+## OrderDetailModal
+
+Status: real, `level-1`, ainda sem manifest proprio.
+
+Arquivo:
+
+```text
+frontend/client/web/src/product-components/ecommerce/OrderDetailModal.tsx
+```
+
+Uso atual:
+
+- detalhe de pedido em `MeusPedidosView`;
+- detalhe de pedido em `MinhaContaView`;
+- modal desktop via Design System;
+- bottom modal mobile via Design System.
+
+Responsabilidade:
+
+- renderizar resumo, total, entrega, pagamento, codigo de entrega, itens e acompanhamento do pedido;
+- manter status com cores semanticamente tokenizadas;
+- exibir a sequencia de acompanhamento de forma compacta e horizontal, sem ocupar altura excessiva no modal.
+
+Ainda fica local no RoyalPrime porque o contrato de pedidos esta em mocks locais. Promocao para ServiceOS so deve acontecer depois que a tela de pedidos, conta e futuro admin confirmarem o mesmo contrato de `RoyalCustomerOrder`.

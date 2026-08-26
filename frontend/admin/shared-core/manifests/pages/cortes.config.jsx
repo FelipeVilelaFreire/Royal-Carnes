@@ -1,12 +1,48 @@
+import { mockAdminCuts } from "../../mocks/cuts.mock";
+
 export const cortesConfig = {
   screenKey: "cortes",
-  title: "Catálogo de Cortes Premium",
-  subtitle: "Inventário de Wagyu A5, Dry-Aged, Picanha e cortes especiais de temporada",
+  titleKey: "cortes.title",
+  subtitleKey: "cortes.subtitle",
+  entityName: "Corte Nobre",
+  actionLabelKey: "cortes.ctaAdd",
   columns: [
-    { key: "name", label: "Corte" },
-    { key: "category", label: "Categoria" },
-    { key: "aging", label: "Maturação" },
-    { key: "stock", label: "Estoque (kg)" },
-    { key: "status", label: "Disponibilidade" },
+    { key: "name", labelKey: "cortes.tableHeaders.name" },
+    { key: "category", labelKey: "cortes.tableHeaders.category" },
+    { key: "aging", labelKey: "cortes.tableHeaders.aging" },
+    { key: "stockKg", labelKey: "cortes.tableHeaders.stock" },
+    {
+      key: "pricePerKg",
+      labelKey: "cortes.tableHeaders.price",
+      render: (row) => `R$ ${row.pricePerKg?.toFixed(2)}`
+    },
+    { key: "status", labelKey: "cortes.tableHeaders.status" }
   ],
+  filters: [
+    {
+      key: "category",
+      labelKey: "Categoria",
+      options: [
+        { value: "Wagyu Especial", labelKey: "Wagyu Especial" },
+        { value: "Maturação Especial", labelKey: "Maturação Especial" },
+        { value: "Churrasco Nobre", labelKey: "Churrasco Nobre" },
+        { value: "Cortes Especiais", labelKey: "Cortes Especiais" }
+      ]
+    }
+  ],
+  form: {
+    fields: [
+      { key: "name", labelKey: "Nome do Corte", required: true },
+      { key: "category", labelKey: "Categoria", type: "select", options: [
+        { value: "Wagyu Especial", labelKey: "Wagyu Especial" },
+        { value: "Maturação Especial", labelKey: "Maturação Especial" },
+        { value: "Churrasco Nobre", labelKey: "Churrasco Nobre" },
+        { value: "Cortes Especiais", labelKey: "Cortes Especiais" }
+      ]},
+      { key: "aging", labelKey: "Maturação" },
+      { key: "stockKg", labelKey: "Estoque (kg)" },
+      { key: "pricePerKg", labelKey: "Preço por kg (R$)" }
+    ]
+  },
+  rows: mockAdminCuts
 };

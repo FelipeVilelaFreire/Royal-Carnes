@@ -92,6 +92,10 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
 }) => {
   const hasPrice = showPrice && typeof price === "number";
   const hasMeta = showCategory || (showDetail && detailLabel);
+  const metaLabel = [
+    showCategory ? categoryLabel : null,
+    showDetail && detailLabel ? detailLabel : null
+  ].filter(Boolean).join(" - ");
   const badgeBg = badgeTone === "limited" ? (isDark ? "#1A1A1A" : "#2E2520") : tokens.copper;
   const hasQuantity = quantity > 0;
 
@@ -220,32 +224,17 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
 
           {hasMeta ? (
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              {showCategory ? (
-                <span
-                  style={{
-                    border: `1px solid ${tokens.border}`,
-                    borderRadius: "999px",
-                    padding: "5px 9px",
-                    color: tokens.textMuted,
-                    fontSize: "12px"
-                  }}
-                >
-                  {categoryLabel}
-                </span>
-              ) : null}
-              {showDetail && detailLabel ? (
-                <span
-                  style={{
-                    border: `1px solid ${tokens.border}`,
-                    borderRadius: "999px",
-                    padding: "5px 9px",
-                    color: tokens.textMuted,
-                    fontSize: "12px"
-                  }}
-                >
-                  {detailLabel}
-                </span>
-              ) : null}
+              <span
+                style={{
+                  border: `1px solid ${tokens.border}`,
+                  borderRadius: "999px",
+                  padding: "5px 9px",
+                  color: tokens.textMuted,
+                  fontSize: "12px"
+                }}
+              >
+                {metaLabel}
+              </span>
             </div>
           ) : null}
         </div>

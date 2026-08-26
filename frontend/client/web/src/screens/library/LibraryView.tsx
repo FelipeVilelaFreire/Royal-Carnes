@@ -54,32 +54,36 @@ type ProductPreviewState = Record<string, {
 }>;
 
 const productItemInteractiveOptionKeys = new Set([
-  "badge",
-  "badgeTone",
   "showImage",
   "showName",
   "showDescription",
   "showCategory",
   "showDetail",
-  "showBadge",
   "showFavorite",
   "showPrice",
+  "showAction",
   "showOriginalPrice"
 ]);
+
+const productItemVisibleCompositionOptionKeys = productItemCardManifest.optionGroups
+  .find((group) => group.id === "composition")
+  ?.options
+  .filter((option) => option.control === "boolean" && String(option.key).startsWith("show"))
+  .map((option) => String(option.key)) || [];
 
 const createProductItemCardRuntimeConfig = (
   example: (typeof productItemCardManifest.examples)[number]
 ): ProductItemCardRuntimeConfig => ({
   exampleId: example.id,
   productIndex: example.productIndex,
-  badge: example.options.badge === "category" || example.options.badge === "component" ? example.options.badge : "none",
+  badge: "none",
   badgeTone: example.options.badgeTone,
   showImage: example.options.showImage,
   showName: example.options.showName,
   showDescription: example.options.showDescription,
   showCategory: example.options.showCategory,
   showDetail: example.options.showDetail,
-  showBadge: example.options.showBadge,
+  showBadge: false,
   showFavorite: example.options.showFavorite,
   showOriginalPrice: example.options.showOriginalPrice,
   favorite: example.options.favorite,
@@ -218,7 +222,9 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
   const renderSelectedPreview = () => {
     if (selectedCandidate.previewKind === "product-item") {
       const previewProducts = productPreviewItems.slice(0, 3);
-      const compositionGroup = productItemCardManifest.optionGroups.find((group) => group.id === "composition");
+      const compositionOptions = productItemCardManifest.optionGroups
+        .find((group) => group.id === "composition")
+        ?.options.filter((option) => productItemVisibleCompositionOptionKeys.includes(String(option.key)));
 
       return (
         <div style={{ display: "grid", gap: "14px" }}>
@@ -234,6 +240,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
               {previewProducts.map((product, index) => {
                 const category = productCategoriesMock.find((item) => item.id === product.categoryId);
                 const previewState = productPreviewState[product.id] || { quantity: 0, favorite: false };
+                const isFeaturedPreview = index === 0;
                 const badge =
                   productCardConfig.badge === "component"
                     ? strings.labels.productComponent
@@ -244,7 +251,10 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                 return (
                   <ProductItemCard
                     key={product.id}
-                    style={index === 0 ? { gridColumn: "span 2" } : undefined}
+                    style={{
+                      gridColumn: isFeaturedPreview ? "1 / -1" : undefined,
+                      minHeight: isFeaturedPreview ? "430px" : "390px"
+                    }}
                     name={product.name}
                     description={product.description}
                     image={product.image}
@@ -298,17 +308,20 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                 border: `1px solid ${tokens.border}`,
                 borderRadius: "8px",
                 background: tokens.background,
-                alignSelf: "stretch"
+                alignSelf: "stretch",
+                minHeight: "834px",
+                boxSizing: "border-box",
+                alignContent: "start"
               }}
             >
-              <code style={{ color: tokens.copper, fontSize: "12px", fontWeight: 800 }}>
-                {compositionGroup?.id}
-              </code>
+              <code style={{ color: tokens.copper, fontSize: "12px", fontWeight: 800 }}>composition</code>
               <div style={{ display: "grid", gap: "6px" }}>
-                {compositionGroup?.options.map((option) => {
+                {compositionOptions?.map((option) => {
                   const optionKey = String(option.key);
                   const isInteractive = productItemInteractiveOptionKeys.has(optionKey);
                   const value = getProductOptionValue(optionKey);
+                  const isBooleanValue = value === "on" || value === "off";
+                  const isOn = value === "on";
 
                   return (
                     <button
@@ -338,7 +351,28 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {optionKey}
                       </span>
-                      {value ? <code style={{ color: tokens.copper, fontSize: "10px" }}>{value}</code> : null}
+                      {value ? (
+                        <code
+                          style={{
+                            minWidth: isBooleanValue ? "34px" : undefined,
+                            padding: isBooleanValue ? "3px 7px" : 0,
+                            borderRadius: isBooleanValue ? "999px" : 0,
+                            border: isBooleanValue ? `1px solid ${isOn ? tokens.copper : tokens.border}` : "none",
+                            background: isBooleanValue
+                              ? isOn
+                                ? "rgba(184, 115, 51, 0.18)"
+                                : "rgba(255, 255, 255, 0.04)"
+                              : "transparent",
+                            color: isOn || !isBooleanValue ? tokens.copper : tokens.textMuted,
+                            fontSize: "10px",
+                            fontWeight: 900,
+                            textAlign: "center",
+                            textTransform: isBooleanValue ? "uppercase" : undefined
+                          }}
+                        >
+                          {value}
+                        </code>
+                      ) : null}
                     </button>
                   );
                 })}
@@ -520,7 +554,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                       composition: {Object.keys(productItemCardManifest.composition).join(", ")}
                     </code>
                     <code>
-                      options: {productItemCardManifest.optionGroups.flatMap((group) => group.options.map((option) => String(option.key))).join(", ")}
+                      options: {productItemVisibleCompositionOptionKeys.join(", ")}
                     </code>
                     <code>
                       design-system: {productItemCardManifest.designSystemBoundary.futureOwner}

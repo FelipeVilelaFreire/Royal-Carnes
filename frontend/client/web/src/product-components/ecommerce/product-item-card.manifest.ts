@@ -259,7 +259,7 @@ export const productItemCardManifest = {
       options: {
         badge: "component",
         badgeTone: "offer",
-        showImage: true,
+        showImage: false,
         showName: true,
         showDescription: true,
         showCategory: true,

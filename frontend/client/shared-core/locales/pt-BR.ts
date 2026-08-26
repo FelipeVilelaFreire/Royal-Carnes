@@ -7,10 +7,10 @@ export const clientPtBR = {
     home: "Home",
     cortes: "Cortes",
     catalogo: "Catálogo",
-    produtos: "Pedido",
+    produtos: "Montar Box",
     royalBox: "Royal Box",
     royalDelivery: "Royal Delivery",
-    meusPedidos: "Meus Pedidos",
+    meusPedidos: "Entregas",
     minhaConta: "Minha Conta",
     carrinho: "Carrinho",
     entrar: "Entrar",
@@ -91,7 +91,7 @@ export const clientPtBR = {
     emptyDescription: "A montagem avulsa do Royal Delivery entra aqui: carnes, formato, utensílios, carvão, endereço e pagamento."
   },
   meusPedidos: {
-    title: "Meus Pedidos",
+    title: "Minhas Entregas",
     subtitle: "Acompanhe suas compras, caixas e entregas Royal Delivery.",
     stats: {
       activeOrders: "Pedidos em andamento",
@@ -115,14 +115,13 @@ export const clientPtBR = {
       action: "Editar ciclo"
     },
     history: {
-      title: "Historico de Pedidos",
+      title: "Historico de Entregas",
       type: "Tipo",
       date: "Data",
       status: "Status",
       value: "Valor",
       actions: "Acoes",
       details: "Detalhes",
-      repeat: "Repetir pedido",
       review: "Avaliar"
     }
   },

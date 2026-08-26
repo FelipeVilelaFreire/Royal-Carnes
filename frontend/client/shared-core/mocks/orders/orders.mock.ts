@@ -153,6 +153,20 @@ const septemberSubscriptionItems: RoyalOrderItem[] = [
   { productId: "product-faca-royal", name: "Faca Royal", category: "utensil", quantity: 1, unitLabel: "utensilio incluso", price: 0 }
 ];
 
+const septemberSubscriptionExtraItems: RoyalOrderItem[] = [
+  { productId: "product-maminha-angus", name: "Maminha Angus", category: "meat", quantity: 1, unitLabel: "1.3kg", weightKg: 1.3, price: 0 },
+  { productId: "product-short-rib", name: "Short rib Royal", category: "meat", quantity: 1, unitLabel: "1.3kg", weightKg: 1.3, price: 0 },
+  { productId: "product-carvao-premium", name: "Carvao premium", category: "charcoal", quantity: 1, unitLabel: "5kg", weightKg: 5, price: 0 },
+  { productId: "product-rub-defumado", name: "Rub defumado Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
+  { productId: "product-manteiga-alho", name: "Manteiga de alho", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
+  { productId: "product-farofa-crocante", name: "Farofa crocante", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 }
+];
+
+const septemberSubscriptionCycleItems = [
+  ...septemberSubscriptionItems,
+  ...septemberSubscriptionExtraItems
+];
+
 const julySubscriptionItems: RoyalOrderItem[] = [
   { productId: "product-picanha-premium", name: "Picanha Premium", category: "meat", quantity: 1, unitLabel: "2.0kg", weightKg: 2, price: 0 },
   { productId: "product-contra-file", name: "Contra file", category: "meat", quantity: 1, unitLabel: "2.0kg", weightKg: 2, price: 0 },
@@ -160,6 +174,16 @@ const julySubscriptionItems: RoyalOrderItem[] = [
   { productId: "product-carvao-premium", name: "Carvao premium", category: "charcoal", quantity: 1, unitLabel: "5kg", weightKg: 5, price: 0 },
   { productId: "product-sal-parrilla", name: "Sal de parrilla Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
   { productId: "product-molho-barbecue", name: "Barbecue artesanal", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 }
+];
+
+const augustSubscriptionItems: RoyalOrderItem[] = [
+  { productId: "product-chorizo-angus", name: "Chorizo Angus", category: "meat", quantity: 1, unitLabel: "1.6kg", weightKg: 1.6, price: 0 },
+  { productId: "product-bife-ancho", name: "Bife ancho marmorizado", category: "meat", quantity: 1, unitLabel: "1.4kg", weightKg: 1.4, price: 0 },
+  { productId: "product-fraldinha-red", name: "Fraldinha Red Angus", category: "meat", quantity: 1, unitLabel: "1.2kg", weightKg: 1.2, price: 0 },
+  { productId: "product-carvao-premium", name: "Carvao premium", category: "charcoal", quantity: 1, unitLabel: "5kg", weightKg: 5, price: 0 },
+  { productId: "product-sal-defumado", name: "Sal defumado Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
+  { productId: "product-farofa-crocante", name: "Farofa crocante", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 },
+  { productId: "product-molho-chimichurri", name: "Molho chimichurri fresco", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 }
 ];
 
 export const royalCustomerOrdersMock: RoyalCustomerOrder[] = [
@@ -191,12 +215,36 @@ export const royalCustomerOrdersMock: RoyalCustomerOrder[] = [
     timeline: defaultTimeline("outForDelivery")
   },
   {
-    id: "order-sub-2026-09",
-    code: "#RS-2026-09",
+    id: "order-sub-2026-09-extra",
+    code: "#RS-2026-09B",
+    customerId: "customer-felipe-vilela",
+    kind: "subscriptionCycle",
+    title: "Complemento do Ciclo de Setembro - Royal Pro",
+    summary: "2.6kg adicionais de proteina, 5kg de carvao e 3 complementos dentro do mesmo ciclo",
+    imageUrl: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=82",
+    status: "preparing",
+    createdAtLabel: "30 AGO 2026",
+    subscriptionId: "subscription-royal-pro-felipe",
+    delivery: {
+      addressId: "address-home",
+      estimateLabel: "12 de Setembro, entre 18h e 20h"
+    },
+    payment: {
+      methodLabel: "Assinatura Royal Pro",
+      status: "paid",
+      totalLabel: "Incluido na assinatura"
+    },
+    cycleUsage: buildSubscriptionCycleUsage("pro", "Setembro", septemberSubscriptionCycleItems),
+    items: septemberSubscriptionExtraItems,
+    timeline: defaultTimeline("preparing")
+  },
+  {
+    id: "order-sub-2026-09-base",
+    code: "#RS-2026-09A",
     customerId: "customer-felipe-vilela",
     kind: "subscriptionCycle",
     title: "Ciclo de Setembro - Royal Pro",
-    summary: "4 cortes, 5kg de briquete, 2 temperos, 1 acompanhamento e 1 utensilio incluso",
+    summary: "Primeira selecao do ciclo: 5.4kg de proteina, 5kg de briquete, 3 complementos e 1 utensilio",
     imageUrl: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=900&q=82",
     status: "approved",
     createdAtLabel: "26 AGO 2026",
@@ -213,6 +261,63 @@ export const royalCustomerOrdersMock: RoyalCustomerOrder[] = [
     cycleUsage: buildSubscriptionCycleUsage("pro", "Setembro", septemberSubscriptionItems),
     items: septemberSubscriptionItems,
     timeline: defaultTimeline("approved")
+  },
+  {
+    id: "order-rd-8461",
+    code: "#RD-8461",
+    customerId: "customer-felipe-vilela",
+    kind: "royalDelivery",
+    title: "Pedido avulso de Agosto",
+    summary: "Prime rib, linguiça artesanal e acompanhamentos para churrasco",
+    imageUrl: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=82",
+    status: "delivered",
+    createdAtLabel: "18 AGO 2026",
+    delivery: {
+      addressId: "address-home",
+      estimateLabel: "Entregue em 18 de Agosto",
+      deliveredAtLabel: "18 AGO 2026"
+    },
+    payment: {
+      methodLabel: "Cartao final 2841",
+      status: "paid",
+      totalLabel: "276,90"
+    },
+    items: [
+      { productId: "product-prime-rib", name: "Prime rib especial", category: "meat", quantity: 1, unitLabel: "1.2kg", weightKg: 1.2, price: 169.9 },
+      { productId: "product-linguica-toscana", name: "Linguica toscana artesanal", category: "meat", quantity: 1, unitLabel: "1kg", weightKg: 1, price: 52 },
+      { productId: "product-pao-de-alho", name: "Pao de alho artesanal", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 28 },
+      { productId: "product-sal-defumado", name: "Sal defumado Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 27 }
+    ],
+    timeline: defaultTimeline("delivered"),
+    rating: {
+      score: 5,
+      comment: "Entrega dentro do horario e cortes excelentes."
+    }
+  },
+  {
+    id: "order-sub-2026-08",
+    code: "#RS-2026-08",
+    customerId: "customer-felipe-vilela",
+    kind: "subscriptionCycle",
+    title: "Ciclo de Agosto - Royal Pro",
+    summary: "3 cortes, 5kg de carvao, 1 tempero e 2 acompanhamentos",
+    imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=82",
+    status: "delivered",
+    createdAtLabel: "12 AGO 2026",
+    subscriptionId: "subscription-royal-pro-felipe",
+    delivery: {
+      addressId: "address-home",
+      estimateLabel: "Entregue em 12 de Agosto",
+      deliveredAtLabel: "12 AGO 2026"
+    },
+    payment: {
+      methodLabel: "Assinatura Royal Pro",
+      status: "paid",
+      totalLabel: "Incluido na assinatura"
+    },
+    cycleUsage: buildSubscriptionCycleUsage("pro", "Agosto", augustSubscriptionItems),
+    items: augustSubscriptionItems,
+    timeline: defaultTimeline("delivered")
   },
   {
     id: "order-sub-2026-07",

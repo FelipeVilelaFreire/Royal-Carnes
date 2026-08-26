@@ -5,6 +5,7 @@ import { Badge, Button, Card } from "../../../legacy/design-system";
 import { AuthModal, PortalHeader, BottomTabBar, Footer } from "../../../legacy/app-shell";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 import { CreditCardIcon, EditIcon, GiftIcon, TruckIcon, StarIcon, CheckIcon, CutMeatIcon, ScaleIcon, KnifeIcon, UserIcon } from "../../../legacy/design-system/Icons";
+import { OrderDetailModal } from "../../../product-components/ecommerce";
 import {
   royalCustomerMock,
   royalCustomerPaymentHistoryMock
@@ -12,7 +13,8 @@ import {
 import {
   royalCustomerOrdersMock,
   royalOrderKindLabels,
-  royalOrderStatusLabels
+  royalOrderStatusLabels,
+  type RoyalCustomerOrder
 } from "@/mocks/orders";
 import { catalogSubscriptionPlansMock, type SubscriptionPlanMock, type SubscriptionTier } from "@/mocks/catalog";
 import { clientPtBR } from "@/locales/pt-BR";
@@ -39,6 +41,8 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
     }
     return false;
   });
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<RoyalCustomerOrder | null>(null);
 
   // Estado do Plano de Assinatura & Modal
   const [currentPlan, setCurrentPlan] = useState<SubscriptionTier>(royalCustomerMock.activeSubscription?.planKey || "pro");
@@ -72,11 +76,17 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
     const handleAuthChange = () => {
       setIsMockAuthenticated(localStorage.getItem("royal_prime_mock_authenticated") === "true");
     };
+    const handleResize = () => {
+      setIsMobileScreen(window.innerWidth <= 768);
+    };
+    handleResize();
     window.addEventListener("royal_theme_changed", handleThemeChange);
     window.addEventListener("royal_auth_changed", handleAuthChange);
+    window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("royal_theme_changed", handleThemeChange);
       window.removeEventListener("royal_auth_changed", handleAuthChange);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -162,7 +172,6 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
     utensilsUsed: 0,
     utensilsLimit: currentPlanDetails.utensilSelectionLimit
   };
-  const remainingCuts = Math.max(effectiveCycleUsage.cutsLimit - effectiveCycleUsage.cutsUsed, 0);
   const cutsPercent = usagePercent(effectiveCycleUsage.cutsUsed, effectiveCycleUsage.cutsLimit);
   const weightPercent = usagePercent(effectiveCycleUsage.weightKgUsed, effectiveCycleUsage.weightKgLimit);
   const charcoalPercent = usagePercent(effectiveCycleUsage.charcoalKgUsed, effectiveCycleUsage.charcoalKgLimit);
@@ -171,6 +180,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
   return (
     <div
+      className="minha-conta-root"
       style={{
         background: tokens.background,
         color: tokens.text,
@@ -178,6 +188,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         display: "flex",
         flexDirection: "column",
         fontFamily: "'Inter', sans-serif",
+        overflowX: "hidden",
         transition: "background 0.3s ease, color 0.3s ease"
       }}
     >
@@ -189,8 +200,59 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         onNavigate={onNavigate}
       />
 
+      <style>{`
+        .minha-conta-root {
+          width: 100%;
+          max-width: 100vw;
+          overflow-x: hidden;
+        }
+
+        .minha-conta-root * {
+          box-sizing: border-box;
+          min-width: 0;
+        }
+
+        .minha-conta-desktop-footer {
+          display: block;
+        }
+
+        @media (max-width: 900px) {
+          .minha-conta-auth-main {
+            padding: 24px 16px calc(112px + env(safe-area-inset-bottom)) !important;
+          }
+
+          .minha-conta-content {
+            gap: 24px !important;
+            width: 100% !important;
+            overflow-x: hidden !important;
+          }
+
+          .minha-conta-content button,
+          .minha-conta-sidebar button {
+            max-width: 100% !important;
+            white-space: normal !important;
+          }
+
+          .minha-conta-content h1,
+          .minha-conta-content h2,
+          .minha-conta-content h3,
+          .minha-conta-content h4,
+          .minha-conta-sidebar h1 {
+            overflow-wrap: anywhere;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .portal-header,
+          .minha-conta-desktop-footer {
+            display: none !important;
+          }
+        }
+      `}</style>
+
       {!isMockAuthenticated ? (
         <main
+          className="minha-conta-auth-main"
           style={{
             flex: 1,
             maxWidth: "920px",
@@ -238,15 +300,76 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         className="grid-responsive"
       >
         <style>{`
+          @keyframes minhaContaAppear {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
           @media (max-width: 900px) {
             .grid-responsive {
               grid-template-columns: 1fr !important;
-              gap: 32px !important;
+              gap: 24px !important;
+              padding: 24px 16px calc(116px + env(safe-area-inset-bottom)) !important;
+              animation: minhaContaAppear 0.34s ease both;
+            }
+
+            .minha-conta-sidebar {
+              gap: 18px !important;
+            }
+
+            .minha-conta-tabs {
+              flex-direction: row !important;
+              gap: 8px !important;
+              border-left: none !important;
+              border-bottom: 1px solid ${tokens.border} !important;
+              padding-left: 0 !important;
+              padding-bottom: 10px !important;
+              overflow-x: auto !important;
+              scrollbar-width: none;
+            }
+
+            .minha-conta-tabs::-webkit-scrollbar {
+              display: none;
+            }
+
+            .minha-conta-tabs button {
+              flex: 0 0 auto !important;
+              white-space: nowrap !important;
             }
 
             .cycle-usage-grid {
               grid-template-columns: 1fr !important;
             }
+
+            .minha-conta-current-order,
+            .minha-conta-order-row {
+              grid-template-columns: 1fr !important;
+            }
+
+            .minha-conta-order-row {
+              gap: 14px !important;
+            }
+
+            .minha-conta-order-side {
+              align-items: flex-start !important;
+            }
+          }
+
+          .cycle-usage-grid {
+            align-items: stretch;
+          }
+
+          .cycle-usage-grid > div {
+            min-height: 156px !important;
+            justify-content: space-between !important;
+          }
+
+          .cycle-usage-grid > div > div:first-child {
+            min-height: 36px;
+          }
+
+          .cycle-usage-grid > div > div:nth-child(2) {
+            min-height: 34px;
           }
 
           @media (min-width: 901px) and (max-width: 1280px) {
@@ -254,10 +377,16 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
               grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             }
           }
+
+          @media (max-width: 768px) {
+            .portal-header {
+              display: none !important;
+            }
+          }
         `}</style>
 
         {/* Sidebar Lateral Esquerda com Links das Abas e Resumo do Plano */}
-        <aside style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+        <aside className="minha-conta-sidebar" style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
           <div>
             <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", textTransform: "uppercase", color: tokens.copper }}>
               ÁREA DE MEMBRO VIP
@@ -309,6 +438,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
           </div>
 
           <nav
+            className="minha-conta-tabs"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -372,7 +502,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         </aside>
 
         {/* Conteúdo Dinâmico na Direita (Muda conforme a Tab Selecionada) */}
-        <section style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+        <section className="minha-conta-content" style={{ display: "flex", flexDirection: "column", gap: "40px", minWidth: 0 }}>
           
           {/* TAB 1: PAINEL GERAL */}
           {activeTab === "painel" && (
@@ -454,14 +584,9 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       Uso & Capacidade da Assinatura
                     </h3>
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px", color: tokens.textMuted }}>
-                    <span style={{ fontSize: "14px" }}>
-                      Voce ainda pode adicionar <strong style={{ color: tokens.copper }}>{remainingCuts} cortes</strong> neste ciclo.
-                    </span>
-                    <span style={{ fontSize: "12px", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.copper }}>
-                      Renova em {royalCustomerMock.activeSubscription?.nextBillingLabel}
-                    </span>
-                  </div>
+                  <span style={{ fontSize: "12px", fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.copper }}>
+                    Renova em {royalCustomerMock.activeSubscription?.nextBillingLabel}
+                  </span>
                 </div>
 
                 {/* Grid de Medidores de Capacidade com Layout Espaçoso */}
@@ -485,7 +610,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         <CutMeatIcon size={18} color={tokens.copper} />
                       </div>
                       <span style={{ fontSize: "11px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", lineHeight: 1.25 }}>
-                        Cortes Utilizados
+                        Cortes
                       </span>
                     </div>
 
@@ -521,7 +646,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         <ScaleIcon size={18} color={tokens.copper} />
                       </div>
                       <span style={{ fontSize: "11px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", lineHeight: 1.25 }}>
-                        Capacidade de Peso
+                        Peso
                       </span>
                     </div>
 
@@ -557,13 +682,13 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         <KnifeIcon size={18} color={tokens.copper} />
                       </div>
                       <span style={{ fontSize: "11px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", lineHeight: 1.25 }}>
-                        Complementos
+                        Compl.
                       </span>
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                       <span style={{ fontSize: "24px", fontWeight: "800", color: tokens.text }}>
-                        {effectiveCycleUsage.complementsUsed} <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.textMuted }}>/ {effectiveCycleUsage.complementsLimit} complementos</span>
+                        {effectiveCycleUsage.complementsUsed} <span style={{ fontSize: "13px", fontWeight: "600", color: tokens.textMuted }}>/ {effectiveCycleUsage.complementsLimit} compl.</span>
                       </span>
                       <span style={{ fontSize: "12px", fontWeight: "700", color: tokens.copper }}>
                         {complementsPercent}%
@@ -627,7 +752,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         <KnifeIcon size={18} color={tokens.copper} />
                       </div>
                       <span style={{ fontSize: "11px", fontWeight: "700", color: tokens.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", lineHeight: 1.25 }}>
-                        Utensilio Royal
+                        Utensilio
                       </span>
                     </div>
 
@@ -690,7 +815,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 </div>
 
                 {currentOrder && (
-                  <Card variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "24px", borderRadius: "18px", display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(240px, 0.6fr)", gap: "24px", alignItems: "stretch" }}>
+                  <Card className="minha-conta-current-order" variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "24px", borderRadius: "18px", display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(240px, 0.6fr)", gap: "24px", alignItems: "stretch" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                       <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
                         <Badge variant="copper">{royalOrderKindLabels[currentOrder.kind]}</Badge>
@@ -718,6 +843,11 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                           <strong style={{ color: tokens.text, fontSize: "13px" }}>{formatOrderTotal(currentOrder)}</strong>
                         </div>
                       </div>
+                      <div>
+                        <Button variant="outline" size="sm" isDark={isDark} onClick={() => setSelectedOrder(currentOrder)}>
+                          Ver detalhes
+                        </Button>
+                      </div>
                     </div>
                     <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "10px", background: tokens.background }}>
                       {currentOrder.timeline.map((step) => (
@@ -732,7 +862,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   {recentOrders.map((order) => (
-                    <Card key={order.id} variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "24px", alignItems: "flex-start" }}>
+                    <Card key={order.id} className="minha-conta-order-row" variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "24px", alignItems: "flex-start" }}>
                       <div style={{ width: "72px", height: "72px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
                         <img src={order.imageUrl} alt={order.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       </div>
@@ -749,7 +879,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         </span>
                       </div>
 
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
+                      <div className="minha-conta-order-side" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
                         <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.text }}>
                           {formatOrderTotal(order)}
                         </span>
@@ -757,7 +887,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                           <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: tokens.copper, boxShadow: `0 0 8px ${tokens.copper}` }} />
                           <span style={{ fontSize: "12px", fontWeight: "700", color: tokens.copper }}>{royalOrderStatusLabels[order.status]}</span>
                         </div>
-                        <Button variant="outline" size="sm" isDark={isDark} onClick={() => onNavigate ? onNavigate("/meus-pedidos") : (window.location.href = "/meus-pedidos")}>
+                        <Button variant="outline" size="sm" isDark={isDark} onClick={() => setSelectedOrder(order)}>
                           Ver detalhes
                         </Button>
                       </div>
@@ -1488,11 +1618,21 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
         </div>
       )}
 
+      <OrderDetailModal
+        open={Boolean(selectedOrder)}
+        onClose={() => setSelectedOrder(null)}
+        order={selectedOrder}
+        isDark={isDark}
+        isMobile={isMobileScreen}
+      />
+
       {/* 3. BottomTabBar Mobile */}
       <BottomTabBar activeTab="portal-minha-conta" onNavigate={onNavigate} isDark={isDark} />
 
       {/* 4. Footer */}
-      <Footer onNavigate={onNavigate} isDark={isDark} />
+      <div className="minha-conta-desktop-footer">
+        <Footer onNavigate={onNavigate} isDark={isDark} />
+      </div>
       <AuthModal
         open={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}

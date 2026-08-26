@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { FlameIcon, BoxIcon, CartIcon, TruckIcon, UserIcon } from "../design-system/Icons";
+import { clientPtBR } from "@/locales/pt-BR";
 
 export interface BottomTabBarProps {
   activeTab?: "home" | "hero" | "cortes" | "produtos" | "meus-pedidos" | "minha-caixa" | "perfil" | "meu-clube" | "minha-conta" | "portal-home" | "portal-cortes" | "portal-minha-caixa" | "portal-minha-conta";
@@ -40,8 +41,8 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   const tabs = [
     { key: "portal-home", label: "Home", path: "/home", icon: FlameIcon },
     { key: "portal-cortes", label: "Catálogo", path: "/cortes", icon: BoxIcon },
-    { key: "produtos", label: "Pedido", path: "/produtos", icon: CartIcon },
-    { key: "meus-pedidos", label: "Pedidos", path: "/meus-pedidos", icon: TruckIcon },
+    { key: "produtos", label: clientPtBR.navigation.produtos, path: "/produtos", icon: CartIcon },
+    { key: "meus-pedidos", label: clientPtBR.navigation.meusPedidos, path: "/meus-pedidos", icon: TruckIcon },
     { key: "minha-conta", label: "Conta", path: "/minha-conta", icon: UserIcon }
   ];
 

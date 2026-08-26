@@ -76,16 +76,31 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
 
   const navItems = [
     { key: "portal-cortes", label: "Catálogo", path: "/cortes" },
-    { key: "produtos", label: "Pedido", path: "/produtos" },
+    { key: "produtos", label: clientPtBR.navigation.produtos, path: "/produtos" },
     { key: "meus-pedidos", label: clientPtBR.navigation.meusPedidos, path: "/meus-pedidos" }
   ];
 
   return (
+    <>
+    <style>{`
+      .portal-header-spacer {
+        height: 72px;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 768px) {
+        .portal-header-spacer {
+          display: none;
+        }
+      }
+    `}</style>
     <header
       className="portal-header"
       style={{
-        position: "sticky",
+        position: "fixed",
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 100,
         width: "100%",
         background: isDark
@@ -331,5 +346,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
         isDark={isDark}
       />
     </header>
+    <div className="portal-header-spacer" aria-hidden="true" />
+    </>
   );
 };
