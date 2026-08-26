@@ -171,6 +171,8 @@ export const clientPtBR = {
       select: "Selecionar",
       selected: "Selecionado",
       add: "Adicionar",
+      limitReached: "Limite atingido",
+      limitReachedHint: "Saldo insuficiente neste ciclo.",
       quantitySuffix: "un.",
       availableForSubscription: "Assinatura",
       availableForBox: "Box",

@@ -33,6 +33,9 @@ export interface ProductItemCardProps {
   showAction?: boolean;
   actionLabel?: string;
   selectedActionLabel?: string;
+  actionDisabled?: boolean;
+  actionDisabledLabel?: string;
+  disabledHint?: string;
   onAction?: () => void;
   onDecrease?: () => void;
   onFavoriteToggle?: () => void;
@@ -84,6 +87,9 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   showAction = false,
   actionLabel,
   selectedActionLabel,
+  actionDisabled = false,
+  actionDisabledLabel,
+  disabledHint,
   onAction,
   onDecrease,
   onFavoriteToggle,
@@ -100,6 +106,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   ].filter(Boolean).join(" - ");
   const badgeBg = badgeTone === "limited" ? (isDark ? "#1A1A1A" : "#2E2520") : tokens.copper;
   const hasQuantity = quantity > 0;
+  const actionText = actionDisabled ? actionDisabledLabel || actionLabel : selected ? selectedActionLabel || actionLabel : actionLabel;
 
   return (
     <article
@@ -116,6 +123,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
             ? "0 18px 38px rgba(0, 0, 0, 0.24)"
             : "0 18px 38px rgba(184, 115, 51, 0.1)"
           : "none",
+        opacity: actionDisabled && !selected ? 0.7 : 1,
         transition: "all 0.2s ease",
         display: "flex",
         flexDirection: "column",
@@ -359,14 +367,16 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                 <button
                   type="button"
                   onClick={onAction}
+                  disabled={actionDisabled}
                   aria-label="Adicionar unidade"
                   style={{
                     height: "100%",
                     border: "none",
                     borderLeft: `1px solid ${tokens.border}`,
                     background: "transparent",
-                    color: tokens.copper,
-                    cursor: "pointer",
+                    color: actionDisabled ? tokens.textMuted : tokens.copper,
+                    cursor: actionDisabled ? "not-allowed" : "pointer",
+                    opacity: actionDisabled ? 0.62 : 1,
                     fontSize: "18px",
                     fontWeight: 900
                   }}
@@ -380,11 +390,21 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                 size="sm"
                 isDark={isDark}
                 fullWidth
+                disabled={actionDisabled}
                 onClick={onAction}
+                style={{
+                  opacity: actionDisabled ? 0.7 : 1,
+                  cursor: actionDisabled ? "not-allowed" : "pointer"
+                }}
               >
-                {selected ? selectedActionLabel || actionLabel : actionLabel}
+                {actionText}
               </Button>
             )
+          ) : null}
+          {actionDisabled && disabledHint ? (
+            <span style={{ color: tokens.textMuted, fontSize: "11px", lineHeight: 1.35 }}>
+              {disabledHint}
+            </span>
           ) : null}
         </div>
       ) : null}

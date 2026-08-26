@@ -2,6 +2,7 @@
 
 import React from "react";
 import { BottomModal, Modal } from "@/legacy/design-system";
+import { CheckIcon } from "@/legacy/design-system/Icons";
 import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
 import { royalOrderKindLabels, royalOrderStatusLabels, type RoyalCustomerOrder } from "@/mocks/orders";
 
@@ -171,23 +172,24 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
           <div style={{ minWidth: 0 }}>
             <h3 style={{ margin: "0 0 10px", color: tokens.text, fontSize: "15px" }}>Acompanhamento</h3>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 0, overflowX: "auto", padding: "4px 0 6px", maxWidth: "100%" }}>
+            <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${order.timeline.length}, minmax(92px, 1fr))`, gap: "8px", overflowX: "auto", padding: "8px 2px 4px", maxWidth: "100%" }}>
+              <span style={{ position: "absolute", left: "18px", right: "18px", top: "17px", height: "2px", background: tokens.border, opacity: 0.72 }} />
               {order.timeline.map((step, index) => {
                 const isCurrentStep = order.status === step.status;
                 const stepColor = step.completed ? timelineDoneTokens.color : isCurrentStep ? tokens.copper : tokens.border;
                 const stepBackground = step.completed ? timelineDoneTokens.background : isCurrentStep ? (isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)") : tokens.surfaceContainer;
                 const stepBorder = step.completed ? timelineDoneTokens.border : isCurrentStep ? (isDark ? "rgba(184, 115, 51, 0.34)" : "rgba(184, 115, 51, 0.28)") : tokens.border;
                 return (
-                  <div key={step.status} style={{ display: "flex", alignItems: "flex-start", minWidth: "104px", flex: "1 0 104px" }}>
-                    <div style={{ display: "grid", gap: "7px", minWidth: "72px" }}>
-                      <span style={{ width: "12px", height: "12px", borderRadius: "999px", background: stepColor, border: `1px solid ${stepBorder}`, boxShadow: step.completed || isCurrentStep ? `0 0 0 3px ${stepBackground}` : "none" }} />
-                      <span style={{ color: step.completed ? timelineDoneTokens.color : isCurrentStep ? tokens.copper : tokens.textMuted, fontSize: "10px", fontWeight: step.completed || isCurrentStep ? 800 : 600, lineHeight: 1.25 }}>
-                        {step.label}
-                      </span>
-                    </div>
-                    {index < order.timeline.length - 1 ? (
-                      <span style={{ height: "1px", minWidth: "28px", flex: 1, margin: "6px 8px 0", background: step.completed ? timelineDoneTokens.border : tokens.border, opacity: step.completed ? 1 : 0.65 }} />
+                  <div key={step.status} style={{ position: "relative", zIndex: 1, minWidth: "92px", display: "grid", justifyItems: "center", gap: "7px", textAlign: "center" }}>
+                    {index < order.timeline.length - 1 && step.completed ? (
+                      <span style={{ position: "absolute", left: "50%", right: "-50%", top: "9px", height: "2px", background: timelineDoneTokens.color }} />
                     ) : null}
+                    <span style={{ width: "20px", height: "20px", borderRadius: "999px", background: step.completed ? timelineDoneTokens.color : stepBackground, border: `1px solid ${stepBorder}`, boxShadow: step.completed || isCurrentStep ? `0 0 0 4px ${stepBackground}` : "none", display: "grid", placeItems: "center", color: "#FFFFFF", position: "relative", zIndex: 2 }}>
+                      {step.completed ? <CheckIcon size={12} color="#FFFFFF" /> : null}
+                    </span>
+                    <span style={{ color: step.completed ? timelineDoneTokens.color : isCurrentStep ? tokens.copper : tokens.textMuted, fontSize: "10px", fontWeight: step.completed || isCurrentStep ? 900 : 700, lineHeight: 1.22, maxWidth: "92px" }}>
+                      {step.label}
+                    </span>
                   </div>
                 );
               })}

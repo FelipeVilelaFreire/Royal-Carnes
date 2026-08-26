@@ -42,6 +42,7 @@ O manifest controla as variacoes principais:
 - com estado selecionado;
 - com quantidade;
 - com favorito;
+- com acao bloqueada por regra do fluxo consumidor;
 - com preco original/oferta.
 
 Na `/library`, os exemplos deste card devem ser interativos. O manifest define quais handlers cada exemplo ativa, e a tela de library mantem apenas o estado runtime necessario para simular clique, incremento, decremento e favorito.
@@ -62,7 +63,9 @@ Convencao importante:
 
 - `name`, `image`, `description`, `categoryLabel`, `detailLabel`, `price`, `originalPrice` e labels sao dados;
 - `showName`, `showImage`, `showDescription`, `showMeta`, `showPrice`, `showOriginalPrice`, `showAction`, `showBadge` e `showFavorite` sao opcoes de composicao;
-- `selected`, `quantity` e `favorite` sao estado do fluxo consumidor.
+- `selected`, `quantity`, `favorite` e `actionDisabled` sao estado do fluxo consumidor.
+
+`actionDisabled` nao decide regra comercial dentro do card. A screen calcula se o produto ainda cabe no plano, no ciclo ou no estoque, e o card apenas apresenta o botao bloqueado com `actionDisabledLabel` e `disabledHint`.
 
 No manifest, `optionGroups` e a fonte para a `/library` mostrar todas as opcoes funcionais do componente. Cada opcao declara o controle esperado e o dono:
 

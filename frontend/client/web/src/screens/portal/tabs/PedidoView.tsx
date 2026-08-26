@@ -224,6 +224,9 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     }))
     .filter((entry) => entry.quantity > 0);
   const selectedUnitsCount = selectedProductEntries.reduce((total, entry) => total + entry.quantity, 0);
+  const selectedMeatUnitsCount = selectedProductEntries
+    .filter((entry) => entry.product.kind === "meat")
+    .reduce((total, entry) => total + entry.quantity, 0);
   const selectedProteinKg = selectedProductEntries
     .filter((entry) => entry.product.kind === "meat")
     .reduce((total, entry) => total + entry.quantity, 0);
@@ -267,6 +270,45 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     return selectedUnitsCount;
   };
 
+  const getCycleUsedKindCount = (product: Product) => {
+    if (!subscriptionSummaryUsage) return 0;
+    if (product.kind === "meat") return subscriptionSummaryUsage.weightKgUsed;
+    if (product.kind === "charcoal") return subscriptionSummaryUsage.charcoalKgUsed;
+    if (product.kind === "seasoning") return subscriptionSummaryUsage.seasoningsUsed;
+    if (product.kind === "kit" && product.tags.includes("acompanhamento")) return subscriptionSummaryUsage.sidesUsed;
+    if (product.kind === "utensil") return subscriptionSummaryUsage.utensilsUsed;
+    return subscriptionSummaryUsage.cutsUsed;
+  };
+
+  const getProjectedKindCount = (product: Product) =>
+    getCycleUsedKindCount(product) + getSelectedKindCount(product);
+
+  const canAddSubscriptionProduct = (product: Product) => {
+    if (selectedMode !== "subscription") return true;
+
+    const nextKindUsage = getProjectedKindCount(product) + getProductMeasure(product);
+    if (nextKindUsage > getSubscriptionKindLimit(product)) return false;
+
+    if (product.kind === "meat" && subscriptionSummaryUsage) {
+      return subscriptionSummaryUsage.cutsUsed + selectedMeatUnitsCount + 1 <= subscriptionSummaryUsage.cutsLimit;
+    }
+
+    return true;
+  };
+
+  const subscriptionCycleCutsUsed =
+    (subscriptionSummaryUsage?.cutsUsed || 0) + selectedMeatUnitsCount;
+  const subscriptionCycleWeightUsed =
+    (subscriptionSummaryUsage?.weightKgUsed || 0) + selectedProteinKg;
+  const subscriptionCycleCharcoalUsed =
+    (subscriptionSummaryUsage?.charcoalKgUsed || 0) + selectedCharcoalKg;
+  const subscriptionCycleSeasoningsUsed =
+    (subscriptionSummaryUsage?.seasoningsUsed || 0) + selectedSeasoningCount;
+  const subscriptionCycleSidesUsed =
+    (subscriptionSummaryUsage?.sidesUsed || 0) + selectedSideCount;
+  const subscriptionCycleUtensilsUsed =
+    (subscriptionSummaryUsage?.utensilsUsed || 0) + selectedUtensilCount;
+
   const handleModeSelect = (mode: PedidoMode) => {
     setSelectedMode(mode);
     if (mode === "subscription") {
@@ -284,10 +326,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
 
   const handleProductSelect = (product: Product) => {
     setSelectedProductQuantities((current) => {
-      if (
-        selectedMode === "subscription" &&
-        getSelectedKindCount(product) + getProductMeasure(product) > getSubscriptionKindLimit(product)
-      ) {
+      if (!canAddSubscriptionProduct(product)) {
         return current;
       }
       return {
@@ -733,6 +772,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       const category = categoryById.get(product.categoryId);
                       const selectedQuantity = selectedProductQuantities[product.id] || 0;
                       const isSelected = selectedQuantity > 0;
+                      const isActionDisabled = selectedMode === "subscription" && !canAddSubscriptionProduct(product);
                       const price = product.price;
                       return (
                         <ProductItemCard
@@ -751,6 +791,9 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                           showAction={true}
                           actionLabel={strings.productCard.add}
                           selectedActionLabel={strings.productCard.add}
+                          actionDisabled={isActionDisabled}
+                          actionDisabledLabel={strings.productCard.limitReached}
+                          disabledHint={strings.productCard.limitReachedHint}
                           onAction={() => handleProductSelect(product)}
                           onDecrease={() => handleProductRemove(product.id)}
                           isDark={isDark}
@@ -1449,11 +1492,11 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         {selectedMode === "subscription" ? (
                           <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px", display: "grid", gap: "10px" }}>
                             <h3 style={{ margin: 0, color: tokens.text, fontSize: "15px" }}>{reviewCopy.limitsTitle}</h3>
-                            <SummaryRow label={strings.summary.meatUsage} value={`${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.charcoalUsage} value={`${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.seasoningUsage} value={`${selectedSeasoningCount}/${selectedPlan.seasoningSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.sideUsage} value={`${selectedSideCount}/${selectedPlan.sideSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.utensilUsage} value={`${selectedUtensilCount}/${selectedPlan.utensilSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.meatUsage} value={`${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.charcoalUsage} value={`${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.seasoningUsage} value={`${subscriptionCycleSeasoningsUsed}/${selectedPlan.seasoningSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.sideUsage} value={`${subscriptionCycleSidesUsed}/${selectedPlan.sideSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.utensilUsage} value={`${subscriptionCycleUtensilsUsed}/${selectedPlan.utensilSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
                           </div>
                         ) : null}
                       </div>
@@ -1506,7 +1549,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                   ) : null}
                   <SummaryRow
                     label={subscriptionSummaryUsage ? strings.summary.cycleCuts : selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
-                    value={subscriptionSummaryUsage ? `${subscriptionSummaryUsage.cutsUsed} / ${subscriptionSummaryUsage.cutsLimit}` : String(selectedUnitsCount)}
+                    value={subscriptionSummaryUsage ? `${subscriptionCycleCutsUsed} / ${subscriptionSummaryUsage.cutsLimit}` : String(selectedUnitsCount)}
                     muted={tokens.textMuted}
                     text={tokens.text}
                   />
@@ -1572,7 +1615,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <SummaryRow
                         label={strings.summary.meatUsage}
                         value={subscriptionSummaryUsage
-                          ? `${formatMeasure(subscriptionSummaryUsage.weightKgUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
+                          ? `${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
                           : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
@@ -1580,7 +1623,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <SummaryRow
                         label={strings.summary.charcoalUsage}
                         value={subscriptionSummaryUsage
-                          ? `${formatMeasure(subscriptionSummaryUsage.charcoalKgUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
+                          ? `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
                           : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
@@ -1588,7 +1631,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <SummaryRow
                         label={strings.summary.seasoningUsage}
                         value={subscriptionSummaryUsage
-                          ? `${subscriptionSummaryUsage.seasoningsUsed}/${subscriptionSummaryUsage.seasoningsLimit}`
+                          ? `${subscriptionCycleSeasoningsUsed}/${subscriptionSummaryUsage.seasoningsLimit}`
                           : `${selectedSeasoningCount}/${selectedPlan.seasoningSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
@@ -1596,7 +1639,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <SummaryRow
                         label={strings.summary.sideUsage}
                         value={subscriptionSummaryUsage
-                          ? `${subscriptionSummaryUsage.sidesUsed}/${subscriptionSummaryUsage.sidesLimit}`
+                          ? `${subscriptionCycleSidesUsed}/${subscriptionSummaryUsage.sidesLimit}`
                           : `${selectedSideCount}/${selectedPlan.sideSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
@@ -1604,7 +1647,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <SummaryRow
                         label={strings.summary.utensilUsage}
                         value={subscriptionSummaryUsage
-                          ? `${subscriptionSummaryUsage.utensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
+                          ? `${subscriptionCycleUtensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
                           : `${selectedUtensilCount}/${selectedPlan.utensilSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}

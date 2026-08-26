@@ -2,7 +2,17 @@
 
 import React, { useState } from "react";
 import { themeColorsDefault } from "../../tokens/theme.tokens";
-import { FlameIcon, StoreIcon, TruckIcon, UserIcon, SettingsIcon } from "../../ui/Icon/AppIcons";
+import {
+  FlameIcon,
+  StoreIcon,
+  TruckIcon,
+  UserIcon,
+  SettingsIcon,
+  StarIcon,
+  CartIcon,
+  ArrowBackIcon,
+  ChevronRightIcon
+} from "../../ui/Icon/AppIcons";
 
 export interface SidebarMenuProps {
   config?: any;
@@ -33,9 +43,11 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
   const renderIcon = (item: any, isActive: boolean) => {
     const color = isActive ? themeColors.primary : themeColors.textMuted;
     if (item.iconName === "flame" || item.key === "dashboard") return <FlameIcon size={20} color={color} />;
-    if (item.iconName === "store" || item.key === "cortes") return <StoreIcon size={20} color={color} />;
-    if (item.iconName === "truck" || item.key === "caixas") return <TruckIcon size={20} color={color} />;
-    if (item.iconName === "user" || item.key === "socios") return <UserIcon size={20} color={color} />;
+    if (item.iconName === "store" || item.key === "produtos" || item.key === "cortes") return <StoreIcon size={20} color={color} />;
+    if (item.iconName === "user" || item.key === "usuarios" || item.key === "socios") return <UserIcon size={20} color={color} />;
+    if (item.iconName === "star" || item.key === "assinaturas" || item.key === "subscribers") return <StarIcon size={20} color={color} />;
+    if (item.iconName === "cart" || item.key === "pedidos" || item.key === "orders") return <CartIcon size={20} color={color} />;
+    if (item.iconName === "truck" || item.key === "deliveries" || item.key === "caixas") return <TruckIcon size={20} color={color} />;
     if (item.iconName === "settings" || item.key === "configuracoes") return <SettingsIcon size={20} color={color} />;
     return <FlameIcon size={20} color={color} />;
   };
@@ -71,7 +83,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-        {/* Topo / Header Limpo da Sidebar com Imagem da Logo ROYAL PRIME */}
+        {/* Topo da Sidebar com Logo */}
         <div
           style={{
             display: "flex",
@@ -99,7 +111,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
           )}
         </div>
 
-        {/* Links de Navegacao pelas Colunas */}
+        {/* Links de Navegação na Sidebar */}
         <nav style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {items.map((item) => {
             const isActive = activePath === item.routePath;
@@ -121,7 +133,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
                   textDecoration: "none",
                   padding: isCollapsed ? "14px 0" : "14px 18px",
                   borderRadius: "16px",
-                  background: isActive ? "rgba(0, 229, 255, 0.12)" : "transparent",
+                  background: isActive ? "rgba(255, 198, 101, 0.12)" : "transparent",
                   border: isActive ? `1px solid ${themeColors.border}` : "1px solid transparent",
                   display: "flex",
                   alignItems: "center",
@@ -138,7 +150,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
         </nav>
       </div>
 
-      {/* Roda-pe da Sidebar: Perfil do Operador Admin & Botao de Collapse */}
+      {/* Rodapé da Sidebar & Botão de Recolher Menu Executivo */}
       <div style={{ display: "flex", flexDirection: "column", gap: "16px", paddingTop: "20px", borderTop: `1px solid ${themeColors.border}` }}>
         {config?.showUserProfile && config?.userProfile && !isCollapsed && (
           <div
@@ -157,7 +169,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
-                background: "rgba(0, 229, 255, 0.12)",
+                background: "rgba(255, 198, 101, 0.12)",
                 border: `1px solid ${themeColors.border}`,
                 display: "flex",
                 alignItems: "center",
@@ -181,27 +193,35 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
           </div>
         )}
 
-        {/* Botao de Collapse do AppShell Contract */}
-        {config?.collapsible && (
+        {/* Botão Executivo de Recolher Menu */}
+        {config?.collapsible !== false && (
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
             style={{
-              background: "transparent",
+              background: "rgba(255, 198, 101, 0.05)",
               border: `1px solid ${themeColors.border}`,
-              borderRadius: "12px",
-              color: themeColors.textMuted,
-              padding: "10px",
+              borderRadius: "14px",
+              color: themeColors.text,
+              padding: "11px 14px",
               fontSize: "13px",
               fontWeight: "700",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: isCollapsed ? "center" : "flex-start",
+              gap: "10px",
               transition: "all 0.2s ease"
             }}
           >
-            {isCollapsed ? "»" : "« Recolher Menu"}
+            {!isCollapsed ? (
+              <>
+                <ArrowBackIcon size={16} color={themeColors.primary} />
+                <span style={{ fontSize: "12px", letterSpacing: "0.5px" }}>Recolher Menu</span>
+              </>
+            ) : (
+              <ChevronRightIcon size={18} color={themeColors.primary} />
+            )}
           </button>
         )}
       </div>

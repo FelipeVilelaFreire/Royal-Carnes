@@ -148,14 +148,14 @@ export const themeColorsDefault = {
     graphite: "#4A4A4A"
   },
   admin: {
-    primary: "#00E5FF",
-    primaryContainer: "#008B9B",
-    background: "#080F1E",
-    surface: "#0F1A30",
-    surfaceContainer: "#172645",
-    border: "rgba(0, 229, 255, 0.3)",
-    text: "#F0F8FF",
-    textMuted: "#8DA7C4",
+    primary: "#FFC665",
+    primaryContainer: "#E5A93C",
+    background: "#0B0908",
+    surface: "#151312",
+    surfaceContainer: "#1A1817",
+    border: "rgba(201, 162, 39, 0.25)",
+    text: "#E8E1DE",
+    textMuted: "#D4C4B0",
     accentCrimson: "#A40213"
   }
 };

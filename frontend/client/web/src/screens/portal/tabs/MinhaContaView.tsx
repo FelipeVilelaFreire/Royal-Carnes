@@ -864,13 +864,32 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         </Button>
                       </div>
                     </div>
-                    <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "16px", display: "flex", flexDirection: "column", justifyContent: "center", gap: "10px", background: tokens.background }}>
-                      {currentOrder.timeline.map((step) => (
-                        <div key={step.status} style={{ display: "flex", alignItems: "center", gap: "10px", color: step.completed ? tokens.text : tokens.textMuted, fontSize: "12px", fontWeight: step.completed ? 800 : 600 }}>
-                          <span style={{ width: "9px", height: "9px", borderRadius: "999px", background: step.completed ? themeTokens.colors.statusActive : tokens.border, flexShrink: 0 }} />
-                          {step.label}
-                        </div>
-                      ))}
+                    <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "14px", display: "grid", alignContent: "center", background: tokens.background, minWidth: 0 }}>
+                      <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${currentOrder.timeline.length}, minmax(82px, 1fr))`, gap: "6px", overflowX: "auto", padding: "8px 2px 2px" }}>
+                        <span style={{ position: "absolute", left: "16px", right: "16px", top: "17px", height: "2px", background: tokens.border, opacity: 0.7 }} />
+                        {currentOrder.timeline.map((step, index) => {
+                          const isCurrentStep = currentOrder.status === step.status;
+                          const color = step.completed ? themeTokens.colors.statusActive : isCurrentStep ? tokens.copper : tokens.border;
+                          const bg = step.completed
+                            ? themeTokens.colors.statusActive
+                            : isCurrentStep
+                              ? isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)"
+                              : tokens.surfaceContainer;
+                          return (
+                            <div key={step.status} style={{ position: "relative", zIndex: 1, minWidth: "82px", display: "grid", justifyItems: "center", gap: "7px", textAlign: "center" }}>
+                              {index < currentOrder.timeline.length - 1 && step.completed ? (
+                                <span style={{ position: "absolute", left: "50%", right: "-50%", top: "9px", height: "2px", background: themeTokens.colors.statusActive }} />
+                              ) : null}
+                              <span style={{ width: "20px", height: "20px", borderRadius: "999px", border: `1px solid ${color}`, background: bg, display: "grid", placeItems: "center", boxShadow: step.completed || isCurrentStep ? `0 0 0 4px ${isDark ? "rgba(16, 185, 129, 0.12)" : "rgba(16, 185, 129, 0.08)"}` : "none", position: "relative", zIndex: 2 }}>
+                                {step.completed ? <CheckIcon size={12} color="#FFFFFF" /> : null}
+                              </span>
+                              <span style={{ color: step.completed ? themeTokens.colors.statusActive : isCurrentStep ? tokens.copper : tokens.textMuted, fontSize: "10px", fontWeight: step.completed || isCurrentStep ? 900 : 700, lineHeight: 1.2, maxWidth: "82px" }}>
+                                {step.label}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </Card>
                 )}
@@ -1541,13 +1560,17 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   justifyContent: "center"
                 }}
               >
-                ✕
+                <span style={{ position: "relative", width: "14px", height: "14px", display: "block" }}>
+                  <span style={{ position: "absolute", top: "6px", left: 0, width: "14px", height: "2px", background: "currentColor", transform: "rotate(45deg)" }} />
+                  <span style={{ position: "absolute", top: "6px", left: 0, width: "14px", height: "2px", background: "currentColor", transform: "rotate(-45deg)" }} />
+                </span>
               </button>
             </div>
 
             {planSuccessMessage && (
-              <div style={{ padding: "14px 20px", background: "rgba(34, 197, 94, 0.15)", border: "1px solid #22C55E", borderRadius: "12px", color: "#22C55E", fontSize: "14px", fontWeight: "700" }}>
-                ✓ {planSuccessMessage}
+              <div style={{ padding: "14px 20px", background: "rgba(34, 197, 94, 0.15)", border: "1px solid #22C55E", borderRadius: "12px", color: "#22C55E", fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                <CheckIcon size={16} color="#22C55E" />
+                {planSuccessMessage}
               </div>
             )}
 

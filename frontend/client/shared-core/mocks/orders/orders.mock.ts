@@ -142,24 +142,14 @@ const buildSubscriptionCycleUsage = (
 };
 
 const septemberSubscriptionItems: RoyalOrderItem[] = [
-  { productId: "product-picanha-steakhouse", name: "Picanha Steakhouse", category: "meat", quantity: 1, unitLabel: "1.8kg", weightKg: 1.8, price: 0 },
-  { productId: "product-ancho-angus", name: "Ancho Angus", category: "meat", quantity: 1, unitLabel: "1.4kg", weightKg: 1.4, price: 0 },
-  { productId: "product-prime-rib", name: "Prime rib especial", category: "meat", quantity: 1, unitLabel: "1.2kg", weightKg: 1.2, price: 0 },
-  { productId: "product-linguica-toscana", name: "Linguica toscana artesanal", category: "meat", quantity: 1, unitLabel: "1.0kg", weightKg: 1, price: 0 },
+  { productId: "product-picanha", name: "Picanha", category: "meat", quantity: 1, unitLabel: "2kg", weightKg: 2, price: 0 },
   { productId: "product-briquete-premium", name: "Briquete premium", category: "charcoal", quantity: 1, unitLabel: "5kg", weightKg: 5, price: 0 },
   { productId: "product-sal-parrilla", name: "Sal de parrilla Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
-  { productId: "product-chimichurri", name: "Chimichurri Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
-  { productId: "product-pao-de-alho", name: "Pao de alho artesanal", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 },
-  { productId: "product-faca-royal", name: "Faca Royal", category: "utensil", quantity: 1, unitLabel: "utensilio incluso", price: 0 }
+  { productId: "product-pao-de-alho", name: "Pao de alho artesanal", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 }
 ];
 
 const septemberSubscriptionExtraItems: RoyalOrderItem[] = [
-  { productId: "product-maminha-angus", name: "Maminha Angus", category: "meat", quantity: 1, unitLabel: "1.3kg", weightKg: 1.3, price: 0 },
-  { productId: "product-short-rib", name: "Short rib Royal", category: "meat", quantity: 1, unitLabel: "1.3kg", weightKg: 1.3, price: 0 },
-  { productId: "product-carvao-premium", name: "Carvao premium", category: "charcoal", quantity: 1, unitLabel: "5kg", weightKg: 5, price: 0 },
-  { productId: "product-rub-defumado", name: "Rub defumado Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
-  { productId: "product-manteiga-alho", name: "Manteiga de alho", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 },
-  { productId: "product-farofa-crocante", name: "Farofa crocante", category: "side", quantity: 1, unitLabel: "acompanhamento", price: 0 }
+  { productId: "product-chimichurri", name: "Chimichurri Royal", category: "seasoning", quantity: 1, unitLabel: "tempero", price: 0 }
 ];
 
 const septemberSubscriptionCycleItems = [
@@ -220,7 +210,7 @@ export const royalCustomerOrdersMock: RoyalCustomerOrder[] = [
     customerId: "customer-felipe-vilela",
     kind: "subscriptionCycle",
     title: "Complemento do Ciclo de Setembro - Royal Pro",
-    summary: "2.6kg adicionais de proteina, 5kg de carvao e 3 complementos dentro do mesmo ciclo",
+    summary: "1 tempero adicional dentro do mesmo ciclo",
     imageUrl: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=82",
     status: "preparing",
     createdAtLabel: "30 AGO 2026",
@@ -244,7 +234,7 @@ export const royalCustomerOrdersMock: RoyalCustomerOrder[] = [
     customerId: "customer-felipe-vilela",
     kind: "subscriptionCycle",
     title: "Ciclo de Setembro - Royal Pro",
-    summary: "Primeira selecao do ciclo: 5.4kg de proteina, 5kg de briquete, 3 complementos e 1 utensilio",
+    summary: "Primeira selecao do ciclo: 2kg de proteina, 5kg de briquete, 1 tempero e 1 acompanhamento",
     imageUrl: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=900&q=82",
     status: "approved",
     createdAtLabel: "26 AGO 2026",

@@ -213,15 +213,28 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
             </div>
 
             <div style={{ display: "grid", gap: "18px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: `repeat(${currentOrder.timeline.length}, minmax(90px, 1fr))`, gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
-                {currentOrder.timeline.map((step) => (
-                  <div key={step.status} style={{ minWidth: "96px", display: "flex", flexDirection: "column", gap: "8px", alignItems: "center", textAlign: "center" }}>
-                    <span style={{ width: "26px", height: "26px", borderRadius: "999px", border: `2px solid ${step.completed ? themeTokens.colors.statusActive : tokens.border}`, background: step.completed ? themeTokens.colors.statusActive : tokens.surfaceContainer, display: "grid", placeItems: "center" }}>
-                      {step.completed && <CheckIcon size={14} color="#FFFFFF" />}
-                    </span>
-                    <span style={{ color: step.completed ? themeTokens.colors.statusActive : tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>{step.label}</span>
-                  </div>
-                ))}
+              <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${currentOrder.timeline.length}, minmax(92px, 1fr))`, gap: "8px", overflowX: "auto", padding: "8px 2px 4px" }}>
+                <span style={{ position: "absolute", left: "18px", right: "18px", top: "18px", height: "2px", background: tokens.border, opacity: 0.7 }} />
+                {currentOrder.timeline.map((step, index) => {
+                  const isCurrentStep = currentOrder.status === step.status;
+                  const color = step.completed ? themeTokens.colors.statusActive : isCurrentStep ? tokens.copper : tokens.border;
+                  const bg = step.completed
+                    ? themeTokens.colors.statusActive
+                    : isCurrentStep
+                      ? isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)"
+                      : tokens.surfaceContainer;
+                  return (
+                    <div key={step.status} style={{ position: "relative", zIndex: 1, minWidth: "92px", display: "grid", justifyItems: "center", gap: "7px", textAlign: "center" }}>
+                      {index < currentOrder.timeline.length - 1 && step.completed ? (
+                        <span style={{ position: "absolute", left: "50%", right: "-50%", top: "10px", height: "2px", background: themeTokens.colors.statusActive }} />
+                      ) : null}
+                      <span style={{ width: "22px", height: "22px", borderRadius: "999px", border: `1px solid ${color}`, background: bg, display: "grid", placeItems: "center", boxShadow: step.completed || isCurrentStep ? `0 0 0 4px ${isDark ? "rgba(16, 185, 129, 0.12)" : "rgba(16, 185, 129, 0.08)"}` : "none", position: "relative", zIndex: 2 }}>
+                        {step.completed ? <CheckIcon size={13} color="#FFFFFF" /> : null}
+                      </span>
+                      <span style={{ color: step.completed ? themeTokens.colors.statusActive : isCurrentStep ? tokens.copper : tokens.textMuted, fontSize: "10px", fontWeight: step.completed || isCurrentStep ? 900 : 700, lineHeight: 1.2, maxWidth: "92px" }}>{step.label}</span>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="meus-pedidos-order-body" style={{ display: "grid", gridTemplateColumns: "minmax(160px, 0.45fr) minmax(0, 1fr)", gap: "18px" }}>
