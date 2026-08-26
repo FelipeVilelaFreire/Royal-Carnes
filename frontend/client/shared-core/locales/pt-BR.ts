@@ -156,7 +156,13 @@ export const clientPtBR = {
     },
     plans: {
       title: "Escolha um plano",
-      subtitle: "Na assinatura fechada, o plano define o limite e quais produtos aparecem no grid."
+      subtitle: "Na assinatura fechada, o plano define o limite e quais produtos aparecem no grid.",
+      activeTitle: "Voce esta montando o ciclo da sua assinatura",
+      activeSubtitle: "O catalogo abaixo ja respeita o plano ativo, o saldo do ciclo e os limites de cada grupo.",
+      activePlanLabel: "Plano ativo",
+      renewalLabel: "Renova em",
+      nextDeliveryLabel: "Proxima entrega",
+      cycleUsageLabel: "Uso atual do ciclo"
     },
       catalog: {
         title: "Produtos disponíveis",
@@ -240,6 +246,9 @@ export const clientPtBR = {
         addressLabel: "Endereço principal",
         addressValue: "Rua das Palmeiras, 120 - Centro",
         addressHint: "Usado como padrão para este fluxo. Você pode trocar antes de finalizar.",
+        primaryAddress: "Principal",
+        zipPrefix: "CEP:",
+        phonePrefix: "Tel:",
         removeAddress: "Remover",
         addAddress: "Adicionar outro endereço",
         newAddressTitle: "Novo endereço",

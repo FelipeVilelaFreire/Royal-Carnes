@@ -13,7 +13,7 @@ import {
   SettingsIcon,
   TruckIcon
 } from "../../../legacy/design-system/Icons";
-import { StoreIcon, TrashIcon } from "@foundation/ui/Icon/AppIcons";
+import { StoreIcon } from "@foundation/ui/Icon/AppIcons";
 import { ProductItemCard } from "../../../product-components/ecommerce";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 import { clientPtBR } from "@/locales/pt-BR";
@@ -91,6 +91,9 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     return false;
   });
   const [pendingStepAfterAuth, setPendingStepAfterAuth] = useState<PedidoStep | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState(
+    royalCustomerMock.addresses.find((address) => address.isPrimary)?.id || royalCustomerMock.addresses[0]?.id || ""
+  );
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -119,6 +122,8 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   const activeSubscriptionPlan = activeSubscription
     ? catalogSubscriptionPlansMock.find((plan) => plan.key === activeSubscription.planKey)
     : undefined;
+  const currentSubscriptionPlan =
+    selectedMode === "subscription" && activeSubscriptionPlan ? activeSubscriptionPlan : selectedPlan;
   const activeSubscriptionOrder = activeSubscription
     ? royalCustomerOrdersMock.find((order) =>
         order.customerId === royalCustomerMock.id &&
@@ -152,6 +157,12 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         ? freightPoliciesMock[selectedMode].price
         : 0;
   const currentFreightOption = selectedFreight ? freightOptions.find((option) => option.key === selectedFreight) : undefined;
+  const selectedAddress =
+    royalCustomerMock.addresses.find((address) => address.id === selectedAddressId) ||
+    royalCustomerMock.addresses[0];
+  const selectedAddressSummary = selectedAddress
+    ? `${selectedAddress.streetLine} - ${selectedAddress.neighborhoodLine}`
+    : strings.deliveryStep.common.addressValue;
   const newAddressFields = [
     { label: strings.deliveryStep.common.zipCode, placeholder: "00000-000", gridColumn: "span 3" },
     { label: strings.deliveryStep.common.street, placeholder: "Rua das Palmeiras", gridColumn: "span 6" },
@@ -197,13 +208,13 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     const normalizedQuery = query.trim().toLowerCase();
     return productsMock.filter((product) => {
       const isIncludedInSelectedPlan =
-        selectedMode === "subscription" && product.includedInPlans?.includes(selectedPlan.key);
+        selectedMode === "subscription" && product.includedInPlans?.includes(currentSubscriptionPlan.key);
       const matchesMode = selectedMode
         ? product.availableFor.includes(selectedMode) || Boolean(isIncludedInSelectedPlan)
         : true;
       const matchesPlan =
         selectedMode === "subscription"
-          ? product.planTiers.some((tier) => selectedPlan.allowedPlanTiers.includes(tier)) ||
+          ? product.planTiers.some((tier) => currentSubscriptionPlan.allowedPlanTiers.includes(tier)) ||
             Boolean(isIncludedInSelectedPlan)
           : true;
       const matchesCategory = selectedCategoryId === "all" || product.categoryId === selectedCategoryId;
@@ -215,7 +226,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
 
       return matchesMode && matchesPlan && matchesCategory && matchesQuery;
     });
-  }, [query, selectedCategoryId, selectedMode, selectedPlan.allowedPlanTiers]);
+  }, [query, selectedCategoryId, selectedMode, currentSubscriptionPlan.key, currentSubscriptionPlan.allowedPlanTiers]);
 
   const selectedProductEntries = productsMock
     .map((product) => ({
@@ -250,15 +261,15 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     selectedMode === "royalDelivery" && selectedFreight
       ? estimatedTotal + currentFreightPrice
       : estimatedTotal;
-  const finalTotal = selectedMode === "subscription" ? selectedPlan.monthlyPrice : orderEstimateTotal;
+  const finalTotal = selectedMode === "subscription" ? currentSubscriptionPlan.monthlyPrice : orderEstimateTotal;
   const selectedPayment = paymentMethods.find((method) => method.key === selectedPaymentMethod) || paymentMethods[0];
   const getSubscriptionKindLimit = (product: Product) => {
-    if (product.kind === "meat") return selectedPlan.proteinKgLimit;
-    if (product.kind === "charcoal") return selectedPlan.charcoalKgLimit;
-    if (product.kind === "seasoning") return selectedPlan.seasoningSelectionLimit;
-    if (product.kind === "kit" && product.tags.includes("acompanhamento")) return selectedPlan.sideSelectionLimit;
-    if (product.kind === "utensil") return selectedPlan.utensilSelectionLimit;
-    return selectedPlan.productSelectionLimit;
+    if (product.kind === "meat") return currentSubscriptionPlan.proteinKgLimit;
+    if (product.kind === "charcoal") return currentSubscriptionPlan.charcoalKgLimit;
+    if (product.kind === "seasoning") return currentSubscriptionPlan.seasoningSelectionLimit;
+    if (product.kind === "kit" && product.tags.includes("acompanhamento")) return currentSubscriptionPlan.sideSelectionLimit;
+    if (product.kind === "utensil") return currentSubscriptionPlan.utensilSelectionLimit;
+    return currentSubscriptionPlan.productSelectionLimit;
   };
 
   const getSelectedKindCount = (product: Product) => {
@@ -388,6 +399,14 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
           transform: translateY(-2px);
         }
 
+        .royal-product-card-disabled:hover {
+          transform: none;
+        }
+
+        .pedido-mode-list {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
         @media (max-width: 1100px) {
           .pedido-shell {
             grid-template-columns: 1fr !important;
@@ -395,6 +414,17 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
 
           .pedido-summary {
             position: static !important;
+          }
+
+          .pedido-mode-list {
+            grid-template-columns: repeat(3, minmax(220px, 1fr)) !important;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scroll-snap-type: x mandatory;
+          }
+
+          .pedido-mode-card {
+            scroll-snap-align: start;
           }
         }
 
@@ -431,6 +461,44 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
 
           .pedido-address-field {
             grid-column: 1 / -1 !important;
+          }
+
+          .pedido-mode-list {
+            grid-template-columns: 1fr !important;
+            overflow-x: visible;
+            gap: 10px !important;
+          }
+
+          .pedido-mode-card {
+            min-height: 132px !important;
+            padding: 16px !important;
+          }
+
+          .pedido-active-plan-card {
+            padding: 18px !important;
+          }
+
+          .pedido-active-plan-header {
+            display: grid !important;
+            gap: 12px !important;
+          }
+
+          .pedido-active-plan-title {
+            font-size: 22px !important;
+            line-height: 1.18 !important;
+          }
+
+          .pedido-active-plan-metrics {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+          }
+
+          .pedido-active-plan-metric {
+            padding: 10px !important;
+          }
+
+          .pedido-active-plan-metric:first-child {
+            grid-column: 1 / -1;
           }
         }
       `}</style>
@@ -497,12 +565,13 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         </section>
 
         <section
+          className="pedido-mode-list"
           style={{
             display: "grid",
-            gridTemplateColumns: hasMode ? "repeat(3, minmax(0, 1fr))" : "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: hasMode ? "12px" : "18px",
+            gap: hasMode ? "10px" : "16px",
             marginBottom: hasMode ? "24px" : "0",
-            transition: "all 0.28s ease"
+            transition: "all 0.28s ease",
+            alignItems: "stretch"
           }}
         >
           {modeOrder.map((mode) => {
@@ -532,9 +601,10 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                 onClick={() => handleModeSelect(mode)}
                 style={{
                   ...cardSurface,
-                  minHeight: hasMode ? "156px" : "276px",
-                  padding: hasMode ? "18px" : "28px",
-                  textAlign: "left",
+                  position: "relative",
+                  minHeight: hasMode ? "132px" : "224px",
+                  padding: hasMode ? "16px" : "22px",
+                  textAlign: "center",
                   cursor: "pointer",
                   border: `1px solid ${isActive ? tokens.copper : tokens.border}`,
                   background: isActive
@@ -550,17 +620,17 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                   transition: "all 0.28s ease",
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "center",
-                  gap: hasMode ? "14px" : "20px"
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: hasMode ? "10px" : "14px"
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px", minWidth: 0 }}>
+                <div style={{ display: "grid", justifyItems: "center", gap: hasMode ? "9px" : "12px", minWidth: 0, width: "100%" }}>
                     <span
                       style={{
-                        width: hasMode ? "48px" : "62px",
-                        height: hasMode ? "48px" : "62px",
-                        borderRadius: hasMode ? "16px" : "20px",
+                        width: hasMode ? "44px" : "58px",
+                        height: hasMode ? "44px" : "58px",
+                        borderRadius: hasMode ? "15px" : "18px",
                         display: "grid",
                         placeItems: "center",
                         color: isActive ? "#FCFBF7" : tokens.copper,
@@ -569,9 +639,9 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         transition: "all 0.28s ease"
                       }}
                     >
-                      <Icon size={hasMode ? 22 : 30} />
+                      <Icon size={hasMode ? 21 : 28} />
                     </span>
-                    <span style={{ minWidth: 0 }}>
+                    <span style={{ minWidth: 0, display: "grid", justifyItems: "center" }}>
                       <span
                         style={{
                           display: "block",
@@ -580,7 +650,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                           fontWeight: 800,
                           textTransform: "uppercase",
                           letterSpacing: "0.08em",
-                          marginBottom: "7px"
+                          marginBottom: "6px"
                         }}
                       >
                         {modeEyebrow}
@@ -590,9 +660,10 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                           display: "block",
                           color: tokens.text,
                           fontFamily: "'Playfair Display', serif",
-                          fontSize: hasMode ? "24px" : "31px",
+                          fontSize: hasMode ? "21px" : "28px",
                           fontWeight: 700,
-                          lineHeight: 1.08
+                          lineHeight: 1.08,
+                          overflowWrap: "anywhere"
                         }}
                       >
                         {modeTitle}
@@ -603,12 +674,16 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         </span>
                       ) : null}
                     </span>
-                  </div>
+                </div>
+
                   {isActive ? (
                     <span
                       style={{
-                        width: "30px",
-                        height: "30px",
+                        position: "absolute",
+                        top: "12px",
+                        right: "12px",
+                        width: "28px",
+                        height: "28px",
                         borderRadius: "999px",
                         display: "grid",
                         placeItems: "center",
@@ -620,17 +695,16 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       <CheckIcon size={17} />
                     </span>
                   ) : null}
-                </div>
 
                 {!hasMode ? (
-                  <p style={{ margin: 0, color: tokens.textMuted, fontSize: "15px", lineHeight: 1.6 }}>
+                  <p style={{ margin: 0, color: tokens.textMuted, fontSize: "14px", lineHeight: 1.45, maxWidth: "300px" }}>
                     {modeDescription}
                   </p>
                 ) : null}
 
-                <div style={{ display: hasMode ? "none" : "grid", gap: "10px" }}>
+                <div style={{ display: hasMode ? "none" : "grid", gap: "8px", justifyItems: "center", width: "100%" }}>
                   {modeDetails.map((detail) => (
-                    <span key={detail} style={{ display: "flex", alignItems: "center", gap: "9px", color: tokens.textMuted, fontSize: "13px" }}>
+                    <span key={detail} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px", color: tokens.textMuted, fontSize: "12px", lineHeight: 1.3, maxWidth: "100%" }}>
                       <CheckIcon size={14} color={tokens.copper} />
                       {detail}
                     </span>
@@ -656,39 +730,77 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
               {currentStep === "montagem" ? (
                 <>
               {selectedMode === "subscription" ? (
-                <div style={{ ...cardSurface, padding: "22px", borderRadius: "20px" }}>
-                  <div style={{ marginBottom: "16px" }}>
-                    <h2 style={{ margin: "0 0 6px", fontSize: "24px", color: tokens.text }}>{strings.plans.title}</h2>
-                    <p style={{ margin: 0, color: tokens.textMuted, lineHeight: 1.5 }}>{strings.plans.subtitle}</p>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px" }}>
-                    {catalogSubscriptionPlansMock.map((plan) => {
-                      const isPlanActive = selectedPlanKey === plan.key;
-                      return (
-                        <button
-                          className="pedido-plan-card"
-                          key={plan.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedPlanKey(plan.key);
-                            setSelectedProductQuantities({});
-                          }}
-                          style={{
-                            border: `1px solid ${isPlanActive ? tokens.copper : tokens.border}`,
-                            borderRadius: "16px",
-                            background: isPlanActive ? (isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.1)") : "transparent",
-                            color: tokens.text,
-                            padding: "18px",
-                            cursor: "pointer",
-                            textAlign: "left",
-                            transition: "all 0.2s ease"
-                          }}
-                        >
-                          <strong style={{ display: "block", fontSize: "20px" }}>{plan.name}</strong>
-                        </button>
-                      );
-                    })}
-                  </div>
+                <div className="pedido-active-plan-card" style={{ ...cardSurface, padding: "22px", borderRadius: "20px" }}>
+                  {activeSubscription && activeSubscriptionPlan ? (
+                    <div style={{ display: "grid", gap: "18px" }}>
+                      <div className="pedido-active-plan-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "18px", flexWrap: "wrap" }}>
+                        <div style={{ minWidth: 0 }}>
+                          <span style={{ color: tokens.copper, fontSize: "11px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                            {strings.plans.activePlanLabel}
+                          </span>
+                          <h2 className="pedido-active-plan-title" style={{ margin: "7px 0 8px", fontSize: "26px", color: tokens.text }}>
+                            {strings.plans.activeTitle} {activeSubscriptionLabel}
+                          </h2>
+                          <p style={{ margin: 0, color: tokens.textMuted, lineHeight: 1.5, maxWidth: "760px" }}>
+                            {strings.plans.activeSubtitle}
+                          </p>
+                        </div>
+                        <span style={{ border: `1px solid ${tokens.copper}`, borderRadius: "999px", color: tokens.copper, padding: "7px 11px", fontSize: "11px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                          {activeSubscriptionLabel}
+                        </span>
+                      </div>
+                      <div className="pedido-active-plan-metrics" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "10px" }}>
+                        {[
+                          [strings.plans.renewalLabel, activeSubscription.nextBillingLabel],
+                          [strings.summary.cycleCuts, `${subscriptionCycleCutsUsed} / ${activeCycleUsage?.cutsLimit || currentSubscriptionPlan.productSelectionLimit}`],
+                          [strings.summary.meatUsage, `${formatMeasure(subscriptionCycleWeightUsed, "kg")} / ${formatMeasure(activeCycleUsage?.weightKgLimit || currentSubscriptionPlan.proteinKgLimit, "kg")}`],
+                          [strings.summary.charcoalUsage, `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")} / ${formatMeasure(activeCycleUsage?.charcoalKgLimit || currentSubscriptionPlan.charcoalKgLimit, "kg")}`]
+                        ].map(([label, value]) => (
+                          <div className="pedido-active-plan-metric" key={label} style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "12px", background: isDark ? "rgba(255, 255, 255, 0.025)" : "rgba(255, 255, 255, 0.62)", minWidth: 0 }}>
+                            <span style={{ display: "block", color: tokens.textMuted, fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "5px" }}>
+                              {label}
+                            </span>
+                            <strong style={{ color: tokens.text, fontSize: "14px", whiteSpace: label === strings.plans.renewalLabel ? "nowrap" : "normal" }}>{value}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ marginBottom: "16px" }}>
+                        <h2 style={{ margin: "0 0 6px", fontSize: "24px", color: tokens.text }}>{strings.plans.title}</h2>
+                        <p style={{ margin: 0, color: tokens.textMuted, lineHeight: 1.5 }}>{strings.plans.subtitle}</p>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px" }}>
+                        {catalogSubscriptionPlansMock.map((plan) => {
+                          const isPlanActive = selectedPlanKey === plan.key;
+                          return (
+                            <button
+                              className="pedido-plan-card"
+                              key={plan.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedPlanKey(plan.key);
+                                setSelectedProductQuantities({});
+                              }}
+                              style={{
+                                border: `1px solid ${isPlanActive ? tokens.copper : tokens.border}`,
+                                borderRadius: "16px",
+                                background: isPlanActive ? (isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.1)") : "transparent",
+                                color: tokens.text,
+                                padding: "18px",
+                                cursor: "pointer",
+                                textAlign: "left",
+                                transition: "all 0.2s ease"
+                              }}
+                            >
+                              <strong style={{ display: "block", fontSize: "20px" }}>{plan.name}</strong>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : null}
 
@@ -883,57 +995,74 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         <label style={{ display: "block", color: tokens.textMuted, fontSize: "12px", fontWeight: 900, textTransform: "uppercase", marginBottom: "8px" }}>
                           {strings.deliveryStep.common.addressTitle}
                         </label>
-                        <div
-                          style={{
-                            border: `1px solid ${tokens.copper}`,
-                            borderRadius: "16px",
-                            padding: "16px",
-                            color: tokens.text,
-                            display: "grid",
-                            gridTemplateColumns: "auto 1fr auto",
-                            gap: "14px",
-                            alignItems: "center",
-                            background: isDark ? "rgba(184, 115, 51, 0.1)" : "rgba(184, 115, 51, 0.07)",
-                            boxShadow: isDark ? "0 14px 32px rgba(0, 0, 0, 0.18)" : "0 14px 32px rgba(184, 115, 51, 0.08)"
-                          }}
-                        >
-                          <span
-                            style={{
-                              width: "46px",
-                              height: "46px",
-                              borderRadius: "14px",
-                              display: "grid",
-                              placeItems: "center",
-                              background: isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.1)",
-                              color: tokens.copper
-                            }}
-                          >
-                            <StoreIcon size={22} />
-                          </span>
-                          <div style={{ minWidth: 0 }}>
-                            <strong>{strings.deliveryStep.common.addressLabel}</strong>
-                            <p style={{ margin: "6px 0 0", color: tokens.textMuted }}>{strings.deliveryStep.common.addressValue}</p>
-                            <p style={{ margin: "6px 0 0", color: tokens.textMuted, fontSize: "13px", lineHeight: 1.4 }}>
-                              {strings.deliveryStep.common.addressHint}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "12px",
-                              border: `1px solid ${tokens.border}`,
-                              background: "transparent",
-                              color: tokens.textMuted,
-                              display: "grid",
-                              placeItems: "center",
-                              cursor: "pointer"
-                            }}
-                            aria-label={strings.deliveryStep.common.removeAddress}
-                          >
-                            <TrashIcon size={18} />
-                          </button>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "12px" }}>
+                          {royalCustomerMock.addresses.map((address) => {
+                            const isSelectedAddress = selectedAddressId === address.id;
+                            return (
+                              <button
+                                key={address.id}
+                                type="button"
+                                onClick={() => setSelectedAddressId(address.id)}
+                                style={{
+                                  border: `1px solid ${isSelectedAddress ? tokens.copper : tokens.border}`,
+                                  borderRadius: "16px",
+                                  padding: "16px",
+                                  color: tokens.text,
+                                  display: "grid",
+                                  gridTemplateColumns: "auto 1fr",
+                                  gap: "14px",
+                                  alignItems: "flex-start",
+                                  textAlign: "left",
+                                  background: isSelectedAddress
+                                    ? isDark ? "rgba(184, 115, 51, 0.1)" : "rgba(184, 115, 51, 0.07)"
+                                    : isDark ? "rgba(255, 255, 255, 0.025)" : "rgba(255, 255, 255, 0.62)",
+                                  boxShadow: isSelectedAddress
+                                    ? isDark ? "0 14px 32px rgba(0, 0, 0, 0.18)" : "0 14px 32px rgba(184, 115, 51, 0.08)"
+                                    : "none",
+                                  cursor: "pointer",
+                                  fontFamily: "'Inter', sans-serif",
+                                  minWidth: 0
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: "44px",
+                                    height: "44px",
+                                    borderRadius: "14px",
+                                    display: "grid",
+                                    placeItems: "center",
+                                    background: isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.1)",
+                                    color: tokens.copper,
+                                    flexShrink: 0
+                                  }}
+                                >
+                                  <StoreIcon size={21} />
+                                </span>
+                                <span style={{ minWidth: 0, display: "grid", gap: "7px" }}>
+                                  <span style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                                    <strong style={{ color: tokens.text, fontSize: "15px" }}>{address.label}</strong>
+                                    {address.isPrimary ? (
+                                      <span style={{ border: `1px solid ${tokens.copper}`, borderRadius: "999px", color: tokens.copper, padding: "3px 7px", fontSize: "9px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                                        {strings.deliveryStep.common.primaryAddress}
+                                      </span>
+                                    ) : null}
+                                  </span>
+                                  <strong style={{ color: tokens.text, fontSize: "13px" }}>{address.recipientName}</strong>
+                                  <span style={{ color: tokens.textMuted, fontSize: "13px", lineHeight: 1.4 }}>{address.streetLine}</span>
+                                  <span style={{ color: tokens.textMuted, fontSize: "13px", lineHeight: 1.4 }}>{address.neighborhoodLine}</span>
+                                  <span style={{ color: tokens.textMuted, fontSize: "12px", lineHeight: 1.4 }}>
+                                    {strings.deliveryStep.common.zipPrefix} {address.zipCode}{address.phone ? ` - ${strings.deliveryStep.common.phonePrefix} ${address.phone}` : ""}
+                                  </span>
+                                  {isSelectedAddress ? (
+                                    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: tokens.copper, fontSize: "12px", fontWeight: 900 }}>
+                                      <CheckIcon size={14} color={tokens.copper} />
+                                      {strings.deliveryStep.common.addressHint}
+                                    </span>
+                                  ) : null}
+                                </span>
+                              </button>
+                            );
+                          })}
                         </div>
                         <button
                           type="button"
@@ -1411,7 +1540,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         <h3 style={{ margin: 0, color: tokens.text, fontSize: "18px" }}>{reviewCopy.orderTitle}</h3>
                         <SummaryRow label={strings.summary.selectedMode} value={strings.modes[selectedMode].title} muted={tokens.textMuted} text={tokens.text} />
                         {selectedMode === "subscription" ? (
-                          <SummaryRow label={strings.summary.selectedPlan} value={selectedPlan.name} muted={tokens.textMuted} text={tokens.text} />
+                          <SummaryRow label={strings.summary.selectedPlan} value={currentSubscriptionPlan.name} muted={tokens.textMuted} text={tokens.text} />
                         ) : null}
                         <SummaryRow
                           label={selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
@@ -1423,7 +1552,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
 
                       <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "18px", padding: "18px", background: isDark ? "rgba(255, 255, 255, 0.025)" : "rgba(255, 255, 255, 0.62)", display: "grid", gap: "12px" }}>
                         <h3 style={{ margin: 0, color: tokens.text, fontSize: "18px" }}>{reviewCopy.deliveryTitle}</h3>
-                        <SummaryRow label={strings.summary.deliveryAddress} value={strings.deliveryStep.common.addressValue} muted={tokens.textMuted} text={tokens.text} />
+                        <SummaryRow label={strings.summary.deliveryAddress} value={selectedAddressSummary} muted={tokens.textMuted} text={tokens.text} />
                         {selectedMode === "royalBox" ? (
                           <SummaryRow
                             label={strings.summary.recurrenceDay}
@@ -1492,11 +1621,11 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         {selectedMode === "subscription" ? (
                           <div style={{ borderTop: `1px solid ${tokens.border}`, paddingTop: "12px", display: "grid", gap: "10px" }}>
                             <h3 style={{ margin: 0, color: tokens.text, fontSize: "15px" }}>{reviewCopy.limitsTitle}</h3>
-                            <SummaryRow label={strings.summary.meatUsage} value={`${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.charcoalUsage} value={`${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.seasoningUsage} value={`${subscriptionCycleSeasoningsUsed}/${selectedPlan.seasoningSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.sideUsage} value={`${subscriptionCycleSidesUsed}/${selectedPlan.sideSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
-                            <SummaryRow label={strings.summary.utensilUsage} value={`${subscriptionCycleUtensilsUsed}/${selectedPlan.utensilSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.meatUsage} value={`${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(currentSubscriptionPlan.proteinKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.charcoalUsage} value={`${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(currentSubscriptionPlan.charcoalKgLimit, "kg")}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.seasoningUsage} value={`${subscriptionCycleSeasoningsUsed}/${currentSubscriptionPlan.seasoningSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.sideUsage} value={`${subscriptionCycleSidesUsed}/${currentSubscriptionPlan.sideSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
+                            <SummaryRow label={strings.summary.utensilUsage} value={`${subscriptionCycleUtensilsUsed}/${currentSubscriptionPlan.utensilSelectionLimit}`} muted={tokens.textMuted} text={tokens.text} />
                           </div>
                         ) : null}
                       </div>
@@ -1542,7 +1671,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                   {selectedMode === "subscription" ? (
                     <SummaryRow
                       label={activeSubscription ? strings.summary.linkedPlan : strings.summary.selectedPlan}
-                      value={activeSubscriptionLabel || selectedPlan.name}
+                      value={activeSubscriptionLabel || currentSubscriptionPlan.name}
                       muted={tokens.textMuted}
                       text={tokens.text}
                     />
@@ -1567,7 +1696,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                     >
                       <SummaryRow
                         label={strings.summary.deliveryAddress}
-                        value={strings.deliveryStep.common.addressValue}
+                        value={selectedAddressSummary}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1616,7 +1745,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         label={strings.summary.meatUsage}
                         value={subscriptionSummaryUsage
                           ? `${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
-                          : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(selectedPlan.proteinKgLimit, "kg")}`}
+                          : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(currentSubscriptionPlan.proteinKgLimit, "kg")}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1624,7 +1753,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         label={strings.summary.charcoalUsage}
                         value={subscriptionSummaryUsage
                           ? `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
-                          : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(selectedPlan.charcoalKgLimit, "kg")}`}
+                          : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(currentSubscriptionPlan.charcoalKgLimit, "kg")}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1632,7 +1761,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         label={strings.summary.seasoningUsage}
                         value={subscriptionSummaryUsage
                           ? `${subscriptionCycleSeasoningsUsed}/${subscriptionSummaryUsage.seasoningsLimit}`
-                          : `${selectedSeasoningCount}/${selectedPlan.seasoningSelectionLimit}`}
+                          : `${selectedSeasoningCount}/${currentSubscriptionPlan.seasoningSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1640,7 +1769,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         label={strings.summary.sideUsage}
                         value={subscriptionSummaryUsage
                           ? `${subscriptionCycleSidesUsed}/${subscriptionSummaryUsage.sidesLimit}`
-                          : `${selectedSideCount}/${selectedPlan.sideSelectionLimit}`}
+                          : `${selectedSideCount}/${currentSubscriptionPlan.sideSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1648,7 +1777,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         label={strings.summary.utensilUsage}
                         value={subscriptionSummaryUsage
                           ? `${subscriptionCycleUtensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
-                          : `${selectedUtensilCount}/${selectedPlan.utensilSelectionLimit}`}
+                          : `${selectedUtensilCount}/${currentSubscriptionPlan.utensilSelectionLimit}`}
                         muted={tokens.textMuted}
                         text={tokens.text}
                       />
@@ -1690,7 +1819,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         {activeSubscription ? strings.summary.activeSubscriptionLabel : strings.summary.fixedPlanPrice}
                       </span>
                       <strong style={{ color: tokens.text, fontSize: "28px" }}>
-                        {activeSubscriptionLabel || formatMoney(selectedPlan.monthlyPrice)}
+                        {activeSubscriptionLabel || formatMoney(currentSubscriptionPlan.monthlyPrice)}
                       </strong>
                       <p style={{ margin: "8px 0 0", color: tokens.textMuted, fontSize: "13px", lineHeight: 1.45 }}>
                         {activeSubscription

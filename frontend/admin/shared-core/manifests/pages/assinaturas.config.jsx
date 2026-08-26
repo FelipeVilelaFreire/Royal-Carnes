@@ -1,39 +1,46 @@
-import { mockAdminSubscriptions } from "../../mocks/subscriptions.mock";
+import { catalogSubscriptionPlansMock } from "../../../../client/shared-core/mocks/catalog/plans.mock";
 
 export const assinaturasConfig = {
   screenKey: "assinaturas",
   titleKey: "assinaturas.title",
   subtitleKey: "assinaturas.subtitle",
-  entityName: "Assinatura Royal Box",
+  entityName: "Plano de Assinatura",
   actionLabelKey: "assinaturas.ctaAdd",
   columns: [
-    { key: "customerName", labelKey: "assinaturas.tableHeaders.customerName" },
-    { key: "planName", labelKey: "assinaturas.tableHeaders.planName" },
-    { key: "priceMonthlyFormatted", labelKey: "assinaturas.tableHeaders.priceMonthly" },
-    { key: "cycleCurrent", labelKey: "assinaturas.tableHeaders.cycleCurrent" },
-    { key: "nextBillingDate", labelKey: "assinaturas.tableHeaders.nextBillingDate" },
-    { key: "statusLabel", labelKey: "assinaturas.tableHeaders.status" }
+    { key: "name", labelKey: "Plano" },
+    { key: "subtitle", labelKey: "Descrição / Inclusões" },
+    { key: "proteinKgLimitFormatted", labelKey: "Proteínas" },
+    { key: "charcoalKgLimitFormatted", labelKey: "Carvão" },
+    { key: "monthlyPriceFormatted", labelKey: "Preço Mensal" },
+    { key: "annualMonthlyPriceFormatted", labelKey: "Preço Anual" }
   ],
   filters: [
     {
-      key: "status",
-      labelKey: "Status",
+      key: "key",
+      labelKey: "Tipo de Plano",
       options: [
-        { value: "active", labelKey: "Ativo" },
-        { value: "paused", labelKey: "Pausado" }
+        { value: "basic", labelKey: "Basic" },
+        { value: "premium", labelKey: "Premium" },
+        { value: "pro", labelKey: "Pro" }
       ]
     }
   ],
   form: {
     fields: [
-      { key: "customerName", labelKey: "Nome do Cliente", required: true },
-      { key: "planName", labelKey: "Plano Assinado", required: true },
-      { key: "priceMonthly", labelKey: "Valor Mensal (R$)" }
+      { key: "name", labelKey: "Nome do Plano", required: true },
+      { key: "subtitle", labelKey: "Descrição", type: "textarea" },
+      { key: "monthlyPrice", labelKey: "Preço Mensal (R$)" },
+      { key: "annualMonthlyPrice", labelKey: "Preço Anual (R$)" }
     ]
   },
-  rows: mockAdminSubscriptions.map((sub) => ({
-    ...sub,
-    priceMonthlyFormatted: `R$ ${sub.priceMonthly?.toFixed(2)}`,
-    statusLabel: sub.status === "active" ? "Ativo" : "Pausado"
+  rows: catalogSubscriptionPlansMock.map((plan) => ({
+    id: plan.id,
+    key: plan.key,
+    name: `Plano ${plan.name}`,
+    subtitle: plan.subtitle,
+    proteinKgLimitFormatted: `${plan.proteinKgLimit}kg de carnes`,
+    charcoalKgLimitFormatted: `${plan.charcoalKgLimit}kg de carvão`,
+    monthlyPriceFormatted: `R$ ${plan.monthlyPrice.toFixed(2)}/mês`,
+    annualMonthlyPriceFormatted: `R$ ${plan.annualMonthlyPrice.toFixed(2)} no anual`
   }))
 };

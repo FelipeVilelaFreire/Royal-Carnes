@@ -8,7 +8,8 @@ export const mockAdminCustomers = [
     activePlan: "Royal Pro",
     status: "ativo",
     memberSince: "Agosto de 2026",
-    address: "Av. Visconde de Albuquerque, 1200 - Leblon, Rio de Janeiro / RJ"
+    address: "Av. Visconde de Albuquerque, 1200 - Leblon, Rio de Janeiro / RJ",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80"
   },
   {
     id: "customer-lucas-dias",
@@ -19,7 +20,8 @@ export const mockAdminCustomers = [
     activePlan: "Master Churrasco",
     status: "ativo",
     memberSince: "Março de 2026",
-    address: "Rua Visconde de Pirajá, 351 - Ipanema, Rio de Janeiro / RJ"
+    address: "Rua Visconde de Pirajá, 351 - Ipanema, Rio de Janeiro / RJ",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=250&q=80"
   },
   {
     id: "customer-vinicius-silva",
@@ -30,6 +32,7 @@ export const mockAdminCustomers = [
     activePlan: "Essencial Barbecue",
     status: "pausado",
     memberSince: "Fevereiro de 2026",
-    address: "Rua Haddock Lobo, 210 - Tijuca, Rio de Janeiro / RJ"
+    address: "Rua Haddock Lobo, 210 - Tijuca, Rio de Janeiro / RJ",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=250&q=80"
   }
 ];

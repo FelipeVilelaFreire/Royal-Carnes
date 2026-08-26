@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="16" fill="#0B0908"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="#FFC665" stroke-width="2" stroke-opacity="0.4"/>
+  <!-- Crown Emblem -->
+  <path d="M16 26L22 32L32 20L42 32L48 26L45 42H19L16 26Z" fill="#FFC665"/>
+  <!-- Flame Inner Icon -->
+  <path d="M32 46C28.5 46 25.5 43.5 25.5 40.5C25.5 37.5 27.8 35 30.6 32.4C30.8 32.2 31.2 32.3 31.3 32.6C31.7 34.4 32.7 35.9 33.4 36.2C34.6 37 35.5 38 35.5 39.5C35.5 40.5 35.1 41.3 34.5 42C33.8 42.6 32.9 43 32 43C31.4 43 31 42.6 31 42C31 41.6 31.2 41.3 31.5 41.1C32 40.7 32.5 40 32.5 39C32.5 38.7 32.3 38.5 32 38.5C31.8 38.5 31.6 38.6 31.5 38.8C30.8 40 29.8 41.2 29.8 42.5C29.8 44.4 31.7 46 34 46" fill="#0B0908"/>
+  <circle cx="32" cy="18" r="2.5" fill="#FFC665"/>
+  <circle cx="16" cy="24" r="2" fill="#FFC665"/>
+  <circle cx="48" cy="24" r="2" fill="#FFC665"/>
+</svg>

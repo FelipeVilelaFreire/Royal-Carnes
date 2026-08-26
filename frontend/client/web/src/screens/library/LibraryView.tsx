@@ -27,7 +27,7 @@ const moneyFormatter = new Intl.NumberFormat("pt-BR", {
 });
 
 type ProductExampleRuntimeState = Record<string, {
-  exampleId: string;
+  compositionId: string;
   productIndex: number;
   badge: "component" | "category" | "none";
   badgeTone: "offer" | "limited";
@@ -70,25 +70,17 @@ const productItemVisibleCompositionOptionKeys = productItemCardManifest.optionGr
   .map((option) => String(option.key)) || [];
 
 const createProductItemCardRuntimeConfig = (
-  example: (typeof productItemCardManifest.examples)[number]
+  compositionId: keyof typeof productItemCardManifest.compositions
 ): ProductItemCardRuntimeConfig => ({
-  exampleId: example.id,
-  productIndex: example.productIndex,
+  compositionId,
+  productIndex: 0,
   badge: "none",
-  badgeTone: example.options.badgeTone,
-  showImage: example.options.showImage,
-  showName: example.options.showName,
-  showDescription: example.options.showDescription,
-  showMeta: example.options.showMeta,
-  showBadge: false,
-  showFavorite: example.options.showFavorite,
-  showOriginalPrice: example.options.showOriginalPrice,
-  favorite: example.options.favorite,
-  quantity: example.options.quantity,
-  selected: example.options.selected,
-  showPrice: example.options.showPrice,
-  showAction: example.options.showAction,
-  originalPrice: "originalPrice" in example.options ? example.options.originalPrice : undefined
+  badgeTone: "offer",
+  ...productItemCardManifest.compositions[compositionId],
+  favorite: false,
+  quantity: 0,
+  selected: false,
+  originalPrice: 129.9
 });
 
 export const LibraryView: React.FC<LibraryViewProps> = () => {
@@ -97,7 +89,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
   const strings = clientPtBR.library;
   const [selectedCandidateId, setSelectedCandidateId] = useState(libraryCandidatesMock[0]?.id);
   const [productCardConfig, setProductCardConfig] = useState<ProductItemCardRuntimeConfig>(() =>
-    createProductItemCardRuntimeConfig(productItemCardManifest.examples[0])
+    createProductItemCardRuntimeConfig("catalog")
   );
   const [productPreviewState, setProductPreviewState] = useState<ProductPreviewState>({});
 
@@ -217,12 +209,42 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
   const renderSelectedPreview = () => {
     if (selectedCandidate.previewKind === "product-item") {
       const previewProducts = productPreviewItems.slice(0, 3);
+      const productItemCompositionEntries = Object.entries(productItemCardManifest.compositions) as Array<
+        [keyof typeof productItemCardManifest.compositions, (typeof productItemCardManifest.compositions)[keyof typeof productItemCardManifest.compositions]]
+      >;
       const compositionOptions = productItemCardManifest.optionGroups
         .find((group) => group.id === "composition")
         ?.options.filter((option) => productItemVisibleCompositionOptionKeys.includes(String(option.key)));
 
       return (
         <div style={{ display: "grid", gap: "14px" }}>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            {productItemCompositionEntries.map(([compositionId]) => {
+              const isActive = productCardConfig.compositionId === compositionId;
+
+              return (
+                <button
+                  key={compositionId}
+                  type="button"
+                  onClick={() => setProductCardConfig(createProductItemCardRuntimeConfig(compositionId))}
+                  style={{
+                    minHeight: "34px",
+                    padding: "7px 10px",
+                    borderRadius: "999px",
+                    border: `1px solid ${isActive ? tokens.copper : tokens.border}`,
+                    background: isActive ? tokens.surfaceContainer : tokens.background,
+                    color: isActive ? tokens.text : tokens.textMuted,
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    fontFamily: "'Inter', sans-serif"
+                  }}
+                >
+                  {compositionId}
+                </button>
+              );
+            })}
+          </div>
+
           <div
             style={{
               display: "grid",
@@ -549,6 +571,9 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                     </code>
                     <code>
                       options: {productItemVisibleCompositionOptionKeys.join(", ")}
+                    </code>
+                    <code>
+                      compositions: {Object.keys(productItemCardManifest.compositions).join(", ")}
                     </code>
                     <code>
                       design-system: {productItemCardManifest.designSystemBoundary.futureOwner}

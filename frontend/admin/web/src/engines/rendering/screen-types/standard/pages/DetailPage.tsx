@@ -3,6 +3,7 @@ import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
+import { AvatarCell } from "@foundation/ui/Avatar";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
 import { EditIcon, ArrowBackIcon } from "@foundation/ui/Icon/AppIcons";
@@ -25,24 +26,25 @@ export const DetailPage: React.FC<DetailPageProps> = ({ entityName, row, onBack,
     { id: "history", label: adminPtBR.details.tabs.history }
   ];
 
+  const displayName = row.name || row.customerName || row.title || row.code || entityName;
+
   return (
     <div style={{ width: "100%", background, minHeight: "100vh", paddingBottom: "60px" }}>
       <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
         <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
-          {/* Header de Detalhes */}
+          {/* Header de Detalhes com AvatarCell Executivo */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
               <Button appearance="outline" tone="neutral" size="sm" onClick={onBack}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                   <ArrowBackIcon size={16} color={text} /> {adminPtBR.common.back}
                 </span>
               </Button>
-              <div>
-                <span style={{ fontSize: "11px", color: primary, fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                  {adminPtBR.details.badgeTitle}
-                </span>
-                <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "36px", margin: "2px 0 0 0", fontWeight: "800" }}>
-                  {row.name || row.title || row.boxMonth || entityName}
+
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <AvatarCell size="lg" name={displayName} image={row.image} />
+                <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "32px", margin: 0, fontWeight: "800" }}>
+                  {displayName}
                 </Text>
               </div>
             </div>

@@ -46,6 +46,7 @@ export const produtosConfig = {
     weight: item.weight,
     priceFormatted: `R$ ${item.price.toFixed(2)}`,
     origin: item.origin || "Brasil",
-    preparation: item.preparation || "Churrasqueira"
+    preparation: item.preparation || "Churrasqueira",
+    image: item.image
   }))
 };

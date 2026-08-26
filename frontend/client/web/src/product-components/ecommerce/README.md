@@ -47,6 +47,8 @@ O manifest controla as variacoes principais:
 
 Na `/library`, os exemplos deste card devem ser interativos. O manifest define quais handlers cada exemplo ativa, e a tela de library mantem apenas o estado runtime necessario para simular clique, incremento, decremento e favorito.
 
+`compositions` e o contrato principal por modo de uso. A tela escolhe uma composicao como `catalog`, `checkout`, `compact`, `readonly` ou `includedInPlan`; depois o card recebe os `show*` daquela composicao.
+
 O manifest nao controla estetica fina. Raio do card, escala tipografica, espacamento, estilo do botao, desenho de icones, cor e receita de superficie pertencem ao Design System/Foundation. No RoyalPrime MVP isso ainda passa pelo `legacy/design-system`, mas o contrato futuro deve tratar essas decisoes como Foundation/AppShell, nao como regra do `ProductItemCard`.
 
 Composicao do `ProductItemCard`:
@@ -58,6 +60,15 @@ Composicao do `ProductItemCard`:
 - actions: acao primaria ou stepper de quantidade.
 
 O card deve responder a opcoes de chamada. Exemplo: uma tela pode esconder preco, outra pode esconder acao, outra pode ativar favorito, outra pode mostrar quantidade. O visual do botao usado por essas opcoes deve vir do Design System, como um futuro `Button` com tipo/receita de acao comercial.
+
+Exemplo de consumo alvo:
+
+```tsx
+<ProductItemCard
+  product={product}
+  composition={productItemCardManifest.compositions.catalog}
+/>
+```
 
 Convencao importante:
 

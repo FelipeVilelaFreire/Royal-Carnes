@@ -107,23 +107,25 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   const badgeBg = badgeTone === "limited" ? (isDark ? "#1A1A1A" : "#2E2520") : tokens.copper;
   const hasQuantity = quantity > 0;
   const actionText = actionDisabled ? actionDisabledLabel || actionLabel : selected ? selectedActionLabel || actionLabel : actionLabel;
+  const isCardDisabled = actionDisabled && !selected;
+  const disabledSurface = isDark ? "rgba(255, 255, 255, 0.012)" : "rgba(246, 242, 236, 0.72)";
 
   return (
     <article
-      className="royal-product-card"
+      className={`royal-product-card${isCardDisabled ? " royal-product-card-disabled" : ""}`}
       style={{
         position: "relative",
         border: `1px solid ${selected ? tokens.copper : tokens.border}`,
         borderRadius: "18px",
         overflow: "hidden",
-        background: isDark ? "rgba(255, 255, 255, 0.025)" : "rgba(255, 255, 255, 0.68)",
+        background: isCardDisabled ? disabledSurface : isDark ? "rgba(255, 255, 255, 0.025)" : "rgba(255, 255, 255, 0.68)",
         minWidth: 0,
         boxShadow: selected
           ? isDark
             ? "0 18px 38px rgba(0, 0, 0, 0.24)"
             : "0 18px 38px rgba(184, 115, 51, 0.1)"
           : "none",
-        opacity: actionDisabled && !selected ? 0.7 : 1,
+        opacity: isCardDisabled ? 0.76 : 1,
         transition: "all 0.2s ease",
         display: "flex",
         flexDirection: "column",
@@ -134,7 +136,20 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
       <div>
         {showImage ? (
           <div style={{ height: "156px", background: tokens.background, position: "relative" }}>
-            <img src={image} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img
+              src={image}
+              alt={name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                filter: isCardDisabled ? "grayscale(0.45) saturate(0.65)" : "none",
+                opacity: isCardDisabled ? 0.58 : 1
+              }}
+            />
+            {isCardDisabled ? (
+              <span style={{ position: "absolute", inset: 0, background: isDark ? "rgba(11, 9, 8, 0.42)" : "rgba(252, 251, 247, 0.42)" }} />
+            ) : null}
 
             {showBadge && badge ? (
               <span
@@ -214,7 +229,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                 <h3
                   style={{
                     margin: showDescription ? "0 0 6px" : 0,
-                    color: tokens.text,
+                    color: isCardDisabled ? tokens.textMuted : tokens.text,
                     fontFamily: "'Playfair Display', serif",
                     fontSize: "20px",
                     fontWeight: 700,
@@ -240,6 +255,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                   borderRadius: "999px",
                   padding: "5px 9px",
                   color: tokens.textMuted,
+                  background: isCardDisabled ? (isDark ? "rgba(0, 0, 0, 0.16)" : "rgba(255, 255, 255, 0.5)") : "transparent",
                   fontSize: "12px"
                 }}
               >
@@ -324,7 +340,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                   {formatMoney(originalPrice)}
                 </span>
               ) : null}
-              <strong style={{ color: tokens.copper, fontSize: "18px" }}>{formatMoney(price)}</strong>
+              <strong style={{ color: isCardDisabled ? tokens.textMuted : tokens.copper, fontSize: "18px" }}>{formatMoney(price)}</strong>
             </div>
           ) : (
             <span />

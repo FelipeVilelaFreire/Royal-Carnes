@@ -42,6 +42,18 @@ type ProductItemCardOptionDefinition = {
   owner: "product-component" | "consumer-state" | "foundation";
 };
 
+type ProductItemCardComposition = Pick<ProductItemCardProps,
+  | "showImage"
+  | "showName"
+  | "showDescription"
+  | "showMeta"
+  | "showBadge"
+  | "showFavorite"
+  | "showPrice"
+  | "showOriginalPrice"
+  | "showAction"
+>;
+
 export const productItemCardManifest = {
   id: "product-item-card",
   name: "ProductItemCard",
@@ -200,6 +212,63 @@ export const productItemCardManifest = {
       ]
     }
   ],
+  compositions: {
+    catalog: {
+      showImage: false,
+      showName: true,
+      showDescription: true,
+      showMeta: true,
+      showBadge: false,
+      showFavorite: true,
+      showPrice: true,
+      showOriginalPrice: false,
+      showAction: true
+    },
+    checkout: {
+      showImage: true,
+      showName: true,
+      showDescription: true,
+      showMeta: true,
+      showBadge: false,
+      showFavorite: false,
+      showPrice: true,
+      showOriginalPrice: false,
+      showAction: true
+    },
+    compact: {
+      showImage: false,
+      showName: true,
+      showDescription: false,
+      showMeta: true,
+      showBadge: false,
+      showFavorite: false,
+      showPrice: true,
+      showOriginalPrice: false,
+      showAction: false
+    },
+    readonly: {
+      showImage: true,
+      showName: true,
+      showDescription: true,
+      showMeta: true,
+      showBadge: false,
+      showFavorite: false,
+      showPrice: true,
+      showOriginalPrice: false,
+      showAction: false
+    },
+    includedInPlan: {
+      showImage: false,
+      showName: true,
+      showDescription: true,
+      showMeta: true,
+      showBadge: false,
+      showFavorite: false,
+      showPrice: false,
+      showOriginalPrice: false,
+      showAction: true
+    }
+  },
   dataContract: {
     required: ["name", "description", "image", "categoryLabel", "isDark", "tokens"],
     optional: [
@@ -427,6 +496,7 @@ export const productItemCardManifest = {
     id: string;
     options: ProductItemCardOptionDefinition[];
   }>;
+  compositions: Record<string, ProductItemCardComposition>;
   dataContract: {
     required: string[];
     optional: string[];

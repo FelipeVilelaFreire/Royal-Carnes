@@ -9,7 +9,8 @@ export const mockAdminSubscriptions = [
     status: "active",
     cycleCurrent: "Setembro/2026",
     nextBillingDate: "2026-09-12",
-    joinedDate: "2026-08-12"
+    joinedDate: "2026-08-12",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80"
   },
   {
     id: "subscription-master-lucas",
@@ -21,7 +22,8 @@ export const mockAdminSubscriptions = [
     status: "active",
     cycleCurrent: "Setembro/2026",
     nextBillingDate: "2026-09-15",
-    joinedDate: "2026-03-10"
+    joinedDate: "2026-03-10",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=250&q=80"
   },
   {
     id: "subscription-essencial-vinicius",
@@ -33,6 +35,7 @@ export const mockAdminSubscriptions = [
     status: "paused",
     cycleCurrent: "Pausado",
     nextBillingDate: "-",
-    joinedDate: "2026-02-20"
+    joinedDate: "2026-02-20",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=250&q=80"
   }
 ];

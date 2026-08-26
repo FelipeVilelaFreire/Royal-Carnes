@@ -3,9 +3,10 @@ import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
+import { AvatarCell } from "@foundation/ui/Avatar";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
-import { EditIcon } from "@foundation/ui/Icon/AppIcons";
+import { EditIcon, StarIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface ListPageProps {
   entityConfig: any;
@@ -173,9 +174,57 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                         style={{ borderBottom: `1px solid ${border}`, cursor: "pointer", transition: "background 0.2s ease" }}
                         onClick={() => onSelectRow && onSelectRow(row)}
                       >
-                        {columns.map((col: any) => (
+                        {columns.map((col: any, colIdx: number) => (
                           <td key={col.key} style={{ padding: "16px", color: text, fontSize: "14px" }}>
-                            {col.render ? col.render(row) : row[col.key]}
+                            {colIdx === 0 ? (
+                              config.screenKey === "produtos" ? (
+                                <div style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
+                                  {row.image && (
+                                    <img
+                                      src={row.image}
+                                      alt={row.name}
+                                      style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        borderRadius: "10px",
+                                        objectFit: "cover",
+                                        border: `1px solid ${border}`,
+                                        flexShrink: 0
+                                      }}
+                                    />
+                                  )}
+                                  <span style={{ fontWeight: "700", color: text }}>{row.name}</span>
+                                </div>
+                              ) : config.screenKey === "assinaturas" ? (
+                                <div style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
+                                  <div
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "12px",
+                                      background: "rgba(255, 198, 101, 0.12)",
+                                      border: `1px solid ${border}`,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      flexShrink: 0
+                                    }}
+                                  >
+                                    <StarIcon size={18} color={primary} />
+                                  </div>
+                                  <span style={{ fontWeight: "700", color: text }}>{row.name}</span>
+                                </div>
+                              ) : (
+                                <AvatarCell
+                                  name={String(row[col.key] || "")}
+                                  image={row.image}
+                                />
+                              )
+                            ) : col.render ? (
+                              col.render(row)
+                            ) : (
+                              row[col.key]
+                            )}
                           </td>
                         ))}
                         <td style={{ padding: "16px" }}>
