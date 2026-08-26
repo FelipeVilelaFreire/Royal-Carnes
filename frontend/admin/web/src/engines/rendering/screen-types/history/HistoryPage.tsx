@@ -3,17 +3,19 @@ import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
+import { adminPtBR } from "@/locales/pt-BR";
+import { historyConfig } from "@/manifests/pages/history.config";
 import { CheckIcon } from "@foundation/ui/Icon/AppIcons";
 
-export const HistoryPage: React.FC = () => {
+export interface HistoryPageProps {
+  config?: typeof historyConfig;
+}
+
+export const HistoryPage: React.FC<HistoryPageProps> = ({ config = historyConfig }) => {
   const themeColors = adminThemeManifest.colors;
   const { primary, text, textMuted, border, background, surface } = themeColors;
 
-  const historyEvents = [
-    { id: 1, title: "Envio de Lote de Setembro/2026", description: "Iniciado despacho de 480 caixas", actor: "Admin Master", severity: "success", date: "Hoje, 14:20" },
-    { id: 2, title: "Alteração de Plano de Sócio", description: "Felipe S. alterou plano para Wagyu VIP", actor: "Sistema", severity: "info", date: "Ontem, 19:15" },
-    { id: 3, title: "Alerta de Cadeia de Frio (-2°C)", description: "Temperatura verificada no sensor #2", actor: "Sensor IOT", severity: "warning", date: "22/08/2026" }
-  ];
+  const events = config?.events || [];
 
   return (
     <div style={{ width: "100%", background, minHeight: "100vh", paddingBottom: "60px" }}>
@@ -21,10 +23,10 @@ export const HistoryPage: React.FC = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
           <div>
             <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "40px", margin: 0, fontWeight: "800" }}>
-              Histórico & Auditoria do Sistema
+              {adminPtBR.historico.title}
             </Text>
             <Text variant="body" style={{ color: textMuted, fontSize: "15px", marginTop: "4px" }}>
-              Registro imutável de eventos de despacho, auditoria e alterações da plataforma.
+              {adminPtBR.historico.subtitle}
             </Text>
           </div>
 
@@ -44,14 +46,22 @@ export const HistoryPage: React.FC = () => {
               <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                 <thead>
                   <tr style={{ borderBottom: `1px solid ${border}` }}>
-                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Evento</th>
-                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Descrição</th>
-                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Autor</th>
-                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Data</th>
+                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                      {adminPtBR.historico.tableHeaders.event}
+                    </th>
+                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                      {adminPtBR.historico.tableHeaders.description}
+                    </th>
+                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                      {adminPtBR.historico.tableHeaders.actor}
+                    </th>
+                    <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                      {adminPtBR.historico.tableHeaders.date}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {historyEvents.map((event) => (
+                  {events.map((event) => (
                     <tr key={event.id} style={{ borderBottom: `1px solid ${border}` }}>
                       <td style={{ padding: "16px", color: primary, fontWeight: "700", fontSize: "14px" }}>
                         <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>

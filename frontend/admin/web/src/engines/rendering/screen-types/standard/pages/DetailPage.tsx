@@ -4,7 +4,8 @@ import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
-import { EditIcon } from "@foundation/ui/Icon/AppIcons";
+import { adminPtBR } from "@/locales/pt-BR";
+import { EditIcon, ArrowBackIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface DetailPageProps {
   entityName: string;
@@ -19,9 +20,9 @@ export const DetailPage: React.FC<DetailPageProps> = ({ entityName, row, onBack,
   const [activeTab, setActiveTab] = useState<string>("summary");
 
   const tabs = [
-    { id: "summary", label: "Resumo" },
-    { id: "specs", label: "Especificações & Ficha" },
-    { id: "history", label: "Histórico de Alterações" }
+    { id: "summary", label: adminPtBR.details.tabs.summary },
+    { id: "specs", label: adminPtBR.details.tabs.specs },
+    { id: "history", label: adminPtBR.details.tabs.history }
   ];
 
   return (
@@ -32,11 +33,13 @@ export const DetailPage: React.FC<DetailPageProps> = ({ entityName, row, onBack,
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
               <Button appearance="outline" tone="neutral" size="sm" onClick={onBack}>
-                ← Voltar
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <ArrowBackIcon size={16} color={text} /> {adminPtBR.common.back}
+                </span>
               </Button>
               <div>
                 <span style={{ fontSize: "11px", color: primary, fontWeight: "700", textTransform: "uppercase", letterSpacing: "2px" }}>
-                  DETALHES DO REGISTRO
+                  {adminPtBR.details.badgeTitle}
                 </span>
                 <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "36px", margin: "2px 0 0 0", fontWeight: "800" }}>
                   {row.name || row.title || row.boxMonth || entityName}
@@ -46,7 +49,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ entityName, row, onBack,
 
             {onEdit && (
               <Button appearance="solid" tone="primary" size="md" onClick={onEdit}>
-                <EditIcon size={16} color="#0B0908" style={{ marginRight: "8px" }} /> Editar {entityName}
+                <EditIcon size={16} color="#0B0908" style={{ marginRight: "8px" }} /> {adminPtBR.common.edit} {entityName}
               </Button>
             )}
           </div>
@@ -74,7 +77,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ entityName, row, onBack,
             ))}
           </div>
 
-          {/* Conteudo da Aba */}
+          {/* Conteúdo da Aba */}
           <Surface
             style={{
               background: surface,
@@ -104,13 +107,13 @@ export const DetailPage: React.FC<DetailPageProps> = ({ entityName, row, onBack,
 
             {activeTab === "specs" && (
               <Text variant="body" style={{ color: textMuted, fontSize: "15px" }}>
-                Ficha técnica avançada e especificações do fornecedor cadastradas no sistema.
+                {adminPtBR.details.specsContent}
               </Text>
             )}
 
             {activeTab === "history" && (
               <Text variant="body" style={{ color: textMuted, fontSize: "15px" }}>
-                Histórico imutável de alterações realizadas neste registro.
+                {adminPtBR.details.historyContent}
               </Text>
             )}
           </Surface>

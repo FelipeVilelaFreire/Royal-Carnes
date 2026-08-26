@@ -4,6 +4,7 @@ import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
+import { adminPtBR } from "@/locales/pt-BR";
 import { EditIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface ListPageProps {
@@ -12,15 +13,29 @@ export interface ListPageProps {
   onCreateRow?: () => void;
 }
 
+function t(key: string, fallback?: string): string {
+  if (!key) return fallback || "";
+  const parts = key.split(".");
+  let current: any = adminPtBR;
+  for (const part of parts) {
+    if (current && typeof current === "object" && part in current) {
+      current = current[part];
+    } else {
+      return fallback !== undefined ? fallback : key;
+    }
+  }
+  return typeof current === "string" ? current : (fallback || key);
+}
+
 export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, onCreateRow }) => {
   const themeColors = (entityConfig as any)?.theme?.colors || adminThemeManifest.colors;
   const { primary, text, textMuted, border, background, surface } = themeColors;
   const config = entityConfig?.listPage || entityConfig || {};
 
-  const title = config.titleKey || config.title || "Lista";
-  const subtitle = config.subtitleKey || config.subtitle || "";
-  const actionLabel = config.actionLabelKey || config.ctaText || "+ Novo Registro";
-  const searchPlaceholder = config.searchPlaceholderKey || config.searchPlaceholder || "Buscar registros...";
+  const title = t(config.titleKey, config.title || adminPtBR.common.records);
+  const subtitle = t(config.subtitleKey, config.subtitle || "");
+  const actionLabel = t(config.actionLabelKey, config.ctaText || "+ Novo Registro");
+  const searchPlaceholder = t(config.searchPlaceholderKey, adminPtBR.common.searchPlaceholder);
   const columns = config.columns || [];
   const rowsSource = config.rows || [];
   const filters = config.filters || [];
@@ -50,7 +65,7 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
     <div style={{ width: "100%", background, minHeight: "100vh", paddingBottom: "60px" }}>
       <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
         <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
-          {/* Header da Tela Standard (Título, Subtítulo e Ação Primária) */}
+          {/* Header da Tela Standard */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
             <div>
               <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "40px", margin: 0, fontWeight: "800" }}>
@@ -107,17 +122,17 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                   cursor: "pointer"
                 }}
               >
-                <option value="all">Todos ({filter.labelKey || filter.label || filter.key})</option>
+                <option value="all">{adminPtBR.common.allFilter} ({t(filter.labelKey, filter.label || filter.key)})</option>
                 {filter.options?.map((opt: any) => (
                   <option key={opt.value} value={opt.value}>
-                    {opt.labelKey || opt.label}
+                    {t(opt.labelKey, opt.label)}
                   </option>
                 ))}
               </select>
             ))}
           </div>
 
-          {/* Tabela de Dados Renderizada Declarativamente a partir da Config */}
+          {/* Tabela de Dados */}
           <Surface
             style={{
               background: surface,
@@ -136,11 +151,11 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                   <tr style={{ borderBottom: `1px solid ${border}` }}>
                     {columns.map((col: any) => (
                       <th key={col.key} style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                        {col.labelKey || col.label}
+                        {t(col.labelKey, col.label)}
                       </th>
                     ))}
                     <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                      Ações
+                      {adminPtBR.common.actions}
                     </th>
                   </tr>
                 </thead>
@@ -148,7 +163,7 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                   {filteredRows.length === 0 ? (
                     <tr>
                       <td colSpan={columns.length + 1} style={{ padding: "40px", textAlign: "center", color: textMuted, fontSize: "14px" }}>
-                        Nenhum registro encontrado.
+                        {adminPtBR.common.emptyState}
                       </td>
                     </tr>
                   ) : (
@@ -165,7 +180,7 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                         ))}
                         <td style={{ padding: "16px" }}>
                           <span style={{ color: primary, fontSize: "13px", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                            <EditIcon size={14} color={primary} /> Editar
+                            <EditIcon size={14} color={primary} /> {adminPtBR.common.edit}
                           </span>
                         </td>
                       </tr>
@@ -177,7 +192,7 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: `1px solid ${border}` }}>
               <span style={{ fontSize: "13px", color: textMuted }}>
-                Exibindo <strong>{filteredRows.length}</strong> de <strong>{rowsSource.length}</strong> registros
+                {adminPtBR.common.showing} <strong>{filteredRows.length}</strong> {adminPtBR.common.of} <strong>{rowsSource.length}</strong> {adminPtBR.common.records}
               </span>
             </div>
           </Surface>

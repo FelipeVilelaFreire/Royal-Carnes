@@ -11,6 +11,9 @@ import { dashboardConfig } from "@/manifests/pages/dashboard.config";
 import { cortesConfig } from "@/manifests/pages/cortes.config";
 import { caixasConfig } from "@/manifests/pages/caixas.config";
 import { sociosConfig } from "@/manifests/pages/socios.config";
+import { historyConfig } from "@/manifests/pages/history.config";
+import { trashConfig } from "@/manifests/pages/trash.config";
+import { settingsConfig } from "@/manifests/pages/settings.config";
 
 import { DashboardPage } from "./engines/rendering/screen-types/dashboard/DashboardPage";
 import { ListPage } from "./engines/rendering/screen-types/standard/pages/ListPage";
@@ -94,15 +97,15 @@ export const App: React.FC = () => {
     }
 
     if (activeScreenKey === "history" || activeScreenKey === "historico") {
-      return <HistoryPage />;
+      return <HistoryPage config={historyConfig} />;
     }
 
     if (activeScreenKey === "trash" || activeScreenKey === "lixeira") {
-      return <TrashPage />;
+      return <TrashPage config={trashConfig} />;
     }
 
     if (activeScreenKey === "configuracoes") {
-      return <SettingsPage />;
+      return <SettingsPage config={settingsConfig} />;
     }
 
     // Resolution para entidades Standard

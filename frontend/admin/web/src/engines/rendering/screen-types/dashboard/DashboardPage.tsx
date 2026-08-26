@@ -4,16 +4,34 @@ import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
-import { FlameIcon, BoxIcon, TruckIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
+import { adminPtBR } from "@/locales/pt-BR";
+import { FlameIcon, BoxIcon, TruckIcon, UserIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
 import type { DashboardConfig } from "../config/types";
 
 export interface DashboardPageProps {
   config: DashboardConfig;
 }
 
+function t(key: string, fallback?: string): string {
+  if (!key) return fallback || "";
+  const parts = key.split(".");
+  let current: any = adminPtBR;
+  for (const part of parts) {
+    if (current && typeof current === "object" && part in current) {
+      current = current[part];
+    } else {
+      return fallback !== undefined ? fallback : key;
+    }
+  }
+  return typeof current === "string" ? current : (fallback || key);
+}
+
 export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
   const themeColors = (config as any)?.theme?.colors || adminThemeManifest.colors;
   const { primary, text, textMuted, border, background, surface } = themeColors;
+
+  const titleText = t(config.titleKey, adminPtBR.dashboard.title);
+  const subtitleText = t(config.subtitleKey, adminPtBR.dashboard.subtitle);
 
   const renderWidgetIcon = (index: number) => {
     if (index === 0) return <FlameIcon size={22} color={primary} />;
@@ -30,14 +48,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
             <div>
               <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "42px", margin: 0, fontWeight: "800" }}>
-                {config.titleKey}
+                {titleText}
               </Text>
               <Text variant="body" style={{ color: textMuted, fontSize: "16px", marginTop: "4px" }}>
-                {config.subtitleKey}
+                {subtitleText}
               </Text>
             </div>
             <Button appearance="solid" tone="primary" size="md">
-              Iniciar Despacho em Lote
+              {adminPtBR.dashboard.ctaBatchDispatch}
             </Button>
           </div>
 
@@ -59,7 +77,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontSize: "12px", color: textMuted, fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px" }}>
-                    {widget.titleKey}
+                    {t(widget.titleKey)}
                   </span>
                   {renderWidgetIcon(idx)}
                 </div>
@@ -91,11 +109,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <BoxIcon size={22} color={primary} />
                   <Text variant="h3" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "22px", margin: 0, fontWeight: "700" }}>
-                    Últimos Pedidos em Esteira
+                    {adminPtBR.dashboard.tableTitle}
                   </Text>
                 </div>
-                <span style={{ fontSize: "13px", color: primary, fontWeight: "700", cursor: "pointer" }}>
-                  Ver todas as caixas ➔
+                <span style={{ fontSize: "13px", color: primary, fontWeight: "700", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  {adminPtBR.dashboard.viewAllBoxes} <ChevronRightIcon size={16} color={primary} />
                 </span>
               </div>
 
@@ -103,12 +121,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
                 <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${border}` }}>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Pedido</th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Sócio</th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Plano</th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Caixa</th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>Status</th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "13px", textTransform: "uppercase", letterSpacing: "1px" }}>Data</th>
+                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.order}</th>
+                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.member}</th>
+                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.plan}</th>
+                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.box}</th>
+                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.status}</th>
+                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "13px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.date}</th>
                     </tr>
                   </thead>
                   <tbody>
