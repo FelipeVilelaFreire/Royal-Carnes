@@ -1,6 +1,6 @@
 import type { ProductExperience } from "./catalog";
 
-export type PaymentMethodKey = "pix" | "creditCard" | "debitCard" | "whatsapp";
+export type PaymentMethodKey = "pix" | "creditCard" | "payOnDelivery" | "whatsapp";
 
 export interface PaymentMethodMock {
   key: PaymentMethodKey;
@@ -29,9 +29,9 @@ export const paymentMethodsMock: PaymentMethodMock[] = [
     feePercentage: 0
   },
   {
-    key: "debitCard",
-    labelKey: "debitCard",
-    descriptionKey: "debitCardDescription",
+    key: "payOnDelivery",
+    labelKey: "payOnDelivery",
+    descriptionKey: "payOnDeliveryDescription",
     availableFor: ["royalDelivery"],
     supportsRecurring: false,
     feePercentage: 0

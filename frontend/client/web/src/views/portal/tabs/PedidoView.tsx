@@ -76,7 +76,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   const [selectedProductQuantities, setSelectedProductQuantities] = useState<Record<string, number>>({});
   const [currentStep, setCurrentStep] = useState<PedidoStep>("montagem");
   const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [selectedFreight, setSelectedFreight] = useState<FreightOptionKey>("standard");
+  const [selectedFreight, setSelectedFreight] = useState<FreightOptionKey | null>(null);
   const [selectedDeliveryDay, setSelectedDeliveryDay] = useState(10);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodKey>("creditCard");
   const [selectedInstallments, setSelectedInstallments] = useState(1);
@@ -112,12 +112,12 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
       description: paymentCopy.methods[method.descriptionKey]
     }));
   const currentFreightPrice =
-    selectedMode === "royalDelivery"
+    selectedMode === "royalDelivery" && selectedFreight
       ? freightOptions.find((option) => option.key === selectedFreight)?.price || 0
       : selectedMode
         ? freightPoliciesMock[selectedMode].price
         : 0;
-  const currentFreightOption = freightOptions.find((option) => option.key === selectedFreight);
+  const currentFreightOption = selectedFreight ? freightOptions.find((option) => option.key === selectedFreight) : undefined;
   const newAddressFields = [
     { label: strings.deliveryStep.common.zipCode, placeholder: "00000-000", gridColumn: "span 3" },
     { label: strings.deliveryStep.common.street, placeholder: "Rua das Palmeiras", gridColumn: "span 6" },
@@ -190,10 +190,12 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     .reduce((total, entry) => total + entry.quantity, 0);
   const estimatedTotal = selectedProductEntries.reduce((total, entry) => {
     const { product, quantity } = entry;
-    const price = selectedMode === "royalDelivery" ? product.deliveryPrice : product.basePrice;
-    return total + price * quantity;
+    return total + product.price * quantity;
   }, 0);
-  const orderEstimateTotal = selectedMode === "royalDelivery" ? estimatedTotal + currentFreightPrice : estimatedTotal;
+  const orderEstimateTotal =
+    selectedMode === "royalDelivery" && selectedFreight
+      ? estimatedTotal + currentFreightPrice
+      : estimatedTotal;
   const finalTotal = selectedMode === "subscription" ? selectedPlan.monthlyPrice : orderEstimateTotal;
   const selectedPayment = paymentMethods.find((method) => method.key === selectedPaymentMethod) || paymentMethods[0];
   const getSubscriptionKindLimit = (product: Product) => {
@@ -223,7 +225,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     setSelectedCategoryId("all");
     setQuery("");
     setCurrentStep("montagem");
-    setSelectedFreight("standard");
+    setSelectedFreight(null);
     setSelectedDeliveryDay(10);
     setSelectedPaymentMethod("creditCard");
     setSelectedInstallments(1);
@@ -660,7 +662,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                       const category = categoryById.get(product.categoryId);
                       const selectedQuantity = selectedProductQuantities[product.id] || 0;
                       const isSelected = selectedQuantity > 0;
-                      const price = selectedMode === "royalDelivery" ? product.deliveryPrice : product.basePrice;
+                      const price = product.price;
                       return (
                         <ProductItemCard
                           key={product.id}
@@ -1002,12 +1004,16 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                           }}
                         >
                           <strong style={{ color: tokens.text }}>
-                            {selectedMode === "royalDelivery"
-                              ? strings.deliveryStep.royalDelivery.calculatedFreight
-                              : strings.deliveryStep.royalDelivery.includedFreight}
+                            {selectedMode === "royalDelivery" && !selectedFreight
+                              ? strings.deliveryStep.royalDelivery.pendingFreight
+                              : selectedMode === "royalDelivery"
+                                ? strings.deliveryStep.royalDelivery.calculatedFreight
+                                : strings.deliveryStep.royalDelivery.includedFreight}
                           </strong>
                           <span style={{ color: tokens.copper, fontWeight: 900 }}>
-                            {formatMoney(currentFreightPrice)}
+                            {selectedMode === "royalDelivery" && !selectedFreight
+                              ? strings.summary.freightNotSelected
+                              : formatMoney(currentFreightPrice)}
                           </span>
                         </div>
                       </div>
@@ -1314,11 +1320,13 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         ) : null}
                         <SummaryRow
                           label={strings.summary.selectedFreight}
-                          value={
-                            selectedMode === "royalDelivery" && currentFreightOption
-                              ? `${currentFreightOption.label} - ${formatMoney(currentFreightPrice)}`
+                        value={
+                          selectedMode === "royalDelivery" && currentFreightOption
+                            ? `${currentFreightOption.label} - ${formatMoney(currentFreightPrice)}`
+                            : selectedMode === "royalDelivery"
+                              ? strings.summary.freightNotSelected
                               : strings.deliveryStep.royalDelivery.includedFreight
-                          }
+                        }
                           muted={tokens.textMuted}
                           text={tokens.text}
                         />
@@ -1349,7 +1357,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                                 {selectedMode === "subscription" ? (
                                   <span>{categoryById.get(product.categoryId)?.name || strings.productCard.categoryLabel}</span>
                                 ) : (
-                                  <span>{formatMoney((selectedMode === "royalDelivery" ? product.deliveryPrice : product.basePrice) * quantity)}</span>
+                                  <span>{formatMoney(product.price * quantity)}</span>
                                 )}
                               </div>
                             ))}
@@ -1452,7 +1460,9 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                         value={
                           selectedMode === "royalDelivery" && currentFreightOption
                             ? `${currentFreightOption.label} - ${formatMoney(currentFreightPrice)}`
-                            : strings.deliveryStep.royalDelivery.includedFreight
+                            : selectedMode === "royalDelivery"
+                              ? strings.summary.freightNotSelected
+                              : strings.deliveryStep.royalDelivery.includedFreight
                         }
                         muted={tokens.textMuted}
                         text={tokens.text}
@@ -1531,7 +1541,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
                               {strings.summary.remove}
                             </button>
                           ) : (
-                            <span>{formatMoney((selectedMode === "royalDelivery" ? product.deliveryPrice : product.basePrice) * quantity)}</span>
+                            <span>{formatMoney(product.price * quantity)}</span>
                           )}
                         </div>
                       ))}

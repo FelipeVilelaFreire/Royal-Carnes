@@ -48,8 +48,7 @@ export type Product = {
   categoryId: string;
   description: string;
   image: string;
-  basePrice: number;
-  deliveryPrice: number;
+  price: number;
   unit: string;
   weightLabel?: string;
   stockStatus: StockStatus;
@@ -105,5 +104,5 @@ export type ProductFlowMock = {
   allowsCustomAddress: boolean;
   allowsUtensils: boolean;
   allowsUnlimitedCharcoal: boolean;
-  priceBehavior: "fixedPlan" | "selectedProducts" | "selectedProductsWithDeliveryMarkup";
+  priceBehavior: "fixedPlan" | "selectedProducts";
 };

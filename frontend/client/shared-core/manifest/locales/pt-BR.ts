@@ -99,6 +99,7 @@ export const clientPtBR = {
       deliveryAddress: "Endereço",
       recurrenceDay: "Recorrência",
       selectedFreight: "Frete",
+      freightNotSelected: "Selecionar na etapa de entrega",
       selectedPayment: "Pagamento",
       remove: "Remover",
       estimate: "Estimativa",
@@ -156,6 +157,7 @@ export const clientPtBR = {
         description: "Pedido avulso para entrega agora, com endereço flexível e frete definido antes do pagamento.",
         freightLabel: "Frete",
         calculatedFreight: "Frete calculado",
+        pendingFreight: "Escolha uma opção de frete",
         includedFreight: "Frete incluso",
         pickup: "Retirada",
         standardDelivery: "Entrega padrão",
@@ -182,8 +184,8 @@ export const clientPtBR = {
         pixDescription: "Gera uma chave mockada para pagamento rápido.",
         creditCard: "Cartão de crédito",
         creditCardDescription: "Melhor opção para cobrança recorrente e confirmação automática.",
-        debitCard: "Cartão de débito",
-        debitCardDescription: "Pagamento avulso direto para pedidos de Delivery.",
+        payOnDelivery: "Pagar na entrega",
+        payOnDeliveryDescription: "O cliente paga quando receber o pedido, combinando com a entrega.",
         whatsapp: "Finalizar pelo WhatsApp",
         whatsappDescription: "Envia a montagem para atendimento concluir manualmente."
       }

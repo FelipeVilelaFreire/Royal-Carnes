@@ -53,7 +53,7 @@ export const commercialProductsMock: ProductFlowMock[] = [
     kind: "oneTimeOrder",
     billingLabel: "Avulso",
     billingModes: ["oneTime"],
-    description: "Pedido avulso. A montagem e parecida com a Royal Box, mas sem recorrencia e com preco de delivery.",
+    description: "Pedido avulso. A montagem e parecida com a Royal Box, mas sem recorrencia e com frete escolhido na etapa de entrega.",
     productScope: "fullCatalog",
     shipping: "customerChoice",
     recurrence: {
@@ -65,7 +65,7 @@ export const commercialProductsMock: ProductFlowMock[] = [
     allowsCustomAddress: true,
     allowsUtensils: true,
     allowsUnlimitedCharcoal: true,
-    priceBehavior: "selectedProductsWithDeliveryMarkup"
+    priceBehavior: "selectedProducts"
   }
 ];
 
