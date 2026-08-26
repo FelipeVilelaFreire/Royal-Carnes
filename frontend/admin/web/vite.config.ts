@@ -10,7 +10,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@/manifest": path.resolve(__dirname, "../shared-core/manifest"),
+      "@/manifests": path.resolve(__dirname, "../shared-core/manifests"),
+      "@/locales": path.resolve(__dirname, "../shared-core/locales"),
+      "@/navigation": path.resolve(__dirname, "../shared-core/navigation"),
       "@": path.resolve(__dirname, "./src"),
       "@foundation": path.resolve(__dirname, "../../foundation"),
       "@shared-core": path.resolve(__dirname, "../../shared-core")

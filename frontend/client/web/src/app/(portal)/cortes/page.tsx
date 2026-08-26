@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { HeroCortesView } from "../../../views/cuts/HeroCortesView";
+import { HeroCortesView } from "../../../screens/cuts/HeroCortesView";
 
 export default function CortesPage() {
   const router = useRouter();

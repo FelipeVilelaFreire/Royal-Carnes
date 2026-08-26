@@ -1,5 +1,5 @@
 import React from "react";
-import { AppearOnScrollRuntime } from "../design-system/AppearOnScrollRuntime";
+import { AppearOnScrollRuntime } from "../legacy/app-shell/AppearOnScrollRuntime";
 
 export const metadata = {
   title: "Royal Carnes | Assinaturas, Box e Delivery para churrasco",

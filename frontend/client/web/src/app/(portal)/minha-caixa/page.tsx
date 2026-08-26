@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { MinhaCaixaView } from "../../../views/portal/tabs/MinhaCaixaView";
+import { MinhaCaixaView } from "../../../screens/portal/tabs/MinhaCaixaView";
 
 export default function MinhaCaixaPage() {
   const router = useRouter();

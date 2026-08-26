@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { MinhaContaView } from "../../../views/portal/tabs/MinhaContaView";
+import { MinhaContaView } from "../../../screens/portal/tabs/MinhaContaView";
 
 export default function PortalMinhaContaPage() {
   const router = useRouter();

@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { adminThemeManifest } from "@/manifest/theme.manifest";
+import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { SettingsIcon, SnowflakeIcon, CheckIcon } from "@foundation/ui/Icon/AppIcons";
 
 export const SettingsPage: React.FC = () => {

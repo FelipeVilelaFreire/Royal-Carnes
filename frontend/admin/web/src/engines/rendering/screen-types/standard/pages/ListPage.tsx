@@ -3,7 +3,7 @@ import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { adminThemeManifest } from "@/manifest/theme.manifest";
+import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { EditIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface ListPageProps {

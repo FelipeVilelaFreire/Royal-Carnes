@@ -19,17 +19,23 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/design-system/*": [
-        "src/design-system/*"
+      "@/legacy/design-system/*": [
+        "src/legacy/design-system/*"
       ],
-      "@/design-system": [
-        "src/design-system/index"
+      "@/legacy/design-system": [
+        "src/legacy/design-system/index"
       ],
       "@/mocks/*": [
         "../shared-core/mocks/*"
       ],
-      "@/manifest/*": [
-        "../shared-core/manifest/*"
+      "@/manifests/*": [
+        "../shared-core/manifests/*"
+      ],
+      "@/locales/*": [
+        "../shared-core/locales/*"
+      ],
+      "@/navigation/*": [
+        "../shared-core/navigation/*"
       ],
       "@/*": [
         "./*"

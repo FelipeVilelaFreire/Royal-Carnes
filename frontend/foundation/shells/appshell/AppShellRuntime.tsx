@@ -7,7 +7,7 @@ import { Footer } from "./Footer";
 import { BottomTabBar } from "./BottomTabBar";
 import { SidebarMenu } from "./SidebarMenu";
 import { ScreenContent } from "./ScreenContent";
-import { clientRoutes } from "../../../client/shared-core/manifest/routes";
+import { clientRoutes } from "../../../client/shared-core/manifests/routes";
 import { themeColorsDefault } from "../../tokens/theme.tokens";
 
 export interface AppShellRuntimeProps {

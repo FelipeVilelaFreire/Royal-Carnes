@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { AppShell } from "@foundation/shells/appshell";
 import { injectThemeTokens } from "@foundation/tokens/resolver";
-import { adminThemeManifest } from "@/manifest/theme.manifest";
-import { adminNavigation } from "@/manifest/navigation";
-import { adminAppShellConfig } from "@/manifest/adminAppShell.config";
-import { adminRoutes, getRoutePathByAction } from "@/manifest/routes";
-import { adminPtBR } from "@/manifest/locales/pt-BR";
+import { adminThemeManifest } from "@/manifests/theme.manifest";
+import { adminNavigation } from "@/navigation/admin.navigation";
+import { adminAppShellConfig } from "@/manifests/adminAppShell.config";
+import { adminRoutes, getRoutePathByAction } from "@/manifests/routes";
+import { adminPtBR } from "@/locales/pt-BR";
 
-import { dashboardConfig } from "@/manifest/pages/dashboard.config";
-import { cortesConfig } from "@/manifest/pages/cortes.config";
-import { caixasConfig } from "@/manifest/pages/caixas.config";
-import { sociosConfig } from "@/manifest/pages/socios.config";
+import { dashboardConfig } from "@/manifests/pages/dashboard.config";
+import { cortesConfig } from "@/manifests/pages/cortes.config";
+import { caixasConfig } from "@/manifests/pages/caixas.config";
+import { sociosConfig } from "@/manifests/pages/socios.config";
 
 import { DashboardPage } from "./engines/rendering/screen-types/dashboard/DashboardPage";
 import { ListPage } from "./engines/rendering/screen-types/standard/pages/ListPage";

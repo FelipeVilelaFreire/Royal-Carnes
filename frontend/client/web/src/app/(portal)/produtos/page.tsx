@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { PedidoView } from "../../../views/portal/tabs/PedidoView";
+import { PedidoView } from "../../../screens/portal/tabs/PedidoView";
 
 export default function ProdutosPage() {
   const router = useRouter();

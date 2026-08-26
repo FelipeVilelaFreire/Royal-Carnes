@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { HomeOrientationView } from "../../../views/portal/tabs/HomeOrientationView";
+import { HomeOrientationView } from "../../../screens/portal/tabs/HomeOrientationView";
 
 export default function PortalHomePage() {
   const router = useRouter();

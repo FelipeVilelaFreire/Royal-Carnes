@@ -17,7 +17,9 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/manifest/*": ["../shared-core/manifest/*"],
+      "@/manifests/*": ["../shared-core/manifests/*"],
+      "@/locales/*": ["../shared-core/locales/*"],
+      "@/navigation/*": ["../shared-core/navigation/*"],
       "@/*": ["src/*"],
       "@foundation/*": ["../../foundation/*"],
       "@shared-core/*": ["../../shared-core/*"]

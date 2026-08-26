@@ -3,7 +3,7 @@
 import React from "react";
 import { Text } from "../../ui/Text";
 import { themeSpacingDefault, themeColorsDefault } from "../../tokens/theme.tokens";
-import { clientRoutes } from "../../../client/shared-core/manifest/routes";
+import { clientRoutes } from "../../../client/shared-core/manifests/routes";
 import type { HeaderNavItem } from "./Header";
 
 export interface DrawerProps {

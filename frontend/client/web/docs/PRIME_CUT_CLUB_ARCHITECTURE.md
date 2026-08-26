@@ -32,7 +32,7 @@ frontend/client/
     │       │   └── page.tsx                # Rota "/minha-caixa" -> Portal (Minha Caixa)
     │       └── meu-clube/
     │           └── page.tsx                # Rota "/meu-clube" -> Portal (Meu Clube)
-    └── views/                              # Camada Visual Organizada por Domínio
+    └── screens/                            # Camada Visual Organizada por Dominio
         ├── landing/
         │   ├── LandingView.tsx             # Orquestrador da Landing Page pública
         │   └── sections/                   # Seções Modulares da Landing Page
@@ -52,5 +52,5 @@ frontend/client/
 1. **Route Group em `app/` (`(portal)`)**:
    - As rotas do portal estão agrupadas isoladamente dentro da pasta `src/app/(portal)/`.
    - O Next.js preserva as URLs limpas (`/minha-assinatura`, `/cortes`, `/minha-caixa`, `/meu-clube`), mas limpa a raiz de `src/app/`.
-2. **Encapsulamento Visual em `views/` (`portal/tabs/`)**:
-   - Todas as 4 abas do portal pertencem à pasta `src/views/portal/tabs/`.
+2. **Encapsulamento Visual em `screens/` (`portal/tabs/`)**:
+   - Todas as 4 abas do portal pertencem a pasta `src/screens/portal/tabs/`.

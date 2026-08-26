@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "../../ui/Button";
 import { Text } from "../../ui/Text";
 import { themeSpacingDefault, themeColorsDefault } from "../../tokens/theme.tokens";
-import { clientRoutes } from "../../../client/shared-core/manifest/routes";
+import { clientRoutes } from "../../../client/shared-core/manifests/routes";
 import { SearchIcon, UserIcon } from "../../ui/Icon/AppIcons";
 import type { HeaderNavItem } from "./Header";
 
