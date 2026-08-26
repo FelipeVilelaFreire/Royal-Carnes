@@ -65,11 +65,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             transition: background-color 0.25s ease, color 0.25s ease;
           }
           .appear-on-scroll {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          body.appear-runtime-ready .appear-on-scroll {
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
           }
-          .appear-visible {
+          body.appear-runtime-ready .appear-visible {
             opacity: 1;
             transform: translateY(0);
           }

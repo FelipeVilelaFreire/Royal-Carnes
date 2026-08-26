@@ -78,8 +78,20 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
         onNavigate={onNavigate}
       />
 
+      <style>{`
+        @media (max-width: 768px) {
+          .portal-header {
+            display: none !important;
+          }
+
+          .cortes-view-main {
+            padding: 28px 18px 96px !important;
+          }
+        }
+      `}</style>
+
       <div
-        className="appear-on-scroll"
+        className="cortes-view-main appear-on-scroll"
         style={{
           flex: 1,
           width: "100%",

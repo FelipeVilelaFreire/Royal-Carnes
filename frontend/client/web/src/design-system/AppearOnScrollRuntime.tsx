@@ -4,6 +4,8 @@ import React, { useEffect } from "react";
 
 export const AppearOnScrollRuntime: React.FC = () => {
   useEffect(() => {
+    document.body.classList.add("appear-runtime-ready");
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -20,6 +22,10 @@ export const AppearOnScrollRuntime: React.FC = () => {
       document.querySelectorAll(".appear-on-scroll").forEach((element) => {
         if (!observed.has(element)) {
           observed.add(element);
+          const box = element.getBoundingClientRect();
+          if (box.top < window.innerHeight && box.bottom > 0) {
+            element.classList.add("appear-visible");
+          }
           observer.observe(element);
         }
       });
@@ -33,6 +39,7 @@ export const AppearOnScrollRuntime: React.FC = () => {
     return () => {
       mutationObserver.disconnect();
       observer.disconnect();
+      document.body.classList.remove("appear-runtime-ready");
     };
   }, []);
 

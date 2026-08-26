@@ -67,6 +67,7 @@ export const PortalHeader: React.FC<PortalHeaderProps> = ({
 
   return (
     <header
+      className="portal-header"
       style={{
         position: "sticky",
         top: 0,

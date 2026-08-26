@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PublicHeader, BottomTabBar, Button, Card, Badge, Footer } from "../../design-system";
+import { PublicHeader, Button, Card, Badge, Footer } from "../../design-system";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 
 export interface LandingViewProps {
@@ -26,25 +26,6 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
     };
     window.addEventListener("royal_theme_changed", handleThemeChange);
     return () => window.removeEventListener("royal_theme_changed", handleThemeChange);
-  }, []);
-
-  // IntersectionObserver para animacao Appear to Scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("appear-visible");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const elements = document.querySelectorAll(".appear-on-scroll");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
   }, []);
 
   const isDark = themeMode === "dark";
@@ -102,14 +83,20 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
       }}
     >
       <style>{`
-        .appear-on-scroll {
-          opacity: 0;
-          transform: translateY(30px);
-          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .appear-visible {
-          opacity: 1;
-          transform: translateY(0);
+        @media (max-width: 768px) {
+          .public-header-inner {
+            padding: 14px 18px !important;
+          }
+
+          .public-header-nav,
+          .public-header-theme,
+          .public-header-products {
+            display: none !important;
+          }
+
+          .public-header-actions {
+            gap: 10px !important;
+          }
         }
       `}</style>
 
@@ -982,9 +969,6 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
           })}
         </div>
       </section>
-
-      {/* 9. BottomTabBar Mobile */}
-      <BottomTabBar activeTab="hero" onNavigate={onNavigate} isDark={isDark} />
 
       {/* 10. Footer */}
       <Footer onNavigate={onNavigate} isDark={isDark} />

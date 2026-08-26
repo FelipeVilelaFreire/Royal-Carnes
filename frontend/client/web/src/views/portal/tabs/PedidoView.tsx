@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Input, PortalHeader } from "../../../design-system";
+import { BottomTabBar, Button, Input, PortalHeader } from "../../../design-system";
 import {
   BoxIcon,
   CartIcon,
@@ -307,9 +307,14 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         }
 
         @media (max-width: 760px) {
+          .portal-header {
+            display: none !important;
+          }
+
           .pedido-main {
             padding-left: 16px !important;
             padding-right: 16px !important;
+            padding-bottom: 96px !important;
           }
 
           .pedido-product-grid {
@@ -1587,6 +1592,8 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
           </section>
         ) : null}
       </main>
+
+      <BottomTabBar activeTab="produtos" onNavigate={onNavigate} isDark={isDark} />
 
       {filterModalOpen ? (
         <div

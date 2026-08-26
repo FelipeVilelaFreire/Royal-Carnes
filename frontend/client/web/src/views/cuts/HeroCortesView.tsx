@@ -100,9 +100,21 @@ export const HeroCortesView: React.FC<HeroCortesViewProps> = ({ onNavigate }) =>
         onNavigate={onNavigate}
       />
 
+      <style>{`
+        @media (max-width: 768px) {
+          .portal-header {
+            display: none !important;
+          }
+
+          .cortes-main {
+            padding: 28px 18px 96px !important;
+          }
+        }
+      `}</style>
+
       {/* 2. Conteúdo Principal "Cortes" */}
       <main
-        className="appear-on-scroll"
+        className="cortes-main appear-on-scroll"
         style={{
           flex: 1,
           maxWidth: "1560px",

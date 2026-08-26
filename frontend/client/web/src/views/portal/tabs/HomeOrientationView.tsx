@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PortalHeader, Button, Footer } from "../../../design-system";
+import { PortalHeader, BottomTabBar, Button, Footer } from "../../../design-system";
 import { themeColorsDefault, themeSpacingDefault } from "@foundation/tokens/theme.tokens";
 import { clientPtBR } from "@/manifest/locales/pt-BR";
 import {
@@ -174,9 +174,19 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
           scrollbar-width: thin;
           scrollbar-color: ${accent} transparent;
         }
+
+        @media (max-width: 768px) {
+          .portal-header {
+            display: none !important;
+          }
+
+          .home-orientation-main {
+            padding-bottom: 84px !important;
+          }
+        }
       `}</style>
 
-      <main style={{ flex: 1, width: "100%" }}>
+      <main className="home-orientation-main" style={{ flex: 1, width: "100%" }}>
         <section
           className="appear-on-scroll"
           style={{
@@ -663,6 +673,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
       </main>
 
       {showHeader ? <Footer /> : null}
+      <BottomTabBar activeTab="portal-home" onNavigate={onNavigate} isDark={isDark} />
     </div>
   );
 };

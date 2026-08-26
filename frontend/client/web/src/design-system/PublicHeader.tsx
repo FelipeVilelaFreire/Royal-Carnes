@@ -100,6 +100,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
       }}
     >
       <div
+        className="public-header-inner"
         style={{
           width: "100%",
           maxWidth: "1600px",
@@ -143,6 +144,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
 
         {/* Centro: Nav Links da Landing Page (Scroll suave por Âncora) */}
         <nav
+          className="public-header-nav hidden md:flex"
           style={{
             display: "flex",
             alignItems: "center",
@@ -151,7 +153,6 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
             left: "50%",
             transform: "translateX(-50%)"
           }}
-          className="hidden md:flex"
         >
           {publicNavItems.map((item, idx) => (
             <a
@@ -177,9 +178,10 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
         </nav>
 
         {/* Direita: Dark/Light Mode, Entrar no Portal & Botão Seja Sócio */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <div className="public-header-actions" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           {/* Dark / Light Toggle */}
           <Button
+            className="public-header-theme"
             variant="outline"
             size="sm"
             isDark={isDark}
@@ -217,6 +219,7 @@ export const PublicHeader: React.FC<PublicHeaderProps> = ({
 
           {/* Seja Sócio CTA */}
           <a
+            className="public-header-products"
             href="#assinaturas"
             onClick={(e) => handleNavClick(e, "#assinaturas")}
             style={{
