@@ -253,6 +253,10 @@ Categories:
 
 ```text
 carnes
+bovinos
+aves
+suinos
+linguicas
 carvao
 temperos
 utensilios
@@ -263,13 +267,19 @@ Products:
 
 ```text
 Picanha
-Ancho
-Fraldinha
 Maminha
+Fraldinha
+Alcatra
+Contra-file
+Ancho
+Costela bovina
+Cupim
 Tomahawk
+Coxinha da asa
+Coracao de frango
+Linguica toscana
+Panceta suina
 Carvao Premium
-Tempero seco
-Kit churrasco
 ```
 
 Commercial modes:

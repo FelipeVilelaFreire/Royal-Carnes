@@ -5,7 +5,7 @@
     {
       "key": "colecao-inverno",
       "name": "Colecao Inverno",
-      "description": "Cortes mais encorpados para preparo lento, forno e noites frias."
+      "description": "Cortes mais encorpados para preparo lento, forno, panela e noites frias."
     },
     {
       "key": "colecao-verao",
@@ -30,6 +30,10 @@
   ],
   "categories": [
     { "key": "carnes", "name": "Carnes" },
+    { "key": "bovinos", "name": "Bovinos" },
+    { "key": "aves", "name": "Aves" },
+    { "key": "suinos", "name": "Suinos" },
+    { "key": "linguicas", "name": "Linguicas" },
     { "key": "carvao", "name": "Carvao" },
     { "key": "temperos", "name": "Temperos" },
     { "key": "utensilios", "name": "Utensilios" },
@@ -45,7 +49,7 @@
       "key": "picanha",
       "name": "Picanha",
       "description": "Corte premium com capa de gordura uniforme para churrasco, box mensal e pedidos de ultima hora.",
-      "categoryKeys": ["carnes", "combos"],
+      "categoryKeys": ["carnes", "bovinos", "combos"],
       "collections": ["colecao-familia", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 8990,
@@ -75,33 +79,51 @@
           "weightGrams": 1000,
           "priceCents": 8990,
           "commercialModes": ["subscription", "delivery", "box"]
+        },
+        {
+          "sku": "PICANHA-PECA-13KG",
+          "name": "Picanha peca 1.3kg",
+          "unit": "kg",
+          "unitQuantity": 1.3,
+          "weightGrams": 1300,
+          "priceCents": 11690,
+          "commercialModes": ["subscription", "delivery", "box"]
         }
       ]
     },
     {
-      "key": "ancho",
-      "name": "Ancho",
-      "description": "Bife ancho marmorizado para linha premium, com preco separado por canal comercial.",
-      "categoryKeys": ["carnes"],
-      "collections": ["churrasco-premium"],
+      "key": "maminha",
+      "name": "Maminha",
+      "description": "Corte macio e versatil para churrasco familiar, forno e preparo do dia a dia.",
+      "categoryKeys": ["carnes", "bovinos", "combos"],
+      "collections": ["colecao-familia", "dia-a-dia", "churrasco-premium"],
       "unit": "kg",
-      "priceCents": 7990,
+      "priceCents": 6490,
       "commercialModes": ["subscription", "delivery", "box"],
       "media": [
         {
-          "url": "https://images.ctfassets.net/ttw7uwgviuml/GEXQDyQ8utHO9stbH5hl0/b0fbf991ca9f14d65270a9139e575398/SKU_81718_1.jpg?fm=webp&h=650&w=650",
-          "alt": "Bife ancho cru sobre superficie clara",
+          "url": "https://swiftbr.vteximg.com.br/arquivos/ids/214515/618893-maminha-temperada-na-cerveja-ja-pro-forno_inn.jpg?v=639074580638900000",
+          "alt": "Maminha crua sobre tabua com temperos",
           "isPrimary": true
         }
       ],
       "variants": [
         {
-          "sku": "ANCHO-1KG",
-          "name": "Ancho 1kg",
+          "sku": "MAMINHA-700G",
+          "name": "Maminha 700g",
+          "unit": "kg",
+          "unitQuantity": 0.7,
+          "weightGrams": 700,
+          "priceCents": 4590,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "MAMINHA-1KG",
+          "name": "Maminha 1kg",
           "unit": "kg",
           "unitQuantity": 1,
           "weightGrams": 1000,
-          "priceCents": 7990,
+          "priceCents": 6490,
           "commercialModes": ["subscription", "delivery", "box"]
         }
       ]
@@ -110,7 +132,7 @@
       "key": "fraldinha",
       "name": "Fraldinha",
       "description": "Corte versatil para churrasco familiar e preparo do dia a dia, com alta recorrencia de compra.",
-      "categoryKeys": ["carnes", "combos"],
+      "categoryKeys": ["carnes", "bovinos", "combos"],
       "collections": ["colecao-familia", "dia-a-dia"],
       "unit": "kg",
       "priceCents": 5990,
@@ -124,6 +146,15 @@
       ],
       "variants": [
         {
+          "sku": "FRALDINHA-700G",
+          "name": "Fraldinha 700g",
+          "unit": "kg",
+          "unitQuantity": 0.7,
+          "weightGrams": 700,
+          "priceCents": 4290,
+          "commercialModes": ["delivery"]
+        },
+        {
           "sku": "FRALDINHA-1KG",
           "name": "Fraldinha 1kg",
           "unit": "kg",
@@ -131,6 +162,376 @@
           "weightGrams": 1000,
           "priceCents": 5990,
           "commercialModes": ["subscription", "delivery"]
+        }
+      ]
+    },
+    {
+      "key": "alcatra",
+      "name": "Alcatra",
+      "description": "Corte bovino classico para bifes, espetinhos, churrasco simples e compra recorrente.",
+      "categoryKeys": ["carnes", "bovinos"],
+      "collections": ["dia-a-dia", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 5590,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://swiftbr.vteximg.com.br/arquivos/ids/209368-768-768/615475-alcatra_inn.jpg?v=638887933204170000",
+          "alt": "Alcatra crua sobre superficie clara com sal",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "ALCATRA-BIFE-500G",
+          "name": "Alcatra em bifes 500g",
+          "unit": "kg",
+          "unitQuantity": 0.5,
+          "weightGrams": 500,
+          "priceCents": 2990,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "ALCATRA-PECA-1KG",
+          "name": "Alcatra peca 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 5590,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "contra-file",
+      "name": "Contra-file",
+      "description": "Corte bovino de churrascaria para bifes altos, grelha rapida e kit premium.",
+      "categoryKeys": ["carnes", "bovinos"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 6990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://phygital-files.mercafacil.com/good-bom/uploads/produto/contrafil_bov_swift_mais_kg_fb539e3a-2474-4b58-80e2-4c425a7ae14b.jpeg",
+          "alt": "Contra-file bovino embalado em fundo claro",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CONTRAFILE-BIFE-600G",
+          "name": "Contra-file em bifes 600g",
+          "unit": "kg",
+          "unitQuantity": 0.6,
+          "weightGrams": 600,
+          "priceCents": 4290,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "CONTRAFILE-1KG",
+          "name": "Contra-file 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 6990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "ancho",
+      "name": "Ancho",
+      "description": "Bife ancho marmorizado para linha premium, com preco separado por canal comercial.",
+      "categoryKeys": ["carnes", "bovinos"],
+      "collections": ["churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 7990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://images.ctfassets.net/ttw7uwgviuml/GEXQDyQ8utHO9stbH5hl0/b0fbf991ca9f14d65270a9139e575398/SKU_81718_1.jpg?fm=webp&h=650&w=650",
+          "alt": "Bife ancho cru sobre superficie clara",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "ANCHO-600G",
+          "name": "Ancho 600g",
+          "unit": "kg",
+          "unitQuantity": 0.6,
+          "weightGrams": 600,
+          "priceCents": 4990,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "ANCHO-1KG",
+          "name": "Ancho 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 7990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "costela-bovina",
+      "name": "Costela bovina",
+      "description": "Corte brasileiro classico para preparo lento, churrasqueira, forno e colecao de inverno.",
+      "categoryKeys": ["carnes", "bovinos", "combos"],
+      "collections": ["colecao-inverno", "colecao-familia", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 4490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://assets.instabuy.app.br/ib.item.image.large/l-77969cdca50e4e709d62789d090b9005.jpeg",
+          "alt": "Costela bovina crua sobre tabua de madeira",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "COSTELA-BOVINA-1KG",
+          "name": "Costela bovina 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 4490,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "COSTELA-BOVINA-JANELA-2KG",
+          "name": "Costela janela 2kg",
+          "unit": "kg",
+          "unitQuantity": 2,
+          "weightGrams": 2000,
+          "priceCents": 8990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "cupim",
+      "name": "Cupim",
+      "description": "Corte de preparo lento muito usado no churrasco brasileiro, ideal para box de fim de semana.",
+      "categoryKeys": ["carnes", "bovinos"],
+      "collections": ["colecao-inverno", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 5290,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://www.arenaatacado.com.br/on/demandware.static/-/Sites-storefront-catalog-sv/default/dw84f7094f/Produtos/23132-0000000002313-cupim%20kg-acougue-1.jpg",
+          "alt": "Cupim bovino cru sobre tabua redonda",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CUPIM-1KG",
+          "name": "Cupim 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 5290,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "CUPIM-PECA-15KG",
+          "name": "Cupim peca 1.5kg",
+          "unit": "kg",
+          "unitQuantity": 1.5,
+          "weightGrams": 1500,
+          "priceCents": 7990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "tomahawk",
+      "name": "Tomahawk",
+      "description": "Corte de alto impacto visual para ocasioes especiais, campanhas premium e box presenteavel.",
+      "categoryKeys": ["carnes", "bovinos", "combos"],
+      "collections": ["churrasco-premium", "colecao-inverno"],
+      "unit": "kg",
+      "priceCents": 12990,
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://butcherboys.com.au/cdn/shop/files/butcher_boys_Tomahawk_steak_2048x.jpg?v=1695218654",
+          "alt": "Tomahawk cru sobre pedra escura",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "TOMAHAWK-1KG",
+          "name": "Tomahawk 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 12990,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "TOMAHAWK-13KG",
+          "name": "Tomahawk 1.3kg",
+          "unit": "kg",
+          "unitQuantity": 1.3,
+          "weightGrams": 1300,
+          "priceCents": 16990,
+          "commercialModes": ["delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "coxinha-da-asa",
+      "name": "Coxinha da asa",
+      "description": "Frango pratico para aperitivo, churrasco de verao e pedidos recorrentes de familia.",
+      "categoryKeys": ["carnes", "aves", "combos"],
+      "collections": ["colecao-verao", "colecao-familia", "dia-a-dia"],
+      "unit": "kg",
+      "priceCents": 2490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://swiftbr.vteximg.com.br/arquivos/ids/209620-551-502/617524-coxinha-da-asa-swift-do-campo_inn.webp?v=638894846338070000",
+          "alt": "Coxinha da asa crua sobre tabua de madeira",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "COXINHA-ASA-1KG",
+          "name": "Coxinha da asa 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 2490,
+          "commercialModes": ["subscription", "delivery", "box"]
+        },
+        {
+          "sku": "COXINHA-ASA-2KG",
+          "name": "Coxinha da asa pacote familia 2kg",
+          "unit": "kg",
+          "unitQuantity": 2,
+          "weightGrams": 2000,
+          "priceCents": 4890,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "coracao-de-frango",
+      "name": "Coracao de frango",
+      "description": "Item tradicional de churrasco brasileiro para espetinho, box e compra avulsa.",
+      "categoryKeys": ["carnes", "aves", "combos"],
+      "collections": ["colecao-verao", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 3490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://hortifrutibr.vtexassets.com/arquivos/ids/169284/Coracao-de-Frango-Resfriado-Unidade.jpg?v=638926922416200000",
+          "alt": "Coracao de frango cru em bandeja preta",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CORACAO-FRANGO-500G",
+          "name": "Coracao de frango 500g",
+          "unit": "kg",
+          "unitQuantity": 0.5,
+          "weightGrams": 500,
+          "priceCents": 1890,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "CORACAO-FRANGO-1KG",
+          "name": "Coracao de frango 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 3490,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "linguica-toscana",
+      "name": "Linguica toscana",
+      "description": "Classico de churrasco para combos, box mensal e venda rapida por quilo.",
+      "categoryKeys": ["carnes", "suinos", "linguicas", "combos"],
+      "collections": ["colecao-familia", "churrasco-premium", "dia-a-dia"],
+      "unit": "kg",
+      "priceCents": 2990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://phygital-files.mercafacil.com/casaalianca-bucket/uploads/produto/linguica_toscana_c_a_kg_352d674e-fcf7-4e8f-a288-3ee49687d5a0.png",
+          "alt": "Linguica toscana crua sobre tabua redonda",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "LINGUICA-TOSCANA-500G",
+          "name": "Linguica toscana 500g",
+          "unit": "kg",
+          "unitQuantity": 0.5,
+          "weightGrams": 500,
+          "priceCents": 1590,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "LINGUICA-TOSCANA-1KG",
+          "name": "Linguica toscana 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 2990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "panceta-suina",
+      "name": "Panceta suina",
+      "description": "Corte suino de gordura e carne para pururuca, grelha e kits especiais.",
+      "categoryKeys": ["carnes", "suinos"],
+      "collections": ["colecao-inverno", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 3990,
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://images.tcdn.com.br/img/img_prod/1249907/panceta_suina_550gr_579_1_c2eb9a725e8ca2b248d32d156cb1bfaa.jpg",
+          "alt": "Panceta suina crua sobre tabua de madeira",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "PANCETA-700G",
+          "name": "Panceta suina 700g",
+          "unit": "kg",
+          "unitQuantity": 0.7,
+          "weightGrams": 700,
+          "priceCents": 2890,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "PANCETA-1KG",
+          "name": "Panceta suina 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 3990,
+          "commercialModes": ["delivery", "box"]
         }
       ]
     },
@@ -158,6 +559,15 @@
           "unitQuantity": 1,
           "weightGrams": 5000,
           "priceCents": 3490,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "CARVAO-10KG",
+          "name": "Carvao Premium 10kg",
+          "unit": "bag",
+          "unitQuantity": 1,
+          "weightGrams": 10000,
+          "priceCents": 6490,
           "commercialModes": ["delivery", "box"]
         }
       ]

@@ -203,6 +203,8 @@ Product pode ter varios Prices por commercial mode, collection e price_type.
 Variant representa SKU/tamanho/peso/embalagem/unidade concreta.
 Seed usa imagens externas apenas como placeholder de demonstracao; producao
 deve apontar para asset proprio/CDN controlado.
+Seed principal RoyalPrime cobre 14 produtos de acougue/churrasco com variants:
+bovinos, aves, suinos, linguicas e apoio de carvao.
 Subscription/Plan nao mora no Catalog; a Fase 3 deve apontar para Product,
 Category ou Collection por PlanEntitlement.
 ```

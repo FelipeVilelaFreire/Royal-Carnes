@@ -290,6 +290,8 @@ Fase 2 nao implementa assinatura
 Fase 3 deve conectar PlanEntitlement com Product/Category/Collection
 Variant representa SKU/tamanho/peso/embalagem/unidade concreta
 ProductMedia do seed usa URL externa apenas como placeholder de demonstracao
+Seed principal RoyalPrime cobre 14 produtos com variants: bovinos, aves,
+suinos, linguicas e apoio de churrasco
 ```
 
 Validacao executada:

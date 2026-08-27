@@ -25,9 +25,9 @@ class CatalogApiTests(APITestCase):
 
     def test_seed_creates_collections_and_products(self):
         self.assertEqual(Collection.objects.count(), 5)
-        self.assertEqual(Product.objects.count(), 4)
-        self.assertEqual(ProductMedia.objects.count(), 4)
-        self.assertGreaterEqual(ProductVariant.objects.count(), 5)
+        self.assertEqual(Product.objects.count(), 14)
+        self.assertEqual(ProductMedia.objects.count(), 14)
+        self.assertGreaterEqual(ProductVariant.objects.count(), 27)
         self.assertTrue(
             Product.objects.filter(
                 key="picanha",
@@ -52,7 +52,7 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(collections_response.status_code, 200, collections_response.data)
         self.assertEqual(products_response.status_code, 200, products_response.data)
         self.assertEqual(modes_response.status_code, 200, modes_response.data)
-        self.assertGreaterEqual(len(products_response.data), 4)
+        self.assertGreaterEqual(len(products_response.data), 14)
         self.assertTrue(products_response.data[0]["primary_media_url"])
         self.assertGreaterEqual(len(products_response.data[0]["media"]), 1)
 
@@ -68,8 +68,8 @@ class CatalogApiTests(APITestCase):
         create_response = self.client.post(
             "/api/v1/catalog/admin/products/",
             {
-                "key": "maminha",
-                "name": "Maminha",
+                "key": "patinho",
+                "name": "Patinho",
                 "category_keys": ["carnes", "combos"],
                 "unit": "kg",
                 "price_cents": 5490,
@@ -80,7 +80,7 @@ class CatalogApiTests(APITestCase):
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
         self.assertEqual(create_response.status_code, 201, create_response.data)
-        self.assertEqual(create_response.data["key"], "maminha")
+        self.assertEqual(create_response.data["key"], "patinho")
         self.assertEqual(
             [category["key"] for category in create_response.data["categories"]],
             ["carnes", "combos"],
@@ -92,16 +92,16 @@ class CatalogApiTests(APITestCase):
         response = self.client.post(
             "/api/v1/catalog/admin/products/",
             {
-                "key": "tomahawk",
-                "name": "Tomahawk",
+                "key": "bife-de-chorizo",
+                "name": "Bife de chorizo",
                 "category_keys": ["carnes"],
                 "unit": "kg",
                 "commercial_mode_keys": ["delivery"],
                 "collection_keys": ["churrasco-premium"],
                 "variants": [
                     {
-                        "sku": "TOMAHAWK-1KG",
-                        "name": "Tomahawk 1kg",
+                        "sku": "CHORIZO-1KG",
+                        "name": "Bife de chorizo 1kg",
                         "unit": "kg",
                         "unit_quantity": 1,
                         "weight_grams": 1000,
@@ -115,8 +115,8 @@ class CatalogApiTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 201, response.data)
-        self.assertEqual(response.data["variants"][0]["sku"], "TOMAHAWK-1KG")
-        self.assertEqual(response.data["prices"][0]["variant_sku"], "TOMAHAWK-1KG")
+        self.assertEqual(response.data["variants"][0]["sku"], "CHORIZO-1KG")
+        self.assertEqual(response.data["prices"][0]["variant_sku"], "CHORIZO-1KG")
 
     def test_customer_cannot_access_admin_catalog(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
