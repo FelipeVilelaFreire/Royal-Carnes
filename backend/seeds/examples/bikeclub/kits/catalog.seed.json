@@ -22,18 +22,54 @@
         "name": "Bike urbana",
         "categoryKeys": ["bicicletas"],
       "collections": ["urbano"],
-      "unit": "unit",
-      "priceCents": 189900,
-      "commercialModes": ["subscription", "pickup"]
+        "unit": "unit",
+        "priceCents": 189900,
+        "commercialModes": ["subscription", "pickup"],
+        "variants": [
+          {
+            "sku": "BIKE-URBANA-ARO20",
+            "name": "Bike urbana aro 20",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 159900,
+            "commercialModes": ["subscription", "pickup"]
+          },
+          {
+            "sku": "BIKE-URBANA-ARO26",
+            "name": "Bike urbana aro 26",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 189900,
+            "commercialModes": ["subscription", "pickup"]
+          }
+        ]
     },
     {
         "key": "capacete",
         "name": "Capacete",
         "categoryKeys": ["acessorios"],
       "collections": ["urbano", "performance"],
-      "unit": "unit",
-      "priceCents": 15990,
-      "commercialModes": ["delivery", "pickup"]
+        "unit": "unit",
+        "priceCents": 15990,
+        "commercialModes": ["delivery", "pickup"],
+        "variants": [
+          {
+            "sku": "CAPACETE-M",
+            "name": "Capacete M",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 15990,
+            "commercialModes": ["delivery", "pickup"]
+          },
+          {
+            "sku": "CAPACETE-G",
+            "name": "Capacete G",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 15990,
+            "commercialModes": ["delivery", "pickup"]
+          }
+        ]
     },
     {
         "key": "kit-reparo",

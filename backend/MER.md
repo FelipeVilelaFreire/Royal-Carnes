@@ -569,6 +569,22 @@ weightGrams opcional
 isActive
 ```
 
+Regra:
+
+```text
+Variant representa forma concreta vendavel do Product.
+Variant nao representa categoria, colecao, campanha ou modo comercial.
+```
+
+Exemplos:
+
+```text
+Picanha 500g
+Picanha 1kg
+Bike urbana aro 20
+Camiseta branca M
+```
+
 ### ProductPrice
 
 Preco por produto/variante e modo comercial.

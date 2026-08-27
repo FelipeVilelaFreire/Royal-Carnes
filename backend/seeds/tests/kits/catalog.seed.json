@@ -19,9 +19,19 @@
         "name": "Product A",
         "categoryKeys": ["category-a", "category-b"],
       "collections": ["main", "featured"],
-      "unit": "unit",
-      "priceCents": 1000,
-      "commercialModes": ["subscription", "delivery"]
+        "unit": "unit",
+        "priceCents": 1000,
+        "commercialModes": ["subscription", "delivery"],
+        "variants": [
+          {
+            "sku": "PRODUCT-A-SMALL",
+            "name": "Product A Small",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 1000,
+            "commercialModes": ["subscription", "delivery"]
+          }
+        ]
     },
     {
         "key": "product-b",

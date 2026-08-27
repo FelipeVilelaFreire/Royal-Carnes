@@ -22,18 +22,54 @@
         "name": "Camiseta branca",
         "categoryKeys": ["camisetas"],
       "collections": ["basicos", "verao"],
-      "unit": "unit",
-      "priceCents": 7990,
-      "commercialModes": ["subscription", "delivery", "box"]
+        "unit": "unit",
+        "priceCents": 7990,
+        "commercialModes": ["subscription", "delivery", "box"],
+        "variants": [
+          {
+            "sku": "CAMISETA-BRANCA-P",
+            "name": "Camiseta branca P",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 7990,
+            "commercialModes": ["subscription", "delivery", "box"]
+          },
+          {
+            "sku": "CAMISETA-BRANCA-M",
+            "name": "Camiseta branca M",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 7990,
+            "commercialModes": ["subscription", "delivery", "box"]
+          }
+        ]
     },
     {
         "key": "camiseta-street",
         "name": "Camiseta street",
         "categoryKeys": ["camisetas"],
       "collections": ["streetwear"],
-      "unit": "unit",
-      "priceCents": 10990,
-      "commercialModes": ["subscription", "delivery", "box"]
+        "unit": "unit",
+        "priceCents": 10990,
+        "commercialModes": ["subscription", "delivery", "box"],
+        "variants": [
+          {
+            "sku": "CAMISETA-STREET-M",
+            "name": "Camiseta street M",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 10990,
+            "commercialModes": ["subscription", "delivery", "box"]
+          },
+          {
+            "sku": "CAMISETA-STREET-G",
+            "name": "Camiseta street G",
+            "unit": "unit",
+            "unitQuantity": 1,
+            "priceCents": 10990,
+            "commercialModes": ["subscription", "delivery", "box"]
+          }
+        ]
     },
     {
         "key": "moletom-basic",

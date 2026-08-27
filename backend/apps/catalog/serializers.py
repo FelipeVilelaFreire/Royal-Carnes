@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Collection, CommercialMode, Product, ProductPrice
+from .models import Category, Collection, CommercialMode, Product, ProductPrice, ProductVariant
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -30,6 +30,8 @@ class CollectionSerializer(serializers.ModelSerializer):
 
 
 class ProductPriceSerializer(serializers.ModelSerializer):
+    variant_id = serializers.IntegerField(source="variant.id", read_only=True, allow_null=True)
+    variant_sku = serializers.CharField(source="variant.sku", read_only=True, allow_null=True)
     commercial_mode_key = serializers.CharField(source="commercial_mode.key", read_only=True)
     commercial_mode_name = serializers.CharField(source="commercial_mode.name", read_only=True)
     collection_key = serializers.CharField(source="collection.key", read_only=True, allow_null=True)
@@ -38,6 +40,8 @@ class ProductPriceSerializer(serializers.ModelSerializer):
         model = ProductPrice
         fields = (
             "id",
+            "variant_id",
+            "variant_sku",
             "commercial_mode_key",
             "commercial_mode_name",
             "collection_key",
@@ -47,11 +51,26 @@ class ProductPriceSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariant
+        fields = (
+            "id",
+            "sku",
+            "name",
+            "unit",
+            "unit_quantity",
+            "weight_grams",
+            "is_active",
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()
     primary_category_key = serializers.SerializerMethodField()
     collection_keys = serializers.SerializerMethodField()
     prices = ProductPriceSerializer(many=True, read_only=True)
+    variants = ProductVariantSerializer(many=True, read_only=True)
     commercial_mode_keys = serializers.SerializerMethodField()
 
     class Meta:
@@ -70,6 +89,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "primary_category_key",
             "collection_keys",
             "commercial_mode_keys",
+            "variants",
             "prices",
         )
 
@@ -121,6 +141,11 @@ class ProductCreateSerializer(serializers.Serializer):
     )
     collection_keys = serializers.ListField(
         child=serializers.SlugField(max_length=100),
+        required=False,
+        default=list,
+    )
+    variants = serializers.ListField(
+        child=serializers.DictField(),
         required=False,
         default=list,
     )

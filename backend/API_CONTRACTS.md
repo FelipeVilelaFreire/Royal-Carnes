@@ -468,7 +468,18 @@ Request:
   "price_cents": 5490,
   "price_type": "base",
   "commercial_mode_keys": ["delivery"],
-  "collection_keys": ["dia-a-dia"]
+  "collection_keys": ["dia-a-dia"],
+  "variants": [
+    {
+      "sku": "MAMINHA-1KG",
+      "name": "Maminha 1kg",
+      "unit": "kg",
+      "unit_quantity": 1,
+      "weight_grams": 1000,
+      "price_cents": 5490,
+      "commercial_mode_keys": ["delivery"]
+    }
+  ]
 }
 ```
 

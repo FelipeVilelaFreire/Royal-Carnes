@@ -282,10 +282,12 @@ Decisao estrutural:
 ```text
 Product -> N Categories via ProductCategory
 Product -> N Collections via CollectionProduct
+Product -> N Variants via ProductVariant
 Product -> N Prices via ProductPrice
 ProductPrice pode ter collection opcional e priceType
 Fase 2 nao implementa assinatura
 Fase 3 deve conectar PlanEntitlement com Product/Category/Collection
+Variant representa SKU/tamanho/peso/embalagem/unidade concreta
 ```
 
 Validacao executada:
@@ -293,7 +295,7 @@ Validacao executada:
 ```text
 py manage.py check -> OK
 py manage.py makemigrations --check --dry-run -> OK
-py manage.py test -> OK
+py manage.py test -> OK, 17 tests
 py manage.py migrate -> OK
 py manage.py seed_backend --seed royalprime -> OK
 py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK

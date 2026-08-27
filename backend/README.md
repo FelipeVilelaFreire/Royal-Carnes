@@ -197,7 +197,9 @@ Decisao estrutural:
 ```text
 Product pode estar em varias Categories.
 Product pode estar em varias Collections.
+Product pode ter varias Variants.
 Product pode ter varios Prices por commercial mode, collection e price_type.
+Variant representa SKU/tamanho/peso/embalagem/unidade concreta.
 Subscription/Plan nao mora no Catalog; a Fase 3 deve apontar para Product,
 Category ou Collection por PlanEntitlement.
 ```

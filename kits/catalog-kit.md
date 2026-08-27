@@ -30,6 +30,7 @@ Category organiza taxonomia.
 Product e item vendavel.
 Product pode pertencer a varias Collections.
 Product pode pertencer a varias Categories.
+Product pode ter varias Variants.
 ```
 
 Regra de fase:
@@ -103,6 +104,8 @@ Regras reais:
 
 - frontend nao calcula preco final;
 - frontend nao decide disponibilidade real;
+- variant representa SKU/tamanho/peso/embalagem/unidade concreta;
+- variant nao representa categoria, colecao, campanha ou modo comercial;
 - `CommercialMode` e configuracao/seed, nao enum preso em Royal Carnes;
 - `Royal Delivery` e `Royal Box` sao nomes comerciais de seed/copy.
 

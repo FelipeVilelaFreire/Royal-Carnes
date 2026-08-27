@@ -25,6 +25,7 @@ from apps.catalog.services import (
     upsert_commercial_mode,
     upsert_product,
     set_product_categories,
+    upsert_product_variant,
 )
 
 
@@ -255,6 +256,31 @@ class BackendSeedApplier:
                     product=product,
                     commercial_mode=commercial_mode,
                 )
+            for variant_data in product_data.get("variants", []):
+                variant = upsert_product_variant(
+                    organization=organization,
+                    product=product,
+                    sku=variant_data.get("sku", ""),
+                    name=variant_data["name"],
+                    unit=variant_data.get("unit", product.unit),
+                    unit_quantity=variant_data.get("unitQuantity", 1),
+                    weight_grams=variant_data.get("weightGrams"),
+                    is_active=variant_data.get("isActive", True),
+                )
+                variant_price_cents = variant_data.get("priceCents")
+                if variant_price_cents is not None:
+                    for commercial_mode_key in variant_data.get(
+                        "commercialModes",
+                        product_data.get("commercialModes", []),
+                    ):
+                        set_product_price(
+                            organization=organization,
+                            product=product,
+                            variant=variant,
+                            commercial_mode=commercial_modes_by_key[commercial_mode_key],
+                            amount_cents=variant_price_cents,
+                            currency=organization.currency,
+                        )
         self.summary.append(f"applied catalog: products={len(data.get('products', []))}")
 
     def require_organization(self) -> Organization:

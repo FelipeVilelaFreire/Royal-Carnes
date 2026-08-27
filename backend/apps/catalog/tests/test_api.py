@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from apps.catalog.models import Collection, Product
+from apps.catalog.models import Collection, Product, ProductVariant
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
 
 
@@ -26,6 +26,7 @@ class CatalogApiTests(APITestCase):
     def test_seed_creates_collections_and_products(self):
         self.assertEqual(Collection.objects.count(), 5)
         self.assertEqual(Product.objects.count(), 4)
+        self.assertGreaterEqual(ProductVariant.objects.count(), 5)
         self.assertTrue(
             Product.objects.filter(
                 key="picanha",
@@ -81,6 +82,38 @@ class CatalogApiTests(APITestCase):
             [category["key"] for category in create_response.data["categories"]],
             ["carnes", "combos"],
         )
+
+    def test_admin_can_create_product_with_variants(self):
+        self.authenticate()
+
+        response = self.client.post(
+            "/api/v1/catalog/admin/products/",
+            {
+                "key": "tomahawk",
+                "name": "Tomahawk",
+                "category_keys": ["carnes"],
+                "unit": "kg",
+                "commercial_mode_keys": ["delivery"],
+                "collection_keys": ["churrasco-premium"],
+                "variants": [
+                    {
+                        "sku": "TOMAHAWK-1KG",
+                        "name": "Tomahawk 1kg",
+                        "unit": "kg",
+                        "unit_quantity": 1,
+                        "weight_grams": 1000,
+                        "price_cents": 12990,
+                        "commercial_mode_keys": ["delivery"],
+                    }
+                ],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["variants"][0]["sku"], "TOMAHAWK-1KG")
+        self.assertEqual(response.data["prices"][0]["variant_sku"], "TOMAHAWK-1KG")
 
     def test_customer_cannot_access_admin_catalog(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

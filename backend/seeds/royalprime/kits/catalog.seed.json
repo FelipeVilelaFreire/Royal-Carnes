@@ -26,36 +26,89 @@
         "name": "Picanha",
         "categoryKeys": ["carnes", "combos"],
       "collections": ["colecao-familia", "churrasco-premium"],
-      "unit": "kg",
-      "priceCents": 8990,
-      "commercialModes": ["subscription", "delivery", "box"]
+        "unit": "kg",
+        "priceCents": 8990,
+        "commercialModes": ["subscription", "delivery", "box"],
+        "variants": [
+          {
+            "sku": "PICANHA-500G",
+            "name": "Picanha 500g",
+            "unit": "kg",
+            "unitQuantity": 0.5,
+            "weightGrams": 500,
+            "priceCents": 4990,
+            "commercialModes": ["delivery", "box"]
+          },
+          {
+            "sku": "PICANHA-1KG",
+            "name": "Picanha 1kg",
+            "unit": "kg",
+            "unitQuantity": 1,
+            "weightGrams": 1000,
+            "priceCents": 8990,
+            "commercialModes": ["subscription", "delivery", "box"]
+          }
+        ]
     },
     {
         "key": "ancho",
         "name": "Ancho",
         "categoryKeys": ["carnes"],
       "collections": ["churrasco-premium"],
-      "unit": "kg",
-      "priceCents": 7990,
-      "commercialModes": ["subscription", "delivery", "box"]
+        "unit": "kg",
+        "priceCents": 7990,
+        "commercialModes": ["subscription", "delivery", "box"],
+        "variants": [
+          {
+            "sku": "ANCHO-1KG",
+            "name": "Ancho 1kg",
+            "unit": "kg",
+            "unitQuantity": 1,
+            "weightGrams": 1000,
+            "priceCents": 7990,
+            "commercialModes": ["subscription", "delivery", "box"]
+          }
+        ]
     },
     {
         "key": "fraldinha",
         "name": "Fraldinha",
         "categoryKeys": ["carnes", "combos"],
       "collections": ["colecao-familia", "dia-a-dia"],
-      "unit": "kg",
-      "priceCents": 5990,
-      "commercialModes": ["subscription", "delivery"]
+        "unit": "kg",
+        "priceCents": 5990,
+        "commercialModes": ["subscription", "delivery"],
+        "variants": [
+          {
+            "sku": "FRALDINHA-1KG",
+            "name": "Fraldinha 1kg",
+            "unit": "kg",
+            "unitQuantity": 1,
+            "weightGrams": 1000,
+            "priceCents": 5990,
+            "commercialModes": ["subscription", "delivery"]
+          }
+        ]
     },
     {
         "key": "carvao-premium",
         "name": "Carvao Premium",
         "categoryKeys": ["carvao", "utensilios"],
       "collections": ["churrasco-premium", "dia-a-dia"],
-      "unit": "bag",
-      "priceCents": 3490,
-      "commercialModes": ["delivery", "box"]
-    }
+        "unit": "bag",
+        "priceCents": 3490,
+        "commercialModes": ["delivery", "box"],
+        "variants": [
+          {
+            "sku": "CARVAO-5KG",
+            "name": "Carvao Premium 5kg",
+            "unit": "bag",
+            "unitQuantity": 1,
+            "weightGrams": 5000,
+            "priceCents": 3490,
+            "commercialModes": ["delivery", "box"]
+          }
+        ]
+      }
   ]
 }

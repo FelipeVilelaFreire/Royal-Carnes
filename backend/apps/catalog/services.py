@@ -10,6 +10,7 @@ from .models import (
     Product,
     ProductCategory,
     ProductPrice,
+    ProductVariant,
 )
 
 
@@ -112,13 +113,14 @@ def set_product_price(
     commercial_mode: CommercialMode,
     amount_cents: int,
     currency: str,
+    variant: ProductVariant | None = None,
     collection: Collection | None = None,
     price_type: str = ProductPrice.PriceType.BASE,
 ) -> ProductPrice:
     price, _created = ProductPrice.objects.update_or_create(
         organization=organization,
         product=product,
-        variant=None,
+        variant=variant,
         commercial_mode=commercial_mode,
         collection=collection,
         price_type=price_type,
@@ -128,6 +130,42 @@ def set_product_price(
         },
     )
     return price
+
+
+@transaction.atomic
+def upsert_product_variant(
+    *,
+    organization,
+    product: Product,
+    sku: str = "",
+    name: str,
+    unit: str = "unit",
+    unit_quantity=1,
+    weight_grams: int | None = None,
+    is_active: bool = True,
+) -> ProductVariant:
+    lookup = {
+        "organization": organization,
+        "product": product,
+        "sku": sku,
+    }
+    if not sku:
+        lookup = {
+            "organization": organization,
+            "product": product,
+            "name": name,
+        }
+    variant, _created = ProductVariant.objects.update_or_create(
+        **lookup,
+        defaults={
+            "name": name,
+            "unit": unit,
+            "unit_quantity": unit_quantity,
+            "weight_grams": weight_grams,
+            "is_active": is_active,
+        },
+    )
+    return variant
 
 
 @transaction.atomic
@@ -159,6 +197,7 @@ def create_admin_product(
     commercial_mode_keys: list[str] | None = None,
     collection_keys: list[str] | None = None,
     price_type: str = ProductPrice.PriceType.BASE,
+    variants: list[dict] | None = None,
 ) -> Product:
     product = upsert_product(
         organization=organization,
@@ -180,6 +219,34 @@ def create_admin_product(
         )
     )
     set_product_collections(organization=organization, product=product, collections=collections)
+    if variants:
+        for variant_data in variants:
+            variant = upsert_product_variant(
+                organization=organization,
+                product=product,
+                sku=variant_data.get("sku", ""),
+                name=variant_data["name"],
+                unit=variant_data.get("unit", unit),
+                unit_quantity=variant_data.get("unit_quantity", 1),
+                weight_grams=variant_data.get("weight_grams"),
+                is_active=variant_data.get("is_active", True),
+            )
+            variant_price_cents = variant_data.get("price_cents")
+            if variant_price_cents is not None:
+                for commercial_mode in CommercialMode.objects.filter(
+                    organization=organization,
+                    key__in=variant_data.get("commercial_mode_keys", commercial_mode_keys or []),
+                ):
+                    set_product_price(
+                        organization=organization,
+                        product=product,
+                        variant=variant,
+                        commercial_mode=commercial_mode,
+                        amount_cents=variant_price_cents,
+                        currency=organization.currency,
+                        price_type=variant_data.get("price_type", price_type),
+                    )
+
     if price_cents is not None:
         for commercial_mode in CommercialMode.objects.filter(
             organization=organization,
