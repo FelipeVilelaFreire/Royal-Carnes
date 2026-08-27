@@ -57,6 +57,53 @@ O sistema precisa resolver, nesta ordem:
 
 ## Roadmap por fases
 
+Cada fase deve tambem alimentar a pasta `kits/`.
+
+O objetivo dos kits e facilitar reuso futuro por IA ou desenvolvedor. Quando outro produto precisar de uma capacidade, o agente deve ler o kit, localizar os arquivos fonte e copiar/adaptar com consciencia de escopo.
+
+Regra:
+
+```text
+Fase implementa RoyalPrime.
+Kit documenta a fronteira reaproveitavel.
+Outro produto usa o kit como mapa de copia/adaptacao.
+```
+
+Status possiveis:
+
+```text
+planned
+  -> previsto no roadmap, ainda nao implementado
+
+local
+  -> implementado para RoyalPrime, ainda especifico
+
+kit-ready
+  -> fronteira clara para copiar/adaptar
+
+serviceos-candidate
+  -> provou reuso e pode virar capacidade formal do ServiceOS
+```
+
+Mapa inicial:
+
+| Fase | Kits alimentados | Observacao |
+| --- | --- | --- |
+| Fase 1 | Auth & Users, Organizations, Catalog | Base para qualquer produto novo |
+| Fase 2 | Orders | Pedido, detalhe, historico, status |
+| Fase 3 | Admin Operations, Scheduling | Painel operacional, filtros, calendario |
+| Fase 4 | Inventory | Estoque simples sem ERP |
+| Fase 5 | Fulfillment & Delivery, Scheduling | Entrega, retirada, janela, codigo |
+| Fase 6 | Payments | Pagamento manual e status |
+| Fase 7 | Payments | Gateway, webhooks, conciliacao |
+| Fase 8 | Wallet & Vouchers | Credito, saldo, voucher, estorno |
+
+Primeiro kit documentado:
+
+```text
+kits/auth-users-kit.md
+```
+
 ### Fase 1: Backend Base Real
 
 Objetivo: tirar o app do mock sem tentar resolver tudo de uma vez.
@@ -338,7 +385,7 @@ Exemplo:
 
 ```text
 Modelar Wallet e WalletTransaction no MER
-  -> nao precisa lançar carteira no MVP inicial
+  -> nao precisa lancar carteira no MVP inicial
   -> mas evita redesenhar pagamentos e pedidos depois
 ```
 
