@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kit": "auth-users",
+  "roles": [
+    { "key": "owner", "name": "Owner" },
+    { "key": "customer", "name": "Customer" }
+  ],
+  "permissions": [
+    "orders.read",
+    "products.manage"
+  ],
+  "rolePermissions": {
+    "owner": [
+      "orders.read",
+      "products.manage"
+    ],
+    "customer": [
+      "orders.read"
+    ]
+  },
+  "users": [
+    {
+      "email": "owner@test.local",
+      "fullName": "Owner Test",
+      "password": "TestSeed123!",
+      "roles": ["owner"]
+    },
+    {
+      "email": "customer@test.local",
+      "fullName": "Customer Test",
+      "password": "TestSeed123!",
+      "roles": ["customer"],
+      "customerKey": "customer-test"
+    }
+  ]
+}

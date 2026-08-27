@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kit": "subscriptions",
+  "plans": [
+    {
+      "key": "starter",
+      "name": "Starter",
+      "priceCents": 9900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "maxItemsPerCycle", "value": 1, "unit": "item" }
+      ]
+    },
+    {
+      "key": "club",
+      "name": "Club",
+      "priceCents": 17900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "maxItemsPerCycle", "value": 3, "unit": "item" }
+      ]
+    }
+  ]
+}

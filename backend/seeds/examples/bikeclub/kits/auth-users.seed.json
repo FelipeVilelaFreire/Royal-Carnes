@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "kit": "auth-users",
+  "roles": [
+    { "key": "owner", "name": "Owner" },
+    { "key": "admin", "name": "Admin" },
+    { "key": "mechanic", "name": "Mechanic" },
+    { "key": "customer", "name": "Customer" }
+  ],
+  "permissions": [
+    "orders.read",
+    "orders.updateStatus",
+    "products.manage",
+    "customers.read",
+    "deliveries.manage"
+  ],
+  "rolePermissions": {
+    "owner": [
+      "orders.read",
+      "orders.updateStatus",
+      "products.manage",
+      "customers.read",
+      "deliveries.manage"
+    ],
+    "admin": [
+      "orders.read",
+      "orders.updateStatus",
+      "products.manage",
+      "customers.read",
+      "deliveries.manage"
+    ],
+    "mechanic": [
+      "orders.read",
+      "orders.updateStatus",
+      "customers.read"
+    ],
+    "customer": [
+      "orders.read"
+    ]
+  },
+  "users": [
+    {
+      "email": "admin@bikeclub.local",
+      "fullName": "Admin BikeClub",
+      "password": "BikeClub123!",
+      "roles": ["owner", "admin"]
+    },
+    {
+      "email": "mecanico@bikeclub.local",
+      "fullName": "Mecanico BikeClub",
+      "password": "BikeClub123!",
+      "roles": ["mechanic"]
+    },
+    {
+      "email": "cliente@bikeclub.local",
+      "fullName": "Cliente BikeClub",
+      "password": "BikeClub123!",
+      "roles": ["customer"],
+      "customerKey": "cliente-bikeclub"
+    }
+  ]
+}

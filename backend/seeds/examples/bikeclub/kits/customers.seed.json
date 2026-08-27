@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "kit": "customers",
+  "customers": [
+    {
+      "key": "cliente-bikeclub",
+      "name": "Cliente BikeClub",
+      "email": "cliente@bikeclub.local",
+      "phone": "+5500000000100"
+    },
+    {
+      "key": "marina-souza",
+      "name": "Marina Souza",
+      "email": "marina@example.local",
+      "phone": "+5500000000101"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "kit": "organizations",
+  "organization": {
+    "slug": "camisaclub",
+    "name": "CamisaClub",
+    "businessName": "CamisaClub Assinaturas",
+    "locale": "pt-BR",
+    "timezone": "America/Sao_Paulo",
+    "currency": "BRL"
+  }
+}

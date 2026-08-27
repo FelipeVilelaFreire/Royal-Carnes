@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "kit": "auth-users",
+  "roles": [
+    { "key": "owner", "name": "Owner" },
+    { "key": "admin", "name": "Admin" },
+    { "key": "operator", "name": "Operator" },
+    { "key": "customer", "name": "Customer" }
+  ],
+  "permissions": [
+    "orders.read",
+    "orders.updateStatus",
+    "products.manage",
+    "customers.read",
+    "deliveries.manage",
+    "payments.markPaid"
+  ],
+  "rolePermissions": {
+    "owner": [
+      "orders.read",
+      "orders.updateStatus",
+      "products.manage",
+      "customers.read",
+      "deliveries.manage",
+      "payments.markPaid"
+    ],
+    "admin": [
+      "orders.read",
+      "orders.updateStatus",
+      "products.manage",
+      "customers.read",
+      "deliveries.manage",
+      "payments.markPaid"
+    ],
+    "operator": [
+      "orders.read",
+      "orders.updateStatus",
+      "customers.read",
+      "deliveries.manage"
+    ],
+    "customer": [
+      "orders.read"
+    ]
+  },
+  "users": [
+    {
+      "email": "admin@camisaclub.local",
+      "fullName": "Admin CamisaClub",
+      "password": "CamisaClub123!",
+      "roles": ["owner", "admin"]
+    },
+    {
+      "email": "operador@camisaclub.local",
+      "fullName": "Operador CamisaClub",
+      "password": "CamisaClub123!",
+      "roles": ["operator"]
+    },
+    {
+      "email": "cliente@camisaclub.local",
+      "fullName": "Cliente CamisaClub",
+      "password": "CamisaClub123!",
+      "roles": ["customer"],
+      "customerKey": "cliente-camisaclub"
+    }
+  ]
+}

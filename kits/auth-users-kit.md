@@ -1,6 +1,6 @@
 # Auth & Users Kit
 
-Status inicial: `planned`
+Status inicial: `local scaffold`
 
 Fase principal: Fase 1 - Backend Base Real
 
@@ -145,14 +145,43 @@ Proibido na tela:
 
 ## Arquivos Fonte no RoyalPrime
 
-Enquanto o backend real nao existir, esta lista deve ser preenchida conforme a implementacao nascer.
+O scaffold inicial ja existe para a primeira parte do kit.
 
-Backend futuro:
+Backend atual:
 
 ```text
 backend/apps/accounts/
 backend/apps/customers/
 backend/apps/organizations/
+backend/api/v1/urls.py
+backend/API_CONTRACTS.md
+```
+
+Arquivos principais:
+
+```text
+backend/apps/accounts/models.py
+backend/apps/accounts/selectors.py
+backend/apps/accounts/services.py
+backend/apps/accounts/serializers.py
+backend/apps/accounts/views.py
+
+backend/apps/customers/models.py
+backend/apps/customers/selectors.py
+backend/apps/customers/services.py
+backend/apps/customers/serializers.py
+backend/apps/customers/views.py
+
+backend/apps/organizations/models.py
+backend/apps/organizations/selectors.py
+backend/apps/organizations/services.py
+backend/apps/organizations/serializers.py
+backend/apps/organizations/views.py
+```
+
+Backend futuro:
+
+```text
 backend/api/v1/auth/
 ```
 
@@ -188,6 +217,96 @@ frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
 7. Trocar copy/locale/tema/imagens.
 8. Validar permissoes por organizationId.
 9. Rodar testes/builds do produto novo.
+
+## Seeds Esperados
+
+### Seed principal: Royal Carnes
+
+Organization:
+
+```text
+slug: royalprime
+name: RoyalPrime
+businessName: Royal Carnes
+locale: pt-BR
+timezone: America/Sao_Paulo
+currency: BRL
+```
+
+Roles:
+
+```text
+owner
+admin
+operator
+customer
+```
+
+Permissoes iniciais:
+
+```text
+orders.read
+orders.approve
+orders.updateStatus
+products.manage
+customers.read
+customers.manage
+deliveries.manage
+payments.markPaid
+```
+
+Users de desenvolvimento:
+
+```text
+admin@royalprime.local -> owner/admin
+operador@royalprime.local -> operator
+cliente@royalprime.local -> customer + Customer
+```
+
+Customers de desenvolvimento:
+
+```text
+Felipe Vilela
+Lucas Dias
+```
+
+### Seed exemplo: BikeClub
+
+Organization:
+
+```text
+slug: bikeclub
+name: BikeClub
+businessName: BikeClub Assinaturas
+locale: pt-BR
+timezone: America/Sao_Paulo
+currency: BRL
+```
+
+Roles:
+
+```text
+owner
+admin
+mechanic
+customer
+```
+
+Permissoes:
+
+```text
+orders.read
+orders.updateStatus
+products.manage
+customers.read
+deliveries.manage
+```
+
+Objetivo deste seed:
+
+```text
+provar que User, OrganizationMember e Customer nao dependem de Royal Carnes
+```
 
 ## Criterio Para Virar Kit-Ready
 

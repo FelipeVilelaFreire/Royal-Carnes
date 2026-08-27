@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kit": "subscriptions",
+  "plans": [
+    {
+      "key": "urbano",
+      "name": "Urbano",
+      "priceCents": 12900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "monthlyMaintenanceHours", "value": 1, "unit": "hour" },
+        { "key": "maxItemsPerCycle", "value": 2, "unit": "item" }
+      ]
+    },
+    {
+      "key": "performance",
+      "name": "Performance",
+      "priceCents": 24900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "monthlyMaintenanceHours", "value": 3, "unit": "hour" },
+        { "key": "maxItemsPerCycle", "value": 4, "unit": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kit": "customers",
+  "customers": [
+    {
+      "key": "cliente-royalprime",
+      "name": "Cliente RoyalPrime",
+      "email": "cliente@royalprime.local",
+      "phone": "+5500000000000"
+    },
+    {
+      "key": "felipe-vilela",
+      "name": "Felipe Vilela",
+      "email": "felipe@example.local",
+      "phone": "+5500000000001"
+    },
+    {
+      "key": "lucas-dias",
+      "name": "Lucas Dias",
+      "email": "lucas@example.local",
+      "phone": "+5500000000002"
+    }
+  ]
+}

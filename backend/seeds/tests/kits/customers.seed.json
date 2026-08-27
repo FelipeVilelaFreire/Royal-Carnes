@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "kit": "customers",
+  "customers": [
+    {
+      "key": "customer-test",
+      "name": "Customer Test",
+      "email": "customer@test.local",
+      "phone": "+5500000000300"
+    }
+  ]
+}

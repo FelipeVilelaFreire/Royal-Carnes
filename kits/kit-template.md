@@ -157,6 +157,51 @@ Especifico do RoyalPrime:
 8. Rode builds/testes.
 9. Atualize o kit do novo produto.
 
+## Seeds Esperados
+
+### Seed principal: Royal Carnes
+
+Dados minimos:
+
+- dado real do negocio atual;
+- organization `royalprime`;
+- roles/permissoes necessarias;
+- registros suficientes para validar fluxo real;
+- copy e nomes comerciais como dados, nao como regra hardcoded.
+
+### Seed exemplo: dominio alternativo
+
+Dados minimos:
+
+- outra organization pequena;
+- nomes comerciais diferentes;
+- categorias/produtos/fluxos diferentes;
+- somente o suficiente para provar que o contrato e reutilizavel.
+
+### Seed dev
+
+Dados minimos:
+
+- usuarios de desenvolvimento;
+- registros previsiveis para testar tela e API manualmente;
+- dados que podem ser recriados em banco limpo.
+
+### Seed test
+
+Dados minimos:
+
+- fixture pequena;
+- deterministica;
+- rapida;
+- sem depender de copy real do negocio.
+
+Regra:
+
+```text
+codigo define capacidade generica
+seed veste a capacidade para um negocio
+```
+
 ## Criterio Para Kit-Ready
 
 - arquivos reais implementados;
@@ -165,6 +210,7 @@ Especifico do RoyalPrime:
 - shared-core com hooks/API clients;
 - lista de arquivos fonte atualizada;
 - pelo menos uma tela consumindo por hook.
+- seed principal e seed exemplo documentados.
 
 ## Criterio Para ServiceOS Candidate
 

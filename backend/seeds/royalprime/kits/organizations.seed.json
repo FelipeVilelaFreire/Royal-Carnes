@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "kit": "organizations",
+  "organization": {
+    "slug": "royalprime",
+    "name": "RoyalPrime",
+    "businessName": "Royal Carnes",
+    "locale": "pt-BR",
+    "timezone": "America/Sao_Paulo",
+    "currency": "BRL"
+  }
+}

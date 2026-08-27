@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "kit": "auth-users",
+  "roles": [
+    { "key": "owner", "name": "Owner" },
+    { "key": "admin", "name": "Admin" },
+    { "key": "operator", "name": "Operator" },
+    { "key": "customer", "name": "Customer" }
+  ],
+  "permissions": [
+    "orders.read",
+    "orders.approve",
+    "orders.updateStatus",
+    "products.manage",
+    "customers.read",
+    "customers.manage",
+    "deliveries.manage",
+    "payments.markPaid",
+    "settings.manage"
+  ],
+  "rolePermissions": {
+    "owner": [
+      "orders.read",
+      "orders.approve",
+      "orders.updateStatus",
+      "products.manage",
+      "customers.read",
+      "customers.manage",
+      "deliveries.manage",
+      "payments.markPaid",
+      "settings.manage"
+    ],
+    "admin": [
+      "orders.read",
+      "orders.approve",
+      "orders.updateStatus",
+      "products.manage",
+      "customers.read",
+      "customers.manage",
+      "deliveries.manage",
+      "payments.markPaid"
+    ],
+    "operator": [
+      "orders.read",
+      "orders.updateStatus",
+      "customers.read",
+      "deliveries.manage",
+      "payments.markPaid"
+    ],
+    "customer": [
+      "orders.read"
+    ]
+  },
+  "users": [
+    {
+      "email": "admin@royalprime.local",
+      "fullName": "Admin RoyalPrime",
+      "password": "RoyalPrime123!",
+      "roles": ["owner", "admin"]
+    },
+    {
+      "email": "operador@royalprime.local",
+      "fullName": "Operador RoyalPrime",
+      "password": "RoyalPrime123!",
+      "roles": ["operator"]
+    },
+    {
+      "email": "cliente@royalprime.local",
+      "fullName": "Cliente RoyalPrime",
+      "password": "RoyalPrime123!",
+      "roles": ["customer"],
+      "customerKey": "cliente-royalprime"
+    }
+  ]
+}

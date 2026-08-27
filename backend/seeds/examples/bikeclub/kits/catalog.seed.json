@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "kit": "catalog",
+  "collections": [
+    { "key": "urbano", "name": "Urbano" },
+    { "key": "performance", "name": "Performance" },
+    { "key": "manutencao", "name": "Manutencao" }
+  ],
+  "categories": [
+    { "key": "bicicletas", "name": "Bicicletas" },
+    { "key": "acessorios", "name": "Acessorios" },
+    { "key": "servicos", "name": "Servicos" }
+  ],
+  "commercialModes": [
+    { "key": "subscription", "name": "Assinatura" },
+    { "key": "delivery", "name": "Entrega" },
+    { "key": "pickup", "name": "Retirada" }
+  ],
+  "products": [
+    {
+      "key": "bike-urbana",
+      "name": "Bike urbana",
+      "categoryKey": "bicicletas",
+      "collections": ["urbano"],
+      "unit": "unit",
+      "priceCents": 189900,
+      "commercialModes": ["subscription", "pickup"]
+    },
+    {
+      "key": "capacete",
+      "name": "Capacete",
+      "categoryKey": "acessorios",
+      "collections": ["urbano", "performance"],
+      "unit": "unit",
+      "priceCents": 15990,
+      "commercialModes": ["delivery", "pickup"]
+    },
+    {
+      "key": "kit-reparo",
+      "name": "Kit reparo",
+      "categoryKey": "acessorios",
+      "collections": ["manutencao"],
+      "unit": "unit",
+      "priceCents": 8990,
+      "commercialModes": ["delivery", "pickup"]
+    },
+    {
+      "key": "revisao-mensal",
+      "name": "Revisao mensal",
+      "categoryKey": "servicos",
+      "collections": ["manutencao", "performance"],
+      "unit": "service",
+      "priceCents": 12990,
+      "commercialModes": ["subscription", "pickup"]
+    }
+  ]
+}

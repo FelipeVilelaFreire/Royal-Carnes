@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kit": "subscriptions",
+  "plans": [
+    {
+      "key": "basic",
+      "name": "Basic",
+      "priceCents": 19900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "proteinKgLimit", "value": 4, "unit": "kg" },
+        { "key": "maxCuts", "value": 3, "unit": "item" }
+      ]
+    },
+    {
+      "key": "premium",
+      "name": "Premium",
+      "priceCents": 29900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "proteinKgLimit", "value": 8, "unit": "kg" },
+        { "key": "charcoalKgLimit", "value": 5, "unit": "kg" },
+        { "key": "maxCuts", "value": 6, "unit": "item" }
+      ]
+    },
+    {
+      "key": "pro",
+      "name": "Pro",
+      "priceCents": 44900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "proteinKgLimit", "value": 12, "unit": "kg" },
+        { "key": "charcoalKgLimit", "value": 10, "unit": "kg" },
+        { "key": "maxCuts", "value": 10, "unit": "item" }
+      ]
+    }
+  ]
+}

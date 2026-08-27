@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "seedKey": "camisaclub",
+  "seedType": "example",
+  "modules": [
+    { "kit": "organizations", "path": "kits/organizations.seed.json" },
+    { "kit": "auth-users", "path": "kits/auth-users.seed.json" },
+    { "kit": "customers", "path": "kits/customers.seed.json" },
+    { "kit": "catalog", "path": "kits/catalog.seed.json" },
+    { "kit": "subscriptions", "path": "kits/subscriptions.seed.json" }
+  ]
+}

@@ -6,3 +6,6 @@ build
 .env.local
 *.log
 .ds_store
+*.sqlite3
+__pycache__/
+*.py[cod]

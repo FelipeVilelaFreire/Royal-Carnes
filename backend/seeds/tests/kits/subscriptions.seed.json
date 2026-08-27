@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kit": "subscriptions",
+  "plans": [
+    {
+      "key": "test-plan",
+      "name": "Test Plan",
+      "priceCents": 9900,
+      "billingInterval": "month",
+      "limits": [
+        { "key": "maxItemsPerCycle", "value": 2, "unit": "item" }
+      ]
+    }
+  ]
+}

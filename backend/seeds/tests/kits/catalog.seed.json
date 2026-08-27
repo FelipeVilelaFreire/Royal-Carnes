@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "kit": "catalog",
+  "collections": [
+    { "key": "main", "name": "Main" },
+    { "key": "featured", "name": "Featured" }
+  ],
+  "categories": [
+    { "key": "category-a", "name": "Category A" },
+    { "key": "category-b", "name": "Category B" }
+  ],
+  "commercialModes": [
+    { "key": "subscription", "name": "Subscription" },
+    { "key": "delivery", "name": "Delivery" }
+  ],
+  "products": [
+    {
+      "key": "product-a",
+      "name": "Product A",
+      "categoryKey": "category-a",
+      "collections": ["main", "featured"],
+      "unit": "unit",
+      "priceCents": 1000,
+      "commercialModes": ["subscription", "delivery"]
+    },
+    {
+      "key": "product-b",
+      "name": "Product B",
+      "categoryKey": "category-a",
+      "collections": ["main"],
+      "unit": "unit",
+      "priceCents": 2000,
+      "commercialModes": ["delivery"]
+    },
+    {
+      "key": "product-c",
+      "name": "Product C",
+      "categoryKey": "category-b",
+      "collections": ["featured"],
+      "unit": "unit",
+      "priceCents": 3000,
+      "commercialModes": ["subscription"]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "kit": "organizations",
+  "organization": {
+    "slug": "test-org",
+    "name": "Test Org",
+    "businessName": "Test Business",
+    "locale": "pt-BR",
+    "timezone": "America/Sao_Paulo",
+    "currency": "BRL"
+  }
+}

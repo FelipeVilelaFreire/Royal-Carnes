@@ -222,6 +222,38 @@ backend/
 
   seeds/
     royalprime/
+      seed.manifest.json
+      kits/
+        organizations.seed.json
+        auth-users.seed.json
+        customers.seed.json
+        catalog.seed.json
+        subscriptions.seed.json
+    examples/
+      bikeclub/
+        seed.manifest.json
+        kits/
+          organizations.seed.json
+          auth-users.seed.json
+          customers.seed.json
+          catalog.seed.json
+          subscriptions.seed.json
+      camisaclub/
+        seed.manifest.json
+        kits/
+          organizations.seed.json
+          auth-users.seed.json
+          customers.seed.json
+          catalog.seed.json
+          subscriptions.seed.json
+    tests/
+      minimal.seed.manifest.json
+      kits/
+        organizations.seed.json
+        auth-users.seed.json
+        customers.seed.json
+        catalog.seed.json
+        subscriptions.seed.json
 ```
 
 ## Backend Ownership
@@ -271,6 +303,20 @@ backend/api/v1
 
 backend/seeds/royalprime
   -> primeira organizacao, produtos, planos, categorias e dados iniciais
+
+backend/seeds/examples
+  -> seeds pequenos para provar reuso fora de Royal Carnes
+  -> bikeclub e camisaclub como primeiros exemplos completos pequenos
+
+backend/seeds/tests
+  -> fixtures minimas para testes automatizados
+
+Regra de seed:
+
+```text
+seed.manifest.json e indice
+kits/*.seed.json guarda dados por kit/capacidade
+```
 ```
 
 Regra:
@@ -816,6 +862,10 @@ backend/FOUNDATION.md criado
 backend/MER.md criado
 backend/.env.example criado
 deploy alvo Vercel + Supabase + Render documentado
+backend scaffold Django criado
+backend/seeds documentado
+kits de seed e catalogo documentados
+Fase 1 Auth & Users fechada
 ```
 
 Proximo passo recomendado:

@@ -36,6 +36,135 @@ O contrato de variaveis fica em `backend/.env.example`.
 
 O arquivo `backend/.env` pode existir localmente, mas nao deve ser versionado.
 
+## Scaffold atual
+
+O scaffold Django inicial ja segue:
+
+```text
+config/settings/base.py
+config/settings/development.py
+config/settings/production.py
+apps/core
+apps/organizations
+apps/accounts
+apps/customers
+api/v1
+```
+
+Registro incremental:
+
+```text
+backend/IMPLEMENTATION_LOG.md
+```
+
+Contrato inicial da API:
+
+```text
+backend/API_CONTRACTS.md
+```
+
+## Comandos backend
+
+Instalar dependencias:
+
+```bash
+py -m pip install -r backend/requirements.txt
+```
+
+Validar configuracao:
+
+```bash
+cd backend
+py manage.py check
+```
+
+Criar migrations quando os models estiverem aprovados:
+
+```bash
+cd backend
+py manage.py makemigrations
+py manage.py migrate
+```
+
+Aplicar seed principal da Fase 1:
+
+```bash
+cd backend
+py manage.py seed_backend --seed royalprime
+```
+
+Validar seed sem escrever no banco:
+
+```bash
+cd backend
+py manage.py seed_backend --seed examples/bikeclub --dry-run
+py manage.py seed_backend --seed examples/camisaclub --dry-run
+```
+
+Rodar testes da fundacao:
+
+```bash
+cd backend
+py manage.py test apps.core
+```
+
+Rodar a suite completa:
+
+```bash
+cd backend
+py manage.py test
+```
+
+## Fase 1 atual
+
+Status:
+
+```text
+done
+```
+
+Implementado em codigo:
+
+```text
+Organization
+User
+Role
+Permission
+RolePermission
+OrganizationMember
+Customer
+Tenant context por X-Organization-Slug
+JWT login/refresh/register/logout
+me
+users admin
+customers list/create/detail
+seed_backend
+initial migrations
+```
+
+Rotas principais:
+
+```text
+POST /api/v1/auth/login/
+POST /api/v1/auth/refresh/
+POST /api/v1/auth/register/
+POST /api/v1/auth/logout/
+GET  /api/v1/accounts/me/
+GET  /api/v1/accounts/users/
+POST /api/v1/accounts/users/
+GET  /api/v1/customers/
+POST /api/v1/customers/
+GET  /api/v1/customers/:id/
+```
+
+Tenant context:
+
+```text
+X-Organization-Slug: royalprime
+```
+
+Sem header, o backend usa a organization default local para boot/dev.
+
 ## Ordem central do produto
 
 Todo desenvolvimento novo deve seguir esta divisao:
@@ -83,13 +212,6 @@ RoyalPrime prova o fluxo real
 
 ## Proxima rodada
 
-A proxima rodada deve comecar por documentacao e modelagem:
-
-1. Rever a tree final do produto.
-2. Definir a foundation do backend.
-3. Montar o MER.
-4. Definir contratos de API.
-5. Classificar mocks atuais como entidade, seed, DTO ou dado temporario.
-6. So depois iniciar implementacao.
-
-Nao recriar runtime backend antes de fechar tree e MER.
+Depois de validar localmente `py manage.py check`, `migrate` e `seed_backend`,
+a proxima fase de codigo deve ser `catalog`, usando os seeds ja separados por
+kit como contrato de dados.

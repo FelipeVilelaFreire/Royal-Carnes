@@ -32,6 +32,7 @@ backend/
   FOUNDATION.md
   MER.md
   API_CONTRACTS.md
+  IMPLEMENTATION_LOG.md
   .env.example
   requirements.txt
   manage.py
@@ -66,6 +67,38 @@ backend/
 
   seeds/
     royalprime/
+      seed.manifest.json
+      kits/
+        organizations.seed.json
+        auth-users.seed.json
+        customers.seed.json
+        catalog.seed.json
+        subscriptions.seed.json
+    examples/
+      bikeclub/
+        seed.manifest.json
+        kits/
+          organizations.seed.json
+          auth-users.seed.json
+          customers.seed.json
+          catalog.seed.json
+          subscriptions.seed.json
+      camisaclub/
+        seed.manifest.json
+        kits/
+          organizations.seed.json
+          auth-users.seed.json
+          customers.seed.json
+          catalog.seed.json
+          subscriptions.seed.json
+    tests/
+      minimal.seed.manifest.json
+      kits/
+        organizations.seed.json
+        auth-users.seed.json
+        customers.seed.json
+        catalog.seed.json
+        subscriptions.seed.json
 
   tests/
 ```
@@ -569,6 +602,34 @@ seeds/royalprime
   -> precos
   -> limites
   -> regioes/metodos iniciais
+
+seeds/examples
+  -> exemplos pequenos para provar reuso
+  -> primeiro exemplo: bikeclub
+  -> segundo exemplo: camisaclub
+
+seeds/tests
+  -> fixtures pequenas, deterministicas e rapidas
+```
+
+Arquivos de seed:
+
+```text
+backend/seeds/royalprime/seed.manifest.json
+backend/seeds/royalprime/kits/*.seed.json
+backend/seeds/examples/bikeclub/seed.manifest.json
+backend/seeds/examples/bikeclub/kits/*.seed.json
+backend/seeds/examples/camisaclub/seed.manifest.json
+backend/seeds/examples/camisaclub/kits/*.seed.json
+backend/seeds/tests/minimal.seed.manifest.json
+backend/seeds/tests/kits/*.seed.json
+```
+
+Regra:
+
+```text
+seed.manifest.json e indice do seed
+kits/*.seed.json sao dados separados por capacidade reutilizavel
 ```
 
 Seed nao e regra tecnica hardcoded.
@@ -593,6 +654,19 @@ Royal Pro = seed da organization royalprime
 8. payments manual
 9. inventory simples
 10. wallets/vouchers
+```
+
+Status atual:
+
+```text
+config/settings criado
+apps/core criado
+apps/organizations criado
+apps/accounts criado
+apps/customers criado
+backend/seeds documentado
+migrations geradas e aplicadas
+Fase 1 Auth & Users fechada
 ```
 
 ## O Que Nao Codar Ainda

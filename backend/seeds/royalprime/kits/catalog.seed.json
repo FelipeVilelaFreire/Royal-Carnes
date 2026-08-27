@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "kit": "catalog",
+  "collections": [
+    { "key": "colecao-inverno", "name": "Colecao Inverno" },
+    { "key": "colecao-verao", "name": "Colecao Verao" },
+    { "key": "colecao-familia", "name": "Colecao Familia" },
+    { "key": "churrasco-premium", "name": "Churrasco Premium" },
+    { "key": "dia-a-dia", "name": "Dia a Dia" }
+  ],
+  "categories": [
+    { "key": "carnes", "name": "Carnes" },
+    { "key": "carvao", "name": "Carvao" },
+    { "key": "temperos", "name": "Temperos" },
+    { "key": "utensilios", "name": "Utensilios" },
+    { "key": "combos", "name": "Combos" }
+  ],
+  "commercialModes": [
+    { "key": "subscription", "name": "Assinatura" },
+    { "key": "delivery", "name": "Royal Delivery" },
+    { "key": "box", "name": "Royal Box" }
+  ],
+  "products": [
+    {
+      "key": "picanha",
+      "name": "Picanha",
+      "categoryKey": "carnes",
+      "collections": ["colecao-familia", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 8990,
+      "commercialModes": ["subscription", "delivery", "box"]
+    },
+    {
+      "key": "ancho",
+      "name": "Ancho",
+      "categoryKey": "carnes",
+      "collections": ["churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 7990,
+      "commercialModes": ["subscription", "delivery", "box"]
+    },
+    {
+      "key": "fraldinha",
+      "name": "Fraldinha",
+      "categoryKey": "carnes",
+      "collections": ["colecao-familia", "dia-a-dia"],
+      "unit": "kg",
+      "priceCents": 5990,
+      "commercialModes": ["subscription", "delivery"]
+    },
+    {
+      "key": "carvao-premium",
+      "name": "Carvao Premium",
+      "categoryKey": "carvao",
+      "collections": ["churrasco-premium", "dia-a-dia"],
+      "unit": "bag",
+      "priceCents": 3490,
+      "commercialModes": ["delivery", "box"]
+    }
+  ]
+}
