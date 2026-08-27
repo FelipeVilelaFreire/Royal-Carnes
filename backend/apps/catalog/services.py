@@ -9,6 +9,7 @@ from .models import (
     CommercialMode,
     Product,
     ProductCategory,
+    ProductMedia,
     ProductPrice,
     ProductVariant,
 )
@@ -103,6 +104,28 @@ def set_product_collections(*, organization, product: Product, collections: list
             product=product,
             defaults={"sort_order": sort_order},
         )
+
+
+@transaction.atomic
+def set_product_media(*, organization, product: Product, media_items: list[dict]) -> None:
+    active_urls = []
+    for sort_order, media_data in enumerate(media_items):
+        url = media_data["url"]
+        active_urls.append(url)
+        ProductMedia.objects.update_or_create(
+            organization=organization,
+            product=product,
+            url=url,
+            defaults={
+                "alt": media_data.get("alt", product.name),
+                "sort_order": media_data.get("sortOrder", sort_order),
+                "is_primary": media_data.get("isPrimary", sort_order == 0),
+            },
+        )
+    if active_urls:
+        ProductMedia.objects.filter(organization=organization, product=product).exclude(
+            url__in=active_urls,
+        ).delete()
 
 
 @transaction.atomic

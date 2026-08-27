@@ -406,7 +406,7 @@ publico
 Objetivo:
 
 ```text
-listar produtos ativos da request.organization com category, collections e prices
+listar produtos ativos da request.organization com category, collections, media, variants e prices
 ```
 
 Auth:
@@ -480,6 +480,24 @@ Request:
       "commercial_mode_keys": ["delivery"]
     }
   ]
+}
+```
+
+Response inclui:
+
+```json
+{
+  "key": "picanha",
+  "primary_media_url": "https://example.com/picanha.png",
+  "media": [
+    {
+      "url": "https://example.com/picanha.png",
+      "alt": "Picanha crua com capa de gordura em fundo claro",
+      "is_primary": true
+    }
+  ],
+  "variants": [],
+  "prices": []
 }
 ```
 

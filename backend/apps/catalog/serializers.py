@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
-from .models import Category, Collection, CommercialMode, Product, ProductPrice, ProductVariant
+from .models import (
+    Category,
+    Collection,
+    CommercialMode,
+    Product,
+    ProductMedia,
+    ProductPrice,
+    ProductVariant,
+)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -65,10 +73,18 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductMedia
+        fields = ("id", "url", "alt", "sort_order", "is_primary")
+
+
 class ProductSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()
     primary_category_key = serializers.SerializerMethodField()
     collection_keys = serializers.SerializerMethodField()
+    primary_media_url = serializers.SerializerMethodField()
+    media = ProductMediaSerializer(many=True, read_only=True)
     prices = ProductPriceSerializer(many=True, read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
     commercial_mode_keys = serializers.SerializerMethodField()
@@ -89,6 +105,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "primary_category_key",
             "collection_keys",
             "commercial_mode_keys",
+            "primary_media_url",
+            "media",
             "variants",
             "prices",
         )
@@ -118,6 +136,13 @@ class ProductSerializer(serializers.ModelSerializer):
             for availability in product.availability.all()
             if availability.is_available
         ]
+
+    def get_primary_media_url(self, product):
+        primary_media = next(
+            (media for media in product.media.all() if media.is_primary),
+            None,
+        )
+        return primary_media.url if primary_media else None
 
 
 class ProductCreateSerializer(serializers.Serializer):

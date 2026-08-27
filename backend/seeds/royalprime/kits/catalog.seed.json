@@ -2,11 +2,31 @@
   "schemaVersion": 1,
   "kit": "catalog",
   "collections": [
-    { "key": "colecao-inverno", "name": "Colecao Inverno" },
-    { "key": "colecao-verao", "name": "Colecao Verao" },
-    { "key": "colecao-familia", "name": "Colecao Familia" },
-    { "key": "churrasco-premium", "name": "Churrasco Premium" },
-    { "key": "dia-a-dia", "name": "Dia a Dia" }
+    {
+      "key": "colecao-inverno",
+      "name": "Colecao Inverno",
+      "description": "Cortes mais encorpados para preparo lento, forno e noites frias."
+    },
+    {
+      "key": "colecao-verao",
+      "name": "Colecao Verao",
+      "description": "Itens leves e praticos para grelha rapida, praia e encontros ao ar livre."
+    },
+    {
+      "key": "colecao-familia",
+      "name": "Colecao Familia",
+      "description": "Produtos pensados para compras recorrentes e mesas de quatro a seis pessoas."
+    },
+    {
+      "key": "churrasco-premium",
+      "name": "Churrasco Premium",
+      "description": "Selecao principal para a experiencia Royal Carnes de fim de semana."
+    },
+    {
+      "key": "dia-a-dia",
+      "name": "Dia a Dia",
+      "description": "Itens de recompra simples para abastecer a rotina da casa."
+    }
   ],
   "categories": [
     { "key": "carnes", "name": "Carnes" },
@@ -22,93 +42,125 @@
   ],
   "products": [
     {
-        "key": "picanha",
-        "name": "Picanha",
-        "categoryKeys": ["carnes", "combos"],
+      "key": "picanha",
+      "name": "Picanha",
+      "description": "Corte premium com capa de gordura uniforme para churrasco, box mensal e pedidos de ultima hora.",
+      "categoryKeys": ["carnes", "combos"],
       "collections": ["colecao-familia", "churrasco-premium"],
-        "unit": "kg",
-        "priceCents": 8990,
-        "commercialModes": ["subscription", "delivery", "box"],
-        "variants": [
-          {
-            "sku": "PICANHA-500G",
-            "name": "Picanha 500g",
-            "unit": "kg",
-            "unitQuantity": 0.5,
-            "weightGrams": 500,
-            "priceCents": 4990,
-            "commercialModes": ["delivery", "box"]
-          },
-          {
-            "sku": "PICANHA-1KG",
-            "name": "Picanha 1kg",
-            "unit": "kg",
-            "unitQuantity": 1,
-            "weightGrams": 1000,
-            "priceCents": 8990,
-            "commercialModes": ["subscription", "delivery", "box"]
-          }
-        ]
+      "unit": "kg",
+      "priceCents": 8990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://meatshop.de/cdn/shop/files/EatventurePicanha20889.png?v=1740217833&width=500",
+          "alt": "Picanha crua com capa de gordura em fundo claro",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "PICANHA-500G",
+          "name": "Picanha 500g",
+          "unit": "kg",
+          "unitQuantity": 0.5,
+          "weightGrams": 500,
+          "priceCents": 4990,
+          "commercialModes": ["delivery", "box"]
+        },
+        {
+          "sku": "PICANHA-1KG",
+          "name": "Picanha 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 8990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
     },
     {
-        "key": "ancho",
-        "name": "Ancho",
-        "categoryKeys": ["carnes"],
+      "key": "ancho",
+      "name": "Ancho",
+      "description": "Bife ancho marmorizado para linha premium, com preco separado por canal comercial.",
+      "categoryKeys": ["carnes"],
       "collections": ["churrasco-premium"],
-        "unit": "kg",
-        "priceCents": 7990,
-        "commercialModes": ["subscription", "delivery", "box"],
-        "variants": [
-          {
-            "sku": "ANCHO-1KG",
-            "name": "Ancho 1kg",
-            "unit": "kg",
-            "unitQuantity": 1,
-            "weightGrams": 1000,
-            "priceCents": 7990,
-            "commercialModes": ["subscription", "delivery", "box"]
-          }
-        ]
+      "unit": "kg",
+      "priceCents": 7990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://images.ctfassets.net/ttw7uwgviuml/GEXQDyQ8utHO9stbH5hl0/b0fbf991ca9f14d65270a9139e575398/SKU_81718_1.jpg?fm=webp&h=650&w=650",
+          "alt": "Bife ancho cru sobre superficie clara",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "ANCHO-1KG",
+          "name": "Ancho 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 7990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
     },
     {
-        "key": "fraldinha",
-        "name": "Fraldinha",
-        "categoryKeys": ["carnes", "combos"],
+      "key": "fraldinha",
+      "name": "Fraldinha",
+      "description": "Corte versatil para churrasco familiar e preparo do dia a dia, com alta recorrencia de compra.",
+      "categoryKeys": ["carnes", "combos"],
       "collections": ["colecao-familia", "dia-a-dia"],
-        "unit": "kg",
-        "priceCents": 5990,
-        "commercialModes": ["subscription", "delivery"],
-        "variants": [
-          {
-            "sku": "FRALDINHA-1KG",
-            "name": "Fraldinha 1kg",
-            "unit": "kg",
-            "unitQuantity": 1,
-            "weightGrams": 1000,
-            "priceCents": 5990,
-            "commercialModes": ["subscription", "delivery"]
-          }
-        ]
+      "unit": "kg",
+      "priceCents": 5990,
+      "commercialModes": ["subscription", "delivery"],
+      "media": [
+        {
+          "url": "https://swiftbr.vteximg.com.br/arquivos/ids/208571-768-768/615553-fraldinha_inn.jpg?v=638869756643370000",
+          "alt": "Fraldinha crua temperada sobre bancada clara",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "FRALDINHA-1KG",
+          "name": "Fraldinha 1kg",
+          "unit": "kg",
+          "unitQuantity": 1,
+          "weightGrams": 1000,
+          "priceCents": 5990,
+          "commercialModes": ["subscription", "delivery"]
+        }
+      ]
     },
     {
-        "key": "carvao-premium",
-        "name": "Carvao Premium",
-        "categoryKeys": ["carvao", "utensilios"],
+      "key": "carvao-premium",
+      "name": "Carvao Premium",
+      "description": "Carvao de apoio para pedido de churrasco, box e venda avulsa com ticket complementar.",
+      "categoryKeys": ["carvao", "utensilios"],
       "collections": ["churrasco-premium", "dia-a-dia"],
-        "unit": "bag",
-        "priceCents": 3490,
-        "commercialModes": ["delivery", "box"],
-        "variants": [
-          {
-            "sku": "CARVAO-5KG",
-            "name": "Carvao Premium 5kg",
-            "unit": "bag",
-            "unitQuantity": 1,
-            "weightGrams": 5000,
-            "priceCents": 3490,
-            "commercialModes": ["delivery", "box"]
-          }
-        ]
-      }
+      "unit": "bag",
+      "priceCents": 3490,
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://metro-muscat.com/cdn/shop/files/uat7HIndom_588x588.webp?v=1746445676",
+          "alt": "Saco aberto com carvao em fundo claro",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CARVAO-5KG",
+          "name": "Carvao Premium 5kg",
+          "unit": "bag",
+          "unitQuantity": 1,
+          "weightGrams": 5000,
+          "priceCents": 3490,
+          "commercialModes": ["delivery", "box"]
+        }
+      ]
+    }
   ]
 }

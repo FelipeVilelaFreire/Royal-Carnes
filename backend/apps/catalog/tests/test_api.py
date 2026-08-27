@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from apps.catalog.models import Collection, Product, ProductVariant
+from apps.catalog.models import Collection, Product, ProductMedia, ProductVariant
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
 
 
@@ -26,6 +26,7 @@ class CatalogApiTests(APITestCase):
     def test_seed_creates_collections_and_products(self):
         self.assertEqual(Collection.objects.count(), 5)
         self.assertEqual(Product.objects.count(), 4)
+        self.assertEqual(ProductMedia.objects.count(), 4)
         self.assertGreaterEqual(ProductVariant.objects.count(), 5)
         self.assertTrue(
             Product.objects.filter(
@@ -52,6 +53,8 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(products_response.status_code, 200, products_response.data)
         self.assertEqual(modes_response.status_code, 200, modes_response.data)
         self.assertGreaterEqual(len(products_response.data), 4)
+        self.assertTrue(products_response.data[0]["primary_media_url"])
+        self.assertGreaterEqual(len(products_response.data[0]["media"]), 1)
 
     def test_admin_can_list_and_create_product(self):
         self.authenticate()

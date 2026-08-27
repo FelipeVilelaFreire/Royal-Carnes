@@ -17,6 +17,13 @@ modelar produto real
 
 RoyalPrime/Royal Carnes e a primeira organization, nao uma regra fixa no codigo.
 
+Observacao de seed:
+
+```text
+imagens externas em catalog.seed.json sao placeholders de demonstracao.
+em producao, ProductMedia deve apontar para asset proprio/CDN controlado.
+```
+
 ## Principios
 
 ```text
@@ -583,6 +590,31 @@ Picanha 500g
 Picanha 1kg
 Bike urbana aro 20
 Camiseta branca M
+```
+
+### ProductMedia
+
+Imagem ou midia de apresentacao do produto.
+
+Campos:
+
+```text
+id
+organizationId
+productId
+url
+alt
+sortOrder
+isPrimary
+```
+
+Regra:
+
+```text
+ProductMedia e dado de catalogo, nao regra de negocio.
+Seed pode usar URL externa como placeholder.
+Producao deve usar asset proprio/CDN controlado.
+primary_media_url na API e derivado do item isPrimary.
 ```
 
 ### ProductPrice

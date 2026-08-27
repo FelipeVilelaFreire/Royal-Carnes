@@ -39,6 +39,9 @@ def admin_products_for_organization(organization):
             "collection_links__collection",
             "prices__commercial_mode",
             "prices__collection",
+            "availability__commercial_mode",
+            "media",
+            "variants",
         )
     )
 

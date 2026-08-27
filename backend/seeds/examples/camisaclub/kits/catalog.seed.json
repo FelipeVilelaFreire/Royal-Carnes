@@ -2,9 +2,21 @@
   "schemaVersion": 1,
   "kit": "catalog",
   "collections": [
-    { "key": "basicos", "name": "Basicos" },
-    { "key": "verao", "name": "Verao" },
-    { "key": "streetwear", "name": "Streetwear" }
+    {
+      "key": "basicos",
+      "name": "Basicos",
+      "description": "Pecas neutras para recompra, assinatura e combinacao recorrente."
+    },
+    {
+      "key": "verao",
+      "name": "Verao",
+      "description": "Itens leves para campanhas sazonais e kits de clima quente."
+    },
+    {
+      "key": "streetwear",
+      "name": "Streetwear",
+      "description": "Pecas de maior apelo visual para drops e colecoes especiais."
+    }
   ],
   "categories": [
     { "key": "camisetas", "name": "Camisetas" },
@@ -18,76 +30,108 @@
   ],
   "products": [
     {
-        "key": "camiseta-branca",
-        "name": "Camiseta branca",
-        "categoryKeys": ["camisetas"],
+      "key": "camiseta-branca",
+      "name": "Camiseta branca",
+      "description": "Camiseta essencial para assinatura, venda avulsa e box mensal.",
+      "categoryKeys": ["camisetas"],
       "collections": ["basicos", "verao"],
-        "unit": "unit",
-        "priceCents": 7990,
-        "commercialModes": ["subscription", "delivery", "box"],
-        "variants": [
-          {
-            "sku": "CAMISETA-BRANCA-P",
-            "name": "Camiseta branca P",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 7990,
-            "commercialModes": ["subscription", "delivery", "box"]
-          },
-          {
-            "sku": "CAMISETA-BRANCA-M",
-            "name": "Camiseta branca M",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 7990,
-            "commercialModes": ["subscription", "delivery", "box"]
-          }
-        ]
+      "unit": "unit",
+      "priceCents": 7990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://img.stokkup.com/100015/los_angeles_apparel/1203GD/white/20251126_093848-front.png",
+          "alt": "Camiseta branca basica em fundo claro",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CAMISETA-BRANCA-P",
+          "name": "Camiseta branca P",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 7990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        },
+        {
+          "sku": "CAMISETA-BRANCA-M",
+          "name": "Camiseta branca M",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 7990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
     },
     {
-        "key": "camiseta-street",
-        "name": "Camiseta street",
-        "categoryKeys": ["camisetas"],
+      "key": "camiseta-street",
+      "name": "Camiseta street",
+      "description": "Camiseta escura para colecao streetwear, box e venda por entrega.",
+      "categoryKeys": ["camisetas"],
       "collections": ["streetwear"],
-        "unit": "unit",
-        "priceCents": 10990,
-        "commercialModes": ["subscription", "delivery", "box"],
-        "variants": [
-          {
-            "sku": "CAMISETA-STREET-M",
-            "name": "Camiseta street M",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 10990,
-            "commercialModes": ["subscription", "delivery", "box"]
-          },
-          {
-            "sku": "CAMISETA-STREET-G",
-            "name": "Camiseta street G",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 10990,
-            "commercialModes": ["subscription", "delivery", "box"]
-          }
-        ]
+      "unit": "unit",
+      "priceCents": 10990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://img66.anypromo.com/product2/large/next-level-premium-fitted-sueded-crew-6410-p807001_color-black.jpg/v2",
+          "alt": "Camiseta preta basica em fundo claro",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CAMISETA-STREET-M",
+          "name": "Camiseta street M",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 10990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        },
+        {
+          "sku": "CAMISETA-STREET-G",
+          "name": "Camiseta street G",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 10990,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
     },
     {
-        "key": "moletom-basic",
-        "name": "Moletom basic",
-        "categoryKeys": ["moletons"],
+      "key": "moletom-basic",
+      "name": "Moletom basic",
+      "description": "Moletom de ticket maior para entrega e composicao de box sazonal.",
+      "categoryKeys": ["moletons"],
       "collections": ["basicos", "streetwear"],
       "unit": "unit",
       "priceCents": 18990,
-      "commercialModes": ["delivery", "box"]
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://aparso.com/cdn/shop/files/mens-organic-pullover.jpg?v=1744641923&width=460",
+          "alt": "Moletom cinza em fundo claro",
+          "isPrimary": true
+        }
+      ]
     },
     {
-        "key": "bone-classic",
-        "name": "Bone classic",
-        "categoryKeys": ["acessorios"],
+      "key": "bone-classic",
+      "name": "Bone classic",
+      "description": "Acessorio complementar para box, entrega e campanha de verao.",
+      "categoryKeys": ["acessorios"],
       "collections": ["streetwear", "verao"],
       "unit": "unit",
       "priceCents": 6990,
-      "commercialModes": ["delivery", "box"]
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://cdn11.bigcommerce.com/s-olgiytqqlr/images/stencil/1280x1280/products/4573/262835/6245CM_22_z__91606.1554902542.jpg?c=2",
+          "alt": "Bone classico em fundo claro",
+          "isPrimary": true
+        }
+      ]
     }
   ]
 }

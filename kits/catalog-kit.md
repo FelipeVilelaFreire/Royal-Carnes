@@ -31,6 +31,7 @@ Product e item vendavel.
 Product pode pertencer a varias Collections.
 Product pode pertencer a varias Categories.
 Product pode ter varias Variants.
+Product pode ter varias ProductMedia.
 ```
 
 Regra de fase:
@@ -48,6 +49,7 @@ Responsabilidades:
 - criar e listar categorias;
 - criar produtos e variantes;
 - vincular produto a uma ou mais categorias;
+- registrar imagem primaria e galeria do produto;
 - manter preco por produto/variante e modo comercial;
 - controlar disponibilidade comercial;
 - permitir que um produto apareca em multiplas colecoes;
@@ -104,6 +106,7 @@ Regras reais:
 
 - frontend nao calcula preco final;
 - frontend nao decide disponibilidade real;
+- imagem externa em seed e placeholder de demonstracao, nao contrato de producao;
 - variant representa SKU/tamanho/peso/embalagem/unidade concreta;
 - variant nao representa categoria, colecao, campanha ou modo comercial;
 - `CommercialMode` e configuracao/seed, nao enum preso em Royal Carnes;
@@ -207,6 +210,7 @@ Generico:
 - vinculo N:N produto-categoria;
 - produto;
 - variante;
+- midia de produto;
 - preco;
 - modo comercial;
 - disponibilidade.
@@ -218,7 +222,7 @@ Especifico do RoyalPrime:
 - Royal Box;
 - Colecao Familia;
 - Churrasco Premium;
-- imagens e copy gourmet.
+- imagens e copy gourmet do seed Royal Carnes.
 
 ## Como Copiar/Adaptar Para Outro Produto
 

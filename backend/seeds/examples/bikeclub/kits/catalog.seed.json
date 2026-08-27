@@ -2,9 +2,21 @@
   "schemaVersion": 1,
   "kit": "catalog",
   "collections": [
-    { "key": "urbano", "name": "Urbano" },
-    { "key": "performance", "name": "Performance" },
-    { "key": "manutencao", "name": "Manutencao" }
+    {
+      "key": "urbano",
+      "name": "Urbano",
+      "description": "Produtos para deslocamento diario e vida na cidade."
+    },
+    {
+      "key": "performance",
+      "name": "Performance",
+      "description": "Itens para clientes que buscam mais conforto, seguranca e recorrencia."
+    },
+    {
+      "key": "manutencao",
+      "name": "Manutencao",
+      "description": "Servicos e acessorios que mantem a bicicleta pronta para uso."
+    }
   ],
   "categories": [
     { "key": "bicicletas", "name": "Bicicletas" },
@@ -18,76 +30,108 @@
   ],
   "products": [
     {
-        "key": "bike-urbana",
-        "name": "Bike urbana",
-        "categoryKeys": ["bicicletas"],
+      "key": "bike-urbana",
+      "name": "Bike urbana",
+      "description": "Bicicleta de entrada para assinatura mensal, retirada ou compra direta.",
+      "categoryKeys": ["bicicletas"],
       "collections": ["urbano"],
-        "unit": "unit",
-        "priceCents": 189900,
-        "commercialModes": ["subscription", "pickup"],
-        "variants": [
-          {
-            "sku": "BIKE-URBANA-ARO20",
-            "name": "Bike urbana aro 20",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 159900,
-            "commercialModes": ["subscription", "pickup"]
-          },
-          {
-            "sku": "BIKE-URBANA-ARO26",
-            "name": "Bike urbana aro 26",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 189900,
-            "commercialModes": ["subscription", "pickup"]
-          }
-        ]
+      "unit": "unit",
+      "priceCents": 189900,
+      "commercialModes": ["subscription", "pickup"],
+      "media": [
+        {
+          "url": "https://image-cdn.hypb.st/https%3A/hypebeast.com/image/2015/01/priority-bicycles-0.jpg?cbr=1&fit=max&q=90&w=1080",
+          "alt": "Bicicleta urbana preta em frente a parede de tijolos",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "BIKE-URBANA-ARO20",
+          "name": "Bike urbana aro 20",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 159900,
+          "commercialModes": ["subscription", "pickup"]
+        },
+        {
+          "sku": "BIKE-URBANA-ARO26",
+          "name": "Bike urbana aro 26",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 189900,
+          "commercialModes": ["subscription", "pickup"]
+        }
+      ]
     },
     {
-        "key": "capacete",
-        "name": "Capacete",
-        "categoryKeys": ["acessorios"],
+      "key": "capacete",
+      "name": "Capacete",
+      "description": "Acessorio obrigatorio para venda adicional, assinatura e retirada em loja.",
+      "categoryKeys": ["acessorios"],
       "collections": ["urbano", "performance"],
-        "unit": "unit",
-        "priceCents": 15990,
-        "commercialModes": ["delivery", "pickup"],
-        "variants": [
-          {
-            "sku": "CAPACETE-M",
-            "name": "Capacete M",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 15990,
-            "commercialModes": ["delivery", "pickup"]
-          },
-          {
-            "sku": "CAPACETE-G",
-            "name": "Capacete G",
-            "unit": "unit",
-            "unitQuantity": 1,
-            "priceCents": 15990,
-            "commercialModes": ["delivery", "pickup"]
-          }
-        ]
+      "unit": "unit",
+      "priceCents": 15990,
+      "commercialModes": ["delivery", "pickup"],
+      "media": [
+        {
+          "url": "https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAyL3Jhd3BpeGVsX29mZmljZV8yMl9iaWtpbmdfaGVsbWV0X2lzb2xhdGVkX3doaXRlX2JhY2tncm91bmRfYjkwNzllZTgtOGQzNS00MDY1LTg5YzUtNjM1NmRjNDVlYTJmLXJtMTU2NS0wMWEuanBn.jpg",
+          "alt": "Capacete de bicicleta branco em fundo claro",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "CAPACETE-M",
+          "name": "Capacete M",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 15990,
+          "commercialModes": ["delivery", "pickup"]
+        },
+        {
+          "sku": "CAPACETE-G",
+          "name": "Capacete G",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 15990,
+          "commercialModes": ["delivery", "pickup"]
+        }
+      ]
     },
     {
-        "key": "kit-reparo",
-        "name": "Kit reparo",
-        "categoryKeys": ["acessorios", "servicos"],
+      "key": "kit-reparo",
+      "name": "Kit reparo",
+      "description": "Kit de manutencao avulso que tambem pode compor assinatura de performance.",
+      "categoryKeys": ["acessorios", "servicos"],
       "collections": ["manutencao"],
       "unit": "unit",
       "priceCents": 8990,
-      "commercialModes": ["delivery", "pickup"]
+      "commercialModes": ["delivery", "pickup"],
+      "media": [
+        {
+          "url": "https://xxlgifts.com/src/public/ProductPhotos/photos/P416351B1TXR.jpg",
+          "alt": "Kit de reparo de bicicleta com ferramentas e bomba",
+          "isPrimary": true
+        }
+      ]
     },
     {
-        "key": "revisao-mensal",
-        "name": "Revisao mensal",
-        "categoryKeys": ["servicos"],
+      "key": "revisao-mensal",
+      "name": "Revisao mensal",
+      "description": "Servico recorrente para assinatura ou retirada com agendamento operacional futuro.",
+      "categoryKeys": ["servicos"],
       "collections": ["manutencao", "performance"],
       "unit": "service",
       "priceCents": 12990,
-      "commercialModes": ["subscription", "pickup"]
+      "commercialModes": ["subscription", "pickup"],
+      "media": [
+        {
+          "url": "https://toplist.vn/images/800px/xedapvn-1362006.jpg",
+          "alt": "Oficina fazendo manutencao em bicicleta",
+          "isPrimary": true
+        }
+      ]
     }
   ]
 }

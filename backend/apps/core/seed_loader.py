@@ -19,6 +19,7 @@ from apps.catalog.models import Category, Collection, CommercialMode
 from apps.catalog.services import (
     set_product_availability,
     set_product_collections,
+    set_product_media,
     set_product_price,
     upsert_category,
     upsert_collection,
@@ -241,6 +242,11 @@ class BackendSeedApplier:
                 organization=organization,
                 product=product,
                 collections=product_collections,
+            )
+            set_product_media(
+                organization=organization,
+                product=product,
+                media_items=product_data.get("media", []),
             )
             for commercial_mode_key in product_data.get("commercialModes", []):
                 commercial_mode = commercial_modes_by_key[commercial_mode_key]

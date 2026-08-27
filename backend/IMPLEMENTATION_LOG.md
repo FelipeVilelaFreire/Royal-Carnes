@@ -283,11 +283,13 @@ Decisao estrutural:
 Product -> N Categories via ProductCategory
 Product -> N Collections via CollectionProduct
 Product -> N Variants via ProductVariant
+Product -> N ProductMedia via ProductMedia
 Product -> N Prices via ProductPrice
 ProductPrice pode ter collection opcional e priceType
 Fase 2 nao implementa assinatura
 Fase 3 deve conectar PlanEntitlement com Product/Category/Collection
 Variant representa SKU/tamanho/peso/embalagem/unidade concreta
+ProductMedia do seed usa URL externa apenas como placeholder de demonstracao
 ```
 
 Validacao executada:
