@@ -271,6 +271,40 @@ RoyalPrime/
 
 ## Regras de Promocao
 
+## Kits Como Guia Pratico
+
+`kits/` documenta capacidades reaproveitaveis por arquivo.
+
+Um kit deve dizer para uma IA ou desenvolvedor:
+
+- quais arquivos de backend representam a capacidade;
+- quais arquivos de shared-core representam contratos, API clients, hooks e mappers;
+- quais telas/modais/componentes apenas renderizam;
+- o que pode ser copiado/adaptado;
+- o que e especifico do RoyalPrime;
+- quando a capacidade pode virar ServiceOS.
+
+Regra:
+
+```text
+Kit e mapa de leitura e reaproveitamento.
+Kit nao e codigo abstrato antes de uso real.
+```
+
+Exemplo:
+
+```text
+Novo produto precisa de Auth & Users.
+  -> leia kits/auth-users-kit.md
+  -> abra os arquivos backend indicados
+  -> abra os arquivos shared-core indicados
+  -> abra os arquivos render indicados
+  -> copie/adapte o que e generico
+  -> troque seed/config/copy/tema para a nova empresa
+```
+
+Essa estrategia deixa o RoyalPrime progredir como produto real e, ao mesmo tempo, cria memoria operacional para o ServiceOS.
+
 ### Para shared-core
 
 Promova para shared-core quando:

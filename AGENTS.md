@@ -9,7 +9,8 @@ Antes de implementar, leia nesta ordem:
 3. `backend/README.md`
 4. `backend/ROADMAP.md`
 5. `backend/ARCHITECTURE.md`
-6. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
+6. `kits/README.md`
+7. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
 ## Direcao do Produto
 
@@ -31,6 +32,20 @@ Regra mora no backend.
 Fluxo reutilizavel mora no shared-core do escopo correto.
 Tela apenas apresenta e dispara acao.
 ```
+
+## Kits Reutilizaveis
+
+Use `kits/` como mapa de reuso para futuros produtos.
+
+Um kit nao e uma biblioteca abstrata pronta. Ele e uma ficha para a IA entender:
+
+- qual capacidade existe;
+- quais arquivos representam essa capacidade;
+- o que pode ser copiado/adaptado;
+- o que e especifico do RoyalPrime;
+- qual fase do roadmap amadurece o kit.
+
+Antes de recriar Auth, Users, Orders, Catalog, Scheduling, Payments ou Admin Operations em outro produto, leia o kit correspondente.
 
 ## Escopo de Shared-Core
 
