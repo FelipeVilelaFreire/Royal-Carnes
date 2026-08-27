@@ -30,8 +30,10 @@ Category organiza taxonomia.
 Product e item vendavel.
 Product pode pertencer a varias Collections.
 Product pode pertencer a varias Categories.
+MeasurementUnit define como a variant e medida/vendida.
 Product pode ter varias Variants.
 Product pode ter varias ProductMedia.
+Variant attributes guarda variacoes como tamanho, cor, aro, corte e embalagem.
 ```
 
 Regra de fase:
@@ -48,6 +50,7 @@ Responsabilidades:
 - criar e listar colecoes;
 - criar e listar categorias;
 - criar produtos e variantes;
+- manter unidades de medida genericas do catalogo;
 - vincular produto a uma ou mais categorias;
 - registrar imagem primaria e galeria do produto;
 - manter preco por produto/variante e modo comercial;
@@ -107,7 +110,9 @@ Regras reais:
 - frontend nao calcula preco final;
 - frontend nao decide disponibilidade real;
 - imagem externa em seed e placeholder de demonstracao, nao contrato de producao;
+- `MeasurementUnit` resolve unidade vendavel como kg, g, unit, bag, service;
 - variant representa SKU/tamanho/peso/embalagem/unidade concreta;
+- tamanho 38/39/40, P/M/G, aro 20/26 e cor ficam em `Variant.attributes`;
 - variant nao representa categoria, colecao, campanha ou modo comercial;
 - `CommercialMode` e configuracao/seed, nao enum preso em Royal Carnes;
 - `Royal Delivery` e `Royal Box` sao nomes comerciais de seed/copy.
@@ -209,6 +214,7 @@ Generico:
 - categoria;
 - vinculo N:N produto-categoria;
 - produto;
+- unidade de medida;
 - variante;
 - midia de produto;
 - preco;

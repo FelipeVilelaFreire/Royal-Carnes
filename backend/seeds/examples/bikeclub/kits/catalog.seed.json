@@ -28,6 +28,22 @@
     { "key": "delivery", "name": "Entrega" },
     { "key": "pickup", "name": "Retirada" }
   ],
+  "measurementUnits": [
+    {
+      "key": "unit",
+      "name": "Unidade",
+      "symbol": "un",
+      "kind": "count",
+      "decimalPlaces": 0
+    },
+    {
+      "key": "service",
+      "name": "Servico",
+      "symbol": "servico",
+      "kind": "service",
+      "decimalPlaces": 0
+    }
+  ],
   "products": [
     {
       "key": "bike-urbana",
@@ -51,6 +67,9 @@
           "name": "Bike urbana aro 20",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "wheelSize": "aro 20"
+          },
           "priceCents": 159900,
           "commercialModes": ["subscription", "pickup"]
         },
@@ -59,6 +78,9 @@
           "name": "Bike urbana aro 26",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "wheelSize": "aro 26"
+          },
           "priceCents": 189900,
           "commercialModes": ["subscription", "pickup"]
         }
@@ -86,6 +108,9 @@
           "name": "Capacete M",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "size": "M"
+          },
           "priceCents": 15990,
           "commercialModes": ["delivery", "pickup"]
         },
@@ -94,6 +119,9 @@
           "name": "Capacete G",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "size": "G"
+          },
           "priceCents": 15990,
           "commercialModes": ["delivery", "pickup"]
         }

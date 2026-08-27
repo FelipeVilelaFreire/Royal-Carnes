@@ -86,6 +86,39 @@ class CommercialMode(OrganizationScopedModel, TimestampedModel):
         return self.name
 
 
+class MeasurementUnit(OrganizationScopedModel, TimestampedModel):
+    class Kind(models.TextChoices):
+        WEIGHT = "weight", "Weight"
+        COUNT = "count", "Count"
+        PACKAGE = "package", "Package"
+        VOLUME = "volume", "Volume"
+        SERVICE = "service", "Service"
+
+    key = models.SlugField(max_length=50)
+    name = models.CharField(max_length=120)
+    symbol = models.CharField(max_length=24, blank=True)
+    kind = models.CharField(max_length=24, choices=Kind.choices)
+    decimal_places = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organization", "key"],
+                name="catalog_measurement_unit_unique_key",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["organization", "kind"]),
+            models.Index(fields=["organization", "is_active"]),
+        ]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Product(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
     class Status(models.TextChoices):
         ACTIVE = "active", "Active"
@@ -173,8 +206,16 @@ class ProductVariant(OrganizationScopedModel, TimestampedModel, SoftDeleteModel)
     sku = models.CharField(max_length=80, blank=True)
     name = models.CharField(max_length=140)
     unit = models.CharField(max_length=32, default="unit")
+    measurement_unit = models.ForeignKey(
+        MeasurementUnit,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="variants",
+    )
     unit_quantity = models.DecimalField(max_digits=10, decimal_places=3, default=1)
     weight_grams = models.PositiveIntegerField(null=True, blank=True)
+    attributes = models.JSONField(default=dict, blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:

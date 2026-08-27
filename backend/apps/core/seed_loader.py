@@ -15,7 +15,7 @@ from apps.accounts.services import (
 )
 from apps.customers.services import upsert_customer
 from apps.organizations.models import Organization
-from apps.catalog.models import Category, Collection, CommercialMode
+from apps.catalog.models import Category, Collection, CommercialMode, MeasurementUnit
 from apps.catalog.services import (
     set_product_availability,
     set_product_collections,
@@ -24,6 +24,7 @@ from apps.catalog.services import (
     upsert_category,
     upsert_collection,
     upsert_commercial_mode,
+    upsert_measurement_unit,
     upsert_product,
     set_product_categories,
     upsert_product_variant,
@@ -193,6 +194,7 @@ class BackendSeedApplier:
         collections_by_key: dict[str, Collection] = {}
         categories_by_key: dict[str, Category] = {}
         commercial_modes_by_key: dict[str, CommercialMode] = {}
+        measurement_units_by_key: dict[str, MeasurementUnit] = {}
 
         for collection_data in data.get("collections", []):
             collections_by_key[collection_data["key"]] = upsert_collection(
@@ -214,6 +216,16 @@ class BackendSeedApplier:
                 organization=organization,
                 key=commercial_mode_data["key"],
                 name=commercial_mode_data["name"],
+            )
+
+        for unit_data in data.get("measurementUnits", []):
+            measurement_units_by_key[unit_data["key"]] = upsert_measurement_unit(
+                organization=organization,
+                key=unit_data["key"],
+                name=unit_data["name"],
+                kind=unit_data["kind"],
+                symbol=unit_data.get("symbol", ""),
+                decimal_places=unit_data.get("decimalPlaces", 0),
             )
 
         for product_data in data.get("products", []):
@@ -263,14 +275,20 @@ class BackendSeedApplier:
                     commercial_mode=commercial_mode,
                 )
             for variant_data in product_data.get("variants", []):
+                variant_unit_key = variant_data.get(
+                    "unitKey",
+                    variant_data.get("unit", product.unit),
+                )
                 variant = upsert_product_variant(
                     organization=organization,
                     product=product,
                     sku=variant_data.get("sku", ""),
                     name=variant_data["name"],
-                    unit=variant_data.get("unit", product.unit),
+                    unit=variant_unit_key,
+                    measurement_unit=measurement_units_by_key.get(variant_unit_key),
                     unit_quantity=variant_data.get("unitQuantity", 1),
                     weight_grams=variant_data.get("weightGrams"),
+                    attributes=variant_data.get("attributes", {}),
                     is_active=variant_data.get("isActive", True),
                 )
                 variant_price_cents = variant_data.get("priceCents")

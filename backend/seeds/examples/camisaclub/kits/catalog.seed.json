@@ -28,6 +28,15 @@
     { "key": "delivery", "name": "Entrega" },
     { "key": "box", "name": "Box mensal" }
   ],
+  "measurementUnits": [
+    {
+      "key": "unit",
+      "name": "Unidade",
+      "symbol": "un",
+      "kind": "count",
+      "decimalPlaces": 0
+    }
+  ],
   "products": [
     {
       "key": "camiseta-branca",
@@ -51,6 +60,10 @@
           "name": "Camiseta branca P",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "size": "P",
+            "color": "branca"
+          },
           "priceCents": 7990,
           "commercialModes": ["subscription", "delivery", "box"]
         },
@@ -59,6 +72,10 @@
           "name": "Camiseta branca M",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "size": "M",
+            "color": "branca"
+          },
           "priceCents": 7990,
           "commercialModes": ["subscription", "delivery", "box"]
         }
@@ -86,6 +103,10 @@
           "name": "Camiseta street M",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "size": "M",
+            "style": "streetwear"
+          },
           "priceCents": 10990,
           "commercialModes": ["subscription", "delivery", "box"]
         },
@@ -94,6 +115,10 @@
           "name": "Camiseta street G",
           "unit": "unit",
           "unitQuantity": 1,
+          "attributes": {
+            "size": "G",
+            "style": "streetwear"
+          },
           "priceCents": 10990,
           "commercialModes": ["subscription", "delivery", "box"]
         }

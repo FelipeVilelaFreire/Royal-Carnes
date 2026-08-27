@@ -1,4 +1,12 @@
-from .models import Category, Collection, CommercialMode, Product
+from django.db.models import Prefetch
+
+from .models import Category, Collection, CommercialMode, Product, ProductVariant
+
+
+PRODUCT_VARIANT_PREFETCH = Prefetch(
+    "variants",
+    queryset=ProductVariant.objects.select_related("measurement_unit"),
+)
 
 
 def active_collections_for_organization(organization):
@@ -26,7 +34,7 @@ def public_products_for_organization(organization):
             "prices__collection",
             "availability__commercial_mode",
             "media",
-            "variants",
+            PRODUCT_VARIANT_PREFETCH,
         )
     )
 
@@ -41,7 +49,7 @@ def admin_products_for_organization(organization):
             "prices__collection",
             "availability__commercial_mode",
             "media",
-            "variants",
+            PRODUCT_VARIANT_PREFETCH,
         )
     )
 
@@ -55,7 +63,7 @@ def product_detail(product_id, organization):
             "prices__collection",
             "availability__commercial_mode",
             "media",
-            "variants",
+            PRODUCT_VARIANT_PREFETCH,
         )
         .get(id=product_id, organization=organization)
     )

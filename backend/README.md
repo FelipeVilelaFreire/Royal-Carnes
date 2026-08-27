@@ -182,6 +182,7 @@ CollectionProduct
 Category
 ProductCategory
 Product
+MeasurementUnit
 ProductVariant
 ProductMedia
 ProductPrice
@@ -198,6 +199,10 @@ Decisao estrutural:
 Product pode estar em varias Categories.
 Product pode estar em varias Collections.
 Product pode ter varias Variants.
+ProductVariant aponta opcionalmente para MeasurementUnit.
+MeasurementUnit define como a variant e medida/vendida: kg, g, unit, bag,
+service.
+Tamanho 38/39/40, P/M/G, aro 20/26, cor e corte ficam em attributes da variant.
 Product pode ter varias ProductMedia para imagem primaria e galeria.
 Product pode ter varios Prices por commercial mode, collection e price_type.
 Variant representa SKU/tamanho/peso/embalagem/unidade concreta.

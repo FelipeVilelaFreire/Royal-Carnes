@@ -474,8 +474,13 @@ Request:
       "sku": "MAMINHA-1KG",
       "name": "Maminha 1kg",
       "unit": "kg",
+      "unit_key": "kg",
       "unit_quantity": 1,
       "weight_grams": 1000,
+      "attributes": {
+        "cut": "maminha",
+        "portion": "1kg"
+      },
       "price_cents": 5490,
       "commercial_mode_keys": ["delivery"]
     }
@@ -498,6 +503,25 @@ Response inclui:
   ],
   "variants": [],
   "prices": []
+}
+```
+
+Variant response inclui:
+
+```json
+{
+  "sku": "MAMINHA-1KG",
+  "unit": "kg",
+  "unit_key": "kg",
+  "unit_name": "Quilograma",
+  "unit_kind": "weight",
+  "unit_symbol": "kg",
+  "unit_quantity": "1.000",
+  "weight_grams": 1000,
+  "attributes": {
+    "cut": "maminha",
+    "portion": "1kg"
+  }
 }
 ```
 

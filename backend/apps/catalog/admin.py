@@ -6,6 +6,7 @@ from .models import (
     Collection,
     CollectionProduct,
     CommercialMode,
+    MeasurementUnit,
     Product,
     ProductCategory,
     ProductMedia,
@@ -33,6 +34,13 @@ class CommercialModeAdmin(admin.ModelAdmin):
     list_display = ("name", "key", "organization", "is_active", "sort_order")
     list_filter = ("organization", "is_active")
     search_fields = ("name", "key")
+
+
+@admin.register(MeasurementUnit)
+class MeasurementUnitAdmin(admin.ModelAdmin):
+    list_display = ("name", "key", "symbol", "kind", "organization", "is_active")
+    list_filter = ("organization", "kind", "is_active")
+    search_fields = ("name", "key", "symbol")
 
 
 class ProductPriceInline(admin.TabularInline):

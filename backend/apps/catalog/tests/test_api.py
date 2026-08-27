@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from apps.catalog.models import Collection, Product, ProductMedia, ProductVariant
+from apps.catalog.models import Collection, MeasurementUnit, Product, ProductMedia, ProductVariant
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
 
 
@@ -27,6 +27,7 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(Collection.objects.count(), 5)
         self.assertEqual(Product.objects.count(), 14)
         self.assertEqual(ProductMedia.objects.count(), 14)
+        self.assertEqual(MeasurementUnit.objects.count(), 5)
         self.assertGreaterEqual(ProductVariant.objects.count(), 27)
         self.assertTrue(
             Product.objects.filter(
@@ -55,6 +56,8 @@ class CatalogApiTests(APITestCase):
         self.assertGreaterEqual(len(products_response.data), 14)
         self.assertTrue(products_response.data[0]["primary_media_url"])
         self.assertGreaterEqual(len(products_response.data[0]["media"]), 1)
+        self.assertIn("unit_key", products_response.data[0]["variants"][0])
+        self.assertIn("attributes", products_response.data[0]["variants"][0])
 
     def test_admin_can_list_and_create_product(self):
         self.authenticate()
@@ -103,8 +106,10 @@ class CatalogApiTests(APITestCase):
                         "sku": "CHORIZO-1KG",
                         "name": "Bife de chorizo 1kg",
                         "unit": "kg",
+                        "unit_key": "kg",
                         "unit_quantity": 1,
                         "weight_grams": 1000,
+                        "attributes": {"cut": "chorizo"},
                         "price_cents": 12990,
                         "commercial_mode_keys": ["delivery"],
                     }
@@ -116,6 +121,8 @@ class CatalogApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data["variants"][0]["sku"], "CHORIZO-1KG")
+        self.assertEqual(response.data["variants"][0]["unit_key"], "kg")
+        self.assertEqual(response.data["variants"][0]["attributes"]["cut"], "chorizo")
         self.assertEqual(response.data["prices"][0]["variant_sku"], "CHORIZO-1KG")
 
     def test_customer_cannot_access_admin_catalog(self):

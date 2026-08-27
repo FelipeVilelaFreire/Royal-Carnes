@@ -282,6 +282,7 @@ Decisao estrutural:
 ```text
 Product -> N Categories via ProductCategory
 Product -> N Collections via CollectionProduct
+Catalog -> N MeasurementUnit por organization
 Product -> N Variants via ProductVariant
 Product -> N ProductMedia via ProductMedia
 Product -> N Prices via ProductPrice
@@ -289,6 +290,8 @@ ProductPrice pode ter collection opcional e priceType
 Fase 2 nao implementa assinatura
 Fase 3 deve conectar PlanEntitlement com Product/Category/Collection
 Variant representa SKU/tamanho/peso/embalagem/unidade concreta
+MeasurementUnit define kg/g/unit/bag/service; tamanho/cor/aro/corte ficam em
+Variant.attributes
 ProductMedia do seed usa URL externa apenas como placeholder de demonstracao
 Seed principal RoyalPrime cobre 14 produtos com variants: bovinos, aves,
 suinos, linguicas e apoio de churrasco

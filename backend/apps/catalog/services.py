@@ -7,6 +7,7 @@ from .models import (
     Collection,
     CollectionProduct,
     CommercialMode,
+    MeasurementUnit,
     Product,
     ProductCategory,
     ProductMedia,
@@ -53,6 +54,30 @@ def upsert_commercial_mode(*, organization, key: str, name: str) -> CommercialMo
         },
     )
     return commercial_mode
+
+
+@transaction.atomic
+def upsert_measurement_unit(
+    *,
+    organization,
+    key: str,
+    name: str,
+    kind: str,
+    symbol: str = "",
+    decimal_places: int = 0,
+) -> MeasurementUnit:
+    measurement_unit, _created = MeasurementUnit.objects.update_or_create(
+        organization=organization,
+        key=key,
+        defaults={
+            "name": name,
+            "kind": kind,
+            "symbol": symbol,
+            "decimal_places": decimal_places,
+            "is_active": True,
+        },
+    )
+    return measurement_unit
 
 
 @transaction.atomic
@@ -163,8 +188,10 @@ def upsert_product_variant(
     sku: str = "",
     name: str,
     unit: str = "unit",
+    measurement_unit: MeasurementUnit | None = None,
     unit_quantity=1,
     weight_grams: int | None = None,
+    attributes: dict | None = None,
     is_active: bool = True,
 ) -> ProductVariant:
     lookup = {
@@ -183,8 +210,10 @@ def upsert_product_variant(
         defaults={
             "name": name,
             "unit": unit,
+            "measurement_unit": measurement_unit,
             "unit_quantity": unit_quantity,
             "weight_grams": weight_grams,
+            "attributes": attributes or {},
             "is_active": is_active,
         },
     )
@@ -250,8 +279,13 @@ def create_admin_product(
                 sku=variant_data.get("sku", ""),
                 name=variant_data["name"],
                 unit=variant_data.get("unit", unit),
+                measurement_unit=MeasurementUnit.objects.filter(
+                    organization=organization,
+                    key=variant_data.get("unit_key", variant_data.get("unit", unit)),
+                ).first(),
                 unit_quantity=variant_data.get("unit_quantity", 1),
                 weight_grams=variant_data.get("weight_grams"),
+                attributes=variant_data.get("attributes", {}),
                 is_active=variant_data.get("is_active", True),
             )
             variant_price_cents = variant_data.get("price_cents")

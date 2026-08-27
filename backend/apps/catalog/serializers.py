@@ -4,6 +4,7 @@ from .models import (
     Category,
     Collection,
     CommercialMode,
+    MeasurementUnit,
     Product,
     ProductMedia,
     ProductPrice,
@@ -21,6 +22,21 @@ class CommercialModeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommercialMode
         fields = ("id", "key", "name", "is_active", "sort_order")
+
+
+class MeasurementUnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeasurementUnit
+        fields = (
+            "id",
+            "key",
+            "name",
+            "symbol",
+            "kind",
+            "decimal_places",
+            "is_active",
+            "sort_order",
+        )
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -60,6 +76,15 @@ class ProductPriceSerializer(serializers.ModelSerializer):
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
+    unit_key = serializers.CharField(source="measurement_unit.key", read_only=True, allow_null=True)
+    unit_name = serializers.CharField(source="measurement_unit.name", read_only=True, allow_null=True)
+    unit_kind = serializers.CharField(source="measurement_unit.kind", read_only=True, allow_null=True)
+    unit_symbol = serializers.CharField(
+        source="measurement_unit.symbol",
+        read_only=True,
+        allow_null=True,
+    )
+
     class Meta:
         model = ProductVariant
         fields = (
@@ -67,8 +92,13 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "sku",
             "name",
             "unit",
+            "unit_key",
+            "unit_name",
+            "unit_kind",
+            "unit_symbol",
             "unit_quantity",
             "weight_grams",
+            "attributes",
             "is_active",
         )
 

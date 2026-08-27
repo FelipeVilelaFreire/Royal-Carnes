@@ -76,6 +76,7 @@ catalog
   Category
   ProductCategory
   Product
+  MeasurementUnit
   ProductVariant
   ProductMedia
   ProductPrice
@@ -558,6 +559,45 @@ Produto: Bike X
   -> Adulto
 ```
 
+### MeasurementUnit
+
+Unidade vendavel usada por ProductVariant.
+
+Campos:
+
+```text
+id
+organizationId
+key
+name
+symbol
+kind
+decimalPlaces
+isActive
+sortOrder
+```
+
+Kinds iniciais:
+
+```text
+weight
+count
+package
+volume
+service
+```
+
+Regra:
+
+```text
+MeasurementUnit define como a variant e medida/vendida.
+kg/g medem peso.
+unit mede quantidade.
+bag mede embalagem.
+service mede servico.
+tamanho 38/39/40, P/M/G, aro 20/26 e cor ficam em attributes da variant.
+```
+
 ### ProductVariant
 
 Varia peso, embalagem, tamanho, SKU.
@@ -571,8 +611,10 @@ productId
 sku
 name
 unit
+measurementUnitId opcional
 unitQuantity
 weightGrams opcional
+attributes
 isActive
 ```
 
@@ -581,6 +623,7 @@ Regra:
 ```text
 Variant representa forma concreta vendavel do Product.
 Variant nao representa categoria, colecao, campanha ou modo comercial.
+Variant attributes descreve variacoes comerciais sem virar unidade de medida.
 ```
 
 Exemplos:
