@@ -1,58 +1,109 @@
-# 👑 Royal Carnes Prime
+# RoyalPrime
 
-Boutique autônoma de carnes nobres e sistema de assinatura gourmet com arquitetura desacoplada e suporte ao ServiceOS Standard 2026.
+RoyalPrime e o produto-foco para ecommerce, assinatura, pedidos, entrega e admin operacional.
 
----
+O ServiceOS continua como referencia de organizacao e futura promocao de capacidades reutilizaveis, mas a execucao atual e RoyalPrime-first.
 
-## 🗺️ Arquitetura de Navegação & Roteamento Ativo
+## Leitura Inicial
+
+Antes de implementar, leia nesta ordem:
+
+1. `AGENTS.md`
+2. `ROYALPRIME_CODEX_RULES.md`
+3. `ROYALPRIME_ARCHITECTURE_CONTRACT.md`
+4. `backend/README.md`
+5. `backend/ROADMAP.md`
+6. `backend/ARCHITECTURE.md`
+7. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
+
+## Regra Central
 
 ```text
-                         ROYAL CARNES (Marca -> Home /hero)
-                              │
-           ┌──────────────────┼──────────────────┐
-           │                  │                  │
-         HOME               CORTES          ROYAL BOX (Assinatura vs Avulso)
-      (Descoberta)        (Catálogo)             │
-                                          MINHA CONTA (Perfil / Felipe)
-                                                 │
-                                  ┌──────────────┼─────────────┐
-                                  │              │             │
-                              Assinatura      Histórico     Pedidos
+Regra mora no backend.
+Fluxo reutilizavel mora no shared-core do escopo correto.
+Tela apenas apresenta e dispara acao.
 ```
 
-### 🌐 As 3 Páginas Mestre do Cliente:
+## Direcao Arquitetural
 
-1. **`http://localhost:3000/hero` (ou `/`)**:
-   - **Marketplace de Descoberta / Landing Page**: Banner Hero imersivo com fotografia gourmet, vinheta de alto contraste, selos de rastreabilidade e 4 seções em múltiplos estilos de cards (*Ofertas*, *Kits Curados*, *Wagyu A5 Raro*, *Acessórios & Harmonização*).
+O backend deve nascer tenant-ready, com `Organization` e `organizationId` desde o MER.
 
-2. **`http://localhost:3000/cortes`**:
-   - **Catálogo Gourmet de Cortes Nobres**: Pílulas de categorias arredondadas sem barra de rolagem lateral (`flex-wrap`), botão de carregamento dinâmico *"Carregar mais cortes"* e filtros de ordenação.
+RoyalPrime/Royal Carnes e a primeira organizacao, nao o unico formato possivel do sistema.
 
-3. **`http://localhost:3000/minha-caixa`**:
-   - **Royal Box**: Seletor em pílula para alternar entre **Assinatura Mensal** (R$ 875/mês com timeline de entrega de 5 passos e resumo na direita) e **Caixa Avulsa** (montagem pontual sem fidelidade).
+Exemplo de objetivo futuro:
 
----
+```text
+Hoje:
+  Organization = royalprime
+  Produtos = carnes, carvao, temperos, utensilios
 
-## 🎨 Design System (`src/design-system/`)
+Amanha:
+  Organization = bikeclub
+  Produtos = bicicletas, capacetes, acessorios, manutencao
+```
 
-- **`Header.tsx` (`PortalHeader`)**: Header Único e Universal com efeito de recolhimento no scroll (*Shrink Header*), alternador de tema persistente no `localStorage`, alinhamento óptico em baseline e navegação simplificada (**Cortes** | **Royal Box**).
-- **`Footer.tsx`**: Rodapé corporativo gourmet com ano **2026**, 4 colunas institucionais, selo de atendimento Concierge e margem de separação superior de `112px`.
-- **`Button.tsx`**, **`Card.tsx`**, **`Input.tsx`**, **`Badge.tsx`**, **`Icons.tsx`**: Componentes primitivos sem emojis soltos em estrita conformidade com os Design Tokens da Foundation (`themeColorsDefault`).
+O codigo core deve continuar generico. O que muda por empresa deve vir de seed/config, tema, copy, imagens, dominio e variaveis de ambiente.
 
----
+## Estrategia de Branches
 
-## 🚀 Comandos de Build & Execução
+```text
+main
+  -> MVP atual estavel, ainda majoritariamente mockado e apresentavel
+
+feature/backend-foundation
+  -> branch de trabalho para MER, backend novo, API, shared-core/hooks e conexao real
+```
+
+A partir da virada de backend, o desenvolvimento de backend real deve acontecer primeiro em `feature/backend-foundation`.
+
+Na branch de feature, os mocks podem continuar como fallback/dev enquanto os endpoints nascem. A substituicao deve ser gradual:
+
+```text
+mock
+  -> contrato
+  -> api client
+  -> hook
+  -> endpoint real
+  -> screen render-only
+```
+
+## Tree Principal
+
+```text
+backend/
+  README.md
+  ROADMAP.md
+  ARCHITECTURE.md
+
+frontend/
+  foundation/
+  shared-core/
+  client/
+    shared-core/
+    web/
+    mobile/
+  admin/
+    shared-core/
+    web/
+```
+
+## Comandos
 
 ```bash
-# Executar a aplicação Web Cliente (Next.js 16)
 npm run dev:client
-
-# Executar a aplicação Web Admin (Vite + React)
 npm run dev:admin
-
-# Build de Produção do Cliente
 npm run build:client
-
-# Build de Produção do Admin
 npm run build:admin
 ```
+
+## Validacao
+
+- Alterou `frontend/client/web`: rodar build do client.
+- Alterou `frontend/admin/web`: rodar build do admin.
+- Alterou apenas documentacao: nao precisa build.
+
+## Git
+
+Preserve o worktree.
+
+Nao rode reset, checkout, clean, commit ou push sem autorizacao explicita.

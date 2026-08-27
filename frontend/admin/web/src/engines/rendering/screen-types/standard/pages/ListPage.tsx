@@ -6,7 +6,7 @@ import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { AvatarCell } from "@foundation/ui/Avatar";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
-import { EditIcon, StarIcon } from "@foundation/ui/Icon/AppIcons";
+import { EditIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface ListPageProps {
   entityConfig: any;
@@ -40,6 +40,7 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
   const columns = config.columns || [];
   const rowsSource = config.rows || [];
   const filters = config.filters || [];
+  const showActions = Boolean(config.showActions);
 
   const [search, setSearch] = useState("");
   const [filterValues, setFilterValues] = useState<Record<string, string>>(() =>
@@ -155,15 +156,17 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                         {t(col.labelKey, col.label)}
                       </th>
                     ))}
-                    <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                      {adminPtBR.common.actions}
-                    </th>
+                    {showActions && (
+                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                        {adminPtBR.common.actions}
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRows.length === 0 ? (
                     <tr>
-                      <td colSpan={columns.length + 1} style={{ padding: "40px", textAlign: "center", color: textMuted, fontSize: "14px" }}>
+                      <td colSpan={columns.length + (showActions ? 1 : 0)} style={{ padding: "40px", textAlign: "center", color: textMuted, fontSize: "14px" }}>
                         {adminPtBR.common.emptyState}
                       </td>
                     </tr>
@@ -174,52 +177,31 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                         style={{ borderBottom: `1px solid ${border}`, cursor: "pointer", transition: "background 0.2s ease" }}
                         onClick={() => onSelectRow && onSelectRow(row)}
                       >
-                        {columns.map((col: any, colIdx: number) => (
+                        {columns.map((col: any) => (
                           <td key={col.key} style={{ padding: "16px", color: text, fontSize: "14px" }}>
-                            {colIdx === 0 ? (
-                              config.screenKey === "produtos" ? (
-                                <div style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
-                                  {row.image && (
-                                    <img
-                                      src={row.image}
-                                      alt={row.name}
-                                      style={{
-                                        width: "40px",
-                                        height: "40px",
-                                        borderRadius: "10px",
-                                        objectFit: "cover",
-                                        border: `1px solid ${border}`,
-                                        flexShrink: 0
-                                      }}
-                                    />
-                                  )}
-                                  <span style={{ fontWeight: "700", color: text }}>{row.name}</span>
-                                </div>
-                              ) : config.screenKey === "assinaturas" ? (
-                                <div style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
-                                  <div
+                            {col.showAvatar ? (
+                              <AvatarCell
+                                name={String(row[col.key] || row.name || row.customerName || "")}
+                                image={row.image}
+                              />
+                            ) : col.showMedia ? (
+                              <div style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
+                                {row.image && (
+                                  <img
+                                    src={row.image}
+                                    alt={String(row[col.key] || "")}
                                     style={{
                                       width: "40px",
                                       height: "40px",
-                                      borderRadius: "12px",
-                                      background: "rgba(255, 198, 101, 0.12)",
+                                      borderRadius: "10px",
+                                      objectFit: "cover",
                                       border: `1px solid ${border}`,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
                                       flexShrink: 0
                                     }}
-                                  >
-                                    <StarIcon size={18} color={primary} />
-                                  </div>
-                                  <span style={{ fontWeight: "700", color: text }}>{row.name}</span>
-                                </div>
-                              ) : (
-                                <AvatarCell
-                                  name={String(row[col.key] || "")}
-                                  image={row.image}
-                                />
-                              )
+                                  />
+                                )}
+                                <span style={{ fontWeight: "700", color: text }}>{String(row[col.key] || "")}</span>
+                              </div>
                             ) : col.render ? (
                               col.render(row)
                             ) : (
@@ -227,11 +209,13 @@ export const ListPage: React.FC<ListPageProps> = ({ entityConfig, onSelectRow, o
                             )}
                           </td>
                         ))}
-                        <td style={{ padding: "16px" }}>
-                          <span style={{ color: primary, fontSize: "13px", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                            <EditIcon size={14} color={primary} /> {adminPtBR.common.edit}
-                          </span>
-                        </td>
+                        {showActions && (
+                          <td style={{ padding: "16px" }}>
+                            <span style={{ color: primary, fontSize: "13px", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                              <EditIcon size={14} color={primary} /> {adminPtBR.common.edit}
+                            </span>
+                          </td>
+                        )}
                       </tr>
                     ))
                   )}

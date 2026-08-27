@@ -25,6 +25,11 @@ export interface ProductItemCardProps {
   showBadge?: boolean;
   showFavorite?: boolean;
   showOriginalPrice?: boolean;
+  metaMode?: "category-detail" | "category-only" | "detail-only";
+  priceMode?: "unit" | "from" | "estimate" | "included" | "hidden";
+  actionMode?: "none" | "select" | "add" | "quantity" | "view-details" | "configure";
+  favoriteMode?: "none" | "toggle";
+  quantityMode?: "none" | "stepper" | "readonly";
   selected?: boolean;
   quantity?: number;
   quantitySuffix?: string;
@@ -79,6 +84,11 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   showBadge = true,
   showFavorite = true,
   showOriginalPrice = true,
+  metaMode = "category-detail",
+  priceMode = "unit",
+  actionMode = "add",
+  favoriteMode = "toggle",
+  quantityMode = "stepper",
   selected = false,
   quantity = 0,
   quantitySuffix,
@@ -98,14 +108,19 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   isDark,
   tokens
 }) => {
-  const hasPrice = showPrice && typeof price === "number";
-  const hasMeta = showMeta && (showCategory || (showDetail && detailLabel));
+  const hasPrice = showPrice && priceMode !== "hidden" && priceMode !== "included" && typeof price === "number";
+  const shouldShowCategory = showCategory && metaMode !== "detail-only";
+  const shouldShowDetail = showDetail && metaMode !== "category-only";
+  const hasMeta = showMeta && (shouldShowCategory || (shouldShowDetail && detailLabel));
   const metaLabel = [
-    showCategory ? categoryLabel : null,
-    showDetail && detailLabel ? detailLabel : null
+    shouldShowCategory ? categoryLabel : null,
+    shouldShowDetail && detailLabel ? detailLabel : null
   ].filter(Boolean).join(" - ");
   const badgeBg = badgeTone === "limited" ? (isDark ? "#1A1A1A" : "#2E2520") : tokens.copper;
   const hasQuantity = quantity > 0;
+  const canToggleFavorite = showFavorite && favoriteMode !== "none" && onFavoriteToggle;
+  const canShowAction = showAction && actionMode !== "none" && Boolean(actionLabel);
+  const canUseStepper = canShowAction && quantityMode === "stepper" && actionMode !== "view-details" && actionMode !== "configure";
   const actionText = actionDisabled ? actionDisabledLabel || actionLabel : selected ? selectedActionLabel || actionLabel : actionLabel;
   const isCardDisabled = actionDisabled && !selected;
   const disabledSurface = isDark ? "rgba(255, 255, 255, 0.012)" : "rgba(246, 242, 236, 0.72)";
@@ -195,7 +210,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
               </span>
             ) : null}
 
-            {showFavorite && onFavoriteToggle ? (
+            {canToggleFavorite ? (
               <button
                 type="button"
                 onClick={onFavoriteToggle}
@@ -286,7 +301,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
         </div>
       ) : null}
 
-      {showFavorite && onFavoriteToggle && !showImage ? (
+      {canToggleFavorite && !showImage ? (
         <div style={{ padding: "0 16px 12px" }}>
           <button
             type="button"
@@ -309,7 +324,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
         </div>
       ) : null}
 
-      {(hasPrice || showAction) ? (
+      {(hasPrice || canShowAction) ? (
         <div
           style={{
             padding: "0 16px 16px",
@@ -346,8 +361,8 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
             <span />
           )}
 
-          {showAction && actionLabel ? (
-            selected && quantity > 0 ? (
+          {canShowAction ? (
+            selected && quantity > 0 && canUseStepper ? (
               <div
                 style={{
                   width: "100%",
@@ -399,6 +414,23 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                 >
                   +
                 </button>
+              </div>
+            ) : quantityMode === "readonly" && quantity > 0 ? (
+              <div
+                style={{
+                  width: "100%",
+                  minHeight: "36px",
+                  border: `1px solid ${tokens.border}`,
+                  borderRadius: "4px",
+                  display: "grid",
+                  placeItems: "center",
+                  color: tokens.text,
+                  background: isDark ? "rgba(255, 255, 255, 0.035)" : "rgba(255, 255, 255, 0.62)",
+                  fontWeight: 900,
+                  fontSize: "13px"
+                }}
+              >
+                {quantity}
               </div>
             ) : (
               <Button

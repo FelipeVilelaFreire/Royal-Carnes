@@ -7,7 +7,7 @@ export const produtosConfig = {
   entityName: "Produto",
   actionLabelKey: "produtos.ctaAdd",
   columns: [
-    { key: "name", labelKey: "produtos.tableHeaders.name" },
+    { key: "name", labelKey: "produtos.tableHeaders.name", showMedia: true },
     { key: "line", labelKey: "Linha / Categoria" },
     { key: "weight", labelKey: "Peso / Unidade" },
     { key: "priceFormatted", labelKey: "produtos.tableHeaders.price" },

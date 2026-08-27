@@ -1,48 +1,14 @@
 import type { ProductItemCardProps } from "./ProductItemCard";
 
-type ProductItemCardOptionKey =
-  | "badge"
-  | "badgeTone"
-  | "selected"
-  | "quantity"
-  | "favorite"
-  | "showPrice"
-  | "showAction"
-  | "showImage"
-  | "showName"
-  | "showDescription"
-  | "showMeta"
-  | "showBadge"
-  | "showFavorite"
-  | "showOriginalPrice"
-  | "originalPrice";
-
-type ProductItemCardExample = {
-  id:
-    | "catalog-default"
-    | "checkout-selected"
-    | "favorite-disabled"
-    | "favorite-enabled"
-    | "price-hidden"
-    | "discount-reference";
-  productIndex: number;
-  options: Pick<ProductItemCardProps, ProductItemCardOptionKey>;
-  handlers: {
-    favoriteToggle: boolean;
-    action: boolean;
-    decrease: boolean;
-  };
-};
-
 type ProductItemCardOptionDefinition = {
-  key: keyof ProductItemCardProps;
+  key: string;
   control: "boolean" | "number" | "text" | "select";
   values?: string[];
   defaultValue?: string | number | boolean;
   owner: "product-component" | "consumer-state" | "foundation";
 };
 
-type ProductItemCardComposition = Pick<ProductItemCardProps,
+type ProductItemCardComposition = Partial<Pick<ProductItemCardProps,
   | "showImage"
   | "showName"
   | "showDescription"
@@ -52,7 +18,26 @@ type ProductItemCardComposition = Pick<ProductItemCardProps,
   | "showPrice"
   | "showOriginalPrice"
   | "showAction"
->;
+  | "metaMode"
+  | "priceMode"
+  | "actionMode"
+  | "favoriteMode"
+  | "quantityMode"
+>>;
+
+type ProductItemCardExample = {
+  id: string;
+  productIndex: number;
+  options: Partial<ProductItemCardProps> & {
+    badgeMode?: "none" | "component" | "category" | "offer" | "stock" | "custom";
+    selectionMode?: "none" | "single" | "multi";
+  };
+  handlers: {
+    favoriteToggle: boolean;
+    action: boolean;
+    decrease: boolean;
+  };
+};
 
 export const productItemCardManifest = {
   id: "product-item-card",
@@ -68,7 +53,7 @@ export const productItemCardManifest = {
       "data contract",
       "composition slots",
       "commerce capabilities",
-      "example states",
+      "mode presets",
       "enabled interactions"
     ],
     doesNotOwn: [
@@ -97,55 +82,51 @@ export const productItemCardManifest = {
     },
     body: {
       slots: ["name", "description", "categoryLabel", "detailLabel"],
-      visibleProps: ["showName", "showDescription", "showMeta"]
+      visibleProps: ["showName", "showDescription", "showMeta"],
+      modes: ["category-detail", "category-only", "detail-only"]
     },
     commerce: {
       slots: ["price", "originalPrice", "priceLabel"],
-      visibleProps: ["showPrice", "showOriginalPrice"]
+      visibleProps: ["showPrice", "showOriginalPrice"],
+      modes: ["unit", "from", "estimate", "included", "hidden"]
     },
     actions: {
       slots: ["primaryAction", "quantityStepper"],
       visibleProps: ["showAction"],
-      rule: "Quantity stepper appears when selected and quantity is greater than zero."
+      modes: ["none", "select", "add", "quantity", "view-details", "configure"],
+      rule: "The consumer flow owns state and handlers; the product card only exposes available slots."
     }
   },
   optionGroups: [
     {
       id: "composition",
       options: [
+        { key: "showImage", control: "boolean", defaultValue: true, owner: "product-component" },
+        { key: "showName", control: "boolean", defaultValue: true, owner: "product-component" },
+        { key: "showDescription", control: "boolean", defaultValue: true, owner: "product-component" },
+        { key: "showMeta", control: "boolean", defaultValue: true, owner: "product-component" },
+        { key: "showBadge", control: "boolean", defaultValue: false, owner: "product-component" },
+        { key: "showFavorite", control: "boolean", defaultValue: true, owner: "product-component" },
+        { key: "showPrice", control: "boolean", defaultValue: true, owner: "product-component" },
+        { key: "showOriginalPrice", control: "boolean", defaultValue: false, owner: "product-component" },
+        { key: "showAction", control: "boolean", defaultValue: true, owner: "product-component" }
+      ]
+    },
+    {
+      id: "presentationModes",
+      options: [
         {
-          key: "showImage",
-          control: "boolean",
-          defaultValue: true,
+          key: "metaMode",
+          control: "select",
+          values: ["category-detail", "category-only", "detail-only"],
+          defaultValue: "category-detail",
           owner: "product-component"
         },
         {
-          key: "showName",
-          control: "boolean",
-          defaultValue: true,
-          owner: "product-component"
-        },
-        {
-          key: "showDescription",
-          control: "boolean",
-          defaultValue: true,
-          owner: "product-component"
-        },
-        {
-          key: "showMeta",
-          control: "boolean",
-          defaultValue: true,
-          owner: "product-component"
-        },
-        {
-          key: "showBadge",
-          control: "boolean",
-          defaultValue: true,
-          owner: "product-component"
-        },
-        {
-          key: "badge",
-          control: "text",
+          key: "badgeMode",
+          control: "select",
+          values: ["none", "component", "category", "offer", "stock", "custom"],
+          defaultValue: "none",
           owner: "product-component"
         },
         {
@@ -156,59 +137,55 @@ export const productItemCardManifest = {
           owner: "product-component"
         },
         {
-          key: "showPrice",
-          control: "boolean",
-          defaultValue: true,
+          key: "priceMode",
+          control: "select",
+          values: ["unit", "from", "estimate", "included", "hidden"],
+          defaultValue: "unit",
+          owner: "product-component"
+        }
+      ]
+    },
+    {
+      id: "interactionModes",
+      options: [
+        {
+          key: "actionMode",
+          control: "select",
+          values: ["none", "select", "add", "quantity", "view-details", "configure"],
+          defaultValue: "add",
           owner: "product-component"
         },
         {
-          key: "showOriginalPrice",
-          control: "boolean",
-          defaultValue: false,
+          key: "favoriteMode",
+          control: "select",
+          values: ["none", "toggle"],
+          defaultValue: "toggle",
           owner: "product-component"
         },
         {
-          key: "showAction",
-          control: "boolean",
-          defaultValue: false,
+          key: "quantityMode",
+          control: "select",
+          values: ["none", "stepper", "readonly"],
+          defaultValue: "stepper",
           owner: "product-component"
         },
         {
-          key: "showFavorite",
-          control: "boolean",
-          defaultValue: true,
-          owner: "product-component"
+          key: "selectionMode",
+          control: "select",
+          values: ["none", "single", "multi"],
+          defaultValue: "multi",
+          owner: "consumer-state"
         }
       ]
     },
     {
       id: "actions",
       options: [
-        {
-          key: "actionLabel",
-          control: "text",
-          owner: "product-component"
-        },
-        {
-          key: "selectedActionLabel",
-          control: "text",
-          owner: "product-component"
-        },
-        {
-          key: "onAction",
-          control: "boolean",
-          owner: "consumer-state"
-        },
-        {
-          key: "onDecrease",
-          control: "boolean",
-          owner: "consumer-state"
-        },
-        {
-          key: "onFavoriteToggle",
-          control: "boolean",
-          owner: "consumer-state"
-        }
+        { key: "actionLabel", control: "text", owner: "product-component" },
+        { key: "selectedActionLabel", control: "text", owner: "product-component" },
+        { key: "onAction", control: "boolean", owner: "consumer-state" },
+        { key: "onDecrease", control: "boolean", owner: "consumer-state" },
+        { key: "onFavoriteToggle", control: "boolean", owner: "consumer-state" }
       ]
     }
   ],
@@ -222,7 +199,12 @@ export const productItemCardManifest = {
       showFavorite: true,
       showPrice: true,
       showOriginalPrice: false,
-      showAction: true
+      showAction: true,
+      metaMode: "category-detail",
+      priceMode: "unit",
+      actionMode: "add",
+      favoriteMode: "toggle",
+      quantityMode: "stepper"
     },
     checkout: {
       showImage: true,
@@ -233,7 +215,12 @@ export const productItemCardManifest = {
       showFavorite: false,
       showPrice: true,
       showOriginalPrice: false,
-      showAction: true
+      showAction: true,
+      metaMode: "category-detail",
+      priceMode: "unit",
+      actionMode: "quantity",
+      favoriteMode: "none",
+      quantityMode: "stepper"
     },
     compact: {
       showImage: false,
@@ -244,7 +231,12 @@ export const productItemCardManifest = {
       showFavorite: false,
       showPrice: true,
       showOriginalPrice: false,
-      showAction: false
+      showAction: false,
+      metaMode: "category-detail",
+      priceMode: "unit",
+      actionMode: "none",
+      favoriteMode: "none",
+      quantityMode: "none"
     },
     readonly: {
       showImage: true,
@@ -255,7 +247,12 @@ export const productItemCardManifest = {
       showFavorite: false,
       showPrice: true,
       showOriginalPrice: false,
-      showAction: false
+      showAction: false,
+      metaMode: "category-detail",
+      priceMode: "unit",
+      actionMode: "none",
+      favoriteMode: "none",
+      quantityMode: "readonly"
     },
     includedInPlan: {
       showImage: false,
@@ -266,7 +263,12 @@ export const productItemCardManifest = {
       showFavorite: false,
       showPrice: false,
       showOriginalPrice: false,
-      showAction: true
+      showAction: true,
+      metaMode: "category-detail",
+      priceMode: "included",
+      actionMode: "select",
+      favoriteMode: "none",
+      quantityMode: "stepper"
     }
   },
   dataContract: {
@@ -285,6 +287,11 @@ export const productItemCardManifest = {
       "showBadge",
       "showFavorite",
       "showOriginalPrice",
+      "metaMode",
+      "priceMode",
+      "actionMode",
+      "favoriteMode",
+      "quantityMode",
       "selected",
       "quantity",
       "quantitySuffix",
@@ -298,171 +305,84 @@ export const productItemCardManifest = {
   capabilities: {
     media: true,
     hideMedia: true,
-    category: true,
-    hideCategory: true,
-    details: true,
-    hideDetails: true,
+    combinedMeta: true,
+    metaMode: true,
     price: true,
     hidePrice: true,
+    priceMode: true,
     originalPrice: true,
     badge: true,
     hideBadge: true,
+    badgeMode: true,
     selectionState: true,
+    selectionMode: true,
     quantityStepper: true,
+    quantityMode: true,
     favoriteState: true,
+    favoriteMode: true,
     hideFavorite: true,
-    primaryAction: true
+    primaryAction: true,
+    actionMode: true
   },
   examples: [
     {
       id: "catalog-default",
       productIndex: 0,
       options: {
-        badge: "component",
+        badgeMode: "none",
         badgeTone: "offer",
         showImage: false,
         showName: true,
         showDescription: true,
         showMeta: true,
-        showBadge: true,
+        showBadge: false,
         showFavorite: true,
+        showPrice: true,
         showOriginalPrice: false,
+        showAction: true,
+        metaMode: "category-detail",
+        priceMode: "unit",
+        actionMode: "add",
+        favoriteMode: "toggle",
+        quantityMode: "stepper",
         selected: false,
         quantity: 0,
-        favorite: false,
-        showPrice: true,
-        showAction: true
+        favorite: false
       },
       handlers: {
-        favoriteToggle: false,
+        favoriteToggle: true,
         action: true,
-        decrease: false
+        decrease: true
       }
     },
     {
       id: "checkout-selected",
       productIndex: 1,
       options: {
-        badge: "category",
+        badgeMode: "category",
         badgeTone: "offer",
         showImage: true,
         showName: true,
         showDescription: true,
         showMeta: true,
-        showBadge: true,
+        showBadge: false,
         showFavorite: false,
+        showPrice: true,
         showOriginalPrice: false,
+        showAction: true,
+        metaMode: "category-detail",
+        priceMode: "unit",
+        actionMode: "quantity",
+        favoriteMode: "none",
+        quantityMode: "stepper",
         selected: true,
         quantity: 2,
-        favorite: false,
-        showPrice: true,
-        showAction: true
+        favorite: false
       },
       handlers: {
         favoriteToggle: false,
         action: true,
         decrease: true
-      }
-    },
-    {
-      id: "favorite-disabled",
-      productIndex: 2,
-      options: {
-        badge: "category",
-        badgeTone: "limited",
-        showImage: true,
-        showName: true,
-        showDescription: true,
-        showMeta: true,
-        showBadge: true,
-        showFavorite: true,
-        showOriginalPrice: false,
-        selected: false,
-        quantity: 0,
-        favorite: false,
-        showPrice: true,
-        showAction: false
-      },
-      handlers: {
-        favoriteToggle: true,
-        action: false,
-        decrease: false
-      }
-    },
-    {
-      id: "favorite-enabled",
-      productIndex: 3,
-      options: {
-        badge: "category",
-        badgeTone: "limited",
-        showImage: true,
-        showName: true,
-        showDescription: true,
-        showMeta: true,
-        showBadge: true,
-        showFavorite: true,
-        showOriginalPrice: false,
-        selected: false,
-        quantity: 0,
-        favorite: true,
-        showPrice: true,
-        showAction: false
-      },
-      handlers: {
-        favoriteToggle: true,
-        action: false,
-        decrease: false
-      }
-    },
-    {
-      id: "price-hidden",
-      productIndex: 4,
-      options: {
-        badge: "category",
-        badgeTone: "offer",
-        showImage: false,
-        showName: true,
-        showDescription: true,
-        showMeta: true,
-        showBadge: true,
-        showFavorite: false,
-        showOriginalPrice: false,
-        selected: false,
-        quantity: 0,
-        favorite: false,
-        showPrice: false,
-        showAction: true
-      },
-      handlers: {
-        favoriteToggle: false,
-        action: true,
-        decrease: false
-      }
-    },
-    {
-      id: "discount-reference",
-      productIndex: 5,
-      options: {
-        badge: "category",
-        badgeTone: "offer",
-        showImage: true,
-        showName: true,
-        showDescription: false,
-        showMeta: true,
-        showBadge: true,
-        showFavorite: true,
-        showOriginalPrice: true,
-        selected: false,
-        quantity: 0,
-        favorite: false,
-        showPrice: true,
-        showAction: false,
-        originalPrice: 129.9
-      },
-      handlers: {
-        favoriteToggle: true,
-        action: false,
-        decrease: false
       }
     }
   ]
@@ -490,6 +410,7 @@ export const productItemCardManifest = {
     visibleProp?: string;
     visibleProps?: string[];
     required?: boolean;
+    modes?: string[];
     rule?: string;
   }>;
   optionGroups: Array<{

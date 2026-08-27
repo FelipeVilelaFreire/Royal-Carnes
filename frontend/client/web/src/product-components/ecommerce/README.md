@@ -2,6 +2,8 @@
 
 Esta pasta guarda componentes de produto do RoyalPrime que podem amadurecer para um futuro `services/ecommerce`.
 
+Para a intencao da rota `/library`, ver `LIBRARY.md`.
+
 Regra atual:
 
 - componente real e reutilizavel fica aqui;
@@ -38,7 +40,13 @@ O manifest controla as variacoes principais:
 - com ou sem preco;
 - com ou sem preco original/oferta;
 - com ou sem acao;
-- com badge de componente ou categoria;
+- modo de metadata: categoria + detalhe, somente categoria ou somente detalhe;
+- modo de badge: nenhum, componente, categoria, oferta, estoque ou custom;
+- tom de badge: oferta ou limitado;
+- modo de preco: unitario, a partir de, estimado, incluso ou escondido;
+- modo de acao: nenhum, selecionar, adicionar, quantidade, detalhes ou configurar;
+- modo de favorito: nenhum ou toggle;
+- modo de quantidade: nenhum, stepper ou leitura;
 - com estado selecionado;
 - com quantidade;
 - com favorito;
@@ -47,7 +55,7 @@ O manifest controla as variacoes principais:
 
 Na `/library`, os exemplos deste card devem ser interativos. O manifest define quais handlers cada exemplo ativa, e a tela de library mantem apenas o estado runtime necessario para simular clique, incremento, decremento e favorito.
 
-`compositions` e o contrato principal por modo de uso. A tela escolhe uma composicao como `catalog`, `checkout`, `compact`, `readonly` ou `includedInPlan`; depois o card recebe os `show*` daquela composicao.
+`compositions` e o contrato principal por modo de uso. A tela escolhe uma composicao como `catalog`, `checkout`, `compact`, `readonly` ou `includedInPlan`; depois o card recebe os `show*` e os modos daquela composicao.
 
 O manifest nao controla estetica fina. Raio do card, escala tipografica, espacamento, estilo do botao, desenho de icones, cor e receita de superficie pertencem ao Design System/Foundation. No RoyalPrime MVP isso ainda passa pelo `legacy/design-system`, mas o contrato futuro deve tratar essas decisoes como Foundation/AppShell, nao como regra do `ProductItemCard`.
 
@@ -73,7 +81,8 @@ Exemplo de consumo alvo:
 Convencao importante:
 
 - `name`, `image`, `description`, `categoryLabel`, `detailLabel`, `price`, `originalPrice` e labels sao dados;
-- `showName`, `showImage`, `showDescription`, `showMeta`, `showPrice`, `showOriginalPrice`, `showAction`, `showBadge` e `showFavorite` sao opcoes de composicao;
+- `showName`, `showImage`, `showDescription`, `showMeta`, `showPrice`, `showOriginalPrice`, `showAction`, `showBadge` e `showFavorite` sao opcoes booleanas de composicao;
+- `metaMode`, `badgeMode`, `priceMode`, `actionMode`, `favoriteMode`, `quantityMode` e `selectionMode` sao opcoes de modo e devem aparecer como `select` no manifesto;
 - `selected`, `quantity`, `favorite` e `actionDisabled` sao estado do fluxo consumidor.
 
 `actionDisabled` nao decide regra comercial dentro do card. A screen calcula se o produto ainda cabe no plano, no ciclo ou no estoque, e o card apenas apresenta o botao bloqueado com `actionDisabledLabel` e `disabledHint`.
@@ -88,9 +97,9 @@ Enquanto estivermos no RoyalPrime MVP, evitar adicionar opcoes de aparencia no m
 
 ## PlanBenefitCard
 
-Status: candidato, `level-1`, precisa de manifest.
+Status: real, `level-1`, manifestado.
 
-Arquivo esperado:
+Arquivo:
 
 ```text
 frontend/client/web/src/product-components/ecommerce/PlanBenefitCard.tsx
@@ -102,6 +111,22 @@ Uso previsto:
 - resumo de plano;
 - beneficios inclusos;
 - comparacao entre Basic, Premium e Pro.
+
+O manifest controla:
+
+- mostrar ou esconder nome, descricao, preco, ciclo, beneficios, economia, badge, destaque, estado selecionado e acao;
+- modo de preco: mensal, anual, incluso ou escondido;
+- modo de beneficios: resumo, lista, contagem ou escondido;
+- modo de promocao: nenhuma, economia anual, oferta limitada ou recomendado;
+- modo de acao: nenhum, selecionar, upgrade, gerenciar ou ver detalhes;
+- modo de layout: compacto, padrao ou comparacao.
+
+Convencao importante:
+
+- `name`, `description`, `monthlyPrice`, `annualMonthlyPrice`, `benefits`, `savingsLabel` e labels sao dados;
+- `showName`, `showDescription`, `showPrice`, `showBillingCycle`, `showBenefits`, `showSavings`, `showBadge`, `showAction`, `showSelectedState` e `showHighlight` sao opcoes booleanas de composicao;
+- `priceMode`, `benefitsMode`, `promotionMode`, `actionMode` e `layoutMode` sao opcoes de modo e devem aparecer como `select` no manifesto;
+- `selected`, `disabled` e `onAction` sao estado do fluxo consumidor.
 
 ## PaymentMethodCard
 

@@ -186,9 +186,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
                     {config.recentOrders.map((order, idx) => (
                       <tr key={idx} style={{ borderBottom: `1px solid ${border}`, transition: "background 0.2s ease" }}>
                         <td style={{ padding: "18px 16px", color: primary, fontWeight: "700", fontSize: "14px" }}>{order.id}</td>
-                        <td style={{ padding: "18px 16px" }}>
-                          <AvatarCell size="sm" name={order.member} image={order.image} />
-                        </td>
+                        <td style={{ padding: "18px 16px", color: text, fontWeight: "600", fontSize: "14px" }}>{order.member}</td>
                         <td style={{ padding: "18px 16px", color: textMuted, fontSize: "14px" }}>{order.plan}</td>
                         <td style={{ padding: "18px 16px", color: textMuted, fontSize: "14px" }}>{order.box}</td>
                         <td style={{ padding: "18px 16px" }}>

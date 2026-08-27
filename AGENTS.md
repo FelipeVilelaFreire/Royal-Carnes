@@ -1,22 +1,71 @@
-# 👑 ROYAL PRIME — Regras Invioláveis de Desenvolvimento
+# RoyalPrime Agent Instructions
 
-## 1. Regra Inviolável: Proibição Absoluta de Emojis na UI
-É RIGOROSAMENTE PROIBIDO o uso de caracteres de emoji Unicode soltos em componentes JSX, TSX, strings de UI, manifestos ou ícones da interface (por exemplo: 🥩, 📦, 🔥, 🚚, ⭐, 🔍, ✏️, 🚪, 💰, 🎯, 🗑️, ⚙️). 
-Toda a interface deve utilizar EXCLUSIVAMENTE componentes de Ícones SVG da Foundation (`@foundation/ui/Icon/AppIcons` ou o contrato equivalente do ServiceOS) para garantir a estética gourmet, sóbria e premium de produto executivo.
+Este arquivo e a entrada obrigatoria para qualquer agente trabalhando no RoyalPrime.
 
-## 2. Regra ServiceOS-first
-O `ServiceOS` e a `Foundation` são as fontes primárias de capacidades reutilizáveis. Antes de criar UI, AppShell, componentes de produto genéricos, builders ou primitives locais, verifique se a capacidade já existe.
+Antes de implementar, leia nesta ordem:
 
-## 3. Regra i18n-first para Textos de Interface
-Todo texto novo de interface deve nascer em arquivos de strings/locales (`locales/pt-BR.ts`) e ser consumido por chave. Não criar copy de UI hardcoded diretamente em JSX/TSX/JS.
+1. `ROYALPRIME_CODEX_RULES.md`
+2. `ROYALPRIME_ARCHITECTURE_CONTRACT.md`
+3. `backend/README.md`
+4. `backend/ROADMAP.md`
+5. `backend/ARCHITECTURE.md`
+6. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
-## 4. Contrato AppShell: Header Multi-Layout & Surface Replacement
-O AppShell é o dono único das capacidades genéricas da casca (Header desktop/mobile, Drawer, Sidebar, Footer, Bottom TabBar). O Header é regido por 2 dimensões:
-- **Vestuário de Superfície**: Consome 100% das variáveis `--semicomposed--surface--*` ou `clientThemeManifest.colors`.
-- **Modos de Layout**: `attached` (acoplado full-width) ou `floating` (flutuante).
+## Direcao do Produto
 
-## 5. Grid Math de 20 Colunas e Delimitações Úteis
-A Matriz Global é regida por 20 colunas. Seções amplas utilizam 20/17 colunas úteis e seções de leitura/sanfona usam 14 colunas úteis.
+RoyalPrime agora e o produto-foco.
 
-## 6. Regra Inviolável de Consumo de Mocks & Data-Driven UI
-Todas as telas, widgets, listas, tabelas e seções do sistema devem OBRIGATORIAMENTE consumir seus dados e registros a partir dos arquivos de Mocks (`client/shared-core/mocks/` ou `admin/shared-core/mocks/`) e Manifestos (`manifest/pages/*.config.jsx`). É RIGOROSAMENTE PROIBIDO hardcodar registros fictícios de dados do usuário, planos, valores financeiros ou linhas de tabelas diretamente dentro dos componentes JSX/TSX.
+O ServiceOS continua como referencia de organizacao, contratos, AppShell, Foundation, manifests e separacao de responsabilidades. Mas o RoyalPrime nao deve ser bloqueado por uma migracao prematura para ServiceOS.
+
+Regra:
+
+```text
+RoyalPrime prova o fluxo real.
+ServiceOS recebe depois apenas o que se provar reutilizavel.
+```
+
+## Ordem Central
+
+```text
+Regra mora no backend.
+Fluxo reutilizavel mora no shared-core do escopo correto.
+Tela apenas apresenta e dispara acao.
+```
+
+## Escopo de Shared-Core
+
+```text
+frontend/client/shared-core
+  -> fluxos reutilizaveis entre cliente web e cliente mobile
+
+frontend/admin/shared-core
+  -> fluxos reutilizaveis dentro do admin
+
+frontend/shared-core
+  -> apenas contratos/capacidades realmente comuns entre client, mobile e admin
+```
+
+Nao mover algo para `frontend/shared-core` global antes de comprovar que client, mobile e admin usam o mesmo contrato.
+
+## Regras Inviolaveis
+
+- Nao usar emojis Unicode soltos na UI.
+- UI/copy nova deve nascer em locales/strings quando for texto de interface.
+- Nao hardcodar dados comerciais diretamente em JSX/TSX.
+- Screens devem consumir mocks, manifests, hooks ou dados reais.
+- AppShell e Foundation sao donos de capacidades genericas de casca e primitives.
+- Product components reutilizaveis de ecommerce devem ficar em `frontend/client/web/src/product-components/ecommerce`.
+- Fluxo/copy/regra especifica do RoyalPrime fica local no produto.
+- Nada sobe cru para ServiceOS.
+
+## Worktree
+
+Preserve o worktree.
+
+Nao rode `reset`, `checkout`, `clean`, commit ou push sem autorizacao explicita do usuario.
+
+## Builds
+
+- Se mexer em `frontend/client/web`, rodar build do client.
+- Se mexer em `frontend/admin/web`, rodar build do admin.
+- Se mexer apenas em documentacao, nao precisa build; informe isso no final.

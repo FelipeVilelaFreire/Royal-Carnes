@@ -72,7 +72,7 @@ export const libraryCandidatesMock: LibraryCandidate[] = [
     currentPath: "frontend/client/web/src/product-components/ecommerce/PlanBenefitCard.tsx",
     maturityLevel: "level-1",
     manifestKey: "plan-benefit-card.manifest.ts",
-    status: "needs-manifest"
+    status: "mapped"
   },
   {
     id: "payment-method-card",

@@ -5,6 +5,7 @@ export interface AvatarCellProps {
   image?: string;
   size?: "sm" | "md" | "lg";
   subtitle?: string;
+  showName?: boolean;
   style?: React.CSSProperties;
 }
 
@@ -22,6 +23,7 @@ export const AvatarCell: React.FC<AvatarCellProps> = ({
   image,
   size = "md",
   subtitle,
+  showName = true,
   style
 }) => {
   const initials = getInitials(name);
@@ -68,7 +70,7 @@ export const AvatarCell: React.FC<AvatarCellProps> = ({
         </div>
       )}
 
-      {name && (
+      {showName && name && (
         <div style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
           <span
             style={{

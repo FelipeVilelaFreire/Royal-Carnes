@@ -1,5 +1,8 @@
 export { ProductItemCard } from "./ProductItemCard";
 export type { ProductItemCardProps } from "./ProductItemCard";
 export { productItemCardManifest } from "./product-item-card.manifest";
+export { PlanBenefitCard } from "./PlanBenefitCard";
+export type { PlanBenefitCardProps } from "./PlanBenefitCard";
+export { planBenefitCardManifest } from "./plan-benefit-card.manifest";
 export { OrderDetailModal } from "./OrderDetailModal";
 export type { OrderDetailModalProps } from "./OrderDetailModal";

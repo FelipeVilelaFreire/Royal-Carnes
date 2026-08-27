@@ -689,7 +689,11 @@ export const clientPtBR = {
       priceLabel: "Referencia de preco",
       action: "Simular acao",
       selectedAction: "Selecionado",
-      category: "Catalogo"
+      category: "Catalogo",
+      monthlyCycle: "mensal",
+      annualMonthlyCycle: "mensal no anual",
+      annualPromotion: "Promocao anual",
+      benefitsSuffix: "beneficios"
     },
     levels: {
       level0: {

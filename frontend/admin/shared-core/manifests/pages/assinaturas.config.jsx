@@ -7,12 +7,12 @@ export const assinaturasConfig = {
   entityName: "Plano de Assinatura",
   actionLabelKey: "assinaturas.ctaAdd",
   columns: [
-    { key: "name", labelKey: "Plano" },
-    { key: "subtitle", labelKey: "Descrição / Inclusões" },
-    { key: "proteinKgLimitFormatted", labelKey: "Proteínas" },
-    { key: "charcoalKgLimitFormatted", labelKey: "Carvão" },
-    { key: "monthlyPriceFormatted", labelKey: "Preço Mensal" },
-    { key: "annualMonthlyPriceFormatted", labelKey: "Preço Anual" }
+    { key: "name", labelKey: "assinaturas.tableHeaders.name" },
+    { key: "subtitle", labelKey: "assinaturas.tableHeaders.subtitle" },
+    { key: "proteinKgLimitFormatted", labelKey: "assinaturas.tableHeaders.protein" },
+    { key: "charcoalKgLimitFormatted", labelKey: "assinaturas.tableHeaders.charcoal" },
+    { key: "monthlyPriceFormatted", labelKey: "assinaturas.tableHeaders.monthlyPrice" },
+    { key: "annualMonthlyPriceFormatted", labelKey: "assinaturas.tableHeaders.annualPrice" }
   ],
   filters: [
     {

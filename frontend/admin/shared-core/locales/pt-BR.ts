@@ -79,16 +79,16 @@ export const adminPtBR = {
     }
   },
   assinaturas: {
-    title: "Gestão de Assinaturas Royal Box",
-    subtitle: "Contratos ativos, planos (Royal Pro, Basic), renovações e ciclos.",
-    ctaAdd: "+ Nova Assinatura",
+    title: "Planos de Assinatura Royal Box",
+    subtitle: "Catálogo oficial de planos do clube (Basic, Premium e Pro), limites de proteína, carvão e valores.",
+    ctaAdd: "+ Novo Plano",
     tableHeaders: {
-      customerName: "Sócio Assinante",
-      planName: "Plano Contratado",
-      priceMonthly: "Mensalidade",
-      cycleCurrent: "Ciclo Atual",
-      nextBillingDate: "Próxima Cobrança",
-      status: "Status"
+      name: "Plano",
+      subtitle: "Descrição / Inclusões",
+      protein: "Proteínas",
+      charcoal: "Carvão",
+      monthlyPrice: "Preço Mensal",
+      annualPrice: "Preço Anual"
     }
   },
   pedidos: {

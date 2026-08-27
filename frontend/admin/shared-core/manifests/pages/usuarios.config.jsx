@@ -7,7 +7,7 @@ export const usuariosConfig = {
   entityName: "Usuário / Cliente",
   actionLabelKey: "usuarios.ctaAdd",
   columns: [
-    { key: "name", labelKey: "usuarios.tableHeaders.customerName" },
+    { key: "name", labelKey: "usuarios.tableHeaders.customerName", showAvatar: true },
     { key: "email", labelKey: "usuarios.tableHeaders.email" },
     { key: "phone", labelKey: "Telefone" },
     { key: "activePlan", labelKey: "usuarios.tableHeaders.planName" },
