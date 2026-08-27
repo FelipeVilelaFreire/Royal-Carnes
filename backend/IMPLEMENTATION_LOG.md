@@ -215,3 +215,74 @@ tenant context
 seed modular
 API tests
 ```
+
+## 2026-08-27 - Fase 2 Catalog runtime inicial
+
+Objetivo:
+
+```text
+criar catalogo vendavel como kit runtime
+aplicar catalog.seed.json no banco
+provar reuso com Royal Carnes, BikeClub e CamisaClub
+```
+
+Status:
+
+```text
+local scaffold
+```
+
+Criado/atualizado:
+
+```text
+apps/catalog/models.py
+apps/catalog/selectors.py
+apps/catalog/services.py
+apps/catalog/serializers.py
+apps/catalog/views.py
+apps/catalog/urls.py
+apps/catalog/tests/test_api.py
+apps/catalog/migrations/0001_initial.py
+apps/catalog/migrations/0002_*.py
+apps/core/seed_loader.py
+backend/API_CONTRACTS.md
+kits/catalog-kit.md
+```
+
+Endpoints:
+
+```text
+GET  /api/v1/catalog/collections/
+GET  /api/v1/catalog/commercial-modes/
+GET  /api/v1/catalog/products/
+GET  /api/v1/catalog/products/:id/
+GET  /api/v1/catalog/admin/products/
+POST /api/v1/catalog/admin/products/
+```
+
+Seed aplica agora:
+
+```text
+organizations
+auth-users
+customers
+catalog
+```
+
+Seed ainda planned:
+
+```text
+subscriptions
+```
+
+Validacao executada:
+
+```text
+py manage.py check -> OK
+py manage.py makemigrations --check --dry-run -> OK
+py manage.py test -> OK
+py manage.py migrate -> OK
+py manage.py seed_backend --seed royalprime -> OK
+py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
+py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
+```

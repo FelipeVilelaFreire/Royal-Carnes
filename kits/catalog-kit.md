@@ -1,8 +1,8 @@
 # Catalog Kit
 
-Status inicial: `planned`
+Status inicial: `local scaffold`
 
-Fase principal: Fase 1 - Backend Base Real
+Fase principal: Fase 2 - Catalog Runtime
 
 ## Objetivo
 
@@ -47,10 +47,16 @@ Arquivos fonte planejados:
 
 ```text
 backend/apps/catalog/
-backend/api/v1/catalog/
-backend/seeds/royalprime/catalog/
-backend/seeds/examples/bikeclub/catalog/
-backend/seeds/examples/camisaclub/catalog/
+backend/apps/catalog/models.py
+backend/apps/catalog/selectors.py
+backend/apps/catalog/services.py
+backend/apps/catalog/serializers.py
+backend/apps/catalog/views.py
+backend/apps/catalog/urls.py
+backend/apps/catalog/tests/test_api.py
+backend/seeds/royalprime/kits/catalog.seed.json
+backend/seeds/examples/bikeclub/kits/catalog.seed.json
+backend/seeds/examples/camisaclub/kits/catalog.seed.json
 ```
 
 Entidades esperadas:
@@ -76,11 +82,12 @@ Services/use-cases esperados:
 
 Endpoints esperados:
 
-- `GET /catalog/collections`;
-- `GET /catalog/products`;
-- `GET /admin/catalog/products`;
-- `POST /admin/catalog/products`;
-- `PATCH /admin/catalog/products/{id}`;
+- `GET /api/v1/catalog/collections/`;
+- `GET /api/v1/catalog/products/`;
+- `GET /api/v1/catalog/products/:id/`;
+- `GET /api/v1/catalog/commercial-modes/`;
+- `GET /api/v1/catalog/admin/products/`;
+- `POST /api/v1/catalog/admin/products/`;
 
 Regras reais:
 
@@ -155,7 +162,8 @@ Planejado:
 
 ```text
 backend/apps/catalog/
-backend/api/v1/catalog/
+backend/apps/catalog/tests/test_api.py
+backend/apps/core/seed_loader.py
 ```
 
 Mocks atuais para converter:
@@ -358,12 +366,13 @@ Deve conter:
 
 Este kit vira `kit-ready` quando:
 
-- backend real de catalogo existir;
-- endpoint publico de catalogo existir;
-- endpoint admin de catalogo existir;
+- backend real de catalogo existir; DONE
+- endpoint publico de catalogo existir; DONE
+- endpoint admin de catalogo existir; DONE
+- seed Royal Carnes criar catalogo inicial; DONE
+- seed exemplo provar dominio alternativo; DONE
+- testes de API cobrirem catalogo publico/admin; DONE
 - cliente e admin consumirem por hooks;
-- seed Royal Carnes criar catalogo inicial;
-- seed exemplo provar dominio alternativo;
 - os arquivos fonte estiverem listados aqui.
 
 ## Criterio Para ServiceOS Candidate

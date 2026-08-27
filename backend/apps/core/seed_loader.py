@@ -15,6 +15,16 @@ from apps.accounts.services import (
 )
 from apps.customers.services import upsert_customer
 from apps.organizations.models import Organization
+from apps.catalog.models import Category, Collection, CommercialMode
+from apps.catalog.services import (
+    set_product_availability,
+    set_product_collections,
+    set_product_price,
+    upsert_category,
+    upsert_collection,
+    upsert_commercial_mode,
+    upsert_product,
+)
 
 
 @dataclass(frozen=True)
@@ -107,6 +117,8 @@ class BackendSeedApplier:
                     self.apply_auth_users(module.data)
                 elif module.kit == "customers":
                     self.apply_customers(module.data)
+                elif module.kit == "catalog":
+                    self.apply_catalog(module.data)
                 else:
                     self.summary.append(f"skipped planned kit={module.kit}")
         return self.summary
@@ -172,6 +184,68 @@ class BackendSeedApplier:
                 user=self.users_by_customer_key.get(customer_data.get("key", "")),
             )
         self.summary.append(f"applied customers: count={len(data.get('customers', []))}")
+
+    def apply_catalog(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        collections_by_key: dict[str, Collection] = {}
+        categories_by_key: dict[str, Category] = {}
+        commercial_modes_by_key: dict[str, CommercialMode] = {}
+
+        for collection_data in data.get("collections", []):
+            collections_by_key[collection_data["key"]] = upsert_collection(
+                organization=organization,
+                key=collection_data["key"],
+                name=collection_data["name"],
+                description=collection_data.get("description", ""),
+            )
+
+        for category_data in data.get("categories", []):
+            categories_by_key[category_data["key"]] = upsert_category(
+                organization=organization,
+                key=category_data["key"],
+                name=category_data["name"],
+            )
+
+        for commercial_mode_data in data.get("commercialModes", []):
+            commercial_modes_by_key[commercial_mode_data["key"]] = upsert_commercial_mode(
+                organization=organization,
+                key=commercial_mode_data["key"],
+                name=commercial_mode_data["name"],
+            )
+
+        for product_data in data.get("products", []):
+            product = upsert_product(
+                organization=organization,
+                key=product_data["key"],
+                name=product_data["name"],
+                category=categories_by_key[product_data["categoryKey"]],
+                unit=product_data.get("unit", "unit"),
+                description=product_data.get("description", ""),
+            )
+            product_collections = [
+                collections_by_key[collection_key]
+                for collection_key in product_data.get("collections", [])
+            ]
+            set_product_collections(
+                organization=organization,
+                product=product,
+                collections=product_collections,
+            )
+            for commercial_mode_key in product_data.get("commercialModes", []):
+                commercial_mode = commercial_modes_by_key[commercial_mode_key]
+                set_product_price(
+                    organization=organization,
+                    product=product,
+                    commercial_mode=commercial_mode,
+                    amount_cents=product_data["priceCents"],
+                    currency=organization.currency,
+                )
+                set_product_availability(
+                    organization=organization,
+                    product=product,
+                    commercial_mode=commercial_mode,
+                )
+        self.summary.append(f"applied catalog: products={len(data.get('products', []))}")
 
     def require_organization(self) -> Organization:
         if self.organization is None:

@@ -354,12 +354,12 @@ Aplica hoje:
 organizations
 auth-users
 customers
+catalog
 ```
 
 Carrega mas ainda pula como planned:
 
 ```text
-catalog
 subscriptions
 ```
 
@@ -371,11 +371,109 @@ bikeclub -> dry-run OK
 camisaclub -> dry-run OK
 ```
 
+## Catalog
+
+### GET /api/v1/catalog/collections/
+
+Objetivo:
+
+```text
+listar colecoes ativas da request.organization
+```
+
+Auth:
+
+```text
+publico
+```
+
+### GET /api/v1/catalog/commercial-modes/
+
+Objetivo:
+
+```text
+listar modos comerciais ativos da request.organization
+```
+
+Auth:
+
+```text
+publico
+```
+
+### GET /api/v1/catalog/products/
+
+Objetivo:
+
+```text
+listar produtos ativos da request.organization com category, collections e prices
+```
+
+Auth:
+
+```text
+publico
+```
+
+### GET /api/v1/catalog/products/:id/
+
+Objetivo:
+
+```text
+detalhar produto da request.organization
+```
+
+Auth:
+
+```text
+publico
+```
+
+### GET /api/v1/catalog/admin/products/
+
+Objetivo:
+
+```text
+listar produtos para admin
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+### POST /api/v1/catalog/admin/products/
+
+Objetivo:
+
+```text
+criar produto, vincular colecoes, preco e modos comerciais
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+Request:
+
+```json
+{
+  "key": "maminha",
+  "name": "Maminha",
+  "category_key": "carnes",
+  "unit": "kg",
+  "price_cents": 5490,
+  "commercial_mode_keys": ["delivery"],
+  "collection_keys": ["dia-a-dia"]
+}
+```
+
 ## Endpoints Planejados Proximos
 
 ```text
-GET  /api/v1/catalog/products/
-GET  /api/v1/catalog/collections/
 GET  /api/v1/catalog/plans/
 ```
 

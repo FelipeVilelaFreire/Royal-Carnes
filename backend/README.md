@@ -48,6 +48,7 @@ apps/core
 apps/organizations
 apps/accounts
 apps/customers
+apps/catalog
 api/v1
 ```
 
@@ -165,6 +166,42 @@ X-Organization-Slug: royalprime
 
 Sem header, o backend usa a organization default local para boot/dev.
 
+## Fase 2 atual
+
+Status:
+
+```text
+local scaffold
+```
+
+Implementado em codigo:
+
+```text
+Collection
+CollectionProduct
+Category
+Product
+ProductVariant
+ProductMedia
+ProductPrice
+CommercialMode
+CatalogAvailability
+Catalog seed aplicado
+Catalog endpoints publicos/admin
+Catalog API tests
+```
+
+Rotas principais:
+
+```text
+GET  /api/v1/catalog/collections/
+GET  /api/v1/catalog/commercial-modes/
+GET  /api/v1/catalog/products/
+GET  /api/v1/catalog/products/:id/
+GET  /api/v1/catalog/admin/products/
+POST /api/v1/catalog/admin/products/
+```
+
 ## Ordem central do produto
 
 Todo desenvolvimento novo deve seguir esta divisao:
@@ -212,6 +249,5 @@ RoyalPrime prova o fluxo real
 
 ## Proxima rodada
 
-Depois de validar localmente `py manage.py check`, `migrate` e `seed_backend`,
-a proxima fase de codigo deve ser `catalog`, usando os seeds ja separados por
-kit como contrato de dados.
+A proxima rodada deve decidir se fechamos `subscriptions/plans` ou se conectamos
+o frontend ao catalog via shared-core/api/hooks.

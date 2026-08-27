@@ -90,7 +90,7 @@ serviceos-candidate
 | --- | --- | --- | --- |
 | Auth & Users | local scaffold | Fase 1 | Qualquer app com login, cliente/admin e permissoes |
 | Organizations | planned | Fase 1 | Multiempresa, white-label, tenant-ready |
-| Catalog | planned | Fase 1 | Ecommerce, assinatura, cardapio, servicos |
+| Catalog | local scaffold | Fase 2 | Ecommerce, assinatura, cardapio, servicos |
 | Royal Carnes Seed | local scaffold | Fase 1 | Seed principal da primeira organization |
 | Orders | planned | Fase 2 | Ecommerce, restaurante, delivery, pedidos internos |
 | Scheduling | planned | Fase 3/5 | Entrega, agenda, reserva, appointments |

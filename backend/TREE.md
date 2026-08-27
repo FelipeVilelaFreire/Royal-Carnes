@@ -664,9 +664,11 @@ apps/core criado
 apps/organizations criado
 apps/accounts criado
 apps/customers criado
+apps/catalog criado
 backend/seeds documentado
 migrations geradas e aplicadas
 Fase 1 Auth & Users fechada
+Fase 2 Catalog iniciada com runtime
 ```
 
 ## O Que Nao Codar Ainda
