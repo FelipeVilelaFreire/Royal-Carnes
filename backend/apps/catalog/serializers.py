@@ -32,6 +32,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductPriceSerializer(serializers.ModelSerializer):
     commercial_mode_key = serializers.CharField(source="commercial_mode.key", read_only=True)
     commercial_mode_name = serializers.CharField(source="commercial_mode.name", read_only=True)
+    collection_key = serializers.CharField(source="collection.key", read_only=True, allow_null=True)
 
     class Meta:
         model = ProductPrice
@@ -39,13 +40,16 @@ class ProductPriceSerializer(serializers.ModelSerializer):
             "id",
             "commercial_mode_key",
             "commercial_mode_name",
+            "collection_key",
+            "price_type",
             "currency",
             "amount_cents",
         )
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
+    categories = serializers.SerializerMethodField()
+    primary_category_key = serializers.SerializerMethodField()
     collection_keys = serializers.SerializerMethodField()
     prices = ProductPriceSerializer(many=True, read_only=True)
     commercial_mode_keys = serializers.SerializerMethodField()
@@ -62,11 +66,25 @@ class ProductSerializer(serializers.ModelSerializer):
             "status",
             "is_perishable",
             "sort_order",
-            "category",
+            "categories",
+            "primary_category_key",
             "collection_keys",
             "commercial_mode_keys",
             "prices",
         )
+
+    def get_categories(self, product):
+        return [
+            CategorySerializer(link.category).data
+            for link in product.category_links.all()
+        ]
+
+    def get_primary_category_key(self, product):
+        primary_link = next(
+            (link for link in product.category_links.all() if link.is_primary),
+            None,
+        )
+        return primary_link.category.key if primary_link else None
 
     def get_collection_keys(self, product):
         return [
@@ -85,9 +103,17 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductCreateSerializer(serializers.Serializer):
     key = serializers.SlugField(max_length=120)
     name = serializers.CharField(max_length=180)
-    category_key = serializers.SlugField(max_length=100)
+    category_keys = serializers.ListField(
+        child=serializers.SlugField(max_length=100),
+        allow_empty=False,
+    )
     unit = serializers.CharField(max_length=32, required=False, default="unit")
     price_cents = serializers.IntegerField(min_value=0, required=False)
+    price_type = serializers.ChoiceField(
+        choices=ProductPrice.PriceType.choices,
+        required=False,
+        default=ProductPrice.PriceType.BASE,
+    )
     commercial_mode_keys = serializers.ListField(
         child=serializers.SlugField(max_length=80),
         required=False,

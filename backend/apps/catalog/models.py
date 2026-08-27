@@ -92,7 +92,6 @@ class Product(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
         DRAFT = "draft", "Draft"
         ARCHIVED = "archived", "Archived"
 
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")
     key = models.SlugField(max_length=120)
     name = models.CharField(max_length=180)
     slug = models.SlugField(max_length=140)
@@ -116,12 +115,31 @@ class Product(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
         ]
         indexes = [
             models.Index(fields=["organization", "status"]),
-            models.Index(fields=["organization", "category"]),
             models.Index(fields=["organization", "sort_order"]),
         ]
 
     def __str__(self) -> str:
         return self.name
+
+
+class ProductCategory(OrganizationScopedModel, TimestampedModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="category_links")
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="product_links")
+    is_primary = models.BooleanField(default=False)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "category__name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organization", "product", "category"],
+                name="catalog_product_category_unique",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["organization", "product", "sort_order"]),
+            models.Index(fields=["organization", "category"]),
+        ]
 
 
 class CollectionProduct(OrganizationScopedModel, TimestampedModel):
@@ -182,6 +200,13 @@ class ProductMedia(OrganizationScopedModel, TimestampedModel):
 
 
 class ProductPrice(OrganizationScopedModel, TimestampedModel):
+    class PriceType(models.TextChoices):
+        BASE = "base", "Base"
+        PROMOTIONAL = "promotional", "Promotional"
+        SUBSCRIPTION = "subscription", "Subscription"
+        CAMPAIGN = "campaign", "Campaign"
+        MANUAL = "manual", "Manual"
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="prices")
     variant = models.ForeignKey(
         ProductVariant,
@@ -195,6 +220,18 @@ class ProductPrice(OrganizationScopedModel, TimestampedModel):
         on_delete=models.PROTECT,
         related_name="product_prices",
     )
+    collection = models.ForeignKey(
+        Collection,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="product_prices",
+    )
+    price_type = models.CharField(
+        max_length=24,
+        choices=PriceType.choices,
+        default=PriceType.BASE,
+    )
     currency = models.CharField(max_length=3, default="BRL")
     amount_cents = models.PositiveIntegerField()
     starts_at = models.DateTimeField(null=True, blank=True)
@@ -204,13 +241,21 @@ class ProductPrice(OrganizationScopedModel, TimestampedModel):
         ordering = ["commercial_mode__sort_order", "amount_cents"]
         constraints = [
             models.UniqueConstraint(
-                fields=["organization", "product", "variant", "commercial_mode"],
+                fields=[
+                    "organization",
+                    "product",
+                    "variant",
+                    "commercial_mode",
+                    "collection",
+                    "price_type",
+                ],
                 name="catalog_product_price_unique_mode",
             )
         ]
         indexes = [
             models.Index(fields=["organization", "product"]),
             models.Index(fields=["organization", "commercial_mode"]),
+            models.Index(fields=["organization", "collection", "price_type"]),
         ]
 
 

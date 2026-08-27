@@ -66,7 +66,7 @@ class CatalogApiTests(APITestCase):
             {
                 "key": "maminha",
                 "name": "Maminha",
-                "category_key": "carnes",
+                "category_keys": ["carnes", "combos"],
                 "unit": "kg",
                 "price_cents": 5490,
                 "commercial_mode_keys": ["delivery"],
@@ -77,6 +77,10 @@ class CatalogApiTests(APITestCase):
         )
         self.assertEqual(create_response.status_code, 201, create_response.data)
         self.assertEqual(create_response.data["key"], "maminha")
+        self.assertEqual(
+            [category["key"] for category in create_response.data["categories"]],
+            ["carnes", "combos"],
+        )
 
     def test_customer_cannot_access_admin_catalog(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

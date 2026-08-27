@@ -192,6 +192,7 @@ Entidades:
 - `Collection`;
 - `CollectionProduct`;
 - `Category`;
+- `ProductCategory`;
 - `Product`;
 - `ProductVariant`;
 - `ProductMedia`;
@@ -204,6 +205,7 @@ Responsabilidades:
 - colecoes comerciais/editoriais;
 - produtos;
 - categorias;
+- vinculo N:N produto-categoria;
 - preco base;
 - exibicao por modo comercial;
 - disponibilidade comercial;

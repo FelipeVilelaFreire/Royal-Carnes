@@ -8,6 +8,7 @@ from .models import (
     CollectionProduct,
     CommercialMode,
     Product,
+    ProductCategory,
     ProductPrice,
 )
 
@@ -58,7 +59,6 @@ def upsert_product(
     organization,
     key: str,
     name: str,
-    category: Category,
     unit: str = "unit",
     description: str = "",
     status: str = Product.Status.ACTIVE,
@@ -70,7 +70,6 @@ def upsert_product(
         defaults={
             "name": name,
             "slug": slugify(key or name),
-            "category": category,
             "unit": unit,
             "description": description,
             "status": status,
@@ -78,6 +77,20 @@ def upsert_product(
         },
     )
     return product
+
+
+@transaction.atomic
+def set_product_categories(*, organization, product: Product, categories: list[Category]) -> None:
+    for sort_order, category in enumerate(categories):
+        ProductCategory.objects.update_or_create(
+            organization=organization,
+            product=product,
+            category=category,
+            defaults={
+                "sort_order": sort_order,
+                "is_primary": sort_order == 0,
+            },
+        )
 
 
 @transaction.atomic
@@ -99,12 +112,16 @@ def set_product_price(
     commercial_mode: CommercialMode,
     amount_cents: int,
     currency: str,
+    collection: Collection | None = None,
+    price_type: str = ProductPrice.PriceType.BASE,
 ) -> ProductPrice:
     price, _created = ProductPrice.objects.update_or_create(
         organization=organization,
         product=product,
         variant=None,
         commercial_mode=commercial_mode,
+        collection=collection,
+        price_type=price_type,
         defaults={
             "amount_cents": amount_cents,
             "currency": currency,
@@ -136,20 +153,26 @@ def create_admin_product(
     organization,
     key: str,
     name: str,
-    category_key: str,
+    category_keys: list[str],
     unit: str = "unit",
     price_cents: int | None = None,
     commercial_mode_keys: list[str] | None = None,
     collection_keys: list[str] | None = None,
+    price_type: str = ProductPrice.PriceType.BASE,
 ) -> Product:
-    category = Category.objects.get(organization=organization, key=category_key)
     product = upsert_product(
         organization=organization,
         key=key,
         name=name,
-        category=category,
         unit=unit,
     )
+    categories = list(
+        Category.objects.filter(
+            organization=organization,
+            key__in=category_keys,
+        )
+    )
+    set_product_categories(organization=organization, product=product, categories=categories)
     collections = list(
         Collection.objects.filter(
             organization=organization,
@@ -168,6 +191,7 @@ def create_admin_product(
                 commercial_mode=commercial_mode,
                 amount_cents=price_cents,
                 currency=organization.currency,
+                price_type=price_type,
             )
             set_product_availability(
                 organization=organization,

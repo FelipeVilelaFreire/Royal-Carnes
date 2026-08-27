@@ -24,6 +24,7 @@ from apps.catalog.services import (
     upsert_collection,
     upsert_commercial_mode,
     upsert_product,
+    set_product_categories,
 )
 
 
@@ -218,9 +219,18 @@ class BackendSeedApplier:
                 organization=organization,
                 key=product_data["key"],
                 name=product_data["name"],
-                category=categories_by_key[product_data["categoryKey"]],
                 unit=product_data.get("unit", "unit"),
                 description=product_data.get("description", ""),
+            )
+            category_keys = product_data.get("categoryKeys") or [product_data["categoryKey"]]
+            product_categories = [
+                categories_by_key[category_key]
+                for category_key in category_keys
+            ]
+            set_product_categories(
+                organization=organization,
+                product=product,
+                categories=product_categories,
             )
             product_collections = [
                 collections_by_key[collection_key]

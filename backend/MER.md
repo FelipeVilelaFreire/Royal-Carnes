@@ -67,6 +67,7 @@ catalog
   Collection
   CollectionProduct
   Category
+  ProductCategory
   Product
   ProductVariant
   ProductMedia
@@ -433,6 +434,7 @@ Regra:
 Collection organiza campanha, vitrine, sazonalidade ou agrupamento comercial.
 Category organiza taxonomia.
 Product e o item vendavel.
+Product pode pertencer a varias Categories.
 ```
 
 ### CollectionProduct
@@ -493,7 +495,6 @@ Campos:
 ```text
 id
 organizationId
-categoryId
 name
 slug
 description
@@ -517,6 +518,37 @@ Exemplo outro produto:
 Bike urbana
 Capacete
 Kit reparo
+```
+
+### ProductCategory
+
+Relacionamento N:N entre produto e categoria.
+
+Campos:
+
+```text
+id
+organizationId
+productId
+categoryId
+isPrimary
+sortOrder
+```
+
+Regra:
+
+```text
+um produto pode estar em varias categorias
+uma categoria pode ter varios produtos
+isPrimary define a categoria principal para UI/SEO quando necessario
+```
+
+Exemplo:
+
+```text
+Produto: Bike X
+  -> Infantil
+  -> Adulto
 ```
 
 ### ProductVariant
@@ -549,10 +581,29 @@ organizationId
 productId
 variantId opcional
 commercialModeKey
+collectionId opcional
+priceType
 currency
 amountCents
 startsAt
 endsAt opcional
+```
+
+Tipos iniciais:
+
+```text
+base
+promotional
+subscription
+campaign
+manual
+```
+
+Regra:
+
+```text
+ProductPrice representa preco publicado/contratado.
+Motor de desconto/promocao complexo fica para app futuro.
 ```
 
 ### CommercialMode

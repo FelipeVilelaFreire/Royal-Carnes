@@ -244,8 +244,10 @@ apps/catalog/urls.py
 apps/catalog/tests/test_api.py
 apps/catalog/migrations/0001_initial.py
 apps/catalog/migrations/0002_*.py
+apps/catalog/migrations/0003_productcategory_and_more.py
 apps/core/seed_loader.py
 backend/API_CONTRACTS.md
+backend/MER.md
 kits/catalog-kit.md
 ```
 
@@ -273,6 +275,17 @@ Seed ainda planned:
 
 ```text
 subscriptions
+```
+
+Decisao estrutural:
+
+```text
+Product -> N Categories via ProductCategory
+Product -> N Collections via CollectionProduct
+Product -> N Prices via ProductPrice
+ProductPrice pode ter collection opcional e priceType
+Fase 2 nao implementa assinatura
+Fase 3 deve conectar PlanEntitlement com Product/Category/Collection
 ```
 
 Validacao executada:

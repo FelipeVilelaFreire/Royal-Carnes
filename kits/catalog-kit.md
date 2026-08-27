@@ -29,6 +29,14 @@ Collection organiza campanha/vitrine/sazonalidade.
 Category organiza taxonomia.
 Product e item vendavel.
 Product pode pertencer a varias Collections.
+Product pode pertencer a varias Categories.
+```
+
+Regra de fase:
+
+```text
+Fase 2 nao implementa assinatura.
+Fase 2 prepara Product, Category e Collection para a Fase 3 apontar PlanEntitlement.
 ```
 
 ## Escopo Backend
@@ -38,6 +46,7 @@ Responsabilidades:
 - criar e listar colecoes;
 - criar e listar categorias;
 - criar produtos e variantes;
+- vincular produto a uma ou mais categorias;
 - manter preco por produto/variante e modo comercial;
 - controlar disponibilidade comercial;
 - permitir que um produto apareca em multiplas colecoes;
@@ -64,6 +73,7 @@ Entidades esperadas:
 - `Collection`;
 - `CollectionProduct`;
 - `Category`;
+- `ProductCategory`;
 - `Product`;
 - `ProductVariant`;
 - `ProductMedia`;
@@ -191,6 +201,7 @@ Generico:
 
 - colecao;
 - categoria;
+- vinculo N:N produto-categoria;
 - produto;
 - variante;
 - preco;

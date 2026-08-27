@@ -463,9 +463,10 @@ Request:
 {
   "key": "maminha",
   "name": "Maminha",
-  "category_key": "carnes",
+  "category_keys": ["carnes", "combos"],
   "unit": "kg",
   "price_cents": 5490,
+  "price_type": "base",
   "commercial_mode_keys": ["delivery"],
   "collection_keys": ["dia-a-dia"]
 }

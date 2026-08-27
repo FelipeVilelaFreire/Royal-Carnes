@@ -19,10 +19,11 @@ def active_commercial_modes_for_organization(organization):
 def public_products_for_organization(organization):
     return (
         Product.objects.filter(organization=organization, status=Product.Status.ACTIVE)
-        .select_related("category")
         .prefetch_related(
+            "category_links__category",
             "collection_links__collection",
             "prices__commercial_mode",
+            "prices__collection",
             "availability__commercial_mode",
             "media",
             "variants",
@@ -33,17 +34,22 @@ def public_products_for_organization(organization):
 def admin_products_for_organization(organization):
     return (
         Product.objects.filter(organization=organization)
-        .select_related("category")
-        .prefetch_related("collection_links__collection", "prices__commercial_mode")
+        .prefetch_related(
+            "category_links__category",
+            "collection_links__collection",
+            "prices__commercial_mode",
+            "prices__collection",
+        )
     )
 
 
 def product_detail(product_id, organization):
     return (
-        Product.objects.select_related("category")
-        .prefetch_related(
+        Product.objects.prefetch_related(
+            "category_links__category",
             "collection_links__collection",
             "prices__commercial_mode",
+            "prices__collection",
             "availability__commercial_mode",
             "media",
             "variants",

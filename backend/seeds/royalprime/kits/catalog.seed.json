@@ -22,36 +22,36 @@
   ],
   "products": [
     {
-      "key": "picanha",
-      "name": "Picanha",
-      "categoryKey": "carnes",
+        "key": "picanha",
+        "name": "Picanha",
+        "categoryKeys": ["carnes", "combos"],
       "collections": ["colecao-familia", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 8990,
       "commercialModes": ["subscription", "delivery", "box"]
     },
     {
-      "key": "ancho",
-      "name": "Ancho",
-      "categoryKey": "carnes",
+        "key": "ancho",
+        "name": "Ancho",
+        "categoryKeys": ["carnes"],
       "collections": ["churrasco-premium"],
       "unit": "kg",
       "priceCents": 7990,
       "commercialModes": ["subscription", "delivery", "box"]
     },
     {
-      "key": "fraldinha",
-      "name": "Fraldinha",
-      "categoryKey": "carnes",
+        "key": "fraldinha",
+        "name": "Fraldinha",
+        "categoryKeys": ["carnes", "combos"],
       "collections": ["colecao-familia", "dia-a-dia"],
       "unit": "kg",
       "priceCents": 5990,
       "commercialModes": ["subscription", "delivery"]
     },
     {
-      "key": "carvao-premium",
-      "name": "Carvao Premium",
-      "categoryKey": "carvao",
+        "key": "carvao-premium",
+        "name": "Carvao Premium",
+        "categoryKeys": ["carvao", "utensilios"],
       "collections": ["churrasco-premium", "dia-a-dia"],
       "unit": "bag",
       "priceCents": 3490,

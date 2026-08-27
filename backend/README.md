@@ -180,6 +180,7 @@ Implementado em codigo:
 Collection
 CollectionProduct
 Category
+ProductCategory
 Product
 ProductVariant
 ProductMedia
@@ -189,6 +190,16 @@ CatalogAvailability
 Catalog seed aplicado
 Catalog endpoints publicos/admin
 Catalog API tests
+```
+
+Decisao estrutural:
+
+```text
+Product pode estar em varias Categories.
+Product pode estar em varias Collections.
+Product pode ter varios Prices por commercial mode, collection e price_type.
+Subscription/Plan nao mora no Catalog; a Fase 3 deve apontar para Product,
+Category ou Collection por PlanEntitlement.
 ```
 
 Rotas principais:

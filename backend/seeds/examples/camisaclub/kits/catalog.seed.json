@@ -18,36 +18,36 @@
   ],
   "products": [
     {
-      "key": "camiseta-branca",
-      "name": "Camiseta branca",
-      "categoryKey": "camisetas",
+        "key": "camiseta-branca",
+        "name": "Camiseta branca",
+        "categoryKeys": ["camisetas"],
       "collections": ["basicos", "verao"],
       "unit": "unit",
       "priceCents": 7990,
       "commercialModes": ["subscription", "delivery", "box"]
     },
     {
-      "key": "camiseta-street",
-      "name": "Camiseta street",
-      "categoryKey": "camisetas",
+        "key": "camiseta-street",
+        "name": "Camiseta street",
+        "categoryKeys": ["camisetas"],
       "collections": ["streetwear"],
       "unit": "unit",
       "priceCents": 10990,
       "commercialModes": ["subscription", "delivery", "box"]
     },
     {
-      "key": "moletom-basic",
-      "name": "Moletom basic",
-      "categoryKey": "moletons",
+        "key": "moletom-basic",
+        "name": "Moletom basic",
+        "categoryKeys": ["moletons"],
       "collections": ["basicos", "streetwear"],
       "unit": "unit",
       "priceCents": 18990,
       "commercialModes": ["delivery", "box"]
     },
     {
-      "key": "bone-classic",
-      "name": "Bone classic",
-      "categoryKey": "acessorios",
+        "key": "bone-classic",
+        "name": "Bone classic",
+        "categoryKeys": ["acessorios"],
       "collections": ["streetwear", "verao"],
       "unit": "unit",
       "priceCents": 6990,

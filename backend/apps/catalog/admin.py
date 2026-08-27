@@ -7,6 +7,7 @@ from .models import (
     CollectionProduct,
     CommercialMode,
     Product,
+    ProductCategory,
     ProductMedia,
     ProductPrice,
     ProductVariant,
@@ -39,6 +40,11 @@ class ProductPriceInline(admin.TabularInline):
     extra = 0
 
 
+class ProductCategoryInline(admin.TabularInline):
+    model = ProductCategory
+    extra = 0
+
+
 class CollectionProductInline(admin.TabularInline):
     model = CollectionProduct
     extra = 0
@@ -46,10 +52,10 @@ class CollectionProductInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "key", "organization", "category", "status", "unit")
-    list_filter = ("organization", "status", "category")
+    list_display = ("name", "key", "organization", "status", "unit")
+    list_filter = ("organization", "status")
     search_fields = ("name", "key", "slug")
-    inlines = [CollectionProductInline, ProductPriceInline]
+    inlines = [ProductCategoryInline, CollectionProductInline, ProductPriceInline]
 
 
 admin.site.register(ProductVariant)
