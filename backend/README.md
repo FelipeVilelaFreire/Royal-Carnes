@@ -16,6 +16,26 @@ Antes de implementar qualquer backend novo, leia nesta ordem:
 
 O RoyalPrime passa a ser tratado como produto principal. O ServiceOS continua como referencia de organizacao, contratos, AppShell, shared-core e separacao de responsabilidades, mas nao deve travar a entrega nem forcar abstracao antes da necessidade real.
 
+## Foundation tecnica
+
+A decisao inicial de stack esta em `backend/FOUNDATION.md`.
+
+Resumo:
+
+```text
+Django + Django REST Framework
+PostgreSQL como banco alvo
+SQLite permitido para boot local inicial
+codigo e MER pensados para Postgres desde o inicio
+Vercel para frontends
+Supabase Postgres para banco gerenciado
+Render para Django API/web server
+```
+
+O contrato de variaveis fica em `backend/.env.example`.
+
+O arquivo `backend/.env` pode existir localmente, mas nao deve ser versionado.
+
 ## Ordem central do produto
 
 Todo desenvolvimento novo deve seguir esta divisao:
@@ -68,7 +88,8 @@ A proxima rodada deve comecar por documentacao e modelagem:
 1. Rever a tree final do produto.
 2. Definir a foundation do backend.
 3. Montar o MER.
-4. Classificar mocks atuais como entidade, seed, DTO ou dado temporario.
-5. So depois iniciar implementacao.
+4. Definir contratos de API.
+5. Classificar mocks atuais como entidade, seed, DTO ou dado temporario.
+6. So depois iniciar implementacao.
 
 Nao recriar runtime backend antes de fechar tree e MER.
