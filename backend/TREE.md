@@ -31,6 +31,7 @@ backend/
   TREE.md
   FOUNDATION.md
   MER.md
+  PHASE_3_SUBSCRIPTIONS.md
   API_CONTRACTS.md
   IMPLEMENTATION_LOG.md
   .env.example
@@ -194,6 +195,7 @@ Entidades:
 - `Category`;
 - `ProductCategory`;
 - `Product`;
+- `MeasurementUnit`;
 - `ProductVariant`;
 - `ProductMedia`;
 - `ProductPrice`;
@@ -206,6 +208,7 @@ Responsabilidades:
 - produtos;
 - categorias;
 - vinculo N:N produto-categoria;
+- unidades de medida vendaveis;
 - preco base;
 - exibicao por modo comercial;
 - disponibilidade comercial;

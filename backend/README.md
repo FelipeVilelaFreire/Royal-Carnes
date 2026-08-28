@@ -11,6 +11,7 @@ Antes de implementar qualquer backend novo, leia nesta ordem:
 1. `AGENTS.md` na raiz do workspace.
 2. `backend/ROADMAP.md`.
 3. `backend/ARCHITECTURE.md`.
+4. `backend/PHASE_3_SUBSCRIPTIONS.md` quando for continuar planos/assinaturas.
 
 ## Decisao atual
 
@@ -171,7 +172,7 @@ Sem header, o backend usa a organization default local para boot/dev.
 Status:
 
 ```text
-local scaffold
+foundation done
 ```
 
 Implementado em codigo:
@@ -272,5 +273,10 @@ RoyalPrime prova o fluxo real
 
 ## Proxima rodada
 
-A proxima rodada deve decidir se fechamos `subscriptions/plans` ou se conectamos
-o frontend ao catalog via shared-core/api/hooks.
+A proxima rodada recomendada e iniciar Fase 3 lendo:
+
+```text
+backend/PHASE_3_SUBSCRIPTIONS.md
+```
+
+Depois disso, atualizar MER/API/kits e so entao implementar `apps/subscriptions`.

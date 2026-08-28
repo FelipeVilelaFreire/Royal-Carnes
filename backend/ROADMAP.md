@@ -104,6 +104,14 @@ Primeiro kit documentado:
 kits/auth-users-kit.md
 ```
 
+Nota de sequencia backend foundation:
+
+```text
+Fase 1 Auth & Users -> fechada
+Fase 2 Catalog Runtime Foundation -> fechada
+Fase 3 Plans And Subscriptions -> planejada em backend/PHASE_3_SUBSCRIPTIONS.md
+```
+
 ### Fase 1: Backend Base Real
 
 Objetivo: tirar o app do mock sem tentar resolver tudo de uma vez.
