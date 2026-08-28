@@ -15,7 +15,14 @@ from apps.accounts.services import (
 )
 from apps.customers.services import upsert_customer
 from apps.organizations.models import Organization
-from apps.catalog.models import Category, Collection, CommercialMode, MeasurementUnit
+from apps.catalog.models import (
+    Category,
+    Collection,
+    CommercialMode,
+    MeasurementUnit,
+    Product,
+    ProductVariant,
+)
 from apps.catalog.services import (
     set_product_availability,
     set_product_collections,
@@ -29,6 +36,17 @@ from apps.catalog.services import (
     set_product_categories,
     upsert_product_variant,
 )
+from apps.customers.models import Customer
+from apps.subscriptions.models import Plan, PlanEntitlement, SubscriptionCycleItem
+from apps.subscriptions.services import (
+    set_plan_price,
+    upsert_plan,
+    upsert_plan_entitlement,
+    upsert_subscription,
+    upsert_subscription_cycle,
+    upsert_subscription_cycle_item,
+)
+from apps.inventory.services import upsert_inventory_item
 
 
 @dataclass(frozen=True)
@@ -105,6 +123,15 @@ class BackendSeedApplier:
         self.summary: list[str] = []
         self.organization: Organization | None = None
         self.users_by_customer_key: dict[str, User] = {}
+        self.customers_by_key: dict[str, Customer] = {}
+        self.collections_by_key: dict[str, Collection] = {}
+        self.categories_by_key: dict[str, Category] = {}
+        self.commercial_modes_by_key: dict[str, CommercialMode] = {}
+        self.measurement_units_by_key: dict[str, MeasurementUnit] = {}
+        self.products_by_key: dict[str, Product] = {}
+        self.variants_by_sku: dict[str, ProductVariant] = {}
+        self.plans_by_key: dict[str, Plan] = {}
+        self.entitlements_by_key: dict[str, PlanEntitlement] = {}
 
     def apply(self) -> list[str]:
         if self.dry_run:
@@ -123,6 +150,10 @@ class BackendSeedApplier:
                     self.apply_customers(module.data)
                 elif module.kit == "catalog":
                     self.apply_catalog(module.data)
+                elif module.kit == "subscriptions":
+                    self.apply_subscriptions(module.data)
+                elif module.kit == "inventory":
+                    self.apply_inventory(module.data)
                 else:
                     self.summary.append(f"skipped planned kit={module.kit}")
         return self.summary
@@ -179,7 +210,7 @@ class BackendSeedApplier:
     def apply_customers(self, data: dict[str, Any]) -> None:
         organization = self.require_organization()
         for customer_data in data.get("customers", []):
-            upsert_customer(
+            customer = upsert_customer(
                 organization=organization,
                 key=customer_data.get("key", ""),
                 name=customer_data["name"],
@@ -187,17 +218,15 @@ class BackendSeedApplier:
                 phone=customer_data.get("phone", ""),
                 user=self.users_by_customer_key.get(customer_data.get("key", "")),
             )
+            customer_key = customer_data.get("key")
+            if customer_key:
+                self.customers_by_key[customer_key] = customer
         self.summary.append(f"applied customers: count={len(data.get('customers', []))}")
 
     def apply_catalog(self, data: dict[str, Any]) -> None:
         organization = self.require_organization()
-        collections_by_key: dict[str, Collection] = {}
-        categories_by_key: dict[str, Category] = {}
-        commercial_modes_by_key: dict[str, CommercialMode] = {}
-        measurement_units_by_key: dict[str, MeasurementUnit] = {}
-
         for collection_data in data.get("collections", []):
-            collections_by_key[collection_data["key"]] = upsert_collection(
+            self.collections_by_key[collection_data["key"]] = upsert_collection(
                 organization=organization,
                 key=collection_data["key"],
                 name=collection_data["name"],
@@ -205,21 +234,21 @@ class BackendSeedApplier:
             )
 
         for category_data in data.get("categories", []):
-            categories_by_key[category_data["key"]] = upsert_category(
+            self.categories_by_key[category_data["key"]] = upsert_category(
                 organization=organization,
                 key=category_data["key"],
                 name=category_data["name"],
             )
 
         for commercial_mode_data in data.get("commercialModes", []):
-            commercial_modes_by_key[commercial_mode_data["key"]] = upsert_commercial_mode(
+            self.commercial_modes_by_key[commercial_mode_data["key"]] = upsert_commercial_mode(
                 organization=organization,
                 key=commercial_mode_data["key"],
                 name=commercial_mode_data["name"],
             )
 
         for unit_data in data.get("measurementUnits", []):
-            measurement_units_by_key[unit_data["key"]] = upsert_measurement_unit(
+            self.measurement_units_by_key[unit_data["key"]] = upsert_measurement_unit(
                 organization=organization,
                 key=unit_data["key"],
                 name=unit_data["name"],
@@ -236,9 +265,10 @@ class BackendSeedApplier:
                 unit=product_data.get("unit", "unit"),
                 description=product_data.get("description", ""),
             )
+            self.products_by_key[product_data["key"]] = product
             category_keys = product_data.get("categoryKeys") or [product_data["categoryKey"]]
             product_categories = [
-                categories_by_key[category_key]
+                self.categories_by_key[category_key]
                 for category_key in category_keys
             ]
             set_product_categories(
@@ -247,7 +277,7 @@ class BackendSeedApplier:
                 categories=product_categories,
             )
             product_collections = [
-                collections_by_key[collection_key]
+                self.collections_by_key[collection_key]
                 for collection_key in product_data.get("collections", [])
             ]
             set_product_collections(
@@ -261,7 +291,7 @@ class BackendSeedApplier:
                 media_items=product_data.get("media", []),
             )
             for commercial_mode_key in product_data.get("commercialModes", []):
-                commercial_mode = commercial_modes_by_key[commercial_mode_key]
+                commercial_mode = self.commercial_modes_by_key[commercial_mode_key]
                 set_product_price(
                     organization=organization,
                     product=product,
@@ -285,12 +315,14 @@ class BackendSeedApplier:
                     sku=variant_data.get("sku", ""),
                     name=variant_data["name"],
                     unit=variant_unit_key,
-                    measurement_unit=measurement_units_by_key.get(variant_unit_key),
+                    measurement_unit=self.measurement_units_by_key.get(variant_unit_key),
                     unit_quantity=variant_data.get("unitQuantity", 1),
                     weight_grams=variant_data.get("weightGrams"),
                     attributes=variant_data.get("attributes", {}),
                     is_active=variant_data.get("isActive", True),
                 )
+                if variant.sku:
+                    self.variants_by_sku[variant.sku] = variant
                 variant_price_cents = variant_data.get("priceCents")
                 if variant_price_cents is not None:
                     for commercial_mode_key in variant_data.get(
@@ -301,11 +333,119 @@ class BackendSeedApplier:
                             organization=organization,
                             product=product,
                             variant=variant,
-                            commercial_mode=commercial_modes_by_key[commercial_mode_key],
+                            commercial_mode=self.commercial_modes_by_key[commercial_mode_key],
                             amount_cents=variant_price_cents,
                             currency=organization.currency,
                         )
         self.summary.append(f"applied catalog: products={len(data.get('products', []))}")
+
+    def apply_subscriptions(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        for sort_order, plan_data in enumerate(data.get("plans", [])):
+            plan = upsert_plan(
+                organization=organization,
+                key=plan_data["key"],
+                name=plan_data["name"],
+                description=plan_data.get("description", ""),
+                status=plan_data.get("status", Plan.Status.ACTIVE),
+                billing_interval=plan_data.get("billingInterval", Plan.BillingInterval.MONTH),
+                trial_days=plan_data.get("trialDays", 0),
+                sort_order=plan_data.get("sortOrder", sort_order),
+            )
+            self.plans_by_key[plan.key] = plan
+            prices = plan_data.get("prices")
+            if prices is None and "priceCents" in plan_data:
+                prices = [{"amountCents": plan_data["priceCents"]}]
+            for price_data in prices or []:
+                set_plan_price(
+                    organization=organization,
+                    plan=plan,
+                    amount_cents=price_data["amountCents"],
+                    currency=price_data.get("currency", organization.currency),
+                    billing_interval=price_data.get("billingInterval", plan.billing_interval),
+                    billing_interval_count=price_data.get("billingIntervalCount", 1),
+                    price_type=price_data.get("priceType", "recurring"),
+                )
+            for entitlement_order, entitlement_data in enumerate(plan_data.get("entitlements", [])):
+                entitlement = upsert_plan_entitlement(
+                    organization=organization,
+                    plan=plan,
+                    key=entitlement_data["key"],
+                    target_type=entitlement_data["targetType"],
+                    target_key=entitlement_data["targetKey"],
+                    quantity=entitlement_data["quantity"],
+                    measurement_unit_key=entitlement_data.get("measurementUnitKey"),
+                    constraints=entitlement_data.get("constraints", {}),
+                    sort_order=entitlement_data.get("sortOrder", entitlement_order),
+                )
+                self.entitlements_by_key[f"{plan.key}:{entitlement.key}"] = entitlement
+
+        subscriptions_by_key = {}
+        cycles_by_key = {}
+        for subscription_data in data.get("subscriptions", []):
+            customer = self.customers_by_key[subscription_data["customerKey"]]
+            plan = self.plans_by_key[subscription_data["planKey"]]
+            subscription = upsert_subscription(
+                organization=organization,
+                customer=customer,
+                plan=plan,
+                status=subscription_data.get("status", "active"),
+                started_at=subscription_data["startedAt"],
+                current_cycle_starts_at=subscription_data.get("currentCycleStartsAt"),
+                current_cycle_ends_at=subscription_data.get("currentCycleEndsAt"),
+            )
+            subscriptions_by_key[subscription_data["key"]] = subscription
+
+        for cycle_data in data.get("cycles", []):
+            subscription = subscriptions_by_key[cycle_data["subscriptionKey"]]
+            cycle = upsert_subscription_cycle(
+                organization=organization,
+                subscription=subscription,
+                cycle_number=cycle_data["cycleNumber"],
+                starts_at=cycle_data["startsAt"],
+                ends_at=cycle_data["endsAt"],
+                status=cycle_data.get("status", "open"),
+            )
+            cycles_by_key[cycle_data["key"]] = cycle
+
+        for item_data in data.get("cycleItems", []):
+            cycle = cycles_by_key[item_data["cycleKey"]]
+            plan_key = cycle.subscription.plan.key
+            entitlement = self.entitlements_by_key[f"{plan_key}:{item_data['entitlementKey']}"]
+            product = self.products_by_key.get(item_data.get("productKey", ""))
+            variant = self.variants_by_sku.get(item_data.get("variantSku", ""))
+            measurement_unit = self.measurement_units_by_key.get(item_data.get("measurementUnitKey", ""))
+            upsert_subscription_cycle_item(
+                organization=organization,
+                cycle=cycle,
+                entitlement=entitlement,
+                product=product,
+                variant=variant,
+                quantity=item_data["quantity"],
+                measurement_unit=measurement_unit,
+                status=item_data.get("status", SubscriptionCycleItem.Status.PENDING),
+            )
+
+        self.summary.append(f"applied subscriptions: plans={len(data.get('plans', []))}")
+
+    def apply_inventory(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        for item_data in data.get("items", []):
+            product = self.products_by_key[item_data["productKey"]]
+            variant = self.variants_by_sku.get(item_data.get("variantSku", ""))
+            measurement_unit = self.measurement_units_by_key.get(item_data.get("measurementUnitKey", ""))
+            upsert_inventory_item(
+                organization=organization,
+                product=product,
+                variant=variant,
+                measurement_unit=measurement_unit,
+                available_quantity=item_data.get("availableQuantity", 0),
+                reserved_quantity=item_data.get("reservedQuantity", 0),
+                low_stock_threshold=item_data.get("lowStockThreshold", 0),
+                status=item_data.get("status"),
+                notes=item_data.get("notes", ""),
+            )
+        self.summary.append(f"applied inventory: items={len(data.get('items', []))}")
 
     def require_organization(self) -> Organization:
         if self.organization is None:

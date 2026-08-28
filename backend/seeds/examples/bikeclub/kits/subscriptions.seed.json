@@ -1,26 +1,97 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "kit": "subscriptions",
   "plans": [
     {
       "key": "urbano",
       "name": "Urbano",
-      "priceCents": 12900,
       "billingInterval": "month",
-      "limits": [
-        { "key": "monthlyMaintenanceHours", "value": 1, "unit": "hour" },
-        { "key": "maxItemsPerCycle", "value": 2, "unit": "item" }
+      "prices": [
+        { "amountCents": 12900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "urban-bike",
+          "targetType": "product",
+          "targetKey": "bike-urbana",
+          "quantity": 1,
+          "measurementUnitKey": "unit",
+          "constraints": {
+            "maxSelections": 1,
+            "allowedCommercialModes": ["subscription"],
+            "allowedAttributes": {
+              "wheelSize": ["aro 20", "aro 26"]
+            },
+            "requiresAvailability": true
+          }
+        },
+        {
+          "key": "monthly-review",
+          "targetType": "product",
+          "targetKey": "revisao-mensal",
+          "quantity": 1,
+          "measurementUnitKey": "service",
+          "constraints": {
+            "maxQuantity": 1,
+            "allowedCommercialModes": ["subscription"],
+            "requiresAvailability": true
+          }
+        }
       ]
     },
     {
       "key": "performance",
       "name": "Performance",
-      "priceCents": 24900,
       "billingInterval": "month",
-      "limits": [
-        { "key": "monthlyMaintenanceHours", "value": 3, "unit": "hour" },
-        { "key": "maxItemsPerCycle", "value": 4, "unit": "item" }
+      "prices": [
+        { "amountCents": 24900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "performance-items",
+          "targetType": "collection",
+          "targetKey": "performance",
+          "quantity": 4,
+          "measurementUnitKey": "unit",
+          "constraints": {
+            "maxSelections": 4,
+            "allowedCommercialModes": ["subscription"],
+            "requiresAvailability": true
+          }
+        }
       ]
+    }
+  ],
+  "subscriptions": [
+    {
+      "key": "cliente-bikeclub-urbano",
+      "customerKey": "cliente-bikeclub",
+      "planKey": "urbano",
+      "status": "active",
+      "startedAt": "2026-08-01T00:00:00-03:00",
+      "currentCycleStartsAt": "2026-09-01T00:00:00-03:00",
+      "currentCycleEndsAt": "2026-09-30T23:59:59-03:00"
+    }
+  ],
+  "cycles": [
+    {
+      "key": "cliente-bikeclub-urbano-2026-09",
+      "subscriptionKey": "cliente-bikeclub-urbano",
+      "cycleNumber": 1,
+      "status": "open",
+      "startsAt": "2026-09-01T00:00:00-03:00",
+      "endsAt": "2026-09-30T23:59:59-03:00"
+    }
+  ],
+  "cycleItems": [
+    {
+      "cycleKey": "cliente-bikeclub-urbano-2026-09",
+      "entitlementKey": "urban-bike",
+      "productKey": "bike-urbana",
+      "variantSku": "BIKE-URBANA-ARO26",
+      "quantity": 1,
+      "measurementUnitKey": "unit",
+      "status": "selected"
     }
   ]
 }

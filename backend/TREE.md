@@ -75,6 +75,7 @@ backend/
         customers.seed.json
         catalog.seed.json
         subscriptions.seed.json
+        inventory.seed.json
     examples/
       bikeclub/
         seed.manifest.json
@@ -84,6 +85,7 @@ backend/
           customers.seed.json
           catalog.seed.json
           subscriptions.seed.json
+          inventory.seed.json
       camisaclub/
         seed.manifest.json
         kits/
@@ -92,6 +94,7 @@ backend/
           customers.seed.json
           catalog.seed.json
           subscriptions.seed.json
+          inventory.seed.json
     tests/
       minimal.seed.manifest.json
       kits/
@@ -100,6 +103,7 @@ backend/
         customers.seed.json
         catalog.seed.json
         subscriptions.seed.json
+        inventory.seed.json
 
   tests/
 ```
@@ -236,33 +240,36 @@ Dono de planos, mensalidade, recorrencia e ciclo.
 Entidades:
 
 - `Plan`;
-- `PlanLimit`;
 - `PlanPrice`;
+- `PlanEntitlement`;
 - `Subscription`;
 - `SubscriptionCycle`;
-- `SubscriptionCycleUsage`;
 - `SubscriptionCycleItem`.
 
 Responsabilidades:
 
 - mensalidade;
 - recorrencia;
-- limite de peso/cortes/beneficios;
+- beneficios recorrentes por entitlement;
+- limite por quantidade, unidade e constraints;
 - ciclo mensal;
-- consumo de ciclo;
+- consumo de ciclo derivado dos itens;
 - pedido gerado por assinatura.
 
 Kit:
 
 ```text
-Orders
-Payments
+Subscriptions
 ```
 
 Observacao:
 
 `Plan` nao e "Royal Pro" hardcoded. `Royal Pro` e seed/config de uma
 organization.
+
+`MeasurementUnit`, `Collection`, `Category`, `Product` e `ProductVariant` vem
+do catalogo/seed da organization. O app valida relacao, unidade, quantidade e
+constraints sem if por nome de negocio.
 
 ### apps/orders
 
@@ -408,11 +415,15 @@ Entidades:
 
 Responsabilidades:
 
-- ativo/inativo;
-- quantidade aproximada;
+- estoque por Product/ProductVariant;
+- MeasurementUnit vinda do Catalog;
+- quantidade disponivel;
+- quantidade reservada;
+- quantidade vendavel derivada;
+- baixo estoque simples;
 - indisponibilidade;
-- reserva;
-- baixa quando pedido for aprovado.
+- movimento auditavel;
+- reserva preparada para Orders futuro.
 
 Kit:
 

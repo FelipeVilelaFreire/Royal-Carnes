@@ -355,12 +355,27 @@ organizations
 auth-users
 customers
 catalog
+subscriptions
+inventory
 ```
 
-Carrega mas ainda pula como planned:
+Subscriptions aplica:
 
 ```text
-subscriptions
+plans
+plan prices
+plan entitlements
+customer subscriptions
+subscription cycles
+subscription cycle items
+```
+
+Inventory aplica:
+
+```text
+inventory items
+initial available/reserved quantities
+measurement unit per product/variant
 ```
 
 Status:
@@ -525,10 +540,341 @@ Variant response inclui:
 }
 ```
 
-## Endpoints Planejados Proximos
+Garantias de Catalog:
 
 ```text
-GET  /api/v1/catalog/plans/
+ProductVariant.sku e unico por organization quando informado.
+ProductPrice e unico por organization, product, commercial mode, price type e
+escopo opcional de variant/collection.
+Campos opcionais NULL em variant/collection nao podem gerar precos duplicados.
+```
+
+## Endpoints De Foundation Atual
+
+## Subscriptions
+
+### GET /api/v1/subscriptions/plans/
+
+Objetivo:
+
+```text
+listar planos ativos da request.organization com precos e entitlements
+```
+
+Auth:
+
+```text
+publico
+```
+
+Response inclui:
+
+```json
+{
+  "key": "pro",
+  "prices": [{ "amount_cents": 44900, "billing_interval": "month" }],
+  "entitlements": [
+    {
+      "key": "premium-cuts-12kg",
+      "target_type": "collection",
+      "target_key": "churrasco-premium",
+      "quantity": "12.000",
+      "measurement_unit_key": "kg",
+      "constraints": {
+        "maxSelections": 10,
+        "allowedCommercialModes": ["subscription"]
+      }
+    }
+  ]
+}
+```
+
+### GET /api/v1/subscriptions/me/
+
+Objetivo:
+
+```text
+retornar assinatura ativa do Customer ligado ao usuario autenticado
+```
+
+Auth:
+
+```text
+requer usuario autenticado
+```
+
+### GET /api/v1/subscriptions/me/cycles/current/
+
+Objetivo:
+
+```text
+retornar ciclo aberto atual da assinatura ativa do cliente
+```
+
+Auth:
+
+```text
+requer usuario autenticado
+```
+
+### POST /api/v1/subscriptions/me/cycles/current/items/
+
+Objetivo:
+
+```text
+selecionar/adicionar item no ciclo atual da assinatura ativa
+```
+
+Auth:
+
+```text
+requer usuario autenticado
+```
+
+Request:
+
+```json
+{
+  "entitlement_key": "premium-cuts-12kg",
+  "product_key": "picanha",
+  "variant_sku": "PICANHA-1KG",
+  "quantity": "1.000",
+  "measurement_unit_key": "kg"
+}
+```
+
+Validacao:
+
+```text
+entitlement pertence ao plano da assinatura
+produto/variant pertencem ao target do entitlement
+unidade bate com MeasurementUnit do entitlement
+quantidade total do ciclo nao excede entitlement.quantity
+constraints maxSelections, maxQuantity, allowedAttributes,
+allowedCommercialModes e requiresAvailability sao respeitadas
+```
+
+Erros principais:
+
+```text
+customer_not_found
+subscription_not_found
+current_cycle_not_found
+selection_reference_not_found
+target_mismatch
+unit_mismatch
+quantity_exceeded
+max_selections_exceeded
+attribute_not_allowed
+```
+
+### GET /api/v1/subscriptions/admin/plans/
+
+Objetivo:
+
+```text
+listar planos da organization para admin
+```
+
+Permissao:
+
+```text
+plans.read
+```
+
+### POST /api/v1/subscriptions/admin/plans/
+
+Objetivo:
+
+```text
+criar ou atualizar plano administrativo basico
+```
+
+Permissao:
+
+```text
+plans.manage
+```
+
+Erro de referencia:
+
+```text
+plan_entitlement_reference_not_found
+```
+
+### GET /api/v1/subscriptions/admin/subscriptions/
+
+Objetivo:
+
+```text
+listar assinaturas da organization para operacao/admin
+```
+
+Permissao:
+
+```text
+subscriptions.read
+```
+
+### POST /api/v1/subscriptions/admin/subscriptions/
+
+Objetivo:
+
+```text
+criar assinatura para Customer e Plan da mesma organization
+```
+
+Permissao:
+
+```text
+subscriptions.manage
+```
+
+Erro de referencia:
+
+```text
+subscription_reference_not_found
+```
+
+### GET /api/v1/subscriptions/admin/cycles/
+
+Objetivo:
+
+```text
+listar ciclos de assinatura da organization
+```
+
+Permissao:
+
+```text
+subscriptions.read
+```
+
+## Inventory
+
+### GET /api/v1/inventory/admin/items/
+
+Objetivo:
+
+```text
+listar estoque simples da request.organization com produto, variant, unidade,
+quantidade disponivel, quantidade reservada e quantidade vendavel
+```
+
+Permissao:
+
+```text
+inventory.read
+```
+
+### POST /api/v1/inventory/admin/items/
+
+Objetivo:
+
+```text
+criar ou atualizar item de estoque por Product e ProductVariant opcional
+```
+
+Permissao:
+
+```text
+inventory.manage
+```
+
+Request:
+
+```json
+{
+  "product_key": "picanha",
+  "variant_sku": "PICANHA-1KG",
+  "measurement_unit_key": "kg",
+  "available_quantity": "24.000",
+  "reserved_quantity": "2.000",
+  "low_stock_threshold": "4.000",
+  "status": "available",
+  "notes": "Estoque inicial"
+}
+```
+
+Regra:
+
+```text
+Product e ProductVariant precisam pertencer a request.organization.
+Variant, quando enviada, precisa pertencer ao Product.
+MeasurementUnit vem do Catalog/seed da organization.
+Sem variant_sku, o estoque e controlado no nivel do Product.
+```
+
+### GET /api/v1/inventory/admin/items/:id/
+
+Objetivo:
+
+```text
+detalhar item de estoque da request.organization
+```
+
+Permissao:
+
+```text
+inventory.read
+```
+
+### POST /api/v1/inventory/admin/items/:id/adjust/
+
+Objetivo:
+
+```text
+ajustar quantidade disponivel/reservada e registrar InventoryMovement
+```
+
+Permissao:
+
+```text
+inventory.manage
+```
+
+Request:
+
+```json
+{
+  "quantity_delta": "-4.000",
+  "reserved_delta": "1.000",
+  "movement_type": "manualAdjustment",
+  "reason": "Ajuste manual"
+}
+```
+
+Validacao:
+
+```text
+available_quantity nao pode ficar negativa
+reserved_quantity nao pode ficar negativa
+reserved_quantity nao pode passar available_quantity
+status e recalculado como available, limited ou unavailable, exceto disabled
+```
+
+Erros principais:
+
+```text
+variant_product_mismatch
+organization_mismatch
+negative_available_quantity
+negative_reserved_quantity
+reserved_exceeds_available
+```
+
+### GET /api/v1/inventory/admin/items/:id/movements/
+
+Objetivo:
+
+```text
+listar movimentos auditaveis de um item de estoque
+```
+
+Permissao:
+
+```text
+inventory.read
 ```
 
 ## Regra De Evolucao

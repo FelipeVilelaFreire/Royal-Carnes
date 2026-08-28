@@ -1,6 +1,6 @@
 # Catalog Kit
 
-Status inicial: `local scaffold`
+Status atual: `local foundation`
 
 Fase principal: Fase 2 - Catalog Runtime
 
@@ -34,6 +34,9 @@ MeasurementUnit define como a variant e medida/vendida.
 Product pode ter varias Variants.
 Product pode ter varias ProductMedia.
 Variant attributes guarda variacoes como tamanho, cor, aro, corte e embalagem.
+SKU, quando informado, e unico por organization.
+ProductPrice e deterministico por escopo de product, variant, collection,
+commercial mode e price type.
 ```
 
 Regra de fase:
@@ -114,6 +117,8 @@ Regras reais:
 - variant representa SKU/tamanho/peso/embalagem/unidade concreta;
 - tamanho 38/39/40, P/M/G, aro 20/26 e cor ficam em `Variant.attributes`;
 - variant nao representa categoria, colecao, campanha ou modo comercial;
+- `ProductVariant.sku` nao pode duplicar dentro da mesma organization quando informado;
+- `ProductPrice` nao pode duplicar por causa de `variant`/`collection` nulos;
 - `CommercialMode` e configuracao/seed, nao enum preso em Royal Carnes;
 - `Royal Delivery` e `Royal Box` sao nomes comerciais de seed/copy.
 
@@ -202,8 +207,8 @@ backend/TREE.md
 backend/seeds/royalprime/seed.manifest.json
 backend/seeds/examples/bikeclub/seed.manifest.json
 backend/seeds/examples/camisaclub/seed.manifest.json
-kits/seed-strategy.md
-kits/royal-carnes-seed-kit.md
+docs/kits/seed-strategy.md
+docs/kits/royal-carnes-seed-kit.md
 ```
 
 ## Generico vs Especifico

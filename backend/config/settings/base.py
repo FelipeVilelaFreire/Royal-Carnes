@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.customers",
     "apps.catalog",
+    "apps.subscriptions",
+    "apps.inventory",
 ]
 
 MIDDLEWARE = [
@@ -152,4 +154,9 @@ ROYALPRIME_DEFAULT_ORGANIZATION = {
     "currency": config("ROYALPRIME_DEFAULT_CURRENCY", default="BRL"),
 }
 
+ROYALPRIME_AUTO_CREATE_DEFAULT_ORGANIZATION = config(
+    "ROYALPRIME_AUTO_CREATE_DEFAULT_ORGANIZATION",
+    default=True,
+    cast=bool,
+)
 ROYALPRIME_ORGANIZATION_HEADER = "HTTP_X_ORGANIZATION_SLUG"

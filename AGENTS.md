@@ -9,7 +9,7 @@ Antes de implementar, leia nesta ordem:
 3. `backend/README.md`
 4. `backend/ROADMAP.md`
 5. `backend/ARCHITECTURE.md`
-6. `kits/README.md`
+6. `docs/kits/README.md`
 7. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
 ## Direcao do Produto
@@ -35,7 +35,7 @@ Tela apenas apresenta e dispara acao.
 
 ## Kits Reutilizaveis
 
-Use `kits/` como mapa de reuso para futuros produtos.
+Use `docs/kits/` como mapa de reuso para futuros produtos.
 
 Um kit nao e uma biblioteca abstrata pronta. Ele e uma ficha para a IA entender:
 

@@ -34,6 +34,15 @@
       "@/locales/*": [
         "../shared-core/locales/*"
       ],
+      "@/api/*": [
+        "../shared-core/api/*"
+      ],
+      "@/contracts/*": [
+        "../shared-core/contracts/*"
+      ],
+      "@/hooks/*": [
+        "../shared-core/hooks/*"
+      ],
       "@/navigation/*": [
         "../shared-core/navigation/*"
       ],

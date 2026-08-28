@@ -1,4 +1,4 @@
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 
 from apps.core.tenant.resolver import requested_organization_slug, resolve_request_organization
 from apps.organizations.models import Organization
@@ -36,3 +36,16 @@ class TenantResolverTests(TestCase):
         )
 
         self.assertIsNone(resolve_request_organization(request))
+
+    @override_settings(ROYALPRIME_AUTO_CREATE_DEFAULT_ORGANIZATION=False)
+    def test_default_organization_can_be_resolved_without_auto_create(self):
+        request = self.factory.get("/api/v1/health/")
+
+        self.assertIsNone(resolve_request_organization(request))
+
+        Organization.objects.create(
+            slug="royalprime",
+            name="RoyalPrime",
+            business_name="Royal Carnes",
+        )
+        self.assertEqual(resolve_request_organization(request).slug, "royalprime")

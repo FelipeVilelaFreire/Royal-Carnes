@@ -14,7 +14,7 @@ Antes de implementar, leia nesta ordem:
 4. `backend/README.md`
 5. `backend/ROADMAP.md`
 6. `backend/ARCHITECTURE.md`
-7. `kits/README.md`
+7. `docs/kits/README.md`
 8. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
 ## Regra Central
@@ -47,13 +47,13 @@ O codigo core deve continuar generico. O que muda por empresa deve vir de seed/c
 
 ## Kits Reutilizaveis
 
-`kits/` documenta capacidades que podem ser copiadas/adaptadas para outros produtos no futuro.
+`docs/kits/` documenta capacidades que podem ser copiadas/adaptadas para outros produtos no futuro.
 
 Exemplo:
 
 ```text
 Novo produto precisa de Auth & Users.
-  -> leia kits/auth-users-kit.md
+  -> leia docs/kits/auth-users-kit.md
   -> copie/adapte backend, contratos, hooks e telas conforme o escopo
 ```
 

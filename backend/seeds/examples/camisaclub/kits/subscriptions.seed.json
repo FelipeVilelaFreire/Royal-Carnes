@@ -1,24 +1,88 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "kit": "subscriptions",
   "plans": [
     {
       "key": "starter",
       "name": "Starter",
-      "priceCents": 9900,
       "billingInterval": "month",
-      "limits": [
-        { "key": "maxItemsPerCycle", "value": 1, "unit": "item" }
+      "prices": [
+        { "amountCents": 9900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "basic-shirts",
+          "targetType": "collection",
+          "targetKey": "basicos",
+          "quantity": 1,
+          "measurementUnitKey": "unit",
+          "constraints": {
+            "maxSelections": 1,
+            "allowedCommercialModes": ["subscription"],
+            "allowedAttributes": {
+              "size": ["P", "M", "G"]
+            },
+            "requiresAvailability": true
+          }
+        }
       ]
     },
     {
       "key": "club",
       "name": "Club",
-      "priceCents": 17900,
       "billingInterval": "month",
-      "limits": [
-        { "key": "maxItemsPerCycle", "value": 3, "unit": "item" }
+      "prices": [
+        { "amountCents": 17900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "streetwear-items",
+          "targetType": "collection",
+          "targetKey": "streetwear",
+          "quantity": 3,
+          "measurementUnitKey": "unit",
+          "constraints": {
+            "maxSelections": 3,
+            "allowedCommercialModes": ["subscription"],
+            "allowedAttributes": {
+              "size": ["M", "G"]
+            },
+            "requiresAvailability": true
+          }
+        }
       ]
+    }
+  ],
+  "subscriptions": [
+    {
+      "key": "cliente-camisaclub-club",
+      "customerKey": "cliente-camisaclub",
+      "planKey": "club",
+      "status": "active",
+      "startedAt": "2026-08-01T00:00:00-03:00",
+      "currentCycleStartsAt": "2026-09-01T00:00:00-03:00",
+      "currentCycleEndsAt": "2026-09-30T23:59:59-03:00"
+    }
+  ],
+  "cycles": [
+    {
+      "key": "cliente-camisaclub-club-2026-09",
+      "subscriptionKey": "cliente-camisaclub-club",
+      "cycleNumber": 1,
+      "status": "open",
+      "startsAt": "2026-09-01T00:00:00-03:00",
+      "endsAt": "2026-09-30T23:59:59-03:00"
+    }
+  ],
+  "cycleItems": [
+    {
+      "cycleKey": "cliente-camisaclub-club-2026-09",
+      "entitlementKey": "streetwear-items",
+      "productKey": "camiseta-street",
+      "variantSku": "CAMISETA-STREET-M",
+      "quantity": 1,
+      "measurementUnitKey": "unit",
+      "status": "selected"
     }
   ]
 }

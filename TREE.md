@@ -48,7 +48,6 @@ RoyalPrime/
   bats/
   docs/
   frontend/
-  kits/
   node_modules/
   .env.example
   .gitignore
@@ -135,18 +134,23 @@ RoyalPrime/
   bats/
 ```
 
-`kits/` ainda existe na raiz neste momento, mas a decisao alvo e mover para
-`docs/kits/`, porque kits sao documentacao de reuso, nao runtime.
+`docs/kits/` guarda os mapas de reuso, porque kits sao documentacao de reuso,
+nao runtime.
 
 ## Decisao Sobre Kits
 
 Estado atual:
 
 ```text
-kits/
+docs/kits/
   README.md
   kit-template.md
   auth-users-kit.md
+  catalog-kit.md
+  subscriptions-kit.md
+  inventory-kit.md
+  royal-carnes-seed-kit.md
+  seed-strategy.md
 ```
 
 Papel:
@@ -157,11 +161,10 @@ kit != biblioteca abstrata pronta
 kit != runtime do produto
 ```
 
-Decisao proposta:
+Decisao executada:
 
 ```text
-kits/
-  -> docs/kits/
+docs/kits/
 ```
 
 Motivo:
@@ -172,14 +175,12 @@ Motivo:
 - o runtime real continua em `backend/`, `frontend/*/shared-core` e
   `frontend/*/web`.
 
-Antes de mover:
+Referencias principais foram atualizadas para `docs/kits/`.
 
-- atualizar referencias em `AGENTS.md`;
-- atualizar referencias em `README.md`;
-- atualizar referencias em `ROYALPRIME_ARCHITECTURE_CONTRACT.md`;
-- atualizar referencias em `backend/ROADMAP.md`;
-- atualizar referencias em `docs/README.md`;
-- manter o conteudo dos kits intacto.
+Regra:
+
+- `docs/kits/` e documentacao de reuso;
+- `backend/seeds/**/kits/` continua sendo dado de seed por capacidade.
 
 ## Backend Alvo
 
@@ -229,6 +230,7 @@ backend/
         customers.seed.json
         catalog.seed.json
         subscriptions.seed.json
+        inventory.seed.json
     examples/
       bikeclub/
         seed.manifest.json
@@ -238,6 +240,7 @@ backend/
           customers.seed.json
           catalog.seed.json
           subscriptions.seed.json
+          inventory.seed.json
       camisaclub/
         seed.manifest.json
         kits/
@@ -246,6 +249,7 @@ backend/
           customers.seed.json
           catalog.seed.json
           subscriptions.seed.json
+          inventory.seed.json
     tests/
       minimal.seed.manifest.json
       kits/
@@ -254,6 +258,7 @@ backend/
         customers.seed.json
         catalog.seed.json
         subscriptions.seed.json
+        inventory.seed.json
 ```
 
 ## Backend Ownership
@@ -290,7 +295,7 @@ backend/apps/vouchers
   -> vouchers, resgates, regras de uso
 
 backend/apps/inventory
-  -> estoque simples, disponibilidade, baixa basica
+  -> estoque simples por Product/ProductVariant, reserva e ajuste basico
 
 backend/apps/admin_portal
   -> casos de uso e consultas especificas do admin operacional
@@ -834,7 +839,7 @@ Nao mover agora para evitar ruido antes do MER.
 ```text
 1. Criar TREE.md na raiz
 2. Criar backend/TREE.md
-3. Decidir e executar move kits -> docs/kits
+3. Mover kits documentais para docs/kits
 4. Atualizar referencias dos docs apos o move
 5. Criar backend/MER.md
 6. Classificar mocks atuais como entidade, seed, DTO ou temporario
@@ -849,7 +854,7 @@ Nao mover agora para evitar ruido antes do MER.
 Status:
 
 ```text
-documentando foundation
+foundation documentada, kits documentais movidos para docs/kits
 ```
 
 Feito:
@@ -862,6 +867,7 @@ backend/FOUNDATION.md criado
 backend/MER.md criado
 backend/.env.example criado
 deploy alvo Vercel + Supabase + Render documentado
+docs/kits aplicado como local canonico dos kits documentais
 backend scaffold Django criado
 backend/seeds documentado
 kits de seed e catalogo documentados

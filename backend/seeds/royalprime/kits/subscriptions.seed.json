@@ -1,38 +1,131 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "kit": "subscriptions",
   "plans": [
     {
       "key": "basic",
       "name": "Basic",
-      "priceCents": 19900,
+      "description": "Plano inicial para cortes do dia a dia.",
       "billingInterval": "month",
-      "limits": [
-        { "key": "proteinKgLimit", "value": 4, "unit": "kg" },
-        { "key": "maxCuts", "value": 3, "unit": "item" }
+      "prices": [
+        { "amountCents": 19900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "daily-cuts-4kg",
+          "targetType": "collection",
+          "targetKey": "dia-a-dia",
+          "quantity": 4,
+          "measurementUnitKey": "kg",
+          "constraints": {
+            "maxSelections": 3,
+            "allowedCommercialModes": ["subscription"],
+            "requiresAvailability": true
+          }
+        }
       ]
     },
     {
       "key": "premium",
       "name": "Premium",
-      "priceCents": 29900,
+      "description": "Plano intermediario com cortes premium e carvao.",
       "billingInterval": "month",
-      "limits": [
-        { "key": "proteinKgLimit", "value": 8, "unit": "kg" },
-        { "key": "charcoalKgLimit", "value": 5, "unit": "kg" },
-        { "key": "maxCuts", "value": 6, "unit": "item" }
+      "prices": [
+        { "amountCents": 29900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "premium-cuts-8kg",
+          "targetType": "collection",
+          "targetKey": "churrasco-premium",
+          "quantity": 8,
+          "measurementUnitKey": "kg",
+          "constraints": {
+            "maxSelections": 6,
+            "allowedCommercialModes": ["subscription"],
+            "requiresAvailability": true
+          }
+        },
+        {
+          "key": "charcoal-5kg",
+          "targetType": "variant",
+          "targetKey": "CARVAO-5KG",
+          "quantity": 1,
+          "measurementUnitKey": "bag",
+          "constraints": {
+            "maxQuantity": 1,
+            "allowedCommercialModes": ["box", "delivery"],
+            "requiresAvailability": true
+          }
+        }
       ]
     },
     {
       "key": "pro",
       "name": "Pro",
-      "priceCents": 44900,
+      "description": "Plano completo com maior limite mensal e beneficios extras.",
       "billingInterval": "month",
-      "limits": [
-        { "key": "proteinKgLimit", "value": 12, "unit": "kg" },
-        { "key": "charcoalKgLimit", "value": 10, "unit": "kg" },
-        { "key": "maxCuts", "value": 10, "unit": "item" }
+      "prices": [
+        { "amountCents": 44900, "billingInterval": "month" }
+      ],
+      "entitlements": [
+        {
+          "key": "premium-cuts-12kg",
+          "targetType": "collection",
+          "targetKey": "churrasco-premium",
+          "quantity": 12,
+          "measurementUnitKey": "kg",
+          "constraints": {
+            "maxSelections": 10,
+            "allowedCommercialModes": ["subscription"],
+            "requiresAvailability": true
+          }
+        },
+        {
+          "key": "charcoal-10kg",
+          "targetType": "variant",
+          "targetKey": "CARVAO-10KG",
+          "quantity": 1,
+          "measurementUnitKey": "bag",
+          "constraints": {
+            "maxQuantity": 1,
+            "allowedCommercialModes": ["box", "delivery"],
+            "requiresAvailability": true
+          }
+        }
       ]
+    }
+  ],
+  "subscriptions": [
+    {
+      "key": "cliente-royalprime-pro",
+      "customerKey": "cliente-royalprime",
+      "planKey": "pro",
+      "status": "active",
+      "startedAt": "2026-08-01T00:00:00-03:00",
+      "currentCycleStartsAt": "2026-09-01T00:00:00-03:00",
+      "currentCycleEndsAt": "2026-09-30T23:59:59-03:00"
+    }
+  ],
+  "cycles": [
+    {
+      "key": "cliente-royalprime-pro-2026-09",
+      "subscriptionKey": "cliente-royalprime-pro",
+      "cycleNumber": 1,
+      "status": "open",
+      "startsAt": "2026-09-01T00:00:00-03:00",
+      "endsAt": "2026-09-30T23:59:59-03:00"
+    }
+  ],
+  "cycleItems": [
+    {
+      "cycleKey": "cliente-royalprime-pro-2026-09",
+      "entitlementKey": "premium-cuts-12kg",
+      "productKey": "picanha",
+      "variantSku": "PICANHA-1KG",
+      "quantity": 2,
+      "measurementUnitKey": "kg",
+      "status": "selected"
     }
   ]
 }

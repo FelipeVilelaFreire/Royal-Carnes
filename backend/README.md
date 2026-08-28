@@ -50,6 +50,8 @@ apps/organizations
 apps/accounts
 apps/customers
 apps/catalog
+apps/subscriptions
+apps/inventory
 api/v1
 ```
 
@@ -273,10 +275,77 @@ RoyalPrime prova o fluxo real
 
 ## Proxima rodada
 
-A proxima rodada recomendada e iniciar Fase 3 lendo:
+## Fase 3 atual
 
 ```text
-backend/PHASE_3_SUBSCRIPTIONS.md
+foundation done
 ```
 
-Depois disso, atualizar MER/API/kits e so entao implementar `apps/subscriptions`.
+Implementado em codigo:
+
+```text
+Plan
+PlanPrice
+PlanEntitlement
+Subscription
+SubscriptionCycle
+SubscriptionCycleItem
+Seed subscriptions aplicado
+Endpoints publicos/cliente/admin
+Testes de API e seed multiempresa
+Endpoint de selecao de item do ciclo atual
+Client shared-core contracts/api/hooks para subscriptions
+MeuClubeView consumindo planos reais com fallback local
+```
+
+Regra estrutural:
+
+```text
+PlanEntitlement e o motor generico de beneficios.
+MeasurementUnit, Category, Collection, Product e ProductVariant vem de seed/config.
+O backend valida target, unidade, quantidade e constraints.
+Nao existe regra por nome de plano ou produto.
+```
+
+Proxima rodada recomendada:
+
+```text
+ligar telas de MinhaCaixa/MinhaConta ao hook useSubscription
+manter pedido, delivery, pagamento e estoque fora deste corte
+```
+
+## Fase 4 atual
+
+```text
+foundation done
+```
+
+Implementado em codigo:
+
+```text
+InventoryItem
+InventoryMovement
+StockReservation
+Seed inventory aplicado
+Endpoints admin de listagem, detalhe, upsert e ajuste manual
+Testes de API, permissao, seed multiempresa e idempotencia product-level
+```
+
+Regra estrutural:
+
+```text
+Inventory aponta para Product e ProductVariant opcional.
+MeasurementUnit vem do Catalog/seed da organization.
+availableQuantity e reservedQuantity definem sellableQuantity.
+Status simples nasce de quantidade: available, limited ou unavailable.
+disabled continua manual e nao e sobrescrito pelo recalculo automatico.
+Nao existe regra especifica de Royal Carnes no app de inventory.
+```
+
+Proxima rodada recomendada:
+
+```text
+ligar Orders ao ajuste/reserva de estoque quando Fase 2/Orders runtime entrar
+criar shared-core/admin para inventory quando existir tela admin real
+manter lote, validade, fornecedor e ERP fora deste corte
+```

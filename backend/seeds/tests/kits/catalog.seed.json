@@ -13,6 +13,15 @@
     { "key": "subscription", "name": "Subscription" },
     { "key": "delivery", "name": "Delivery" }
   ],
+  "measurementUnits": [
+    {
+      "key": "unit",
+      "name": "Unit",
+      "symbol": "un",
+      "kind": "count",
+      "decimalPlaces": 0
+    }
+  ],
   "products": [
     {
         "key": "product-a",

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "kit": "inventory",
+  "items": [
+    {
+      "productKey": "camiseta-branca",
+      "variantSku": "CAMISETA-BRANCA-M",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 25,
+      "reservedQuantity": 3,
+      "lowStockThreshold": 6
+    },
+    {
+      "productKey": "camiseta-street",
+      "variantSku": "CAMISETA-STREET-M",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 12,
+      "reservedQuantity": 1,
+      "lowStockThreshold": 4
+    }
+  ]
+}

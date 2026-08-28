@@ -85,11 +85,10 @@ catalog
 
 subscriptions
   Plan
-  PlanLimit
   PlanPrice
+  PlanEntitlement
   Subscription
   SubscriptionCycle
-  SubscriptionCycleUsage
   SubscriptionCycleItem
 
 orders
@@ -156,12 +155,12 @@ Customer 1 -> N Subscription
 Customer 1 -> N Order
 Customer 1 -> 1 Wallet
 
-Plan 1 -> N PlanLimit
 Plan 1 -> N PlanPrice
+Plan 1 -> N PlanEntitlement
 Plan 1 -> N Subscription
 
 Subscription 1 -> N SubscriptionCycle
-SubscriptionCycle 1 -> N SubscriptionCycleUsage
+SubscriptionCycle 1 -> N SubscriptionCycleItem
 SubscriptionCycle 1 -> N Order
 
 Order 1 -> N OrderItem
@@ -624,6 +623,7 @@ Regra:
 Variant representa forma concreta vendavel do Product.
 Variant nao representa categoria, colecao, campanha ou modo comercial.
 Variant attributes descreve variacoes comerciais sem virar unidade de medida.
+SKU, quando informado, e unico por organization.
 ```
 
 Exemplos:
@@ -695,6 +695,10 @@ Regra:
 ```text
 ProductPrice representa preco publicado/contratado.
 Motor de desconto/promocao complexo fica para app futuro.
+Preco precisa ser deterministico por product, variant opcional, collection
+opcional, commercialMode e priceType.
+Constraints condicionais impedem duplicidade mesmo quando variant/collection
+sao NULL.
 ```
 
 ### CommercialMode
@@ -771,9 +775,9 @@ mensal: R$ 299,00 / mes
 anual: R$ 249,00 por mes no anual
 ```
 
-### PlanLimit
+### PlanEntitlement
 
-Limites configuraveis do plano.
+Direito/beneficio que um plano libera.
 
 Campos:
 
@@ -781,24 +785,26 @@ Campos:
 id
 organizationId
 planId
-limitKey
-limitValue
-unit
+key
+targetType
+collectionId opcional
+categoryId opcional
+productId opcional
+variantId opcional
+quantity
+measurementUnitId opcional
+constraints
+sortOrder
 ```
 
-Exemplos RoyalPrime:
+Regra:
 
 ```text
-proteinKgLimit = 8
-charcoalKgLimit = 5
-maxCuts = 6
-```
-
-Exemplos outro produto:
-
-```text
-maxItemsPerCycle = 3
-monthlyMaintenanceHours = 2
+targetType define se o direito aponta para collection, category, product ou variant.
+quantity + measurementUnitId definem o limite principal.
+constraints guarda limites adicionais como maxSelections, allowedAttributes,
+allowedCommercialModes e requiresAvailability.
+Nao existe regra por nome de plano ou produto.
 ```
 
 ### Subscription
@@ -858,28 +864,6 @@ closed
 skipped
 ```
 
-### SubscriptionCycleUsage
-
-Uso acumulado do ciclo.
-
-Campos:
-
-```text
-id
-organizationId
-subscriptionCycleId
-limitKey
-usedValue
-unit
-```
-
-Regra:
-
-```text
-backend calcula usage
-tela apenas exibe usage recebido
-```
-
 ### SubscriptionCycleItem
 
 Selecao planejada do ciclo antes/depois de virar pedido.
@@ -890,12 +874,12 @@ Campos:
 id
 organizationId
 subscriptionCycleId
+entitlementId
 productId
 variantId opcional
 quantity
-unit
-weightGrams opcional
-source
+measurementUnitId opcional
+status
 ```
 
 ## Orders
@@ -1173,9 +1157,10 @@ id
 organizationId
 productId
 variantId opcional
+measurementUnitId opcional
 availableQuantity
 reservedQuantity
-unit
+lowStockThreshold
 status
 ```
 
@@ -1188,6 +1173,17 @@ unavailable
 disabled
 ```
 
+Regra:
+
+```text
+InventoryItem sempre aponta para Product.
+Variant e opcional para permitir estoque por SKU ou por produto.
+MeasurementUnit vem do Catalog/seed da organization.
+sellableQuantity = availableQuantity - reservedQuantity.
+status automatico nasce de sellableQuantity e lowStockThreshold.
+disabled e estado manual.
+```
+
 ### InventoryMovement
 
 Movimento de estoque.
@@ -1196,9 +1192,48 @@ Tipos:
 
 ```text
 manualAdjustment
-orderReservation
-orderApprovalDebit
-orderCancellationRelease
+stockIn
+stockOut
+reservation
+releaseReservation
+```
+
+Campos:
+
+```text
+id
+organizationId
+inventoryItemId
+movementType
+quantityDelta
+reservedDelta
+reason
+metadata
+actorUserId opcional
+```
+
+### StockReservation
+
+Reserva futura de estoque por origem.
+
+Campos:
+
+```text
+id
+organizationId
+inventoryItemId
+quantity
+status
+sourceType
+sourceKey
+expiresAt opcional
+```
+
+Regra:
+
+```text
+StockReservation prepara integracao futura com Order, SubscriptionCycle ou
+outro fluxo, mas a Fase 4 atual ainda expõe apenas ajuste/admin simples.
 ```
 
 ## Audit
@@ -1228,11 +1263,10 @@ Classificacao inicial:
 
 ```text
 client/shared-core/mocks/catalog
-  -> Collection, Category, Product, ProductVariant, ProductPrice, Plan,
-     PlanLimit, seed
+  -> Collection, Category, Product, ProductVariant, ProductPrice, seed
 
 client/shared-core/mocks/customer.mock.ts
-  -> Customer, Address, PaymentMethodRef, Subscription
+  -> Customer, Address, PaymentMethodRef, Subscription, PlanEntitlement
 
 client/shared-core/mocks/orders
   -> Order, OrderItem, Delivery, Payment, SubscriptionCycle, Timeline

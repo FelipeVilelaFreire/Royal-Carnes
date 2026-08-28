@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kit": "inventory",
+  "items": [
+    {
+      "productKey": "product-a",
+      "variantSku": "PRODUCT-A-SMALL",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 5,
+      "reservedQuantity": 1,
+      "lowStockThreshold": 2
+    },
+    {
+      "productKey": "product-c",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 1,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 2
+    }
+  ]
+}

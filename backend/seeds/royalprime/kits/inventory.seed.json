@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "kit": "inventory",
+  "items": [
+    {
+      "productKey": "picanha",
+      "variantSku": "PICANHA-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 24,
+      "reservedQuantity": 2,
+      "lowStockThreshold": 5,
+      "notes": "Estoque inicial para assinatura e delivery."
+    },
+    {
+      "productKey": "maminha",
+      "variantSku": "MAMINHA-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 18,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 4
+    },
+    {
+      "productKey": "ancho",
+      "variantSku": "ANCHO-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 8,
+      "reservedQuantity": 1,
+      "lowStockThreshold": 3
+    },
+    {
+      "productKey": "carvao-premium",
+      "variantSku": "CARVAO-5KG",
+      "measurementUnitKey": "bag",
+      "availableQuantity": 30,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 8
+    },
+    {
+      "productKey": "carvao-premium",
+      "variantSku": "CARVAO-10KG",
+      "measurementUnitKey": "bag",
+      "availableQuantity": 12,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 4
+    }
+  ]
+}

@@ -273,7 +273,7 @@ RoyalPrime/
 
 ## Kits Como Guia Pratico
 
-`kits/` documenta capacidades reaproveitaveis por arquivo.
+`docs/kits/` documenta capacidades reaproveitaveis por arquivo.
 
 Um kit deve dizer para uma IA ou desenvolvedor:
 
@@ -295,7 +295,7 @@ Exemplo:
 
 ```text
 Novo produto precisa de Auth & Users.
-  -> leia kits/auth-users-kit.md
+  -> leia docs/kits/auth-users-kit.md
   -> abra os arquivos backend indicados
   -> abra os arquivos shared-core indicados
   -> abra os arquivos render indicados

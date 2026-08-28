@@ -34,7 +34,7 @@ Primeiras capacidades:
 Kit relacionado:
 
 ```text
-kits/royal-carnes-seed-kit.md
+docs/kits/royal-carnes-seed-kit.md
 ```
 
 Arquivo de seed:

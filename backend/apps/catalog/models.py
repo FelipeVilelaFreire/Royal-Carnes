@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from apps.core.models import OrganizationScopedModel, SoftDeleteModel, TimestampedModel
 
@@ -220,6 +221,13 @@ class ProductVariant(OrganizationScopedModel, TimestampedModel, SoftDeleteModel)
 
     class Meta:
         ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organization", "sku"],
+                condition=~Q(sku=""),
+                name="catalog_product_variant_unique_sku",
+            ),
+        ]
         indexes = [
             models.Index(fields=["organization", "product", "is_active"]),
             models.Index(fields=["organization", "sku"]),
@@ -285,13 +293,46 @@ class ProductPrice(OrganizationScopedModel, TimestampedModel):
                 fields=[
                     "organization",
                     "product",
+                    "commercial_mode",
+                    "price_type",
+                ],
+                condition=Q(variant__isnull=True, collection__isnull=True),
+                name="catalog_price_unique_product_mode",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "organization",
+                    "product",
+                    "variant",
+                    "commercial_mode",
+                    "price_type",
+                ],
+                condition=Q(variant__isnull=False, collection__isnull=True),
+                name="catalog_price_unique_variant_mode",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "organization",
+                    "product",
+                    "commercial_mode",
+                    "collection",
+                    "price_type",
+                ],
+                condition=Q(variant__isnull=True, collection__isnull=False),
+                name="catalog_price_unique_collection_mode",
+            ),
+            models.UniqueConstraint(
+                fields=[
+                    "organization",
+                    "product",
                     "variant",
                     "commercial_mode",
                     "collection",
                     "price_type",
                 ],
-                name="catalog_product_price_unique_mode",
-            )
+                condition=Q(variant__isnull=False, collection__isnull=False),
+                name="catalog_price_unique_variant_collection_mode",
+            ),
         ]
         indexes = [
             models.Index(fields=["organization", "product"]),

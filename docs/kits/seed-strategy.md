@@ -90,13 +90,13 @@ kits/catalog.seed.json
 kits/subscriptions.seed.json
 ```
 
-O manifesto monta o seed completo. Cada arquivo dentro de `kits/` veste uma
-capacidade especifica.
+O manifesto monta o seed completo. Cada arquivo dentro de
+`backend/seeds/.../kits/` veste uma capacidade especifica.
 
-Kits:
+Kits documentais:
 
 ```text
-kits/<capability>-kit.md
+docs/kits/<capability>-kit.md
   -> descreve quais seeds esse kit espera
 ```
 

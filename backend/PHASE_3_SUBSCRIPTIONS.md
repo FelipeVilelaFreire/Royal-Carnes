@@ -1,6 +1,6 @@
 # Fase 3 - Plans And Subscriptions
 
-Status: `planned`
+Status: `foundation done`
 
 Objetivo:
 
@@ -786,28 +786,23 @@ Esses pontos pertencem a fases futuras.
 Fase 3 fecha quando:
 
 ```text
-models/migrations existem
-seed royalprime aplica planos, entitlements, subscriptions e ciclo
-seeds exemplo provam multiempresa
-API publica lista planos
-API do cliente retorna assinatura atual
-API admin lista/cria planos e assinaturas
-testes cobrem tenant, permissao e relacao com catalog/customer
-docs e kits atualizados
+models/migrations existem - DONE
+seed royalprime aplica planos, entitlements, subscriptions e ciclo - DONE
+seeds exemplo provam multiempresa - DONE
+API publica lista planos - DONE
+API do cliente retorna assinatura atual - DONE
+API do cliente adiciona item ao ciclo atual com validacao generica - DONE
+API admin lista/cria planos e assinaturas - DONE
+testes cobrem tenant, permissao e relacao com catalog/customer - DONE
+client shared-core tem contracts/api/hooks e uma tela consumindo plans - DONE
+docs e docs/kits atualizados - DONE
 ```
 
-## Ordem Recomendada Para Amanha
+## Ordem Recomendada Para Proxima Rodada
 
 ```text
-1. revisar este documento
-2. atualizar MER.md com entidades finais de subscriptions
-3. criar apps/subscriptions
-4. criar models e migrations
-5. ligar seed_loader ao kit subscriptions
-6. criar seed RoyalPrime forte
-7. criar seeds exemplo BikeClub/CamisaClub
-8. criar selectors/services
-9. criar serializers/views/urls
-10. criar testes
-11. atualizar API_CONTRACTS.md e kits/
+1. iniciar Fase 4 Inventory
+2. modelar InventoryItem por ProductVariant
+3. manter baixa/reserva automatica fora ate Orders/Delivery estarem firmes
+4. preservar PlanEntitlement como fonte de direito da assinatura
 ```

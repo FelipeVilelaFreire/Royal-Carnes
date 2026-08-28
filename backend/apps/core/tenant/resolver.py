@@ -17,6 +17,8 @@ def resolve_request_organization(request) -> Organization | None:
     slug = requested_organization_slug(request)
     try:
         if slug == settings.ROYALPRIME_DEFAULT_ORGANIZATION["slug"]:
+            if not getattr(settings, "ROYALPRIME_AUTO_CREATE_DEFAULT_ORGANIZATION", True):
+                return Organization.objects.filter(slug=slug, status=Organization.Status.ACTIVE).first()
             return ensure_default_organization()
         return Organization.objects.get(slug=slug, status=Organization.Status.ACTIVE)
     except Organization.DoesNotExist:

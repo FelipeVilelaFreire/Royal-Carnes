@@ -1,6 +1,7 @@
+from django.db import IntegrityError, transaction
 from rest_framework.test import APITestCase
 
-from apps.catalog.models import Collection, MeasurementUnit, Product, ProductMedia, ProductVariant
+from apps.catalog.models import Collection, CommercialMode, MeasurementUnit, Product, ProductMedia, ProductPrice, ProductVariant
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
 
 
@@ -124,6 +125,44 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(response.data["variants"][0]["unit_key"], "kg")
         self.assertEqual(response.data["variants"][0]["attributes"]["cut"], "chorizo")
         self.assertEqual(response.data["prices"][0]["variant_sku"], "CHORIZO-1KG")
+
+    def test_variant_sku_is_unique_per_organization(self):
+        product = Product.objects.get(key="maminha")
+        existing = ProductVariant.objects.get(sku="PICANHA-1KG")
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                ProductVariant.objects.create(
+                    organization=existing.organization,
+                    product=product,
+                    sku=existing.sku,
+                    name="SKU duplicado",
+                    unit="kg",
+                    measurement_unit=existing.measurement_unit,
+                )
+
+    def test_product_price_is_unique_when_optional_fields_are_null(self):
+        product = Product.objects.get(key="picanha")
+        mode = CommercialMode.objects.get(key="delivery")
+        existing = ProductPrice.objects.filter(
+            product=product,
+            commercial_mode=mode,
+            variant__isnull=True,
+            collection__isnull=True,
+            price_type=ProductPrice.PriceType.BASE,
+        ).first()
+
+        self.assertIsNotNone(existing)
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                ProductPrice.objects.create(
+                    organization=product.organization,
+                    product=product,
+                    commercial_mode=mode,
+                    price_type=ProductPrice.PriceType.BASE,
+                    currency=product.organization.currency,
+                    amount_cents=9999,
+                )
 
     def test_customer_cannot_access_admin_catalog(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

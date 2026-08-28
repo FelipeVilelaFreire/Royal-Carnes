@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "kit": "inventory",
+  "items": [
+    {
+      "productKey": "bike-urbana",
+      "variantSku": "BIKE-URBANA-ARO26",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 3,
+      "reservedQuantity": 1,
+      "lowStockThreshold": 2
+    },
+    {
+      "productKey": "capacete",
+      "variantSku": "CAPACETE-M",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 10,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 3
+    },
+    {
+      "productKey": "revisao-mensal",
+      "measurementUnitKey": "service",
+      "availableQuantity": 20,
+      "reservedQuantity": 2,
+      "lowStockThreshold": 5
+    }
+  ]
+}

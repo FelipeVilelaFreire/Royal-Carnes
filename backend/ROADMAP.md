@@ -57,7 +57,7 @@ O sistema precisa resolver, nesta ordem:
 
 ## Roadmap por fases
 
-Cada fase deve tambem alimentar a pasta `kits/`.
+Cada fase deve tambem alimentar a pasta `docs/kits/`.
 
 O objetivo dos kits e facilitar reuso futuro por IA ou desenvolvedor. Quando outro produto precisar de uma capacidade, o agente deve ler o kit, localizar os arquivos fonte e copiar/adaptar com consciencia de escopo.
 
@@ -101,7 +101,7 @@ Mapa inicial:
 Primeiro kit documentado:
 
 ```text
-kits/auth-users-kit.md
+docs/kits/auth-users-kit.md
 ```
 
 Nota de sequencia backend foundation:
@@ -110,6 +110,7 @@ Nota de sequencia backend foundation:
 Fase 1 Auth & Users -> fechada
 Fase 2 Catalog Runtime Foundation -> fechada
 Fase 3 Plans And Subscriptions -> planejada em backend/PHASE_3_SUBSCRIPTIONS.md
+Fase 4 Inventory -> foundation local fechada
 ```
 
 ### Fase 1: Backend Base Real
@@ -198,6 +199,24 @@ Observacao: aqui o sistema comeca a ser uma ferramenta de operacao, nao apenas v
 ### Fase 4: Estoque Simples
 
 Objetivo: controlar disponibilidade sem criar um ERP completo.
+
+Status atual:
+
+```text
+foundation done
+```
+
+Foundation implementada:
+
+```text
+InventoryItem por Product/ProductVariant
+MeasurementUnit herdada do Catalog/seed
+availableQuantity, reservedQuantity e sellableQuantity
+lowStockThreshold e status simples
+InventoryMovement para ajuste auditavel
+StockReservation modelado para integracao futura
+endpoints admin e seed multiempresa
+```
 
 Comecar com:
 

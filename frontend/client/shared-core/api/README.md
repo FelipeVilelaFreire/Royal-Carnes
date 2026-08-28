@@ -8,6 +8,7 @@ Exemplos futuros:
 - `orders.api.ts`
 - `customer.api.ts`
 - `subscriptionCycle.api.ts`
+- `subscriptions.api.ts`
 
 Regra:
 

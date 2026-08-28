@@ -9,6 +9,7 @@ Exemplos futuros:
 - `useCustomer`
 - `useAddresses`
 - `useSubscriptionCycle`
+- `useSubscription`
 
 Regra:
 

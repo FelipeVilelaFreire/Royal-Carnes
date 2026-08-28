@@ -70,11 +70,11 @@ documentar seed exemplo para provar reuso
 Criado/atualizado:
 
 ```text
-kits/README.md
-kits/auth-users-kit.md
-kits/seed-strategy.md
-kits/royal-carnes-seed-kit.md
-kits/catalog-kit.md
+docs/kits/README.md
+docs/kits/auth-users-kit.md
+docs/kits/seed-strategy.md
+docs/kits/royal-carnes-seed-kit.md
+docs/kits/catalog-kit.md
 backend/seeds/README.md
 backend/seeds/royalprime/README.md
 backend/seeds/examples/README.md
@@ -248,7 +248,7 @@ apps/catalog/migrations/0003_productcategory_and_more.py
 apps/core/seed_loader.py
 backend/API_CONTRACTS.md
 backend/MER.md
-kits/catalog-kit.md
+docs/kits/catalog-kit.md
 ```
 
 Endpoints:
@@ -271,7 +271,7 @@ customers
 catalog
 ```
 
-Seed ainda planned:
+Naquele momento, seed ainda planned:
 
 ```text
 subscriptions
@@ -307,4 +307,194 @@ py manage.py migrate -> OK
 py manage.py seed_backend --seed royalprime -> OK
 py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
 py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
+```
+
+## 2026-08-28 - Fase 3 Plans And Subscriptions foundation
+
+Objetivo:
+
+```text
+implementar motor generico de planos, entitlements, assinaturas e ciclos
+sem regra hardcoded por nome de plano, produto ou negocio
+```
+
+Criado/atualizado:
+
+```text
+apps/subscriptions/models.py
+apps/subscriptions/selectors.py
+apps/subscriptions/services.py
+apps/subscriptions/serializers.py
+apps/subscriptions/views.py
+apps/subscriptions/urls.py
+apps/subscriptions/tests/test_api.py
+apps/subscriptions/migrations/0001_initial.py
+apps/core/seed_loader.py
+backend/API_CONTRACTS.md
+backend/MER.md
+backend/PHASE_3_SUBSCRIPTIONS.md
+docs/kits/subscriptions-kit.md
+backend/seeds/**/kits/subscriptions.seed.json
+```
+
+Endpoints:
+
+```text
+GET  /api/v1/subscriptions/plans/
+GET  /api/v1/subscriptions/me/
+GET  /api/v1/subscriptions/me/cycles/current/
+POST /api/v1/subscriptions/me/cycles/current/items/
+GET  /api/v1/subscriptions/admin/plans/
+POST /api/v1/subscriptions/admin/plans/
+GET  /api/v1/subscriptions/admin/subscriptions/
+POST /api/v1/subscriptions/admin/subscriptions/
+GET  /api/v1/subscriptions/admin/cycles/
+```
+
+Decisao estrutural:
+
+```text
+PlanEntitlement e o motor generico de beneficios.
+Entitlement aponta para collection, category, product ou variant.
+MeasurementUnit vem de seed/config por organization.
+Constraints guardam limites adicionais como maxSelections, maxQuantity,
+allowedAttributes, allowedCommercialModes e requiresAvailability.
+Basic/Premium/Pro, BikeClub e CamisaClub sao seeds, nao branches no codigo.
+```
+
+Frontend/shared-core:
+
+```text
+frontend/client/shared-core/contracts/subscription.contract.ts
+frontend/client/shared-core/api/subscriptions.api.ts
+frontend/client/shared-core/hooks/useSubscription.ts
+frontend/client/web/src/screens/portal/tabs/MeuClubeView.tsx
+```
+
+Validacao executada:
+
+```text
+py manage.py check -> OK
+py manage.py makemigrations --check --dry-run -> OK
+py manage.py test -> OK, 28 tests
+py manage.py migrate -> OK
+py manage.py seed_backend --seed royalprime -> OK
+py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
+py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
+py manage.py seed_backend --seed tests/minimal --dry-run -> OK
+npm run build em frontend/client/web -> OK
+```
+
+## 2026-08-28 - Fase 4 Inventory foundation
+
+Objetivo:
+
+```text
+implementar estoque simples ligado ao Catalog
+sem transformar o corte em ERP
+sem regra hardcoded por dominio, produto ou unidade
+```
+
+Criado/atualizado:
+
+```text
+apps/inventory/models.py
+apps/inventory/selectors.py
+apps/inventory/services.py
+apps/inventory/serializers.py
+apps/inventory/views.py
+apps/inventory/urls.py
+apps/inventory/tests/test_api.py
+apps/inventory/migrations/0001_initial.py
+apps/core/seed_loader.py
+backend/API_CONTRACTS.md
+backend/MER.md
+docs/kits/inventory-kit.md
+backend/seeds/**/kits/inventory.seed.json
+```
+
+Endpoints:
+
+```text
+GET  /api/v1/inventory/admin/items/
+POST /api/v1/inventory/admin/items/
+GET  /api/v1/inventory/admin/items/:id/
+POST /api/v1/inventory/admin/items/:id/adjust/
+GET  /api/v1/inventory/admin/items/:id/movements/
+```
+
+Decisao estrutural:
+
+```text
+InventoryItem aponta para Product e ProductVariant opcional.
+MeasurementUnit vem do Catalog/seed da organization.
+availableQuantity e reservedQuantity formam sellableQuantity.
+StockReservation fica modelado para integracao futura com Orders.
+Status simples e recalculado pelo backend, exceto disabled.
+Royal Carnes, BikeClub e CamisaClub diferem por seed, nao por codigo.
+```
+
+Validacao executada:
+
+```text
+py manage.py check -> OK
+py manage.py makemigrations --check --dry-run -> OK
+py manage.py test -> OK, 36 tests
+py manage.py migrate -> OK
+py manage.py seed_backend --seed royalprime -> OK, inventory items=5
+py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
+py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
+py manage.py seed_backend --seed tests/minimal --dry-run -> OK
+```
+
+## 2026-08-28 - Hardening pre Fase 5
+
+Objetivo:
+
+```text
+subir a confiabilidade das Fases 1 a 4 antes de Orders/Delivery
+proteger reuso futuro e eventual extracao para ServiceOS
+```
+
+Criado/atualizado:
+
+```text
+apps/catalog/models.py
+apps/catalog/migrations/0005_remove_productprice_catalog_product_price_unique_mode_and_more.py
+apps/catalog/tests/test_api.py
+apps/subscriptions/serializers.py
+apps/subscriptions/views.py
+apps/subscriptions/tests/test_api.py
+apps/core/tenant/resolver.py
+apps/core/tests/test_tenant_resolver.py
+config/settings/base.py
+config/settings/production.py
+backend/.env.example
+backend/API_CONTRACTS.md
+backend/MER.md
+```
+
+Decisoes:
+
+```text
+ProductVariant.sku agora e unico por organization quando informado.
+ProductPrice agora tem constraints condicionais para variant/collection
+opcionais, evitando duplicidade por NULL.
+Admin subscriptions retorna erros tecnicos estruturados para referencias
+invalidas.
+Resolver da organization default pode desligar auto-create em producao.
+```
+
+Validacao executada:
+
+```text
+py manage.py check -> OK
+py manage.py makemigrations --check --dry-run -> OK
+py manage.py test apps.catalog apps.subscriptions apps.core -> OK, 26 tests
+py manage.py migrate -> OK
+py manage.py test -> OK, 41 tests
+py manage.py seed_backend --seed royalprime -> OK
+py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
+py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
+py manage.py seed_backend --seed tests/minimal --dry-run -> OK
 ```
