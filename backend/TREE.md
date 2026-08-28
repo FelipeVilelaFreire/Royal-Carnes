@@ -76,6 +76,8 @@ backend/
         catalog.seed.json
         subscriptions.seed.json
         inventory.seed.json
+        orders.seed.json
+        deliveries.seed.json
     examples/
       bikeclub/
         seed.manifest.json
@@ -86,6 +88,8 @@ backend/
           catalog.seed.json
           subscriptions.seed.json
           inventory.seed.json
+          orders.seed.json
+          deliveries.seed.json
       camisaclub/
         seed.manifest.json
         kits/
@@ -95,6 +99,8 @@ backend/
           catalog.seed.json
           subscriptions.seed.json
           inventory.seed.json
+          orders.seed.json
+          deliveries.seed.json
     tests/
       minimal.seed.manifest.json
       kits/
@@ -104,6 +110,8 @@ backend/
         catalog.seed.json
         subscriptions.seed.json
         inventory.seed.json
+        orders.seed.json
+        deliveries.seed.json
 
   tests/
 ```
@@ -277,16 +285,20 @@ Dono da compra.
 
 Entidades:
 
+- `OrderKindDefinition`;
+- `OrderStatusDefinition`;
 - `Order`;
 - `OrderItem`;
 - `OrderStatusHistory`;
 - `OrderTimelineEvent`;
 - `OrderAdjustment`;
-- `OrderSource`.
 
 Responsabilidades:
 
 - criar pedido;
+- carregar tipos de pedido por seed/config;
+- carregar workflow de status por seed/config;
+- gerar codigo por sequence da organization;
 - validar itens;
 - aplicar preco;
 - aplicar limite de assinatura quando existir;
@@ -305,6 +317,7 @@ Dono da execucao operacional da entrega.
 
 Entidades:
 
+- `DeliveryStatusDefinition`;
 - `Delivery`;
 - `DeliveryWindow`;
 - `DeliveryStatusHistory`;
@@ -313,8 +326,7 @@ Entidades:
 
 Responsabilidades:
 
-- agenda;
-- janela;
+- status logistico por seed/config;
 - endereco de entrega;
 - separacao;
 - despacho;
@@ -325,8 +337,12 @@ Kit:
 
 ```text
 Fulfillment & Delivery
-Scheduling
 ```
+
+Observacao:
+
+Scheduling, recorrencia, janela/capacidade e Royal Box recorrente ficam fora da
+Fase 5 atual e devem nascer como kit separado quando a regra estiver madura.
 
 ### apps/payments
 

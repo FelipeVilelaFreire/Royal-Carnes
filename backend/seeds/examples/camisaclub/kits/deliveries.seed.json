@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "kit": "deliveries",
+  "codeSequences": [
+    {
+      "key": "deliveries",
+      "prefix": "CAM-DEL",
+      "padding": 6,
+      "nextNumber": 1,
+      "template": "{prefix}-{number}"
+    }
+  ],
+  "statuses": [
+    {
+      "key": "waiting",
+      "label": "Aguardando envio",
+      "isInitial": true,
+      "allowedNextKeys": ["shipped", "cancelled"],
+      "sortOrder": 1
+    },
+    {
+      "key": "shipped",
+      "label": "Enviado",
+      "allowedNextKeys": ["delivered"],
+      "sortOrder": 2
+    },
+    {
+      "key": "delivered",
+      "label": "Entregue",
+      "isTerminal": true,
+      "effects": { "confirmDelivery": true },
+      "sortOrder": 3
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelado",
+      "isTerminal": true,
+      "sortOrder": 99
+    }
+  ],
+  "deliveries": []
+}

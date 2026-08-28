@@ -29,7 +29,9 @@ Primeiras capacidades:
 - customers dev;
 - catalogo;
 - planos;
-- pedidos exemplo depois que orders existir.
+- estoque simples;
+- pedidos configuraveis;
+- entregas simples.
 
 Kit relacionado:
 
@@ -46,6 +48,9 @@ backend/seeds/royalprime/kits/auth-users.seed.json
 backend/seeds/royalprime/kits/customers.seed.json
 backend/seeds/royalprime/kits/catalog.seed.json
 backend/seeds/royalprime/kits/subscriptions.seed.json
+backend/seeds/royalprime/kits/inventory.seed.json
+backend/seeds/royalprime/kits/orders.seed.json
+backend/seeds/royalprime/kits/deliveries.seed.json
 ```
 
 Regra:

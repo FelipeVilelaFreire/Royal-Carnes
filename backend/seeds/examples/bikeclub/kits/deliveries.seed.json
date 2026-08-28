@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "kit": "deliveries",
+  "codeSequences": [
+    {
+      "key": "deliveries",
+      "prefix": "BIKE-DEL",
+      "padding": 5,
+      "nextNumber": 1,
+      "template": "{prefix}-{number}"
+    }
+  ],
+  "statuses": [
+    {
+      "key": "created",
+      "label": "Criada",
+      "isInitial": true,
+      "allowedNextKeys": ["on-route", "cancelled"],
+      "sortOrder": 1
+    },
+    {
+      "key": "on-route",
+      "label": "Em rota",
+      "allowedNextKeys": ["received"],
+      "sortOrder": 2
+    },
+    {
+      "key": "received",
+      "label": "Recebida",
+      "isTerminal": true,
+      "effects": { "confirmDelivery": true },
+      "sortOrder": 3
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelada",
+      "isTerminal": true,
+      "sortOrder": 99
+    }
+  ],
+  "deliveries": []
+}

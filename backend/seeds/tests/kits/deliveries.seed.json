@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "kit": "deliveries",
+  "codeSequences": [
+    { "key": "deliveries", "prefix": "TDL", "padding": 4, "nextNumber": 1, "template": "{prefix}-{number}" }
+  ],
+  "statuses": [
+    { "key": "new", "label": "New", "isInitial": true, "allowedNextKeys": ["done"], "sortOrder": 1 },
+    { "key": "done", "label": "Done", "isTerminal": true, "effects": { "confirmDelivery": true }, "sortOrder": 2 }
+  ],
+  "deliveries": []
+}

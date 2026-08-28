@@ -9,9 +9,11 @@
   ],
   "permissions": [
     "orders.read",
+    "orders.manage",
     "orders.updateStatus",
     "products.manage",
     "customers.read",
+    "deliveries.read",
     "deliveries.manage",
     "payments.markPaid",
     "plans.read",
@@ -24,9 +26,11 @@
   "rolePermissions": {
     "owner": [
       "orders.read",
+      "orders.manage",
       "orders.updateStatus",
       "products.manage",
       "customers.read",
+      "deliveries.read",
       "deliveries.manage",
       "payments.markPaid",
       "plans.read",
@@ -38,9 +42,11 @@
     ],
     "admin": [
       "orders.read",
+      "orders.manage",
       "orders.updateStatus",
       "products.manage",
       "customers.read",
+      "deliveries.read",
       "deliveries.manage",
       "payments.markPaid",
       "plans.read",
@@ -52,8 +58,10 @@
     ],
     "operator": [
       "orders.read",
+      "orders.manage",
       "orders.updateStatus",
       "customers.read",
+      "deliveries.read",
       "deliveries.manage",
       "plans.read",
       "subscriptions.read",
@@ -61,7 +69,6 @@
       "inventory.manage"
     ],
     "customer": [
-      "orders.read",
       "plans.read",
       "subscriptions.read"
     ]

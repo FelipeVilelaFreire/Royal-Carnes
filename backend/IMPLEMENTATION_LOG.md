@@ -498,3 +498,94 @@ py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
 py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
 py manage.py seed_backend --seed tests/minimal --dry-run -> OK
 ```
+
+## 2026-08-28 - Fase 5 Orders + Delivery Basico foundation
+
+Objetivo:
+
+```text
+implementar pedido real e entrega simples
+sem scheduling, recorrencia ou regra hardcoded por negocio
+```
+
+Criado/atualizado:
+
+```text
+apps/core/code_sequences.py
+apps/core/models.py
+apps/orders/models.py
+apps/orders/services.py
+apps/orders/selectors.py
+apps/orders/serializers.py
+apps/orders/views.py
+apps/orders/urls.py
+apps/orders/tests/test_api.py
+apps/deliveries/models.py
+apps/deliveries/services.py
+apps/deliveries/selectors.py
+apps/deliveries/serializers.py
+apps/deliveries/views.py
+apps/deliveries/urls.py
+apps/deliveries/tests/test_api.py
+apps/core/seed_loader.py
+backend/API_CONTRACTS.md
+backend/MER.md
+backend/README.md
+backend/ROADMAP.md
+docs/kits/orders-kit.md
+docs/kits/fulfillment-delivery-kit.md
+backend/seeds/**/kits/orders.seed.json
+backend/seeds/**/kits/deliveries.seed.json
+```
+
+Endpoints:
+
+```text
+GET  /api/v1/orders/config/
+GET  /api/v1/orders/me/
+POST /api/v1/orders/me/
+GET  /api/v1/orders/me/:id/
+GET  /api/v1/orders/admin/orders/
+POST /api/v1/orders/admin/orders/
+GET  /api/v1/orders/admin/orders/:id/
+POST /api/v1/orders/admin/orders/:id/transition/
+GET  /api/v1/deliveries/config/
+GET  /api/v1/deliveries/me/
+GET  /api/v1/deliveries/me/:id/
+GET  /api/v1/deliveries/admin/deliveries/
+POST /api/v1/deliveries/admin/deliveries/
+GET  /api/v1/deliveries/admin/deliveries/:id/
+POST /api/v1/deliveries/admin/deliveries/:id/transition/
+POST /api/v1/deliveries/admin/deliveries/:id/confirm/
+```
+
+Decisoes:
+
+```text
+CodeSequence define codigos por organization e seed.
+OrderKindDefinition define tipo de pedido por seed/config.
+OrderStatusDefinition define workflow comercial por seed/config.
+DeliveryStatusDefinition define workflow logistico por seed/config.
+Orders reserva InventoryItem quando o tipo exige estoque.
+Delivery nasce automaticamente a partir de Order quando o tipo define
+createsDelivery=true.
+Confirmacao de entrega pode acionar status terminal via effect configurado.
+Royal Delivery, Royal Box, Pro, Picanha e qualquer nome comercial ficam em seed,
+copy ou catalogo, nao em branch do backend.
+Scheduling, recorrencia, janela/capacidade e Royal Box recorrente ficam para
+kit/fase futura separada.
+```
+
+Validacao executada:
+
+```text
+py manage.py check -> OK
+py manage.py makemigrations --check --dry-run -> OK
+py manage.py test apps.core apps.orders apps.deliveries -> OK, 19 tests
+py manage.py test -> OK, 54 tests
+py manage.py migrate -> OK
+py manage.py seed_backend --seed royalprime -> OK, orders=0, deliveries=0
+py manage.py seed_backend --seed examples/bikeclub --dry-run -> OK
+py manage.py seed_backend --seed examples/camisaclub --dry-run -> OK
+py manage.py seed_backend --seed tests/minimal --dry-run -> OK
+```

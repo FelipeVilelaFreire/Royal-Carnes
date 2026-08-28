@@ -90,10 +90,10 @@ Mapa inicial:
 | Fase | Kits alimentados | Observacao |
 | --- | --- | --- |
 | Fase 1 | Auth & Users, Organizations, Catalog | Base para qualquer produto novo |
-| Fase 2 | Orders | Pedido, detalhe, historico, status |
-| Fase 3 | Admin Operations, Scheduling | Painel operacional, filtros, calendario |
+| Fase 2 | Catalog | Catalogo vendavel, unidades, variants, precos |
+| Fase 3 | Subscriptions, Admin Operations | Planos, beneficios, ciclos e painel operacional |
 | Fase 4 | Inventory | Estoque simples sem ERP |
-| Fase 5 | Fulfillment & Delivery, Scheduling | Entrega, retirada, janela, codigo |
+| Fase 5 | Orders, Fulfillment & Delivery | Pedido real, entrega simples, confirmacao |
 | Fase 6 | Payments | Pagamento manual e status |
 | Fase 7 | Payments | Gateway, webhooks, conciliacao |
 | Fase 8 | Wallet & Vouchers | Credito, saldo, voucher, estorno |
@@ -111,6 +111,8 @@ Fase 1 Auth & Users -> fechada
 Fase 2 Catalog Runtime Foundation -> fechada
 Fase 3 Plans And Subscriptions -> planejada em backend/PHASE_3_SUBSCRIPTIONS.md
 Fase 4 Inventory -> foundation local fechada
+Fase 5 Orders + Delivery Basico -> foundation local fechada
+Scheduling/recorrencia/Royal Box recorrente -> fase futura separada
 ```
 
 ### Fase 1: Backend Base Real
@@ -249,6 +251,26 @@ Prioridade: media/alta.
 
 Objetivo: controlar entrega internamente.
 
+Status atual:
+
+```text
+foundation done
+```
+
+Foundation implementada:
+
+```text
+CodeSequence por organization
+OrderKindDefinition por seed/config
+OrderStatusDefinition por seed/config
+Order e OrderItem conectados a Customer, Address, Catalog e Subscription
+reserva simples de InventoryItem quando tipo exige estoque
+DeliveryStatusDefinition por seed/config
+Delivery criado automaticamente a partir de Order quando o tipo configura isso
+DeliveryConfirmation com transicao por effect configurado
+endpoints cliente/admin e seed multiempresa
+```
+
 Inclui:
 
 - status de entrega;
@@ -256,7 +278,6 @@ Inclui:
 - responsavel ou entregador opcional;
 - codigo de entrega;
 - confirmacao de entrega;
-- calendario;
 - endereco;
 - observacoes.
 
@@ -266,6 +287,7 @@ Nao comecar com:
 - app do entregador;
 - GPS em tempo real;
 - calculo logistico avancado.
+- scheduling, recorrencia e Royal Box recorrente.
 
 Dificuldade: media.
 

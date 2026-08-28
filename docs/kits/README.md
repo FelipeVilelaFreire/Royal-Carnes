@@ -93,11 +93,11 @@ serviceos-candidate
 | Catalog | local foundation | Fase 2 | Ecommerce, assinatura, cardapio, servicos |
 | Subscriptions | local foundation | Fase 3 | Planos, beneficios recorrentes, ciclos e assinaturas |
 | Royal Carnes Seed | local scaffold | Fase 1 | Seed principal da primeira organization |
-| Orders | planned | Fase 2 | Ecommerce, restaurante, delivery, pedidos internos |
-| Scheduling | planned | Fase 3/5 | Entrega, agenda, reserva, appointments |
+| Orders | local foundation | Fase 5A | Ecommerce, restaurante, delivery, pedidos internos |
+| Scheduling | planned | Fase futura | Entrega agendada, recorrencia, reserva, appointments |
 | Admin Operations | planned | Fase 3 | Painel operacional para loja/equipe |
 | Inventory | local foundation | Fase 4 | Estoque simples de produto/insumo |
-| Fulfillment & Delivery | planned | Fase 5 | Entrega, retirada, separacao, confirmacao |
+| Fulfillment & Delivery | local foundation | Fase 5B | Entrega simples, separacao, confirmacao |
 | Payments | planned | Fase 6/7 | Manual, Pix, gateway, conciliacao |
 | Wallet & Vouchers | planned | Fase 8 | Credito, voucher, saldo, estorno |
 
@@ -154,6 +154,8 @@ docs/kits/royal-carnes-seed-kit.md
 docs/kits/catalog-kit.md
 docs/kits/subscriptions-kit.md
 docs/kits/inventory-kit.md
+docs/kits/orders-kit.md
+docs/kits/fulfillment-delivery-kit.md
 backend/seeds/royalprime/seed.manifest.json
 backend/seeds/royalprime/kits/*.seed.json
 backend/seeds/examples/bikeclub/seed.manifest.json

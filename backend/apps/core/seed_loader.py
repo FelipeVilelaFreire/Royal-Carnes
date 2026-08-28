@@ -47,6 +47,20 @@ from apps.subscriptions.services import (
     upsert_subscription_cycle_item,
 )
 from apps.inventory.services import upsert_inventory_item
+from apps.core.code_sequences import upsert_code_sequence
+from apps.orders.models import Order, OrderKindDefinition, OrderStatusDefinition
+from apps.orders.services import (
+    create_order,
+    transition_order_status,
+    upsert_order_kind,
+    upsert_order_status,
+)
+from apps.deliveries.models import Delivery, DeliveryStatusDefinition
+from apps.deliveries.services import (
+    create_delivery_for_order,
+    transition_delivery_status,
+    upsert_delivery_status,
+)
 
 
 @dataclass(frozen=True)
@@ -132,6 +146,11 @@ class BackendSeedApplier:
         self.variants_by_sku: dict[str, ProductVariant] = {}
         self.plans_by_key: dict[str, Plan] = {}
         self.entitlements_by_key: dict[str, PlanEntitlement] = {}
+        self.orders_by_key: dict[str, Order] = {}
+        self.order_kinds_by_key: dict[str, OrderKindDefinition] = {}
+        self.order_statuses_by_key: dict[str, OrderStatusDefinition] = {}
+        self.deliveries_by_key: dict[str, Delivery] = {}
+        self.delivery_statuses_by_key: dict[str, DeliveryStatusDefinition] = {}
 
     def apply(self) -> list[str]:
         if self.dry_run:
@@ -154,6 +173,10 @@ class BackendSeedApplier:
                     self.apply_subscriptions(module.data)
                 elif module.kit == "inventory":
                     self.apply_inventory(module.data)
+                elif module.kit == "orders":
+                    self.apply_orders(module.data)
+                elif module.kit == "deliveries":
+                    self.apply_deliveries(module.data)
                 else:
                     self.summary.append(f"skipped planned kit={module.kit}")
         return self.summary
@@ -446,6 +469,117 @@ class BackendSeedApplier:
                 notes=item_data.get("notes", ""),
             )
         self.summary.append(f"applied inventory: items={len(data.get('items', []))}")
+
+    def apply_orders(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        for sequence_data in data.get("codeSequences", []):
+            upsert_code_sequence(
+                organization=organization,
+                key=sequence_data["key"],
+                prefix=sequence_data.get("prefix", ""),
+                padding=sequence_data.get("padding", 6),
+                next_number=sequence_data.get("nextNumber", 1),
+                template=sequence_data.get("template", "{prefix}-{number}"),
+            )
+        for sort_order, kind_data in enumerate(data.get("kinds", [])):
+            kind = upsert_order_kind(
+                organization=organization,
+                key=kind_data["key"],
+                label=kind_data["label"],
+                commercial_mode_key=kind_data.get("commercialModeKey"),
+                code_sequence_key=kind_data.get("codeSequenceKey", "orders"),
+                requires_inventory=kind_data.get("requiresInventory", True),
+                creates_delivery=kind_data.get("createsDelivery", True),
+                is_active=kind_data.get("isActive", True),
+                sort_order=kind_data.get("sortOrder", sort_order),
+                metadata=kind_data.get("metadata", {}),
+            )
+            self.order_kinds_by_key[kind.key] = kind
+        for sort_order, status_data in enumerate(data.get("statuses", [])):
+            status = upsert_order_status(
+                organization=organization,
+                key=status_data["key"],
+                label=status_data["label"],
+                sort_order=status_data.get("sortOrder", sort_order),
+                is_initial=status_data.get("isInitial", False),
+                is_terminal=status_data.get("isTerminal", False),
+                is_public=status_data.get("isPublic", True),
+                allowed_next_keys=status_data.get("allowedNextKeys", []),
+                effects=status_data.get("effects", {}),
+                metadata=status_data.get("metadata", {}),
+            )
+            self.order_statuses_by_key[status.key] = status
+        for order_data in data.get("orders", []):
+            customer = self.customers_by_key[order_data["customerKey"]]
+            address = customer.addresses.filter(is_default=True).first()
+            subscription = None
+            subscription_key = order_data.get("subscriptionKey")
+            if subscription_key:
+                subscription = customer.subscriptions.filter(plan__key=order_data.get("planKey", "")).first()
+            order = create_order(
+                organization=organization,
+                customer=customer,
+                address=address,
+                subscription=subscription,
+                kind_key=order_data["kindKey"],
+                items=order_data.get("items", []),
+                notes=order_data.get("notes", ""),
+            )
+            target_status_key = order_data.get("statusKey")
+            if target_status_key and target_status_key != order.status_key:
+                transition_order_status(
+                    organization=organization,
+                    order=order,
+                    to_status_key=target_status_key,
+                    note="Seed status",
+                )
+            self.orders_by_key[order_data["key"]] = order
+        self.summary.append(f"applied orders: orders={len(data.get('orders', []))}")
+
+    def apply_deliveries(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        for sequence_data in data.get("codeSequences", []):
+            upsert_code_sequence(
+                organization=organization,
+                key=sequence_data["key"],
+                prefix=sequence_data.get("prefix", ""),
+                padding=sequence_data.get("padding", 6),
+                next_number=sequence_data.get("nextNumber", 1),
+                template=sequence_data.get("template", "{prefix}-{number}"),
+            )
+        for sort_order, status_data in enumerate(data.get("statuses", [])):
+            status = upsert_delivery_status(
+                organization=organization,
+                key=status_data["key"],
+                label=status_data["label"],
+                sort_order=status_data.get("sortOrder", sort_order),
+                is_initial=status_data.get("isInitial", False),
+                is_terminal=status_data.get("isTerminal", False),
+                is_public=status_data.get("isPublic", True),
+                allowed_next_keys=status_data.get("allowedNextKeys", []),
+                effects=status_data.get("effects", {}),
+                metadata=status_data.get("metadata", {}),
+            )
+            self.delivery_statuses_by_key[status.key] = status
+        for delivery_data in data.get("deliveries", []):
+            order = self.orders_by_key[delivery_data["orderKey"]]
+            delivery = create_delivery_for_order(
+                organization=organization,
+                order=order,
+                code_sequence_key=delivery_data.get("codeSequenceKey", "deliveries"),
+                confirmation_code=delivery_data.get("confirmationCode", ""),
+                notes=delivery_data.get("notes", ""),
+            )
+            target_status_key = delivery_data.get("statusKey")
+            if target_status_key and target_status_key != delivery.status_key:
+                transition_delivery_status(
+                    organization=organization,
+                    delivery=delivery,
+                    to_status_key=target_status_key,
+                    note="Seed status",
+                )
+            self.deliveries_by_key[delivery_data["key"]] = delivery
+        self.summary.append(f"applied deliveries: deliveries={len(data.get('deliveries', []))}")
 
     def require_organization(self) -> Organization:
         if self.organization is None:

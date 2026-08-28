@@ -7,7 +7,10 @@
   ],
   "permissions": [
     "orders.read",
+    "orders.manage",
     "products.manage",
+    "deliveries.read",
+    "deliveries.manage",
     "plans.read",
     "plans.manage",
     "subscriptions.read",
@@ -18,7 +21,10 @@
   "rolePermissions": {
     "owner": [
       "orders.read",
+      "orders.manage",
       "products.manage",
+      "deliveries.read",
+      "deliveries.manage",
       "plans.read",
       "plans.manage",
       "subscriptions.read",
@@ -27,7 +33,6 @@
       "inventory.manage"
     ],
     "customer": [
-      "orders.read",
       "plans.read",
       "subscriptions.read"
     ]

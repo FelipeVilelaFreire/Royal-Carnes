@@ -71,3 +71,26 @@ class ActorTrackedModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class CodeSequence(OrganizationScopedModel, TimestampedModel):
+    key = models.SlugField(max_length=80)
+    prefix = models.CharField(max_length=24, blank=True)
+    padding = models.PositiveSmallIntegerField(default=6)
+    next_number = models.PositiveIntegerField(default=1)
+    template = models.CharField(max_length=80, default="{prefix}-{number}")
+
+    class Meta:
+        ordering = ["key"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organization", "key"],
+                name="core_code_sequence_unique_key",
+            )
+        ]
+        indexes = [
+            models.Index(fields=["organization", "key"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.organization_id}:{self.key}"

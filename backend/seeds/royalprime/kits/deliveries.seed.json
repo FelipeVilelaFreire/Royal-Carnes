@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "kit": "deliveries",
+  "codeSequences": [
+    {
+      "key": "deliveries",
+      "prefix": "DEL",
+      "padding": 6,
+      "nextNumber": 1,
+      "template": "{prefix}-{number}"
+    }
+  ],
+  "statuses": [
+    {
+      "key": "pending",
+      "label": "Pendente",
+      "isInitial": true,
+      "allowedNextKeys": ["packing", "cancelled"],
+      "sortOrder": 1
+    },
+    {
+      "key": "packing",
+      "label": "Separando entrega",
+      "allowedNextKeys": ["out-for-delivery", "cancelled"],
+      "sortOrder": 2
+    },
+    {
+      "key": "out-for-delivery",
+      "label": "Saiu para entrega",
+      "allowedNextKeys": ["delivered", "failed"],
+      "sortOrder": 3
+    },
+    {
+      "key": "delivered",
+      "label": "Entregue",
+      "isTerminal": true,
+      "effects": { "confirmDelivery": true },
+      "sortOrder": 4
+    },
+    {
+      "key": "failed",
+      "label": "Falhou",
+      "isTerminal": true,
+      "sortOrder": 98
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelada",
+      "isTerminal": true,
+      "sortOrder": 99
+    }
+  ],
+  "deliveries": []
+}

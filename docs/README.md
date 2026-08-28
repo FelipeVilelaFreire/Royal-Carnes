@@ -24,6 +24,8 @@ Toda a documentacao tecnica, contratos de arquitetura, guias de design system e 
   - `catalog-kit.md`
   - `subscriptions-kit.md`
   - `inventory-kit.md`
+  - `orders-kit.md`
+  - `fulfillment-delivery-kit.md`
   - `royal-carnes-seed-kit.md`
   - `seed-strategy.md`
   - `kit-template.md`

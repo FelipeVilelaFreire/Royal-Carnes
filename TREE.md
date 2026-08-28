@@ -231,6 +231,8 @@ backend/
         catalog.seed.json
         subscriptions.seed.json
         inventory.seed.json
+        orders.seed.json
+        deliveries.seed.json
     examples/
       bikeclub/
         seed.manifest.json
@@ -241,6 +243,8 @@ backend/
           catalog.seed.json
           subscriptions.seed.json
           inventory.seed.json
+          orders.seed.json
+          deliveries.seed.json
       camisaclub/
         seed.manifest.json
         kits/
@@ -250,6 +254,8 @@ backend/
           catalog.seed.json
           subscriptions.seed.json
           inventory.seed.json
+          orders.seed.json
+          deliveries.seed.json
     tests/
       minimal.seed.manifest.json
       kits/
@@ -259,6 +265,8 @@ backend/
         catalog.seed.json
         subscriptions.seed.json
         inventory.seed.json
+        orders.seed.json
+        deliveries.seed.json
 ```
 
 ## Backend Ownership
@@ -280,10 +288,10 @@ backend/apps/subscriptions
   -> assinatura, ciclo, limites, uso de ciclo
 
 backend/apps/orders
-  -> pedido, itens, status comercial, totalizacao
+  -> pedido, itens, tipos/status por seed, totalizacao, reserva simples
 
 backend/apps/deliveries
-  -> entrega, agenda, janela, codigo, status logistico
+  -> entrega simples, codigo, status logistico por seed, confirmacao
 
 backend/apps/payments
   -> pagamento manual, status financeiro, comprovante, gateway futuro

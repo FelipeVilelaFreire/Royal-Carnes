@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "kit": "orders",
+  "codeSequences": [
+    {
+      "key": "orders",
+      "prefix": "CAM",
+      "padding": 6,
+      "nextNumber": 1,
+      "template": "{prefix}-{number}"
+    }
+  ],
+  "kinds": [
+    {
+      "key": "delivery",
+      "label": "Entrega ecommerce",
+      "commercialModeKey": "delivery",
+      "codeSequenceKey": "orders",
+      "requiresInventory": true,
+      "createsDelivery": true,
+      "sortOrder": 1
+    }
+  ],
+  "statuses": [
+    {
+      "key": "created",
+      "label": "Criado",
+      "isInitial": true,
+      "allowedNextKeys": ["paid", "cancelled"],
+      "sortOrder": 1
+    },
+    {
+      "key": "paid",
+      "label": "Pago",
+      "allowedNextKeys": ["packing"],
+      "sortOrder": 2
+    },
+    {
+      "key": "packing",
+      "label": "Separando",
+      "allowedNextKeys": ["completed"],
+      "sortOrder": 3
+    },
+    {
+      "key": "completed",
+      "label": "Concluido",
+      "isTerminal": true,
+      "sortOrder": 4
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelado",
+      "isTerminal": true,
+      "sortOrder": 99
+    }
+  ],
+  "orders": []
+}

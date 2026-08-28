@@ -52,6 +52,8 @@ apps/customers
 apps/catalog
 apps/subscriptions
 apps/inventory
+apps/orders
+apps/deliveries
 api/v1
 ```
 
@@ -348,4 +350,47 @@ Proxima rodada recomendada:
 ligar Orders ao ajuste/reserva de estoque quando Fase 2/Orders runtime entrar
 criar shared-core/admin para inventory quando existir tela admin real
 manter lote, validade, fornecedor e ERP fora deste corte
+```
+
+## Fase 5 atual
+
+```text
+foundation done
+```
+
+Implementado em codigo:
+
+```text
+CodeSequence
+OrderKindDefinition
+OrderStatusDefinition
+Order
+OrderItem
+OrderStatusHistory
+DeliveryStatusDefinition
+Delivery
+DeliveryPackage
+DeliveryStatusHistory
+DeliveryConfirmation
+Orders/Deliveries seeds multiempresa
+Orders/Deliveries endpoints cliente/admin
+```
+
+Regra estrutural:
+
+```text
+tipos de pedido, status e codigos vem de seed/config por organization.
+backend nao faz if por Royal Delivery, Royal Box, plano Pro ou nome de produto.
+Order pode reservar InventoryItem quando o tipo exige estoque.
+Delivery nasce automaticamente a partir de Order quando o tipo configura isso.
+Scheduling, recorrencia, janela/capacidade e Royal Box recorrente ficam fora
+da Fase 5 atual.
+```
+
+Proxima rodada recomendada:
+
+```text
+criar shared-core cliente/admin para orders e deliveries quando a UI entrar
+conectar fluxo visual de pedido depois do backend estar validado
+estudar scheduling/recorrencia como kit separado depois do frontend basico
 ```

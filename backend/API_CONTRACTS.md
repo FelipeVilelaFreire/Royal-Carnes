@@ -378,6 +378,21 @@ initial available/reserved quantities
 measurement unit per product/variant
 ```
 
+Orders aplica:
+
+```text
+code sequences
+order kinds
+order status definitions
+```
+
+Deliveries aplica:
+
+```text
+code sequences
+delivery status definitions
+```
+
 Status:
 
 ```text
@@ -875,6 +890,275 @@ Permissao:
 
 ```text
 inventory.read
+```
+
+## Orders
+
+### GET /api/v1/orders/config/
+
+Objetivo:
+
+```text
+retornar kinds e status definitions da request.organization
+```
+
+Auth:
+
+```text
+requer usuario autenticado pelo default atual da API
+```
+
+### GET /api/v1/orders/me/
+
+Objetivo:
+
+```text
+listar pedidos do Customer ligado ao usuario autenticado
+```
+
+Auth:
+
+```text
+requer usuario autenticado
+```
+
+### POST /api/v1/orders/me/
+
+Objetivo:
+
+```text
+criar pedido do cliente autenticado
+calcular preco no backend
+reservar estoque quando OrderKind.requiresInventory for true
+criar Delivery automaticamente quando OrderKind.createsDelivery for true
+gerar codigo por CodeSequence da organization
+```
+
+Request:
+
+```json
+{
+  "kind_key": "delivery",
+  "items": [
+    {
+      "product_key": "picanha",
+      "variant_sku": "PICANHA-1KG",
+      "quantity": "1.000"
+    }
+  ],
+  "notes": ""
+}
+```
+
+Response inclui:
+
+```json
+{
+  "code": "RP-000001",
+  "kind_key": "delivery",
+  "status_key": "received",
+  "total_cents": 8990,
+  "items": [],
+  "status_history": []
+}
+```
+
+### GET /api/v1/orders/me/:id/
+
+Objetivo:
+
+```text
+detalhar pedido do Customer autenticado
+```
+
+### GET /api/v1/orders/admin/orders/
+
+Objetivo:
+
+```text
+listar pedidos da request.organization para operacao/admin
+```
+
+Permissao:
+
+```text
+orders.read
+```
+
+### POST /api/v1/orders/admin/orders/
+
+Objetivo:
+
+```text
+criar pedido administrativo para um Customer da request.organization
+```
+
+Permissao:
+
+```text
+orders.manage
+```
+
+### GET /api/v1/orders/admin/orders/:id/
+
+Objetivo:
+
+```text
+detalhar pedido da request.organization para operacao/admin
+```
+
+Permissao:
+
+```text
+orders.read
+```
+
+### POST /api/v1/orders/admin/orders/:id/transition/
+
+Objetivo:
+
+```text
+mudar status do pedido validando allowedNextKeys do OrderStatusDefinition atual
+```
+
+Permissao:
+
+```text
+orders.manage
+```
+
+Request:
+
+```json
+{
+  "status_key": "approved",
+  "note": "Pedido aprovado"
+}
+```
+
+Erros principais:
+
+```text
+order_reference_not_found
+order_status_not_found
+order_status_transition_not_allowed
+order_status_terminal
+inventory_item_not_found
+reserved_exceeds_available
+```
+
+Regra:
+
+```text
+backend valida transicao por OrderStatusDefinition.allowedNextKeys.
+OrderKindDefinition define commercialMode, requiresInventory, createsDelivery e
+codeSequenceKey.
+CodeSequence define prefixo, padding e template por organization.
+Quando createsDelivery=true, Orders cria a Delivery inicial sem regra hardcoded
+por nome comercial.
+```
+
+## Deliveries
+
+### GET /api/v1/deliveries/config/
+
+Objetivo:
+
+```text
+retornar delivery status definitions da request.organization
+```
+
+### GET /api/v1/deliveries/me/
+
+Objetivo:
+
+```text
+listar entregas do Customer autenticado
+```
+
+### GET /api/v1/deliveries/me/:id/
+
+Objetivo:
+
+```text
+detalhar entrega do Customer autenticado
+```
+
+### GET /api/v1/deliveries/admin/deliveries/
+
+Objetivo:
+
+```text
+listar entregas da request.organization para operacao/admin
+```
+
+Permissao:
+
+```text
+deliveries.read
+```
+
+### POST /api/v1/deliveries/admin/deliveries/
+
+Objetivo:
+
+```text
+criar entrega basica para Order existente
+gerar codigo por CodeSequence da organization
+copiar snapshot simples do endereco do pedido
+```
+
+Permissao:
+
+```text
+deliveries.manage
+```
+
+Request:
+
+```json
+{
+  "order_id": 1,
+  "confirmation_code": "1234",
+  "notes": ""
+}
+```
+
+### POST /api/v1/deliveries/admin/deliveries/:id/transition/
+
+Objetivo:
+
+```text
+mudar status da entrega validando allowedNextKeys do DeliveryStatusDefinition atual
+```
+
+Permissao:
+
+```text
+deliveries.manage
+```
+
+### POST /api/v1/deliveries/admin/deliveries/:id/confirm/
+
+Objetivo:
+
+```text
+registrar confirmacao de entrega
+se existir status terminal com effects.confirmDelivery=true, transicionar para ele
+```
+
+Permissao:
+
+```text
+deliveries.manage
+```
+
+Scheduling:
+
+```text
+fora da Fase 5 atual.
+Entrega recorrente, janela de entrega, capacidade e calendario ficam para kit
+futuro de Delivery Scheduling.
 ```
 
 ## Regra De Evolucao

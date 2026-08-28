@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "kit": "orders",
+  "codeSequences": [
+    {
+      "key": "orders",
+      "prefix": "RP",
+      "padding": 6,
+      "nextNumber": 1,
+      "template": "{prefix}-{number}"
+    }
+  ],
+  "kinds": [
+    {
+      "key": "delivery",
+      "label": "Royal Delivery",
+      "commercialModeKey": "delivery",
+      "codeSequenceKey": "orders",
+      "requiresInventory": true,
+      "createsDelivery": true,
+      "sortOrder": 1
+    },
+    {
+      "key": "subscription-cycle",
+      "label": "Ciclo de assinatura",
+      "commercialModeKey": "subscription",
+      "codeSequenceKey": "orders",
+      "requiresInventory": true,
+      "createsDelivery": true,
+      "sortOrder": 2
+    }
+  ],
+  "statuses": [
+    {
+      "key": "received",
+      "label": "Recebido",
+      "isInitial": true,
+      "allowedNextKeys": ["approved", "cancelled"],
+      "sortOrder": 1
+    },
+    {
+      "key": "approved",
+      "label": "Aprovado",
+      "allowedNextKeys": ["separating", "cancelled"],
+      "sortOrder": 2
+    },
+    {
+      "key": "separating",
+      "label": "Separando",
+      "allowedNextKeys": ["ready"],
+      "sortOrder": 3
+    },
+    {
+      "key": "ready",
+      "label": "Pronto",
+      "allowedNextKeys": ["completed"],
+      "sortOrder": 4
+    },
+    {
+      "key": "completed",
+      "label": "Concluido",
+      "isTerminal": true,
+      "sortOrder": 5
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelado",
+      "isTerminal": true,
+      "sortOrder": 99
+    }
+  ],
+  "orders": []
+}

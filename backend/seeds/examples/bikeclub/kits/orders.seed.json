@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "kit": "orders",
+  "codeSequences": [
+    {
+      "key": "orders",
+      "prefix": "BIKE-OS",
+      "padding": 5,
+      "nextNumber": 1,
+      "template": "{prefix}-{number}"
+    }
+  ],
+  "kinds": [
+    {
+      "key": "maintenance",
+      "label": "Ordem de manutencao",
+      "commercialModeKey": "pickup",
+      "codeSequenceKey": "orders",
+      "requiresInventory": false,
+      "createsDelivery": false,
+      "sortOrder": 1
+    },
+    {
+      "key": "delivery",
+      "label": "Entrega de produto",
+      "commercialModeKey": "delivery",
+      "codeSequenceKey": "orders",
+      "requiresInventory": true,
+      "createsDelivery": true,
+      "sortOrder": 2
+    }
+  ],
+  "statuses": [
+    {
+      "key": "requested",
+      "label": "Solicitado",
+      "isInitial": true,
+      "allowedNextKeys": ["confirmed", "cancelled"],
+      "sortOrder": 1
+    },
+    {
+      "key": "confirmed",
+      "label": "Confirmado",
+      "allowedNextKeys": ["in-service", "completed"],
+      "sortOrder": 2
+    },
+    {
+      "key": "in-service",
+      "label": "Em servico",
+      "allowedNextKeys": ["completed"],
+      "sortOrder": 3
+    },
+    {
+      "key": "completed",
+      "label": "Concluido",
+      "isTerminal": true,
+      "sortOrder": 4
+    },
+    {
+      "key": "cancelled",
+      "label": "Cancelado",
+      "isTerminal": true,
+      "sortOrder": 99
+    }
+  ],
+  "orders": []
+}

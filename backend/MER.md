@@ -63,6 +63,9 @@ accounts
   OrganizationMember
   PasswordResetToken
 
+core/config
+  CodeSequence
+
 customers
   Customer
   CustomerProfile
@@ -92,6 +95,8 @@ subscriptions
   SubscriptionCycleItem
 
 orders
+  OrderKindDefinition
+  OrderStatusDefinition
   Order
   OrderItem
   OrderStatusHistory
@@ -99,6 +104,7 @@ orders
   OrderAdjustment
 
 deliveries
+  DeliveryStatusDefinition
   Delivery
   DeliveryWindow
   DeliveryPackage
@@ -260,6 +266,40 @@ Exemplos:
 - `wallet.enabled`;
 - `manualPayments.enabled`;
 - `deliveryScheduling.enabled`.
+
+## Core/Config
+
+### CodeSequence
+
+Sequencia configuravel para codigos operacionais por organization.
+
+Campos:
+
+```text
+id
+organizationId
+key
+prefix
+padding
+nextNumber
+template
+createdAt
+updatedAt
+```
+
+Uso:
+
+```text
+orders -> RP-000001, CAM-000001, BIKE-OS-000001
+deliveries -> DEL-000001, CAM-DEL-000001, BIKE-DEL-000001
+```
+
+Regra:
+
+```text
+prefixo e formato vem de seed/config
+codigo nao deve ser montado hardcoded dentro de Orders ou Deliveries
+```
 
 ## Accounts
 
@@ -884,6 +924,61 @@ status
 
 ## Orders
 
+### OrderKindDefinition
+
+Define tipos de pedido por organization.
+
+Campos:
+
+```text
+id
+organizationId
+key
+label
+commercialModeId opcional
+codeSequenceKey
+requiresInventory
+createsDelivery
+isActive
+sortOrder
+metadata
+```
+
+Regra:
+
+```text
+tipo de pedido e configuracao/seed
+codigo nao deve fazer if por nome comercial como Royal Delivery
+```
+
+### OrderStatusDefinition
+
+Define workflow de status por organization.
+
+Campos:
+
+```text
+id
+organizationId
+key
+label
+sortOrder
+isInitial
+isTerminal
+isPublic
+allowedNextKeys
+effects
+metadata
+```
+
+Regra:
+
+```text
+status nao e enum fechado no codigo
+cada organization pode ter seu proprio fluxo por seed/config
+backend valida transicao usando allowedNextKeys
+```
+
 ### Order
 
 Compra.
@@ -898,17 +993,15 @@ subscriptionId opcional
 subscriptionCycleId opcional
 addressId opcional
 code
-kind
-source
-status
+kindKey
+statusKey
 currency
 subtotalCents
 discountCents
 freightCents
 totalCents
-createdAt
-approvedAt opcional
-cancelledAt opcional
+notes
+metadata
 ```
 
 Kinds iniciais:
@@ -928,14 +1021,18 @@ o seed/config/copy apresenta como Royal Delivery.
 Status comercial inicial:
 
 ```text
-draft
-sentToStore
-approved
-preparing
-outForDelivery
-delivered
-cancelled
+recebido
+aprovado
+separando
+pronto
+concluido
+cancelado
 ```
+
+Observacao:
+
+Os nomes acima sao exemplo do seed RoyalPrime. BikeClub, CamisaClub ou outra
+empresa podem trocar keys, labels e transicoes sem alterar models/services.
 
 ### OrderItem
 
@@ -949,13 +1046,15 @@ organizationId
 orderId
 productId
 variantId opcional
+measurementUnitId opcional
 nameSnapshot
 quantity
-unit
 unitPriceCents
 totalCents
 weightGrams opcional
-isIncludedInSubscription
+sourceType opcional
+sourceKey opcional
+metadata
 ```
 
 Regra:
@@ -969,6 +1068,19 @@ frontend nao recalcula regra comercial
 
 Historico imutavel de status.
 
+Campos:
+
+```text
+id
+organizationId
+orderId
+fromStatusKey
+toStatusKey
+note
+actor
+createdAt
+```
+
 ### OrderTimelineEvent
 
 Eventos exibiveis para cliente/admin.
@@ -976,6 +1088,34 @@ Eventos exibiveis para cliente/admin.
 Pode derivar de status, delivery e pagamento.
 
 ## Deliveries
+
+### DeliveryStatusDefinition
+
+Define workflow logistico por organization.
+
+Campos:
+
+```text
+id
+organizationId
+key
+label
+sortOrder
+isInitial
+isTerminal
+isPublic
+allowedNextKeys
+effects
+metadata
+```
+
+Regra:
+
+```text
+status logistico vem do seed/config
+backend valida transicao usando allowedNextKeys
+effects pode ligar comportamento simples como confirmDelivery
+```
 
 ### Delivery
 
@@ -988,13 +1128,13 @@ id
 organizationId
 orderId
 customerId
-addressId
-status
-scheduledDate
-deliveryWindowId opcional
-deliveryCode
-addressSnapshotJson
+addressId opcional
+code
+statusKey
+confirmationCode
+addressSnapshot
 notes
+metadata
 ```
 
 Status logistico inicial:
@@ -1016,9 +1156,20 @@ pedido responde o que foi comprado
 delivery responde quando, onde e como sera entregue
 ```
 
+Fase 5 atual:
+
+```text
+Delivery basico nasce a partir de pedido existente.
+OrderKindDefinition.createsDelivery permite criar a Delivery automaticamente.
+Nao ha scheduling, recorrencia, janela/capacidade ou roteirizacao nesta fase.
+Royal Box recorrente e delivery scheduling ficam para kit futuro separado.
+```
+
 ### DeliveryWindow
 
 Janela de entrega.
+
+Planejado, nao implementado na Fase 5 atual.
 
 ### DeliveryPackage
 

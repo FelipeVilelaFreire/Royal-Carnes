@@ -9,9 +9,11 @@
   ],
   "permissions": [
     "orders.read",
+    "orders.manage",
     "orders.updateStatus",
     "products.manage",
     "customers.read",
+    "deliveries.read",
     "deliveries.manage",
     "plans.read",
     "plans.manage",
@@ -23,9 +25,11 @@
   "rolePermissions": {
     "owner": [
       "orders.read",
+      "orders.manage",
       "orders.updateStatus",
       "products.manage",
       "customers.read",
+      "deliveries.read",
       "deliveries.manage",
       "plans.read",
       "plans.manage",
@@ -36,9 +40,11 @@
     ],
     "admin": [
       "orders.read",
+      "orders.manage",
       "orders.updateStatus",
       "products.manage",
       "customers.read",
+      "deliveries.read",
       "deliveries.manage",
       "plans.read",
       "plans.manage",
@@ -49,15 +55,16 @@
     ],
     "mechanic": [
       "orders.read",
+      "orders.manage",
       "orders.updateStatus",
       "customers.read",
+      "deliveries.read",
       "plans.read",
       "subscriptions.read",
       "inventory.read",
       "inventory.manage"
     ],
     "customer": [
-      "orders.read",
       "plans.read",
       "subscriptions.read"
     ]

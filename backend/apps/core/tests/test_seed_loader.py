@@ -10,7 +10,7 @@ class BackendSeedLoaderTests(SimpleTestCase):
         self.assertEqual(manifest.key, "royalprime")
         self.assertEqual(
             [module.kit for module in manifest.modules],
-            ["organizations", "auth-users", "customers", "catalog", "subscriptions", "inventory"],
+            ["organizations", "auth-users", "customers", "catalog", "subscriptions", "inventory", "orders", "deliveries"],
         )
 
     def test_loads_example_modules(self):
@@ -19,4 +19,4 @@ class BackendSeedLoaderTests(SimpleTestCase):
         self.assertEqual(manifest.key, "bikeclub")
         self.assertEqual(manifest.seed_type, "example")
         self.assertEqual(manifest.modules[0].kit, "organizations")
-        self.assertEqual(manifest.modules[-1].kit, "inventory")
+        self.assertEqual(manifest.modules[-1].kit, "deliveries")
