@@ -147,6 +147,323 @@ PlanEntitlement define o que o plano permite receber.
 SubscriptionCycleItem congela o que sera separado/entregue naquele ciclo.
 ```
 
+## Decisao Para Continuar Deste Chat
+
+Amanha, ao retomar a Fase 3, continuar a partir desta decisao:
+
+```text
+Plan/Subscription precisa ser multiempresa e seed-driven.
+Royal Carnes e apenas a primeira seed real.
+O motor de planos nao pode ter regra hardcoded para Royal Pro, Picanha,
+Churrasco Premium, BikeClub, CamisaClub ou qualquer negocio especifico.
+```
+
+O desenho correto e tratar plano como motor generico de beneficios:
+
+```text
+Plan
+  -> pacote comercial
+
+PlanPrice
+  -> preco do pacote
+
+PlanEntitlement
+  -> direito que o pacote libera
+
+PlanEntitlement.constraints
+  -> limites e condicoes configuraveis desse direito
+```
+
+O backend deve validar contratos genericos:
+
+```text
+targetType
+targetId
+quantity
+measurementUnit
+constraints
+```
+
+O seed/config define o negocio:
+
+```text
+Royal Pro
+Linha Nobre
+Picanha
+5kg
+1 saco de carvao
+2 camisetas
+1 revisao mensal
+```
+
+Regra anti-hardcode:
+
+```text
+Nao criar if plan == "Royal Pro".
+Nao criar if product == "Picanha".
+Nao criar if category == "Carnes".
+Nao criar regra de negocio por name/copy.
+Seed/importacao usa key/sku.
+Banco relaciona por id/FK.
+UI mostra name/copy.
+```
+
+## PlanEntitlement Generico
+
+`PlanEntitlement` deve responder duas perguntas:
+
+```text
+1. O que o plano libera?
+2. Quais limites/condicoes existem para esse direito?
+```
+
+Campos planejados:
+
+```text
+id
+organizationId
+planId
+targetType
+productId opcional
+variantId opcional
+categoryId opcional
+collectionId opcional
+quantity
+measurementUnitId opcional
+constraints
+sortOrder
+```
+
+`targetType` define o alvo:
+
+```text
+collection -> libera itens de uma colecao
+category   -> libera itens de uma categoria
+product    -> libera um produto e suas variants validas
+variant    -> libera uma variant exata
+```
+
+`quantity + measurementUnitId` define limite principal:
+
+```text
+5 kg
+3 unit
+1 bag
+1 service
+```
+
+`constraints` guarda limites adicionais sem prender o schema cedo demais:
+
+```json
+{
+  "minQuantity": 1,
+  "maxQuantity": 5,
+  "minVariantWeightGrams": 500,
+  "maxSelections": 3,
+  "allowedCommercialModes": ["subscription"],
+  "requiresAvailability": true,
+  "allowedAttributes": {
+    "size": ["P", "M", "G"],
+    "wheelSize": ["aro 26", "aro 29"]
+  }
+}
+```
+
+Uso esperado de cada parte:
+
+```text
+quer agrupar produtos nobres -> Collection
+quer agrupar tipo de produto -> Category
+quer liberar um produto -> Product
+quer liberar SKU exato -> ProductVariant
+quer limitar quantidade/peso -> quantity + MeasurementUnit
+quer restringir tamanho/cor/aro/corte -> constraints.allowedAttributes
+quer regra muito especifica -> constraints, com cuidado
+```
+
+## Exemplos De PlanEntitlement
+
+### Royal Carnes - Plano Pro Por Linha Nobre
+
+Seed:
+
+```text
+Collection: linha-nobre
+Products:
+  Picanha
+  Ancho
+  Tomahawk
+  Contra-file
+```
+
+Entitlement:
+
+```text
+Plan
+  key: royal-pro
+  name: Royal Pro
+
+PlanEntitlement
+  targetType: collection
+  collectionId: linha-nobre
+  quantity: 5
+  measurementUnit: kg
+  constraints:
+    maxSelections: 4
+    allowedCommercialModes: ["subscription"]
+    requiresAvailability: true
+```
+
+Significado:
+
+```text
+Royal Pro libera ate 5kg por ciclo da colecao Linha Nobre.
+Cliente pode escolher no maximo 4 produtos/variants dentro dessa regra.
+```
+
+Validacao generica:
+
+```text
+Cliente escolheu PICANHA-1KG x 2kg.
+Backend ve que PICANHA-1KG pertence ao Product Picanha.
+Product Picanha pertence a Collection linha-nobre.
+Plan tem entitlement para linha-nobre.
+2kg <= 5kg.
+Variant esta disponivel para subscription.
+Resultado: permitido.
+```
+
+### Royal Carnes - Picanha Com Limite Especifico
+
+Entitlement:
+
+```text
+PlanEntitlement
+  targetType: product
+  productId: picanha
+  quantity: 5
+  measurementUnit: kg
+  constraints:
+    minVariantWeightGrams: 500
+    maxSelections: 5
+    requiresAvailability: true
+```
+
+Significado:
+
+```text
+Plano libera ate 5kg de Picanha por ciclo.
+Cliente pode compor com Picanha 500g, Picanha 1kg ou peca maior,
+desde que respeite o limite total e as constraints.
+```
+
+### Royal Carnes - Variant Exata
+
+Entitlement:
+
+```text
+PlanEntitlement
+  targetType: variant
+  variantId: CARVAO-5KG
+  quantity: 1
+  measurementUnit: bag
+  constraints:
+    maxQuantity: 1
+```
+
+Significado:
+
+```text
+Plano inclui 1 saco de carvao por ciclo.
+```
+
+### Loja Feminina - Roupas
+
+Entitlement:
+
+```text
+Plan
+  key: style-pro
+  name: Style Pro
+
+PlanEntitlement
+  targetType: collection
+  collectionId: verao-premium
+  quantity: 3
+  measurementUnit: unit
+  constraints:
+    maxSelections: 3
+    allowedAttributes:
+      size: ["P", "M", "G"]
+```
+
+Significado:
+
+```text
+Plano libera 3 pecas por ciclo da colecao Verao Premium,
+somente nas variants com tamanho P, M ou G.
+```
+
+### Loja Feminina - Sapatos
+
+Entitlement:
+
+```text
+PlanEntitlement
+  targetType: category
+  categoryId: calcados
+  quantity: 1
+  measurementUnit: unit
+  constraints:
+    maxSelections: 1
+    allowedAttributes:
+      size: ["36", "37", "38", "39"]
+```
+
+Significado:
+
+```text
+Plano libera 1 calcado por ciclo, limitado aos tamanhos configurados.
+```
+
+### BikeClub
+
+Entitlement de bike:
+
+```text
+Plan
+  key: urbano
+  name: Urbano
+
+PlanEntitlement
+  targetType: product
+  productId: bike-urbana
+  quantity: 1
+  measurementUnit: unit
+  constraints:
+    maxSelections: 1
+    allowedAttributes:
+      wheelSize: ["aro 26", "aro 29"]
+```
+
+Entitlement de servico:
+
+```text
+PlanEntitlement
+  targetType: product
+  productId: revisao-mensal
+  quantity: 1
+  measurementUnit: service
+  constraints:
+    maxQuantity: 1
+```
+
+Significado:
+
+```text
+Mesmo motor: bike, roupa, sapato, carne e servico mudam por seed/config.
+```
+
 ## MER Planejado
 
 ### Plan
@@ -209,6 +526,7 @@ categoryId opcional
 collectionId opcional
 quantity
 measurementUnitId opcional
+constraints
 sortOrder
 ```
 
@@ -226,6 +544,7 @@ Regras:
 ```text
 exatamente um target deve estar preenchido conforme targetType
 measurementUnitId define a unidade do direito quando houver quantidade
+constraints define limites configuraveis sem regra hardcoded
 entitlement nao calcula estoque
 entitlement nao baixa pedido
 entitlement nao cria pagamento sozinho
