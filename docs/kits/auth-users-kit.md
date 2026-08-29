@@ -88,6 +88,20 @@ frontend/shared-core
   -> somente tipos realmente comuns como UserId, AuthSession, RoleKey
 ```
 
+Mapa detalhado do Kit 01 entre global/client/admin:
+
+```text
+docs/kits/kit-01-auth-users-shared-core-map.md
+```
+
+Regra:
+
+```text
+global recebe contrato base realmente comum
+client recebe fluxo de autenticacao do cliente
+admin recebe fluxo operacional, roles, permissoes e gestao de usuarios
+```
+
 Contratos esperados:
 
 - `AuthSession`;

@@ -25,6 +25,21 @@ Novo produto precisa de login, usuarios e perfis.
   -> copie/adapte contratos, backend, hooks e screens seguindo o escopo correto
 ```
 
+Antes de reaproveitar ideias de HobbyMap, Syrax, ServiceOS ou outro projeto do
+workspace, leia:
+
+```text
+docs/kits/REUSE_SOURCE_AUDIT.md
+```
+
+Regra:
+
+```text
+aprendizado externo entra primeiro em docs/kits
+depois vira decisao de kit
+so depois vira codigo
+```
+
 ## Tres Camadas De Reuso
 
 Kits devem documentar reuso em tres camadas:
@@ -134,6 +149,34 @@ serviceos-candidate
 | Fulfillment & Delivery | local foundation | Fase 5B | Entrega simples, separacao, confirmacao |
 | Payments | planned | Fase 6/7 | Manual, Pix, gateway, conciliacao |
 | Wallet & Vouchers | planned | Fase 8 | Credito, voucher, saldo, estorno |
+
+Mapas detalhados:
+
+```text
+docs/kits/kit-01-auth-users-shared-core-map.md
+```
+
+## Fontes De Reuso Do Workspace
+
+O workspace tem projetos que podem servir como referencia, mas nao devem ser
+copiados diretamente:
+
+```text
+HobbyMap
+  -> shared-core, templates, strings/i18n, render-only boundaries
+
+Syrax
+  -> admin real, web/mobile/shared-core, route map, multilanguage
+
+ServiceOS
+  -> Foundation, AppShell, manifests, destino futuro de capacidades maduras
+```
+
+Mapa completo:
+
+```text
+docs/kits/REUSE_SOURCE_AUDIT.md
+```
 
 ## Relacao Com ServiceOS
 

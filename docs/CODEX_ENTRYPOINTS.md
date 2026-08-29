@@ -20,7 +20,8 @@ implementar no RoyalPrime.
 12. backend/ARCHITECTURE.md
 13. backend/API_CONTRACTS.md
 14. docs/kits/README.md
-15. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
+15. docs/kits/REUSE_SOURCE_AUDIT.md
+16. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
 ## Regra De Camadas
@@ -151,6 +152,18 @@ Para decidir quando criar funcionalidade no shared-core, leia:
 
 ```text
 frontend/KIT_FUNCTIONALITY_STRATEGY.md
+```
+
+Para reaproveitar ideias de HobbyMap, Syrax, ServiceOS ou outro projeto:
+
+```text
+docs/kits/REUSE_SOURCE_AUDIT.md
+```
+
+Regra:
+
+```text
+fonte externa vira documentacao de kit antes de virar codigo
 ```
 
 ## Manifest-First Gradual
