@@ -30,6 +30,7 @@ workspace, leia:
 
 ```text
 docs/kits/REUSE_SOURCE_AUDIT.md
+docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
 ```
 
 Regra:
@@ -154,6 +155,7 @@ Mapas detalhados:
 
 ```text
 docs/kits/kit-01-auth-users-shared-core-map.md
+docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
 ```
 
 ## Fontes De Reuso Do Workspace
