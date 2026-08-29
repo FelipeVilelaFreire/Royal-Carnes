@@ -19,6 +19,13 @@ Pertence aqui:
 - identidade comum do produto.
 - kits globais pequenos em `kits/`.
 
+Status atual:
+
+```text
+runtime funcional resetado na branch feature/shared-core-kit-reset
+global deve ficar minimo ate o Kit 01 recriar contratos comprovadamente comuns
+```
+
 Nao pertence aqui:
 
 - strings exclusivas do client;
@@ -28,8 +35,8 @@ Nao pertence aqui:
 - API clients exclusivos de uma surface;
 - runtime visual como Button, AppShell, Header ou Sidebar.
 
-As pastas antigas `client/` e `admin/` dentro deste shared-core sao legado de
-transicao. Novos fluxos devem nascer em `frontend/client/shared-core` ou
+As pastas antigas `client/` e `admin/` dentro deste shared-core foram removidas.
+Novos fluxos devem nascer em `frontend/client/shared-core` ou
 `frontend/admin/shared-core`.
 
 ## Mentalidade de Kit

@@ -49,8 +49,6 @@ frontend/
   shared-core/
     README.md
     config.ts
-    foundation.ts
-    identity.ts
     contracts/
     kits/
       identity/
@@ -60,8 +58,6 @@ frontend/
       manifest/
     manifest/
     public/
-    client/   legado de transicao
-    admin/    legado de transicao
 
   client/
     shared-core/
@@ -118,6 +114,21 @@ frontend/
 
 ## Ownership
 
+## Status Atual Do Reset
+
+```text
+branch: feature/shared-core-kit-reset
+runtime funcional de shared-core resetado
+hooks/API/contracts/view-models serao recriados por kit
+```
+
+Foram removidos os legados:
+
+```text
+frontend/shared-core/client
+frontend/shared-core/admin
+```
+
 ### frontend/shared-core
 
 Somente contratos e referencias realmente comuns entre client, mobile e admin.
@@ -146,8 +157,8 @@ runtime visual
 ```
 
 As pastas `frontend/shared-core/client` e `frontend/shared-core/admin` sao
-legado de transicao. Novos fluxos devem nascer em `frontend/client/shared-core`
-ou `frontend/admin/shared-core`.
+legado removido. Novos fluxos devem nascer em `frontend/client/shared-core` ou
+`frontend/admin/shared-core`.
 
 ### frontend/client/shared-core
 

@@ -5,14 +5,12 @@ import { Badge, Button, Card } from "../../../legacy/design-system";
 import { AuthModal, PortalHeader, BottomTabBar, Footer } from "../../../legacy/app-shell";
 import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
 import { CreditCardIcon, EditIcon, GiftIcon, TruckIcon, StarIcon, CheckIcon, CutMeatIcon, ScaleIcon, KnifeIcon, UserIcon } from "../../../legacy/design-system/Icons";
-import { OrderDetailModal } from "../../../product-components/ecommerce";
+import { OrderDetailModal, prepareMockOrderViewModel, type PreparedOrderViewModel } from "../../../product-components/ecommerce";
 import {
   royalCustomerMock,
   royalCustomerPaymentHistoryMock
 } from "@/mocks/customer.mock";
-import type { RoyalCustomerOrder } from "@royalprime/client/contracts/order.contract";
-import { useMyOrders } from "@royalprime/client/hooks/useMyOrders";
-import { prepareOrderViewModel, type PreparedOrderViewModel } from "@royalprime/client/view-models/orders.view-model";
+import { royalCustomerOrdersMock, type RoyalCustomerOrder } from "@/mocks/orders";
 import { catalogSubscriptionPlansMock, type SubscriptionPlanMock, type SubscriptionTier } from "@/mocks/catalog";
 import { clientPtBR } from "@/locales/pt-BR";
 
@@ -137,12 +135,12 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
   const planDetails = catalogSubscriptionPlansMock;
   const currentPlanDetails = planDetails.find((plan) => plan.key === currentPlan) || planDetails[0];
-  const { viewModels: orderVMs, currentOrderVM: activeOrderVM, currentSubscriptionOrderVM: activeSubVM } = useMyOrders();
+  const orderVMs = royalCustomerOrdersMock.map(prepareMockOrderViewModel);
   const paymentHistory = royalCustomerPaymentHistoryMock;
   const recentOrderVMs = orderVMs.slice(0, 3);
-  const currentOrderVM = activeOrderVM;
+  const currentOrderVM = orderVMs.find((order) => order.rawOrder.kind === "royalDelivery" && order.rawOrder.status !== "delivered") || orderVMs[0];
   const currentOrder = currentOrderVM?.rawOrder;
-  const currentSubscriptionOrder = activeSubVM?.rawOrder;
+  const currentSubscriptionOrder = orderVMs.find((order) => order.rawOrder.kind === "subscriptionCycle" && order.rawOrder.status !== "delivered")?.rawOrder;
   const cycleUsage = currentSubscriptionOrder?.cycleUsage;
   const formatPlanPrice = (plan: SubscriptionPlanMock) => plan.monthlyPrice.toLocaleString("pt-BR");
   const getStatusToneTokens = (tone: "success" | "danger" | "pending" | "active") => {

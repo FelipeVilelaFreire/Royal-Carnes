@@ -12,7 +12,7 @@ GET  /api/v1/orders/admin/orders/:id/
 POST /api/v1/orders/admin/orders/:id/transition/
 ```
 
-Arquivos esperados:
+Arquivos futuros esperados quando o runtime renascer:
 
 ```text
 contracts/admin-order.contract.ts
@@ -31,8 +31,9 @@ status e labels vem da API/config
 
 ## Audit Atual
 
-O kit esta documentado no caminho certo, mas a implementacao atual de API ainda
-precisa ser corrigida.
+Este kit esta resetado na branch `feature/shared-core-kit-reset`.
+
+Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
 
 Leia junto:
 

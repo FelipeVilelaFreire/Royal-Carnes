@@ -22,7 +22,8 @@ implementar no RoyalPrime.
 14. docs/kits/README.md
 15. docs/kits/REUSE_SOURCE_AUDIT.md
 16. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-17. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
+17. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
+18. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
 ## Regra De Camadas
@@ -160,6 +161,7 @@ Para reaproveitar ideias de HobbyMap, Syrax, ServiceOS ou outro projeto:
 ```text
 docs/kits/REUSE_SOURCE_AUDIT.md
 docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
+docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
 ```
 
 Regra:

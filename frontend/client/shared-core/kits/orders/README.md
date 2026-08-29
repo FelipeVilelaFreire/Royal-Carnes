@@ -11,7 +11,7 @@ POST /api/v1/orders/me/
 GET  /api/v1/orders/me/:id/
 ```
 
-Arquivos esperados:
+Arquivos futuros esperados quando o runtime renascer:
 
 ```text
 contracts/order.contract.ts
@@ -39,7 +39,9 @@ tela nao calcula preco final
 
 ## Audit Atual
 
-Este kit ainda nao esta completo como integracao real.
+Este kit esta resetado na branch `feature/shared-core-kit-reset`.
+
+Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
 
 Antes de continuar, alinhar com:
 

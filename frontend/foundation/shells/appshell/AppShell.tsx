@@ -1,6 +1,5 @@
 import React from "react";
 import { AppShellRuntime } from "./AppShellRuntime";
-import { clientAppShellConfig } from "../shared-core/client/primecutclub";
 
 export interface AppShellProps {
   children: React.ReactNode;
@@ -27,7 +26,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   rightSlot,
   mode
 }) => {
-  const effectiveConfig = config || clientAppShellConfig;
+  const effectiveConfig = config || { navigation: [], routes: {}, mode: "client" };
   const effectiveMode = mode || (config?.mode as "admin" | "client") || "client";
 
   return (

@@ -5,12 +5,11 @@ import { Badge, Button, Card } from "../../../legacy/design-system";
 import { AuthModal, BottomTabBar, PortalHeader } from "../../../legacy/app-shell";
 import { CheckIcon, UserIcon } from "../../../legacy/design-system/Icons";
 import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
-import { OrderDetailModal } from "../../../product-components/ecommerce";
+import { OrderDetailModal, prepareMockOrderViewModel, type PreparedOrderViewModel } from "../../../product-components/ecommerce";
 import { clientPtBR } from "@/locales/pt-BR";
 import { catalogSubscriptionPlansMock } from "@/mocks/catalog";
 import { royalCustomerMock } from "@/mocks/customer.mock";
-import { useMyOrders } from "@royalprime/client/hooks/useMyOrders";
-import type { PreparedOrderViewModel } from "@royalprime/client/view-models/orders.view-model";
+import { royalCustomerOrdersMock } from "@/mocks/orders";
 
 export interface MeusPedidosViewProps {
   onNavigate?: (path: string) => void;
@@ -36,7 +35,9 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
   const [selectedOrderVM, setSelectedOrderVM] = useState<PreparedOrderViewModel | null>(null);
   const [isMobileScreen, setIsMobileScreen] = useState(false);
 
-  const { viewModels, currentOrderVM, currentSubscriptionOrderVM } = useMyOrders();
+  const viewModels = royalCustomerOrdersMock.map(prepareMockOrderViewModel);
+  const currentOrderVM = viewModels.find((order) => order.rawOrder.kind === "royalDelivery" && order.rawOrder.status !== "delivered") || viewModels[0];
+  const currentSubscriptionOrderVM = viewModels.find((order) => order.rawOrder.kind === "subscriptionCycle" && order.rawOrder.status !== "delivered") || null;
 
   useEffect(() => {
     const handleThemeChange = () => {

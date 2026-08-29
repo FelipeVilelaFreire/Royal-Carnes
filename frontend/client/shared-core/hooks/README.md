@@ -2,6 +2,13 @@
 
 Hooks reutilizaveis entre cliente web e cliente mobile.
 
+Status atual:
+
+```text
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum hook funcional deve ser tratado como existente
+```
+
 Exemplos futuros:
 
 - `useProducts`
@@ -10,12 +17,11 @@ Exemplos futuros:
 - `useSubscriptionCycle`
 - `useSubscription`
 
-Proximo corte:
+Primeiro corte recomendado:
 
-- `useOrderConfig`
-- `useMyOrders`
-- `useDeliveryConfig`
-- `useMyDeliveries`
+```text
+Kit 01 Auth & Users
+```
 
 Regra:
 

@@ -4,8 +4,8 @@ import React, { useMemo } from "react";
 import { BottomModal, Modal } from "@/legacy/design-system";
 import { CheckIcon } from "@/legacy/design-system/Icons";
 import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
-import type { RoyalCustomerOrder } from "@royalprime/client/contracts/order.contract";
-import { prepareOrderViewModel, type PreparedOrderViewModel } from "@royalprime/client/view-models/orders.view-model";
+import type { RoyalCustomerOrder } from "@/mocks/orders";
+import { prepareMockOrderViewModel, type PreparedOrderViewModel } from "./orderDisplayModel";
 
 import { clientPtBR } from "@/locales/pt-BR";
 
@@ -32,7 +32,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
   const vm = useMemo(() => {
     if (passedViewModel) return passedViewModel;
-    if (order) return prepareOrderViewModel(order);
+    if (order) return prepareMockOrderViewModel(order);
     return null;
   }, [order, passedViewModel]);
 

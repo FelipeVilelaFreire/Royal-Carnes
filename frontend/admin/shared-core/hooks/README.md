@@ -2,6 +2,13 @@
 
 Hooks reutilizaveis dentro do Admin.
 
+Status atual:
+
+```text
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum hook funcional deve ser tratado como existente
+```
+
 Exemplos futuros:
 
 - `useAdminOrders`

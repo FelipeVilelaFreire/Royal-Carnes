@@ -13,7 +13,7 @@ POST /api/v1/deliveries/admin/deliveries/:id/transition/
 POST /api/v1/deliveries/admin/deliveries/:id/confirm/
 ```
 
-Arquivos esperados:
+Arquivos futuros esperados quando o runtime renascer:
 
 ```text
 contracts/admin-delivery.contract.ts
@@ -32,8 +32,9 @@ scheduling fica para kit futuro separado
 
 ## Audit Atual
 
-O kit esta documentado no caminho certo, mas a implementacao atual de API ainda
-precisa ser corrigida.
+Este kit esta resetado na branch `feature/shared-core-kit-reset`.
+
+Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
 
 Leia junto:
 

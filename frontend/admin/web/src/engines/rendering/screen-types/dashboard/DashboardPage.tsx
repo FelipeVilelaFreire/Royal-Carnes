@@ -6,7 +6,6 @@ import { AvatarCell } from "@foundation/ui/Avatar";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
 import { FlameIcon, BoxIcon, TruckIcon, UserIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
-import { prepareAdminOrderViewModel } from "@royalprime/admin/view-models/adminOrders.view-model";
 import type { DashboardConfig } from "../config/types";
 
 export interface DashboardPageProps {
@@ -43,21 +42,39 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
 
   const renderStatusBadge = (orderOrStatus: any) => {
     const orderObj = typeof orderOrStatus === "string" ? ({ status: orderOrStatus } as any) : orderOrStatus;
-    const vm = prepareAdminOrderViewModel(orderObj, primary);
+    const statusConfig: Record<string, { label: string; bg: string; color: string; border: string }> = {
+      received: { label: "Recebido", bg: "rgba(245, 158, 11, 0.15)", color: "#F59E0B", border: "rgba(245, 158, 11, 0.3)" },
+      approved: { label: "Aprovado", bg: "rgba(16, 185, 129, 0.15)", color: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+      separating: { label: "Em Separacao", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
+      preparing: { label: "Em Preparo", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
+      packing: { label: "Em Embalagem", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
+      ready: { label: "Pronto", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
+      outForDelivery: { label: "Em Transito", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
+      delivered: { label: "Entregue", bg: "rgba(16, 185, 129, 0.15)", color: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+      completed: { label: "Concluido", bg: "rgba(16, 185, 129, 0.15)", color: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+      pending: { label: "Pendente", bg: "rgba(245, 158, 11, 0.15)", color: "#F59E0B", border: "rgba(245, 158, 11, 0.3)" },
+      cancelled: { label: "Cancelado", bg: "rgba(239, 68, 68, 0.15)", color: "#EF4444", border: "rgba(239, 68, 68, 0.3)" }
+    };
+    const vm = statusConfig[orderObj.status] || {
+      label: orderObj.statusLabel || orderObj.status || "Status",
+      bg: "rgba(212, 196, 176, 0.12)",
+      color: primary,
+      border: "rgba(212, 196, 176, 0.3)"
+    };
     return (
       <span
         style={{
-          background: vm.badgeBg,
-          color: vm.badgeColor,
+          background: vm.bg,
+          color: vm.color,
           fontSize: "12px",
           fontWeight: "700",
           padding: "5px 12px",
           borderRadius: "10px",
-          border: `1px solid ${vm.badgeBorder}`,
+          border: `1px solid ${vm.border}`,
           letterSpacing: "0.5px"
         }}
       >
-        {vm.statusLabel}
+        {vm.label}
       </span>
     );
   };

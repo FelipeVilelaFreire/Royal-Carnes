@@ -5,9 +5,10 @@ import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { useSubscription } from "@/hooks/useSubscription";
 import { clientPtBR } from "@/locales/pt-BR";
 import { clientThemeManifest } from "@/manifests/theme.manifest";
+import { catalogSubscriptionPlansMock } from "@/mocks/catalog";
+import { royalCustomerMock } from "@/mocks/customer.mock";
 import { CheckIcon, UserIcon, TruckIcon, SettingsIcon, StarIcon, LogoutIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface MeuClubeViewProps {
@@ -18,44 +19,24 @@ export const MeuClubeView: React.FC<MeuClubeViewProps> = ({ onNavigate }) => {
   const themeColors = clientThemeManifest.colors;
   const { primary, text, textMuted, border, background, surface, surfaceContainer } = themeColors;
   const strings = clientPtBR.meuClube;
-  const { plans, subscription, loading: isSubscriptionLoading, source: subscriptionSource } = useSubscription();
-  const activePlan = subscription?.plan || plans.find((plan) => plan.key === "pro") || plans[0];
-  const activePrice = activePlan?.prices?.[0];
-  const formatCurrency = (amountCents?: number) => {
-    if (amountCents === undefined) return "R$ 279";
+  const activePlan = catalogSubscriptionPlansMock.find((plan) => plan.key === royalCustomerMock.activeSubscription?.planKey) || catalogSubscriptionPlansMock[0];
+  const formatCurrency = (amount?: number) => {
+    if (amount === undefined) return "R$ 279";
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
-      currency: activePrice?.currency || "BRL",
+      currency: "BRL",
       maximumFractionDigits: 0
-    }).format(amountCents / 100);
+    }).format(amount);
   };
-  const formatEntitlement = (quantity: string, unit: string | null, targetName: string | null) => {
-    const numericQuantity = Number(quantity);
-    const quantityLabel = Number.isFinite(numericQuantity)
-      ? numericQuantity.toLocaleString("pt-BR", { maximumFractionDigits: 3 })
-      : quantity;
-    const unitLabel = unit ? ` ${unit}` : "";
-    return `${quantityLabel}${unitLabel} em ${targetName || "beneficio do plano"}`;
-  };
-
   const fallbackBenefitsList = [
     "Acesso a cortes exclusivos",
     "Condições especiais para membros",
     "Acesso antecipado a edições limitadas",
     "Flexibilidade para pausar ou alterar sua caixa"
   ];
-  const benefitsList = activePlan?.entitlements?.length
-    ? activePlan.entitlements.map((entitlement) =>
-        formatEntitlement(
-          entitlement.quantity,
-          entitlement.measurement_unit_symbol || entitlement.measurement_unit_key,
-          entitlement.target_name
-        )
-      )
-    : fallbackBenefitsList;
+  const benefitsList = activePlan?.features || [];
   const planName = activePlan ? activePlan.name : "Royal Prime Monthly";
-  const planPrice = formatCurrency(activePrice?.amount_cents);
-  const planSourceLabel = subscriptionSource === "api" ? "Dados do backend" : "Fallback local";
+  const planPrice = formatCurrency(activePlan?.monthlyPrice);
 
   const accountMenuItems = [
     { label: "Dados pessoais", icon: "person" },
@@ -154,7 +135,7 @@ export const MeuClubeView: React.FC<MeuClubeViewProps> = ({ onNavigate }) => {
                     {planPrice} <span style={{ fontSize: "14px", fontWeight: "400", color: textMuted }}>/ mês</span>
                   </p>
                   <p style={{ margin: 0, fontSize: "14px", color: textMuted }}>
-                    {isSubscriptionLoading ? "Carregando assinatura..." : planSourceLabel}
+                    Mock local enquanto shared-core funcional renasce por kit
                   </p>
                 </div>
 

@@ -3,11 +3,11 @@
 View-models compartilhados do ecommerce client. Esta pasta deve preparar dados
 de catalogo, checkout, conta, assinaturas, pedidos e entregas para as surfaces.
 
-Proximo corte:
+Status atual:
 
 ```text
-orders.view-model.ts
-deliveries.view-model.ts
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum view-model funcional deve ser tratado como existente
 ```
 
 Regra:

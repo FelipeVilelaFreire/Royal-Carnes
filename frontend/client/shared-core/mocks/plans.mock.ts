@@ -1,6 +1,15 @@
-import { SubscriptionPlan } from "../../contracts";
+export interface MockSubscriptionPlan {
+  id: string;
+  key: string;
+  name: string;
+  tagline: string;
+  priceMonthly: number;
+  priceAnnual: number;
+  features: string[];
+  recommended?: boolean;
+}
 
-export const mockPlans: SubscriptionPlan[] = [
+export const mockPlans: MockSubscriptionPlan[] = [
   {
     id: "plan-basic",
     key: "basic",

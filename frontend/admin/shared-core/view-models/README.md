@@ -3,11 +3,11 @@
 View-models compartilhados do admin ecommerce. Esta pasta deve preparar dados
 operacionais para telas, builders e previews sem acoplar a UI.
 
-Proximo corte:
+Status atual:
 
 ```text
-adminOrders.view-model.ts
-adminDeliveries.view-model.ts
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum view-model funcional deve ser tratado como existente
 ```
 
 Regra:

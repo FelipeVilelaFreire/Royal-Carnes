@@ -2,6 +2,13 @@
 
 API clients do fluxo administrativo.
 
+Status atual:
+
+```text
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum API client funcional deve ser tratado como existente
+```
+
 Exemplos futuros:
 
 - `adminOrders.api.ts`
@@ -17,7 +24,7 @@ admin screen -> admin hook -> admin api -> backend
 
 O Admin nao chama endpoint direto em componente quando o fluxo for reutilizavel.
 
-Proximo corte:
+Quando o runtime renascer por kit, exemplos esperados:
 
 ```text
 adminOrders.api.ts

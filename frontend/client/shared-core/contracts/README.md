@@ -2,7 +2,14 @@
 
 Contratos compartilhados do ecommerce client. Tipos e contratos que nao dependem de React/Web devem nascer aqui antes de serem consumidos por web, mobile ou admin.
 
-Contratos atuais/esperados:
+Status atual:
+
+```text
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum contrato funcional deve ser tratado como existente
+```
+
+Contratos futuros esperados:
 
 - `subscription.contract.ts`
 - `order.contract.ts`

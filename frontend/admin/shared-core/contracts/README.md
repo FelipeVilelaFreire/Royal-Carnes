@@ -4,11 +4,11 @@ Contratos compartilhados do admin ecommerce. Tipos de dashboard, pedidos,
 entregas, clientes, cortes e assinaturas devem ficar aqui quando forem
 reutilizados entre runtime, mocks e builders.
 
-Proximo corte:
+Status atual:
 
 ```text
-admin-order.contract.ts
-admin-delivery.contract.ts
+runtime resetado na branch feature/shared-core-kit-reset
+nenhum contrato funcional deve ser tratado como existente
 ```
 
 Regra:

@@ -10,7 +10,7 @@ GET /api/v1/deliveries/me/
 GET /api/v1/deliveries/me/:id/
 ```
 
-Arquivos esperados:
+Arquivos futuros esperados quando o runtime renascer:
 
 ```text
 contracts/delivery.contract.ts
@@ -29,8 +29,9 @@ cliente apenas acompanha entrega criada pelo backend
 
 ## Audit Atual
 
-Este kit ainda precisa ser alinhado ao backend real antes de ser considerado
-pronto.
+Este kit esta resetado na branch `feature/shared-core-kit-reset`.
+
+Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
 
 Leia junto:
 

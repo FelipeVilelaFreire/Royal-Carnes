@@ -6,3 +6,5 @@ export type { PlanBenefitCardProps } from "./PlanBenefitCard";
 export { planBenefitCardManifest } from "./plan-benefit-card.manifest";
 export { OrderDetailModal } from "./OrderDetailModal";
 export type { OrderDetailModalProps } from "./OrderDetailModal";
+export { prepareMockOrderViewModel } from "./orderDisplayModel";
+export type { PreparedOrderViewModel } from "./orderDisplayModel";
