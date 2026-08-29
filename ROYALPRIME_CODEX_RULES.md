@@ -8,8 +8,11 @@ Ao entrar no projeto, leia:
 
 1. `AGENTS.md`
 2. `ROYALPRIME_ARCHITECTURE_CONTRACT.md`
-3. `backend/ROADMAP.md`
-4. `backend/ARCHITECTURE.md`
+3. `docs/CODEX_ENTRYPOINTS.md`
+4. `backend/ROADMAP.md`
+5. `backend/ARCHITECTURE.md`
+6. `frontend/TREE.md`
+7. `docs/kits/README.md`
 
 ## Produto-Foco
 
@@ -61,10 +64,13 @@ backend
   -> regra real, banco, validacao, autorizacao, calculo, auditoria
 
 shared-core do escopo correto
-  -> contratos, API clients, hooks, mappers, fluxo reutilizavel
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifests e mocks temporarios
 
 web/mobile/admin
   -> renderizacao, layout, inputs, botoes, modais, chamada dos hooks
+
+foundation
+  -> visual-only: design system, primitives, AppShell, tokens e componentes visuais genericos
 ```
 
 Regra curta:
@@ -73,6 +79,123 @@ Regra curta:
 Regra mora no backend.
 Fluxo reutilizavel mora no shared-core do escopo correto.
 Tela apenas apresenta e dispara acao.
+Foundation nao conhece regra de produto.
+```
+
+## Tres Camadas De Reuso
+
+O RoyalPrime deve evoluir com tres formas diferentes de reuso.
+
+```text
+backend
+  -> reutilizavel por seed/config
+  -> entidades e services genericos
+  -> RoyalPrime, PeixeClub ou CamisaClub trocam dados, nao o core
+
+frontend/*/shared-core
+  -> reutilizavel por funcao/kit
+  -> hooks, API clients, DTOs, mappers e view-models podem ser copiados/adaptados
+  -> nao dependem de JSX nem de uma tela especifica
+
+frontend/*/web e frontend/*/mobile
+  -> render-only por padrao
+  -> hoje podem ter hardcode de transicao
+  -> aos poucos devem ser guiados por manifest, locale, navigation e config
+```
+
+Exemplo:
+
+```text
+Assinatura de carne
+Assinatura de peixe
+Assinatura de camisa
+
+backend
+  -> mesmo app de subscriptions, plans, entitlements e cycles
+  -> muda seed/config da organization
+
+client/shared-core/kits/subscriptions
+  -> mesmo useSubscription/usePlans/useCurrentCycle
+  -> muda endpoint/config/mapper quando necessario
+
+client/web ou client/mobile
+  -> renderiza pelo hook e por manifest/locale
+  -> nao calcula regra de assinatura
+```
+
+Regra:
+
+```text
+backend reutiliza por seed
+shared-core reutiliza por kit
+web/native reutiliza por manifest/render
+```
+
+## Exemplo Canonico: Adicionar Item
+
+Use este exemplo para decidir onde colocar codigo quando uma tela precisa
+adicionar um produto, item ou entidade a uma lista.
+
+Fluxo correto:
+
+```text
+frontend/client/web/src/...
+  -> renderiza botao/card/lista
+  -> onClick chama uma action do hook
+  -> nao monta regra comercial
+
+frontend/client/shared-core/kits/checkout ou orders
+  -> documenta a capacidade
+  -> define fronteira: adicionar item ao carrinho/pedido
+
+frontend/client/shared-core/hooks/useOrderCart.ts ou useCheckout.ts
+  -> expoe addItem(productId, options)
+  -> controla loading, erro e estado reutilizavel
+  -> chama api client
+
+frontend/client/shared-core/api/orders.api.ts
+  -> monta payload no contrato do backend
+  -> chama endpoint real
+
+frontend/client/shared-core/mappers
+  -> converte DTO do backend para view-model quando necessario
+
+backend
+  -> valida organization
+  -> valida produto
+  -> valida estoque
+  -> valida limite do plano/ciclo
+  -> calcula preco, peso e quantidade
+  -> persiste Order/OrderItem
+  -> retorna DTO atualizado
+```
+
+Na tela, o padrao esperado e simples:
+
+```tsx
+<Button onClick={() => orderActions.addItem(product.id)}>
+  {strings.add}
+</Button>
+```
+
+O que NUNCA fazer:
+
+```text
+screen calcular se o produto pode entrar no plano
+screen decidir estoque disponivel
+screen calcular preco final persistido
+screen montar payload divergente do backend
+screen chamar fetch direto quando houver fluxo reutilizavel
+shared-core global receber essa logica antes de client/admin/mobile provarem o mesmo contrato
+locale guardar regra como limite, preco, status permitido ou estoque
+```
+
+Regra de escopo:
+
+```text
+pedido do cliente nasce em frontend/client/shared-core/kits/orders ou checkout
+operacao admin nasce em frontend/admin/shared-core/kits/orders ou inventory
+global so recebe tipos base realmente compartilhados
 ```
 
 ## Como Decidir Onde Algo Mora
@@ -174,10 +297,15 @@ Proibido na screen:
 - persistir dado direto;
 - montar regra comercial complexa;
 - duplicar regra do backend.
+- chamar `fetch` direto para fluxo reutilizavel.
 
 ## Config e Manifest
 
 Sempre que possivel, comportamento editavel ou variacao de produto deve nascer em config/manifest.
+
+O caminho e gradual. Nao precisa parar o produto para abstrair tudo de uma vez.
+Quando tocar em uma tela hardcoded, mova o que for claramente configuravel para
+o shared-core/manifest do escopo correto.
 
 Exemplos:
 
@@ -190,8 +318,34 @@ Exemplos:
 - limites visuais;
 - navegacao;
 - AppShell.
+- screen types como ListPage, DetailPage, FormPage e DashboardPage;
+- colunas, filtros, acoes e estados vazios de admin.
 
 O objetivo e permitir que RoyalPrime seja a primeira configuracao real, sem prender o codigo a Royal Carnes para sempre.
+
+## Shared-Core Como Kits
+
+Todo shared-core deve ser pensado por capacidade/kit.
+
+```text
+frontend/shared-core/kits
+  -> identity, organization, money, address, manifest
+
+frontend/client/shared-core/kits
+  -> auth, customer, catalog, subscriptions, orders, deliveries, checkout
+
+frontend/admin/shared-core/kits
+  -> auth, users, customers, catalog, subscriptions, inventory, orders, deliveries, dashboard
+```
+
+Regra:
+
+```text
+kit descreve capacidade e fronteira de reuso
+contracts/api/hooks/mappers/view-models implementam o fluxo
+surface renderiza
+backend decide regra real
+```
 
 ## Backend Reutilizavel
 

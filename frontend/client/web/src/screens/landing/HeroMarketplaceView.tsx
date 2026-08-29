@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Badge, Button, Card } from "../../legacy/design-system";
 import { PublicHeader, BottomTabBar, Footer } from "../../legacy/app-shell";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { clientPtBR } from "@/locales/pt-BR";
 
 export interface HeroMarketplaceViewProps {
   onNavigate?: (path: string) => void;
@@ -13,6 +14,8 @@ export const HeroMarketplaceView: React.FC<HeroMarketplaceViewProps> = ({ onNavi
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const strings = clientPtBR.landing;
 
   useEffect(() => {
     const stored = localStorage.getItem("royal_prime_theme");
@@ -54,39 +57,39 @@ export const HeroMarketplaceView: React.FC<HeroMarketplaceViewProps> = ({ onNavi
   const showcaseCuts = [
     {
       id: "showcase-1",
-      name: "Tomahawk Angus Prime",
-      subtitle: "Peça de costela com osso longo exposto, suculência extrema e sabor marcante para a grelha.",
-      tag: "CORTE SIGNATURE",
+      name: strings.showcase.tomahawk.title,
+      subtitle: strings.showcase.tomahawk.description,
+      tag: strings.showcase.tomahawk.badge,
       image: "https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=1000&auto=format&fit=crop"
     },
     {
       id: "showcase-2",
-      name: "Wagyu A5 Striploin",
-      subtitle: "O ápice da carne bovina mundial. Textura que derrete na boca com gordura intramuscular perfeita.",
-      tag: "MARMOREIO BMB 10+",
+      name: strings.showcase.wagyu.title,
+      subtitle: strings.showcase.wagyu.description,
+      tag: strings.showcase.wagyu.badge,
       image: "https://images.unsplash.com/photo-1546964124-0cce460f38ef?q=80&w=1000&auto=format&fit=crop"
     },
     {
       id: "showcase-3",
-      name: "Picanha & Ribeye Cap",
-      subtitle: "Capa de gordura uniforme, maciez incomparável e o verdadeiro aroma do churrasco de alta linha.",
-      tag: "CHURRASCO MASTER",
+      name: strings.showcase.picanha.title,
+      subtitle: strings.showcase.picanha.description,
+      tag: strings.showcase.picanha.badge,
       image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=1000&auto=format&fit=crop"
     }
   ];
 
   const faqItems = [
     {
-      q: "Como funciona a entrega refrigerada?",
-      a: "Todas as peças são embaladas a vácuo individualmente e acondicionadas em caixas térmicas de alta densidade acompanhadas de placas de gel atóxico ultracongelante que mantêm a temperatura abaixo de -2°C por até 48 horas de transporte."
+      q: strings.faq.q1.question,
+      a: strings.faq.q1.answer
     },
     {
-      q: "Existe fidelidade ou multa de cancelamento?",
-      a: "Não! Você tem liberdade total. É possível pausar temporariamente a assinatura quando for viajar, mudar a modalidade dos cortes ou cancelar a qualquer momento em 1 clique sem taxa."
+      q: strings.faq.q2.question,
+      a: strings.faq.q2.answer
     },
     {
-      q: "Como recebo o brinde da Faca Artesanal Prime?",
-      a: "Ao concluir a primeira assinatura de qualquer um dos nossos planos, a Faca Artesanal Prime em aço inox com cabo de madeira nobre é enviada automaticamente junto com a sua primeira caixa de cortes."
+      q: strings.faq.q3.question,
+      a: strings.faq.q3.answer
     }
   ];
 
@@ -654,7 +657,7 @@ export const HeroMarketplaceView: React.FC<HeroMarketplaceViewProps> = ({ onNavi
                 <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
                   Churrasco Supremo
                 </span>
-                <Badge variant="copper">🔥 MAIS VENDIDO</Badge>
+                <Badge variant="copper">MAIS VENDIDO</Badge>
               </div>
 
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700", margin: "4px 0 8px 0", color: tokens.text }}>
@@ -777,7 +780,7 @@ export const HeroMarketplaceView: React.FC<HeroMarketplaceViewProps> = ({ onNavi
           >
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <Badge variant="copper">🎁 BRINDE EXCLUSIVO DO SÓCIO</Badge>
+                <Badge variant="copper">BRINDE EXCLUSIVO DO SÓCIO</Badge>
               </div>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: "700", margin: 0, color: tokens.text }}>
                 Ganhe a Faca Artesanal Prime em Aço Inox

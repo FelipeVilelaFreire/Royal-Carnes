@@ -1,14 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { BottomModal, Modal } from "@/legacy/design-system";
 import { CheckIcon } from "@/legacy/design-system/Icons";
 import { themeColorsDefault, themeTokens } from "@foundation/tokens/theme.tokens";
-import { royalOrderKindLabels, royalOrderStatusLabels, type RoyalCustomerOrder } from "@/mocks/orders";
+import type { RoyalCustomerOrder } from "@royalprime/client/contracts/order.contract";
+import { prepareOrderViewModel, type PreparedOrderViewModel } from "@royalprime/client/view-models/orders.view-model";
+
+import { clientPtBR } from "@/locales/pt-BR";
 
 export interface OrderDetailModalProps {
   open: boolean;
   order: RoyalCustomerOrder | null;
+  viewModel?: PreparedOrderViewModel | null;
   onClose: () => void;
   isDark: boolean;
   isMobile?: boolean;
@@ -17,51 +21,39 @@ export interface OrderDetailModalProps {
 export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   open,
   order,
+  viewModel: passedViewModel,
   onClose,
   isDark,
   isMobile = false
 }) => {
+  const strings = clientPtBR.orderDetailModal;
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
   const Surface = isMobile ? BottomModal : Modal;
 
-  const formatOrderTotal = (currentOrder: RoyalCustomerOrder) =>
-    currentOrder.kind === "subscriptionCycle"
-      ? currentOrder.payment.totalLabel
-      : `R$ ${currentOrder.payment.totalLabel}`;
+  const vm = useMemo(() => {
+    if (passedViewModel) return passedViewModel;
+    if (order) return prepareOrderViewModel(order);
+    return null;
+  }, [order, passedViewModel]);
 
-  const getDeliveryCodeLabel = (currentOrder: RoyalCustomerOrder) => {
-    if (currentOrder.delivery.deliveryCode) return currentOrder.delivery.deliveryCode;
-    if (currentOrder.status === "delivered") return "Validado";
-    if (currentOrder.status === "cancelled") return "Nao aplicado";
-    return "Pendente";
-  };
+  const currentOrder = vm?.rawOrder;
 
-  const formatKg = (value: number) => Number.isInteger(value) ? `${value}kg` : `${value.toFixed(1)}kg`;
-
-  const getRemainingCycleLabel = (currentOrder: RoyalCustomerOrder) => {
-    if (!currentOrder.cycleUsage) return null;
-    const remainingWeight = Math.max(0, currentOrder.cycleUsage.weightKgLimit - currentOrder.cycleUsage.weightKgUsed);
-    const remainingCuts = Math.max(0, currentOrder.cycleUsage.cutsLimit - currentOrder.cycleUsage.cutsUsed);
-    const remainingComplements = Math.max(0, currentOrder.cycleUsage.complementsLimit - currentOrder.cycleUsage.complementsUsed);
-    return `${formatKg(remainingWeight)} de proteina, ${remainingCuts} cortes e ${remainingComplements} complementos restantes`;
-  };
-
-  const getStatusTokens = (status: RoyalCustomerOrder["status"]) => {
-    if (status === "delivered") {
+  const getStatusToneTokens = (tone: "success" | "danger" | "pending" | "active") => {
+    if (tone === "success") {
       return {
         color: themeTokens.colors.statusActive,
         background: isDark ? "rgba(16, 185, 129, 0.14)" : "rgba(16, 185, 129, 0.1)",
         border: "rgba(16, 185, 129, 0.32)"
       };
     }
-    if (status === "cancelled") {
+    if (tone === "danger") {
       return {
         color: themeTokens.colors.statusCanceled,
         background: isDark ? "rgba(239, 68, 68, 0.14)" : "rgba(239, 68, 68, 0.1)",
         border: "rgba(239, 68, 68, 0.32)"
       };
     }
-    if (status === "sentToStore") {
+    if (tone === "pending") {
       return {
         color: themeTokens.colors.statusPaused,
         background: isDark ? "rgba(245, 158, 11, 0.14)" : "rgba(245, 158, 11, 0.1)",
@@ -81,15 +73,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
     border: "rgba(16, 185, 129, 0.36)"
   };
 
-  const renderStatusPill = (currentOrder: RoyalCustomerOrder) => {
-    const statusTokens = getStatusTokens(currentOrder.status);
-    return (
-      <span style={{ display: "inline-flex", alignItems: "center", gap: "7px", width: "fit-content", border: `1px solid ${statusTokens.border}`, borderRadius: "999px", background: statusTokens.background, color: statusTokens.color, padding: "7px 10px", fontSize: "11px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-        <span style={{ width: "7px", height: "7px", borderRadius: "999px", background: statusTokens.color }} />
-        {royalOrderStatusLabels[currentOrder.status]}
-      </span>
-    );
-  };
+  const formatKg = (value: number) => (Number.isInteger(value) ? `${value}kg` : `${value.toFixed(1)}kg`);
 
   return (
     <Surface
@@ -97,54 +81,62 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
       onClose={onClose}
       isDark={isDark}
       maxWidth={780}
-      title={order?.title}
-      description={order ? `${order.code} - ${royalOrderKindLabels[order.kind]}` : undefined}
-      ariaLabel="Detalhes do pedido"
+      title={currentOrder?.title}
+      description={currentOrder && vm ? `${currentOrder.code} - ${vm.kindLabel}` : undefined}
+      ariaLabel={strings.title}
     >
-      {order ? (
+      {currentOrder && vm ? (
         <div style={{ display: "grid", gap: isMobile ? "13px" : "15px", minWidth: 0 }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 1fr) auto", gap: "14px", alignItems: "flex-start" }}>
             <div style={{ display: "grid", gap: "8px", minWidth: 0 }}>
-              {renderStatusPill(order)}
-              <p style={{ margin: 0, color: tokens.textMuted, lineHeight: 1.45, fontSize: "13px" }}>{order.summary}</p>
+              {(() => {
+                const statusTokens = getStatusToneTokens(vm.statusTone);
+                return (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "7px", width: "fit-content", border: `1px solid ${statusTokens.border}`, borderRadius: "999px", background: statusTokens.background, color: statusTokens.color, padding: "7px 10px", fontSize: "11px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                    <span style={{ width: "7px", height: "7px", borderRadius: "999px", background: statusTokens.color }} />
+                    {vm.statusLabel}
+                  </span>
+                );
+              })()}
+              <p style={{ margin: 0, color: tokens.textMuted, lineHeight: 1.45, fontSize: "13px" }}>{currentOrder.summary}</p>
             </div>
             <div style={{ textAlign: isMobile ? "left" : "right" }}>
-              <span style={{ display: "block", color: tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>Total</span>
-              <strong style={{ color: tokens.text, fontSize: "20px" }}>{formatOrderTotal(order)}</strong>
+              <span style={{ display: "block", color: tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em" }}>{strings.totalLabel}</span>
+              <strong style={{ color: tokens.text, fontSize: "20px" }}>{vm.moneyLabel}</strong>
             </div>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(132px, 1fr))", gap: "8px" }}>
             {[
-              ["Data", order.createdAtLabel],
-              ["Entrega", order.delivery.estimateLabel],
-              ["Pagamento", order.payment.methodLabel],
-              ["Codigo", getDeliveryCodeLabel(order)]
-            ].map(([label, value]) => (
-              <div key={label} style={{ border: `1px solid ${tokens.border}`, borderRadius: "12px", padding: "10px", background: tokens.surfaceContainer, minWidth: 0 }}>
+              { key: "date", label: "Data", value: currentOrder.createdAtLabel },
+              { key: "estimate", label: strings.estimateLabel, value: currentOrder.delivery.estimateLabel },
+              { key: "payment", label: strings.paymentTitle, value: currentOrder.payment.methodLabel },
+              { key: "code", label: strings.deliveryCodeLabel, value: vm.deliveryCodeLabel }
+            ].map(({ key, label, value }) => (
+              <div key={key} style={{ border: `1px solid ${tokens.border}`, borderRadius: "12px", padding: "10px", background: tokens.surfaceContainer, minWidth: 0 }}>
                 <span style={{ display: "block", color: tokens.textMuted, fontSize: "10px", fontWeight: 800, textTransform: "uppercase" }}>{label}</span>
-                <strong style={{ color: label === "Codigo" ? tokens.copper : tokens.text, fontSize: label === "Codigo" ? "17px" : "13px", letterSpacing: label === "Codigo" ? "0.08em" : 0 }}>{value}</strong>
+                <strong style={{ color: key === "code" ? tokens.copper : tokens.text, fontSize: key === "code" ? "17px" : "13px", letterSpacing: key === "code" ? "0.08em" : 0 }}>{value}</strong>
               </div>
             ))}
           </div>
 
-          {order.cycleUsage ? (
+          {currentOrder.cycleUsage ? (
             <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "12px", background: isDark ? "rgba(184, 115, 51, 0.08)" : "rgba(184, 115, 51, 0.04)", minWidth: 0 }}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "baseline", flexWrap: "wrap", marginBottom: "8px" }}>
                 <span style={{ display: "block", color: tokens.copper, fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  Uso do ciclo de {order.cycleUsage.cycleLabel}
+                  Uso do ciclo de {currentOrder.cycleUsage.cycleLabel}
                 </span>
                 <span style={{ color: tokens.textMuted, fontSize: "11px", fontWeight: 700 }}>
-                  {getRemainingCycleLabel(order)}
+                  {vm.remainingCycleLabel}
                 </span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(104px, 1fr))", gap: "8px" }}>
                 {[
-                  ["Cortes", `${order.cycleUsage.cutsUsed} / ${order.cycleUsage.cutsLimit}`],
-                  ["Proteina", `${formatKg(order.cycleUsage.weightKgUsed)} / ${formatKg(order.cycleUsage.weightKgLimit)}`],
-                  ["Carvao", `${formatKg(order.cycleUsage.charcoalKgUsed)} / ${formatKg(order.cycleUsage.charcoalKgLimit)}`],
-                  ["Compl.", `${order.cycleUsage.complementsUsed} / ${order.cycleUsage.complementsLimit}`],
-                  ["Utensilio", `${order.cycleUsage.utensilsUsed} / ${order.cycleUsage.utensilsLimit}`]
+                  ["Cortes", `${currentOrder.cycleUsage.cutsUsed} / ${currentOrder.cycleUsage.cutsLimit}`],
+                  ["Proteina", `${formatKg(currentOrder.cycleUsage.weightKgUsed)} / ${formatKg(currentOrder.cycleUsage.weightKgLimit)}`],
+                  ["Carvao", `${formatKg(currentOrder.cycleUsage.charcoalKgUsed)} / ${formatKg(currentOrder.cycleUsage.charcoalKgLimit)}`],
+                  ["Compl.", `${currentOrder.cycleUsage.complementsUsed} / ${currentOrder.cycleUsage.complementsLimit}`],
+                  ["Utensilio", `${currentOrder.cycleUsage.utensilsUsed} / ${currentOrder.cycleUsage.utensilsLimit}`]
                 ].map(([label, value]) => (
                   <div key={label} style={{ border: `1px solid ${tokens.border}`, borderRadius: "10px", padding: "9px", background: tokens.background, minWidth: 0, minHeight: "58px", display: "grid", alignContent: "space-between" }}>
                     <span style={{ display: "block", color: tokens.textMuted, fontSize: "10px", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</span>
@@ -158,7 +150,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           <div style={{ minWidth: 0 }}>
             <h3 style={{ margin: "0 0 10px", color: tokens.text, fontSize: "15px" }}>Itens do pedido</h3>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: "8px", maxHeight: isMobile ? "220px" : "178px", overflowY: "auto", paddingRight: "4px" }}>
-              {order.items.map((item) => (
+              {currentOrder.items.map((item) => (
                 <div key={item.productId} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "10px", alignItems: "center", border: `1px solid ${tokens.border}`, borderRadius: "10px", padding: "9px", minWidth: 0 }}>
                   <div style={{ minWidth: 0 }}>
                     <strong style={{ display: "block", color: tokens.text, overflowWrap: "anywhere" }}>{item.name}</strong>
@@ -172,16 +164,16 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
           <div style={{ minWidth: 0 }}>
             <h3 style={{ margin: "0 0 10px", color: tokens.text, fontSize: "15px" }}>Acompanhamento</h3>
-            <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${order.timeline.length}, minmax(92px, 1fr))`, gap: "8px", overflowX: "auto", padding: "8px 2px 4px", maxWidth: "100%" }}>
+            <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${vm.timelineSteps.length}, minmax(92px, 1fr))`, gap: "8px", overflowX: "auto", padding: "8px 2px 4px", maxWidth: "100%" }}>
               <span style={{ position: "absolute", left: "18px", right: "18px", top: "17px", height: "2px", background: tokens.border, opacity: 0.72 }} />
-              {order.timeline.map((step, index) => {
-                const isCurrentStep = order.status === step.status;
+              {vm.timelineSteps.map((step, index) => {
+                const isCurrentStep = currentOrder.status === step.status;
                 const stepColor = step.completed ? timelineDoneTokens.color : isCurrentStep ? tokens.copper : tokens.border;
                 const stepBackground = step.completed ? timelineDoneTokens.background : isCurrentStep ? (isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)") : tokens.surfaceContainer;
                 const stepBorder = step.completed ? timelineDoneTokens.border : isCurrentStep ? (isDark ? "rgba(184, 115, 51, 0.34)" : "rgba(184, 115, 51, 0.28)") : tokens.border;
                 return (
                   <div key={step.status} style={{ position: "relative", zIndex: 1, minWidth: "92px", display: "grid", justifyItems: "center", gap: "7px", textAlign: "center" }}>
-                    {index < order.timeline.length - 1 && step.completed ? (
+                    {index < vm.timelineSteps.length - 1 && step.completed ? (
                       <span style={{ position: "absolute", left: "50%", right: "-50%", top: "9px", height: "2px", background: timelineDoneTokens.color }} />
                     ) : null}
                     <span style={{ width: "20px", height: "20px", borderRadius: "999px", background: step.completed ? timelineDoneTokens.color : stepBackground, border: `1px solid ${stepBorder}`, boxShadow: step.completed || isCurrentStep ? `0 0 0 4px ${stepBackground}` : "none", display: "grid", placeItems: "center", color: "#FFFFFF", position: "relative", zIndex: 2 }}>

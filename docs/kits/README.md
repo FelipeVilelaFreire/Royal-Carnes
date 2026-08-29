@@ -25,6 +25,40 @@ Novo produto precisa de login, usuarios e perfis.
   -> copie/adapte contratos, backend, hooks e screens seguindo o escopo correto
 ```
 
+## Tres Camadas De Reuso
+
+Kits devem documentar reuso em tres camadas:
+
+```text
+backend
+  -> reutilizavel por seed/config
+  -> entidades, services, validacoes, endpoints e permissoes
+
+frontend shared-core
+  -> reutilizavel por funcao/kit
+  -> contracts, API clients, hooks, mappers, view-models e fallback dev
+
+frontend web/native/admin-web
+  -> render-only agora
+  -> manifest-driven aos poucos
+  -> telas, modais e componentes apenas apresentam e disparam acoes
+```
+
+Exemplo:
+
+```text
+Orders Kit
+  backend
+    -> Order, OrderItem, status seedado, service de criacao/transicao
+  shared-core
+    -> useMyOrders, orders.api, OrderDto, mapper, view-model
+  render
+    -> MeusPedidosView, OrderDetailModal, admin list/detail
+```
+
+O kit deve deixar claro o que e copiavel para outro produto e o que deve virar
+seed/config/manifest.
+
 ## Formato Obrigatorio de Cada Kit
 
 Cada kit deve ser pratico o suficiente para uma IA abrir o arquivo e saber onde olhar.

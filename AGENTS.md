@@ -6,11 +6,14 @@ Antes de implementar, leia nesta ordem:
 
 1. `ROYALPRIME_CODEX_RULES.md`
 2. `ROYALPRIME_ARCHITECTURE_CONTRACT.md`
-3. `backend/README.md`
-4. `backend/ROADMAP.md`
-5. `backend/ARCHITECTURE.md`
-6. `docs/kits/README.md`
-7. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
+3. `docs/CODEX_ENTRYPOINTS.md`
+4. `backend/README.md`
+5. `backend/ROADMAP.md`
+6. `backend/ARCHITECTURE.md`
+7. `frontend/TREE.md`
+8. `frontend/RENDER_ONLY_AUDIT.md`
+9. `docs/kits/README.md`
+10. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
 ## Direcao do Produto
 
@@ -28,10 +31,89 @@ ServiceOS recebe depois apenas o que se provar reutilizavel.
 ## Ordem Central
 
 ```text
+backend
+  -> regra real, persistencia, validacao, autorizacao, calculo e auditoria
+
+shared-core do escopo correto
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifests e mocks temporarios
+
+web/mobile/admin-web
+  -> render-only: layout, inputs, modais, tabelas, screen composition e chamada dos hooks
+
+foundation
+  -> visual-only: design system, primitives, AppShell, tokens e componentes visuais genericos
+```
+
+Regra curta:
+
+```text
 Regra mora no backend.
 Fluxo reutilizavel mora no shared-core do escopo correto.
 Tela apenas apresenta e dispara acao.
+Foundation nao conhece regra de produto.
 ```
+
+## Tres Camadas De Reuso
+
+Esta e a direcao principal do RoyalPrime:
+
+```text
+backend
+  -> reutilizavel por seed/config
+  -> o mesmo core deve servir Royal Carnes, clube de peixe, assinatura de camisa etc.
+
+frontend/*/shared-core
+  -> reutilizavel por funcao/kit
+  -> hooks, API clients, DTOs, mappers e view-models devem ser copiaveis/adaptaveis
+  -> nao devem depender de uma tela especifica
+
+frontend/*/web e frontend/*/mobile
+  -> render-only agora
+  -> manifest-driven aos poucos
+  -> no futuro, a mesma capacidade pode ser renderizada por web/native mudando manifest, locale, navigation e config
+```
+
+Exemplo:
+
+```text
+backend de assinatura
+  -> usa seeds para Royal Carnes, PeixeClub ou CamisaClub
+
+client/shared-core/kits/subscriptions
+  -> expoe useSubscription, contracts, API e view-models reutilizaveis
+
+client/web ou client/mobile
+  -> apenas renderiza plano, ciclo, botoes e estados vindos do hook/manifest
+```
+
+O objetivo nao e deixar tudo abstrato agora. O objetivo e que cada novo corte
+siga essa direcao sem criar hardcode especifico desnecessario.
+
+## Manifest-First Gradual
+
+Hoje ainda existe hardcode historico em telas, mocks e configs. A tarefa nao e
+quebrar tudo para abstrair de uma vez.
+
+Regra:
+
+```text
+manter funcionando
+extrair aos poucos
+tirar regra/copy repetida de telas
+levar comportamento configuravel para shared-core/manifests
+levar textos de UI para locales/strings quando mexer no trecho
+```
+
+Exemplos de extracao gradual:
+
+- `ListPage`, `DetailPage`, filtros, colunas e acoes admin devem caminhar para
+  screen types + manifests em `frontend/admin/shared-core/manifests`.
+- Navegacao, titulos, labels e estados vazios devem sair de JSX hardcoded aos
+  poucos.
+- Telas podem continuar hardcoded temporariamente quando isso preservar o fluxo,
+  mas codigo novo deve nascer com direcao clara para manifest/shared-core.
+- Evite novos `String.xxx`/copy inline em JSX quando ja existir local correto em
+  locale/config/manifest.
 
 ## Kits Reutilizaveis
 
@@ -52,15 +134,26 @@ Antes de recriar Auth, Users, Orders, Catalog, Scheduling, Payments ou Admin Ope
 ```text
 frontend/client/shared-core
   -> fluxos reutilizaveis entre cliente web e cliente mobile
+  -> organizado com mentalidade de kit por capacidade
 
 frontend/admin/shared-core
   -> fluxos reutilizaveis dentro do admin
+  -> organizado com mentalidade de kit por capacidade operacional
 
 frontend/shared-core
   -> apenas contratos/capacidades realmente comuns entre client, mobile e admin
+  -> deve continuar pequeno
 ```
 
 Nao mover algo para `frontend/shared-core` global antes de comprovar que client, mobile e admin usam o mesmo contrato.
+
+Os kits de shared-core ficam em:
+
+```text
+frontend/shared-core/kits
+frontend/client/shared-core/kits
+frontend/admin/shared-core/kits
+```
 
 ## Regras Inviolaveis
 

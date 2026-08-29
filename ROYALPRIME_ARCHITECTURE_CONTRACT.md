@@ -68,7 +68,7 @@ Plan.allowedProductGroups
 
 ### 2. Shared-Core
 
-Shared-core e a camada de fluxo reutilizavel.
+Shared-core e a camada de contrato e fluxo reutilizavel.
 
 Ele fica entre backend e renderizacao.
 
@@ -80,6 +80,7 @@ Responsabilidades:
 - hooks;
 - mappers;
 - view-models;
+- manifests;
 - mocks temporarios;
 - seeds temporarios;
 - estado reutilizavel de fluxo.
@@ -95,6 +96,70 @@ frontend/admin/shared-core
 
 frontend/shared-core
   -> somente contratos realmente comuns entre client, mobile e admin
+```
+
+Todo shared-core deve ser organizado com mentalidade de kit:
+
+```text
+frontend/shared-core/kits
+  -> capacidades globais pequenas
+
+frontend/client/shared-core/kits
+  -> capacidades do cliente
+
+frontend/admin/shared-core/kits
+  -> capacidades operacionais do admin
+```
+
+### Modelo De Reuso Em Tres Camadas
+
+RoyalPrime deve separar reuso em tres niveis.
+
+```text
+backend
+  -> reuso por seed/config
+  -> modelos, services, validacoes e endpoints genericos
+  -> organization define produtos, planos, status, limites e copy operacional
+
+frontend/*/shared-core
+  -> reuso por funcao/kit
+  -> contratos, DTOs, API clients, hooks, mappers e view-models
+  -> copiavel/adaptavel para outro produto sem depender de JSX
+
+frontend/*/web e frontend/*/mobile
+  -> reuso por manifest/render
+  -> telas chamam hooks e renderizam manifests/locales/navigation/config
+  -> no inicio podem ser mais locais, mas nao devem virar donas de regra
+```
+
+Exemplo de produto futuro:
+
+```text
+Royal Carnes
+  -> seed de carnes, carvao, temperos e planos Basic/Premium/Pro
+
+PeixeClub
+  -> seed de peixes, acompanhamentos e planos proprios
+
+CamisaClub
+  -> seed de camisas, tamanhos, cores e planos proprios
+```
+
+O core esperado:
+
+```text
+backend muda pouco
+shared-core reaproveita kits de catalog, subscriptions, orders e deliveries
+web/native trocam manifest, locale, navigation, tema e assets
+```
+
+Anti-padrao:
+
+```text
+criar useRoyalCarnesSubscription quando o fluxo e assinatura generica
+criar if business == "peixe" no hook
+criar tela que calcula limite de plano
+colocar regra de tamanho/peso/status em locale
 ```
 
 ### 3. Web, Mobile e Admin Web
@@ -139,6 +204,79 @@ PedidoView
   -> valida produto, estoque, limite, assinatura e preco
   -> salva OrderItem
   -> retorna Order atualizado
+```
+
+### Exemplo Canonico: Botao Adicionar Item
+
+Este exemplo e a regra pratica para telas do client/admin.
+
+Tela:
+
+```tsx
+<Button onClick={() => orderActions.addItem(product.id)}>
+  {strings.add}
+</Button>
+```
+
+A tela so conhece:
+
+```text
+produto selecionado
+evento de clique
+loading/erro visual
+view-model recebido
+```
+
+Shared-core do escopo correto conhece:
+
+```text
+contrato minimo
+api client
+mapper DTO -> view-model
+hook/action addItem
+fallback dev quando necessario
+manifest/locales para labels editaveis
+```
+
+Backend conhece:
+
+```text
+organization
+produto real
+estoque
+limite do plano/ciclo
+preco
+unidade de medida
+permissao
+persistencia
+auditoria
+```
+
+Nunca fazer:
+
+```text
+if planName == "Royal Pro" na tela
+if productName == "Picanha" na tela ou shared-core
+screen calcular sellableQuantity persistido
+screen chamar fetch direto para pedido reutilizavel
+shared-core global receber orders/checkout antes de haver reuso real
+locale guardar regra de preco, estoque, limite ou transicao
+```
+
+Escopo correto:
+
+```text
+frontend/client/shared-core/kits/orders
+  -> pedido do cliente
+
+frontend/client/shared-core/kits/checkout
+  -> montagem do carrinho/pedido do cliente
+
+frontend/admin/shared-core/kits/orders
+  -> operacao admin de pedidos
+
+frontend/admin/shared-core/kits/inventory
+  -> estoque e ajustes admin
 ```
 
 ## Organization e Seed/Config
@@ -186,6 +324,18 @@ O que muda por organization:
 
 Sempre que uma tela tiver comportamento editavel, variacao por empresa ou regra visual configuravel, preferir config/manifest.
 
+Essa migracao deve ser incremental. O RoyalPrime ainda pode ter hardcode
+historico em telas enquanto o fluxo esta sendo provado, mas codigo novo deve
+nascer com a direcao abaixo:
+
+```text
+tela hardcoded funcionando
+  -> extrair contrato/shared-core
+  -> mover copy/config para locale ou manifest
+  -> renderizar por hook/view-model
+  -> quando fizer sentido, trocar repeticao por screen type
+```
+
 Exemplos:
 
 - navegacao;
@@ -198,6 +348,8 @@ Exemplos:
 - modalidades comerciais;
 - limites apresentados;
 - componentes esperados.
+- screen types como ListPage, DetailPage, FormPage e DashboardPage;
+- colunas, filtros, acoes e estados vazios de admin.
 
 RoyalPrime pode ter copy e layout especificos, mas o que for claramente configuravel deve nascer preparado para manifest/config.
 
@@ -226,12 +378,14 @@ RoyalPrime/
 
     shared-core/
       contracts/
+      kits/
       manifest/
       public/
 
     client/
       shared-core/
         contracts/
+        kits/
         locales/
         manifests/
         mocks/
@@ -254,6 +408,7 @@ RoyalPrime/
     admin/
       shared-core/
         contracts/
+        kits/
         locales/
         manifests/
         mocks/

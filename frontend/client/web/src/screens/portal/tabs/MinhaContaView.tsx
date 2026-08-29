@@ -10,12 +10,9 @@ import {
   royalCustomerMock,
   royalCustomerPaymentHistoryMock
 } from "@/mocks/customer.mock";
-import {
-  royalCustomerOrdersMock,
-  royalOrderKindLabels,
-  royalOrderStatusLabels,
-  type RoyalCustomerOrder
-} from "@/mocks/orders";
+import type { RoyalCustomerOrder } from "@royalprime/client/contracts/order.contract";
+import { useMyOrders } from "@royalprime/client/hooks/useMyOrders";
+import { prepareOrderViewModel, type PreparedOrderViewModel } from "@royalprime/client/view-models/orders.view-model";
 import { catalogSubscriptionPlansMock, type SubscriptionPlanMock, type SubscriptionTier } from "@/mocks/catalog";
 import { clientPtBR } from "@/locales/pt-BR";
 
@@ -114,11 +111,11 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
   const sidebarLinks = [
     { id: "painel", label: "Painel Geral" },
-    { id: "assinatura", label: "Minha Assinatura" },
-    { id: "dados", label: "Seus Dados" },
-    { id: "enderecos", label: "Endereços" },
-    { id: "pagamentos", label: "Pagamentos" },
-    { id: "notificacoes", label: "Notificações" },
+    { id: "assinatura", label: clientPtBR.minhaConta.tabs.subscription },
+    { id: "dados", label: clientPtBR.minhaConta.tabs.personalData },
+    { id: "enderecos", label: clientPtBR.minhaConta.tabs.addresses },
+    { id: "pagamentos", label: clientPtBR.minhaConta.tabs.payment },
+    { id: "notificacoes", label: clientPtBR.minhaConta.tabs.preferences },
     { id: "privacidade", label: "Privacidade" },
     { id: "termos", label: "Termos" }
   ];
@@ -140,26 +137,26 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
 
   const planDetails = catalogSubscriptionPlansMock;
   const currentPlanDetails = planDetails.find((plan) => plan.key === currentPlan) || planDetails[0];
+  const { viewModels: orderVMs, currentOrderVM: activeOrderVM, currentSubscriptionOrderVM: activeSubVM } = useMyOrders();
   const paymentHistory = royalCustomerPaymentHistoryMock;
-  const recentOrders = royalCustomerOrdersMock.filter((order) => order.customerId === royalCustomerMock.id).slice(0, 3);
-  const currentOrder = recentOrders.find((order) => order.status !== "delivered" && order.status !== "cancelled");
-  const currentSubscriptionOrder = royalCustomerOrdersMock.find((order) => order.customerId === royalCustomerMock.id && order.kind === "subscriptionCycle" && order.status !== "delivered" && order.status !== "cancelled");
+  const recentOrderVMs = orderVMs.slice(0, 3);
+  const currentOrderVM = activeOrderVM;
+  const currentOrder = currentOrderVM?.rawOrder;
+  const currentSubscriptionOrder = activeSubVM?.rawOrder;
   const cycleUsage = currentSubscriptionOrder?.cycleUsage;
   const formatPlanPrice = (plan: SubscriptionPlanMock) => plan.monthlyPrice.toLocaleString("pt-BR");
-  const formatOrderTotal = (order: { kind: string; payment: { totalLabel: string } }) =>
-    order.kind === "subscriptionCycle" ? order.payment.totalLabel : `R$ ${order.payment.totalLabel}`;
-  const getStatusTokens = (status: RoyalCustomerOrder["status"]) => {
-    if (status === "delivered") return { color: themeTokens.colors.statusActive, background: isDark ? "rgba(16, 185, 129, 0.14)" : "rgba(16, 185, 129, 0.1)", border: "rgba(16, 185, 129, 0.32)" };
-    if (status === "cancelled") return { color: themeTokens.colors.statusCanceled, background: isDark ? "rgba(239, 68, 68, 0.14)" : "rgba(239, 68, 68, 0.1)", border: "rgba(239, 68, 68, 0.32)" };
-    if (status === "sentToStore") return { color: themeTokens.colors.statusPaused, background: isDark ? "rgba(245, 158, 11, 0.14)" : "rgba(245, 158, 11, 0.1)", border: "rgba(245, 158, 11, 0.32)" };
+  const getStatusToneTokens = (tone: "success" | "danger" | "pending" | "active") => {
+    if (tone === "success") return { color: themeTokens.colors.statusActive, background: isDark ? "rgba(16, 185, 129, 0.14)" : "rgba(16, 185, 129, 0.1)", border: "rgba(16, 185, 129, 0.32)" };
+    if (tone === "danger") return { color: themeTokens.colors.statusCanceled, background: isDark ? "rgba(239, 68, 68, 0.14)" : "rgba(239, 68, 68, 0.1)", border: "rgba(239, 68, 68, 0.32)" };
+    if (tone === "pending") return { color: themeTokens.colors.statusPaused, background: isDark ? "rgba(245, 158, 11, 0.14)" : "rgba(245, 158, 11, 0.1)", border: "rgba(245, 158, 11, 0.32)" };
     return { color: tokens.copper, background: isDark ? "rgba(184, 115, 51, 0.14)" : "rgba(184, 115, 51, 0.08)", border: isDark ? "rgba(184, 115, 51, 0.32)" : "rgba(184, 115, 51, 0.26)" };
   };
-  const renderStatusPill = (order: RoyalCustomerOrder) => {
-    const statusTokens = getStatusTokens(order.status);
+  const renderStatusPillFromVM = (vm: PreparedOrderViewModel) => {
+    const statusTokens = getStatusToneTokens(vm.statusTone);
     return (
       <span style={{ display: "inline-flex", alignItems: "center", gap: "7px", width: "fit-content", border: `1px solid ${statusTokens.border}`, borderRadius: "999px", background: statusTokens.background, color: statusTokens.color, padding: "6px 10px", fontSize: "12px", fontWeight: 800 }}>
         <span style={{ width: "7px", height: "7px", borderRadius: "999px", background: statusTokens.color, boxShadow: `0 0 8px ${statusTokens.color}` }} />
-        {royalOrderStatusLabels[order.status]}
+        {vm.statusLabel}
       </span>
     );
   };
@@ -829,16 +826,16 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                   </span>
                 </div>
 
-                {currentOrder && (
+                {currentOrderVM && currentOrder && (
                   <Card className="minha-conta-current-order" variant="surface" bordered hoverable={false} isDark={isDark} style={{ padding: "24px", borderRadius: "18px", display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(240px, 0.6fr)", gap: "24px", alignItems: "stretch" }}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                       <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-                        <Badge variant="copper">{royalOrderKindLabels[currentOrder.kind]}</Badge>
-                        <span style={{ color: tokens.textMuted, fontSize: "12px", fontWeight: 800 }}>{currentOrder.code}</span>
+                        <Badge variant="copper">{currentOrderVM.kindLabel}</Badge>
+                        <span style={{ color: tokens.textMuted, fontSize: "12px", fontWeight: 800 }}>{currentOrderVM.code}</span>
                       </div>
                       <div>
-                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "24px", fontWeight: "700", margin: 0, color: getStatusTokens(currentOrder.status).color }}>
-                          {royalOrderStatusLabels[currentOrder.status]}
+                        <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "24px", fontWeight: "700", margin: 0, color: getStatusToneTokens(currentOrderVM.statusTone).color }}>
+                          {currentOrderVM.statusLabel}
                         </h4>
                         <p style={{ margin: "6px 0 0", color: tokens.textMuted, fontSize: "14px", lineHeight: 1.5 }}>
                           {currentOrder.title} - {currentOrder.summary}
@@ -851,11 +848,11 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                         </div>
                         <div>
                           <span style={{ display: "block", color: tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>Codigo</span>
-                          <strong style={{ color: tokens.copper, fontSize: "18px", letterSpacing: "0.08em" }}>{currentOrder.delivery.deliveryCode || "Pendente"}</strong>
+                          <strong style={{ color: tokens.copper, fontSize: "18px", letterSpacing: "0.08em" }}>{currentOrderVM.deliveryCodeLabel}</strong>
                         </div>
                         <div>
                           <span style={{ display: "block", color: tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>Total</span>
-                          <strong style={{ color: tokens.text, fontSize: "13px" }}>{formatOrderTotal(currentOrder)}</strong>
+                          <strong style={{ color: tokens.text, fontSize: "13px" }}>{currentOrderVM.moneyLabel}</strong>
                         </div>
                       </div>
                       <div>
@@ -865,9 +862,9 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                       </div>
                     </div>
                     <div style={{ border: `1px solid ${tokens.border}`, borderRadius: "14px", padding: "14px", display: "grid", alignContent: "center", background: tokens.background, minWidth: 0 }}>
-                      <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${currentOrder.timeline.length}, minmax(82px, 1fr))`, gap: "6px", overflowX: "auto", padding: "8px 2px 2px" }}>
+                      <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${currentOrderVM.timelineSteps.length}, minmax(82px, 1fr))`, gap: "6px", overflowX: "auto", padding: "8px 2px 2px" }}>
                         <span style={{ position: "absolute", left: "16px", right: "16px", top: "17px", height: "2px", background: tokens.border, opacity: 0.7 }} />
-                        {currentOrder.timeline.map((step, index) => {
+                        {currentOrderVM.timelineSteps.map((step, index) => {
                           const isCurrentStep = currentOrder.status === step.status;
                           const color = step.completed ? themeTokens.colors.statusActive : isCurrentStep ? tokens.copper : tokens.border;
                           const bg = step.completed
@@ -877,7 +874,7 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                               : tokens.surfaceContainer;
                           return (
                             <div key={step.status} style={{ position: "relative", zIndex: 1, minWidth: "82px", display: "grid", justifyItems: "center", gap: "7px", textAlign: "center" }}>
-                              {index < currentOrder.timeline.length - 1 && step.completed ? (
+                              {index < currentOrderVM.timelineSteps.length - 1 && step.completed ? (
                                 <span style={{ position: "absolute", left: "50%", right: "-50%", top: "9px", height: "2px", background: themeTokens.colors.statusActive }} />
                               ) : null}
                               <span style={{ width: "20px", height: "20px", borderRadius: "999px", border: `1px solid ${color}`, background: bg, display: "grid", placeItems: "center", boxShadow: step.completed || isCurrentStep ? `0 0 0 4px ${isDark ? "rgba(16, 185, 129, 0.12)" : "rgba(16, 185, 129, 0.08)"}` : "none", position: "relative", zIndex: 2 }}>
@@ -895,30 +892,30 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
                 )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {recentOrders.map((order) => (
-                    <Card key={order.id} className="minha-conta-order-row" variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "24px", alignItems: "flex-start" }}>
+                  {recentOrderVMs.map((vm) => (
+                    <Card key={vm.id} className="minha-conta-order-row" variant="surface" bordered hoverable isDark={isDark} style={{ padding: "20px 24px", borderRadius: "16px", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "24px", alignItems: "flex-start" }}>
                       <div style={{ width: "72px", height: "72px", borderRadius: "12px", overflow: "hidden", border: `1px solid ${tokens.border}`, background: tokens.surfaceContainer, flexShrink: 0 }}>
-                        <img src={order.imageUrl} alt={order.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <img src={vm.rawOrder.imageUrl} alt={vm.rawOrder.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       </div>
 
                       <div style={{ display: "flex", flexDirection: "column", gap: "4px", textAlign: "left" }}>
                         <span style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: tokens.copper }}>
-                          {royalOrderKindLabels[order.kind]} - {order.createdAtLabel}
+                          {vm.kindLabel} - {vm.rawOrder.createdAtLabel}
                         </span>
                         <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: "700", margin: 0, color: tokens.text }}>
-                          {order.code} - {order.title}
+                          {vm.code} - {vm.rawOrder.title}
                         </h4>
                         <span style={{ fontSize: "13px", color: tokens.textMuted, lineHeight: "1.4" }}>
-                          {order.summary}
+                          {vm.rawOrder.summary}
                         </span>
                       </div>
 
                       <div className="minha-conta-order-side" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "10px" }}>
                         <span style={{ fontSize: "18px", fontWeight: "700", color: tokens.text }}>
-                          {formatOrderTotal(order)}
+                          {vm.moneyLabel}
                         </span>
-                        {renderStatusPill(order)}
-                        <Button variant="outline" size="sm" isDark={isDark} onClick={() => setSelectedOrder(order)}>
+                        {renderStatusPillFromVM(vm)}
+                        <Button variant="outline" size="sm" isDark={isDark} onClick={() => setSelectedOrder(vm.rawOrder)}>
                           Ver detalhes
                         </Button>
                       </div>

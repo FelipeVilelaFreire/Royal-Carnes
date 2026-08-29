@@ -34,6 +34,12 @@
       "@/locales/*": [
         "../shared-core/locales/*"
       ],
+      "@royalprime/client/*": [
+        "../shared-core/*"
+      ],
+      "@/view-models/*": [
+        "../shared-core/view-models/*"
+      ],
       "@/api/*": [
         "../shared-core/api/*"
       ],

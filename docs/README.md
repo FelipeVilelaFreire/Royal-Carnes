@@ -5,6 +5,7 @@ Bem-vindo a central de documentacao do projeto RoyalPrime.
 Toda a documentacao tecnica, contratos de arquitetura, guias de design system e mapas de reuso ficam organizados nesta pasta:
 
 - [Indice Mestre e Roadmap de Documentacao](DOCS_ROADMAP.md)
+- [Entrypoints do Codex](CODEX_ENTRYPOINTS.md)
 - [Contratos Ativos de Codigo (`docs/contracts/`)](contracts/)
   - `CLIENT_SURFACE_SERVICES_CONTRACT.md`
   - `CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md`
@@ -29,3 +30,6 @@ Toda a documentacao tecnica, contratos de arquitetura, guias de design system e 
   - `royal-carnes-seed-kit.md`
   - `seed-strategy.md`
   - `kit-template.md`
+- [Frontend Tree](../frontend/TREE.md)
+- [Frontend Render-Only Audit](../frontend/RENDER_ONLY_AUDIT.md)
+- [Frontend Handoff](../frontend/handoff/README.md)

@@ -753,5 +753,59 @@ export const clientPtBR = {
       paymentCard: "Mastercard Black",
       ctaSave: "Salvar"
     }
+  },
+  minhaConta: {
+    title: "Minha Conta",
+    subtitle: "Gerencie seu plano, dados pessoais, endereços e preferências.",
+    headerGreeting: "Gerencie seu plano, endereços, métodos de pagamento e preferências da sua conta.",
+    badge: "SOCIO ATIVO",
+    planLabel: "Plano Ativo",
+    renewLabel: "Próxima renovação",
+    cycleLabel: "Cota do Ciclo Atual",
+    tabs: {
+      subscription: "Minha Assinatura",
+      orders: "Pedidos & Entregas",
+      personalData: "Dados Pessoais",
+      addresses: "Endereços",
+      payment: "Pagamento",
+      preferences: "Preferências"
+    },
+    sections: {
+      capacityTitle: "Uso & Capacidade da Assinatura",
+      recentOrdersTitle: "Pedidos Recentes",
+      personalTitle: "Informações Pessoais",
+      addressesTitle: "Meus Endereços",
+      paymentTitle: "Métodos de Pagamento",
+      legalTitle: "Políticas e Cancelamento"
+    },
+    actions: {
+      changePlan: "Alterar Plano",
+      viewDetails: "Ver Detalhes",
+      saveChanges: "Salvar Alterações",
+      addAddress: "Adicionar Endereço",
+      addPayment: "Adicionar Cartão",
+      closeAccount: "Encerrar Conta",
+      cancelSubscription: "Cancelar Assinatura"
+    },
+    legalNotice: "Ao cancelar ou pausar a assinatura, os benefícios de preços diferenciados e a garantia de cota mensal serão interrompidos ao término do período vigente."
+  },
+  orderDetailModal: {
+    title: "Detalhes do Pedido",
+    codeLabel: "Código",
+    typeLabel: "Tipo de Pedido",
+    statusLabel: "Status",
+    deliveryCodeLabel: "Código de Validação de Entrega",
+    deliveryCodeHint: "Informe este código ao entregador no momento do recebimento.",
+    itemsTitle: "Itens do Pedido",
+    deliveryTitle: "Informações de Entrega",
+    estimateLabel: "Previsão de Entrega",
+    addressLabel: "Endereço de Entrega",
+    paymentTitle: "Resumo do Pagamento",
+    subtotalLabel: "Subtotal",
+    freightLabel: "Frete",
+    discountLabel: "Desconto",
+    totalLabel: "Total",
+    closeAction: "Fechar",
+    supportAction: "Falar com Suporte"
   }
 };

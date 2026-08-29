@@ -17,6 +17,11 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@royalprime/admin/*": ["../shared-core/*"],
+      "@/view-models/*": ["../shared-core/view-models/*"],
+      "@/contracts/*": ["../shared-core/contracts/*"],
+      "@/api/*": ["../shared-core/api/*"],
+      "@/hooks/*": ["../shared-core/hooks/*"],
       "@/manifests/*": ["../shared-core/manifests/*"],
       "@/locales/*": ["../shared-core/locales/*"],
       "@/navigation/*": ["../shared-core/navigation/*"],

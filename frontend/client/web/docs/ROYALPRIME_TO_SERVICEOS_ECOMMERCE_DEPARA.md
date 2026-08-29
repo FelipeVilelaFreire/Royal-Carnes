@@ -203,6 +203,19 @@ RoyalPrime/frontend/client/
       catalog.contract.ts
       checkout.contract.ts
       customer.contract.ts
+      order.contract.ts
+      delivery.contract.ts
+      subscription.contract.ts
+
+    api/
+      subscriptions.api.ts
+      orders.api.ts
+      deliveries.api.ts
+
+    hooks/
+      useSubscription.ts
+      useMyOrders.ts
+      useMyDeliveries.ts
 
     manifests/
       app-shell.manifest.ts
@@ -410,18 +423,43 @@ Proxima regra: nao continuar reorganizando por previsao abstrata. A partir daqui
 
 ## Foco operacional
 
-A partir deste ponto, trabalharemos principalmente em duas pastas:
+A partir do backend foundation de Orders e Deliveries, o proximo corte deve
+passar primeiro pelo shared-core do escopo correto.
+
+Ordem atual:
 
 ```text
+1. frontend/client/shared-core
+   -> contratos, API clients, hooks, mappers e view-models de Orders/Deliveries.
+
+2. frontend/client/web/src/screens
+   -> telas passam a consumir hooks em vez de mocks diretos.
+
+3. frontend/admin/shared-core
+   -> contratos, API clients e hooks admin de Orders/Deliveries.
+
+4. frontend/admin/web
+   -> telas/admin pages renderizam listagem, detalhe, status e confirmacao.
+```
+
+A partir deste ponto, as pastas de maior impacto sao:
+
+```text
+frontend/client/shared-core
+frontend/admin/shared-core
 frontend/client/web/src/screens
 frontend/client/web/src/product-components/ecommerce
 ```
 
-Essas duas pastas sao a fonte de evidencia real para um futuro ServiceOS Ecommerce.
+Essas pastas sao a fonte de evidencia real para um futuro ServiceOS Ecommerce.
 
 `screens` mostra os fluxos reais: landing, portal, catalogo, checkout, conta, assinatura e cortes.
 
 `product-components/ecommerce` concentra componentes reutilizaveis de ecommerce que podem virar Product Components no ServiceOS depois de amadurecerem.
+
+`client/shared-core` e `admin/shared-core` concentram o contrato operacional que
+nao depende de React/Web: DTOs, API clients, hooks, mappers, view-models e
+mocks temporarios.
 
 As outras pastas continuam existindo, mas nao sao o foco principal de evolucao para ServiceOS:
 
@@ -437,6 +475,59 @@ modules
 
 shared-core
   -> dados, manifests, locales, navigation, contratos e view-models do produto.
+```
+
+## Proximo Corte: Shared-Core Orders/Deliveries
+
+Backend pronto nesta branch:
+
+```text
+GET  /api/v1/orders/config/
+GET  /api/v1/orders/me/
+POST /api/v1/orders/me/
+GET  /api/v1/orders/me/:id/
+GET  /api/v1/deliveries/config/
+GET  /api/v1/deliveries/me/
+GET  /api/v1/deliveries/me/:id/
+GET  /api/v1/orders/admin/orders/
+POST /api/v1/orders/admin/orders/:id/transition/
+GET  /api/v1/deliveries/admin/deliveries/
+POST /api/v1/deliveries/admin/deliveries/:id/transition/
+POST /api/v1/deliveries/admin/deliveries/:id/confirm/
+```
+
+Client shared-core esperado:
+
+```text
+frontend/client/shared-core/contracts/order.contract.ts
+frontend/client/shared-core/contracts/delivery.contract.ts
+frontend/client/shared-core/api/orders.api.ts
+frontend/client/shared-core/api/deliveries.api.ts
+frontend/client/shared-core/hooks/useMyOrders.ts
+frontend/client/shared-core/hooks/useMyDeliveries.ts
+frontend/client/shared-core/view-models/orders.view-model.ts
+frontend/client/shared-core/view-models/deliveries.view-model.ts
+```
+
+Admin shared-core esperado:
+
+```text
+frontend/admin/shared-core/contracts/admin-order.contract.ts
+frontend/admin/shared-core/contracts/admin-delivery.contract.ts
+frontend/admin/shared-core/api/adminOrders.api.ts
+frontend/admin/shared-core/api/adminDeliveries.api.ts
+frontend/admin/shared-core/hooks/useAdminOrders.ts
+frontend/admin/shared-core/hooks/useAdminDeliveries.ts
+frontend/admin/shared-core/view-models/adminOrders.view-model.ts
+frontend/admin/shared-core/view-models/adminDeliveries.view-model.ts
+```
+
+Regra:
+
+```text
+nao mover esses fluxos para frontend/shared-core global ainda
+client e admin tem necessidades diferentes neste momento
+global recebe apenas tipos base realmente comuns
 ```
 
 ## Como documentar cada evolucao

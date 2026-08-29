@@ -471,6 +471,16 @@ frontend/admin/web
   -> Vite admin, engines de render, builders e telas operacionais
 ```
 
+Mapa detalhado:
+
+```text
+frontend/TREE.md
+```
+
+Ele e o ponto de entrada para organizar `frontend/shared-core`,
+`frontend/client/shared-core` e `frontend/admin/shared-core` antes de ligar as
+telas aos endpoints reais.
+
 Regra:
 
 ```text

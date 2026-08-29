@@ -6,6 +6,7 @@ import { AvatarCell } from "@foundation/ui/Avatar";
 import { adminThemeManifest } from "@/manifests/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
 import { FlameIcon, BoxIcon, TruckIcon, UserIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
+import { prepareAdminOrderViewModel } from "@royalprime/admin/view-models/adminOrders.view-model";
 import type { DashboardConfig } from "../config/types";
 
 export interface DashboardPageProps {
@@ -40,39 +41,23 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
     return <TruckIcon size={20} color={primary} />;
   };
 
-  const renderStatusBadge = (status: string) => {
-    let bg = "rgba(212, 196, 176, 0.12)";
-    let color = textMuted;
-    let label = status;
-
-    if (status === "packing" || status === "outForDelivery") {
-      bg = "rgba(255, 198, 101, 0.15)";
-      color = primary;
-      label = status === "packing" ? "Em Embalagem" : "Em Trânsito";
-    } else if (status === "approved" || status === "delivered") {
-      bg = "rgba(16, 185, 129, 0.15)";
-      color = "#10B981";
-      label = status === "delivered" ? "Entregue" : "Aprovado";
-    } else if (status === "pending") {
-      bg = "rgba(245, 158, 11, 0.15)";
-      color = "#F59E0B";
-      label = "Pendente";
-    }
-
+  const renderStatusBadge = (orderOrStatus: any) => {
+    const orderObj = typeof orderOrStatus === "string" ? ({ status: orderOrStatus } as any) : orderOrStatus;
+    const vm = prepareAdminOrderViewModel(orderObj, primary);
     return (
       <span
         style={{
-          background: bg,
-          color,
+          background: vm.badgeBg,
+          color: vm.badgeColor,
           fontSize: "12px",
           fontWeight: "700",
           padding: "5px 12px",
           borderRadius: "10px",
-          border: `1px solid ${color}33`,
+          border: `1px solid ${vm.badgeBorder}`,
           letterSpacing: "0.5px"
         }}
       >
-        {label}
+        {vm.statusLabel}
       </span>
     );
   };

@@ -7,6 +7,7 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
+      '@royalprime/client': path.resolve(__dirname, '../shared-core'),
       '@shared-core': path.resolve(__dirname, '../../shared-core'),
       '@foundation': path.resolve(__dirname, '../../foundation')
     };
