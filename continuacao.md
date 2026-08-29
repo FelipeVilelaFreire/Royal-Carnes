@@ -119,6 +119,7 @@ ROYALPRIME_CODEX_RULES.md
 ROYALPRIME_ARCHITECTURE_CONTRACT.md
 docs/CODEX_ENTRYPOINTS.md
 docs/kits/README.md
+docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
 docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
 docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
 docs/kits/auth-users-kit.md
@@ -129,6 +130,34 @@ docs/kits/kit-01-auth-users-shared-core-map.md
 
 Criar a base reutilizavel de Auth & Users sem duplicacao desnecessaria e sem
 promover coisa prematura para o global.
+
+Antes de implementar runtime, respeitar a decisao de organizacao fisica:
+
+```text
+o runtime nao fica fragmentado por kit
+contracts ficam em contracts/
+types auxiliares ficam em types/
+API clients ficam em api/
+hooks ficam em hooks/
+mappers ficam em mappers/
+view-models ficam em view-models/
+mocks ficam em mocks/
+kits documentam onde ler e o papel de cada arquivo
+```
+
+O kit e o mapa de leitura e fronteira de reuso. Ele deve dizer:
+
+```text
+para Kit 01 leia X, Y e Z
+este arquivo e contrato
+este arquivo e API client
+este arquivo e hook
+este arquivo e mapper
+este arquivo e view-model
+esta tela e render-only
+```
+
+Nao criar uma arvore paralela de runtime dentro de `kits/`.
 
 Divisao esperada:
 
@@ -222,13 +251,21 @@ nao voltar com frontend/shared-core/client ou frontend/shared-core/admin
 ## Resultado Esperado Do Proximo Marco
 
 ```text
-Kit 01 documentado e iniciado
-global minimo com tipos realmente comuns
-client auth pronto no shared-core do client
-admin auth/users pronto no shared-core do admin
+Kit 01 documentado e iniciado - DONE
+global minimo com tipos realmente comuns - DONE
+client auth/customer iniciado no shared-core do client - DONE
+admin auth/users/permissions iniciado no shared-core do admin - DONE
 build client OK
 build admin OK
 commit e push na feature/shared-core-kit-reset
+```
+
+Validacao do primeiro corte de codigo:
+
+```text
+npm run build:client -> OK
+npm run build:admin -> OK
+tsc direto nos index.ts dos tres shared-cores -> OK
 ```
 
 Frase guia:

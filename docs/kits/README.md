@@ -155,6 +155,7 @@ serviceos-candidate
 Mapas detalhados:
 
 ```text
+docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
 docs/kits/kit-01-auth-users-shared-core-map.md
 docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
 docs/kits/SHARED_CORE_KIT_RESET_RESULT.md

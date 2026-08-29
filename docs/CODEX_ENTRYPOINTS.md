@@ -20,10 +20,11 @@ implementar no RoyalPrime.
 12. backend/ARCHITECTURE.md
 13. backend/API_CONTRACTS.md
 14. docs/kits/README.md
-15. docs/kits/REUSE_SOURCE_AUDIT.md
-16. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-17. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
-18. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
+15. docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
+16. docs/kits/REUSE_SOURCE_AUDIT.md
+17. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
+18. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
+19. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
 ## Regra De Camadas

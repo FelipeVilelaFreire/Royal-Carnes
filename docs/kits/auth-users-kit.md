@@ -91,6 +91,7 @@ frontend/shared-core
 Mapa detalhado do Kit 01 entre global/client/admin:
 
 ```text
+docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
 docs/kits/kit-01-auth-users-shared-core-map.md
 ```
 
@@ -100,6 +101,234 @@ Regra:
 global recebe contrato base realmente comum
 client recebe fluxo de autenticacao do cliente
 admin recebe fluxo operacional, roles, permissoes e gestao de usuarios
+```
+
+## Como Comecar O Kit 01
+
+Comecar pequeno, mas com a tree certa. O primeiro marco nao e conectar todas as
+telas; e deixar a base de Auth & Users nascer no lugar correto.
+
+Ordem recomendada:
+
+```text
+1. confirmar o contrato real do backend
+2. criar o global minimo
+3. criar o client auth/customer
+4. criar o admin auth/users
+5. so depois conectar telas render-only
+```
+
+Status do primeiro corte:
+
+```text
+global minimo criado
+client auth/customer criado
+admin auth/users/permissions criado
+telas ainda nao conectadas
+```
+
+## O Que Fica Geral
+
+Geral significa: client web, futuro mobile e admin poderiam importar sem if,
+sem campos sobrando e sem conhecer a tela um do outro.
+
+Local:
+
+```text
+frontend/shared-core/
+```
+
+Entram aqui:
+
+```text
+types/identity.types.ts
+types/organization.types.ts
+types/api.types.ts
+contracts/identity.contract.ts
+contracts/organization.contract.ts
+contracts/auth.contract.ts
+api/headers.api.ts
+api/errors.api.ts
+mappers/api-error.mapper.ts
+```
+
+Responsabilidades gerais:
+
+```text
+UserId
+OrganizationId
+OrganizationSlug
+RoleKey
+PermissionKey
+AuthTokenShape
+CurrentUserBase
+AuthSessionBase
+ApiErrorEnvelope
+buildAuthHeaders()
+buildOrganizationHeaders()
+normalizeApiError()
+```
+
+Nao entram no geral:
+
+```text
+hook React
+localStorage concreto
+rota
+modal
+copy de login
+cadastro de cliente
+tabela de usuarios admin
+permissao operacional de menu
+regra de negocio
+```
+
+Regra pratica:
+
+```text
+se precisa perguntar "e client ou admin?", nao e global
+```
+
+## O Que Fica Especifico Do Client
+
+Client significa: fluxo do cliente final, portal, conta, cadastro, sessao e
+customer atual.
+
+Local:
+
+```text
+frontend/client/shared-core/
+```
+
+Entram aqui:
+
+```text
+types/auth.types.ts
+types/customer.types.ts
+contracts/auth.contract.ts
+contracts/customer.contract.ts
+contracts/session.contract.ts
+api/auth.api.ts
+api/customer.api.ts
+hooks/useClientAuthSession.ts
+hooks/useClientLogin.ts
+hooks/useClientRegister.ts
+hooks/useClientLogout.ts
+hooks/useCurrentCustomer.ts
+mappers/auth.mapper.ts
+mappers/customer.mapper.ts
+view-models/auth.view-model.ts
+view-models/customer.view-model.ts
+```
+
+Responsabilidades do client:
+
+```text
+login do cliente
+cadastro do cliente
+logout do cliente
+sessao do portal
+usuario atual do cliente
+customer vinculado ao user
+estado autenticado/deslogado
+fallback dev explicito enquanto a tela ainda nao usa API real
+```
+
+Nao entram no client:
+
+```text
+gestao de usuarios admin
+role matrix admin
+criar operador
+ativar/desativar membro da loja
+filtros de tabela operacional
+```
+
+## O Que Fica Especifico Do Admin
+
+Admin significa: fluxo operacional da loja, sessao admin, roles, permissoes e
+gestao de usuarios.
+
+Local:
+
+```text
+frontend/admin/shared-core/
+```
+
+Entram aqui:
+
+```text
+types/auth.types.ts
+types/user.types.ts
+types/permission.types.ts
+contracts/auth.contract.ts
+contracts/user.contract.ts
+contracts/permission.contract.ts
+contracts/session.contract.ts
+api/auth.api.ts
+api/users.api.ts
+api/permissions.api.ts
+hooks/useAdminAuthSession.ts
+hooks/useAdminLogin.ts
+hooks/useAdminLogout.ts
+hooks/useAdminPermissions.ts
+hooks/useAdminUsers.ts
+hooks/useAdminUserDetail.ts
+mappers/auth.mapper.ts
+mappers/users.mapper.ts
+mappers/permissions.mapper.ts
+view-models/auth.view-model.ts
+view-models/users.view-model.ts
+view-models/permissions.view-model.ts
+```
+
+Responsabilidades do admin:
+
+```text
+login admin
+logout admin
+usuario admin atual
+roles e permissoes da organization
+listar usuarios
+criar usuario
+editar usuario
+ativar/desativar usuario
+atribuir role
+view-model de tabela/detalhe/form
+```
+
+Nao entram no admin:
+
+```text
+cadastro publico de cliente
+modal do portal
+perfil comercial do customer final
+copy da landing ou do login do cliente
+```
+
+## O Papel Dos Kits
+
+Os kits nao sao o lugar principal do runtime. Eles sao o mapa.
+
+```text
+docs/kits/auth-users-kit.md
+  -> explica a capacidade inteira
+
+docs/kits/kit-01-auth-users-shared-core-map.md
+  -> mostra a tree exata e a matriz de arquivos
+
+frontend/client/shared-core/kits/auth/
+  -> documenta o auth do client e aponta para contracts/api/hooks reais
+
+frontend/admin/shared-core/kits/users/
+  -> documenta users admin e aponta para contracts/api/hooks reais
+```
+
+Regra:
+
+```text
+runtime fica em api/hooks/contracts/types/mappers/view-models
+kit diz onde esta o runtime e como ler/copiar/adaptar
 ```
 
 Contratos esperados:

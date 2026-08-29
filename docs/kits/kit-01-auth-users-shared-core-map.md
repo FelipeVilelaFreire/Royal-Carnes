@@ -23,6 +23,42 @@ client recebe fluxo de autenticacao do cliente
 admin recebe fluxo operacional, roles, permissoes e gestao de usuarios
 ```
 
+## Decisao De Organizacao Fisica
+
+O shared-core nao deve ficar fragmentado por kit no runtime.
+
+Regra:
+
+```text
+contracts ficam em contracts/
+types auxiliares ficam em types/
+API clients ficam em api/
+hooks ficam em hooks/
+mappers ficam em mappers/
+view-models ficam em view-models/
+mocks ficam em mocks/
+kits ficam em kits/ apenas como documentacao de leitura e fronteira
+```
+
+O kit documenta onde cada arquivo mora, qual arquivo ler primeiro e qual papel
+ele exerce. Ele nao cria uma arvore paralela de implementacao.
+
+Exemplo:
+
+```text
+docs/kits/kit-01-auth-users-shared-core-map.md
+  -> mapa do Kit 01
+  -> diz para ler backend/apps/accounts, contracts/auth, api/auth, hooks/auth
+  -> explica o que e global, client, admin e render-only
+
+frontend/client/shared-core/hooks/useClientAuthSession.ts
+  -> runtime real do hook
+
+frontend/client/shared-core/kits/auth/README.md
+  -> nota curta da capacidade auth dentro do escopo client
+  -> aponta para os arquivos reais
+```
+
 Maximizar global e bom quando o contrato e igual.
 
 Maximizar global e ruim quando:
@@ -139,6 +175,7 @@ Local:
 ```text
 frontend/client/shared-core/kits/auth
 frontend/client/shared-core/kits/customer
+frontend/client/shared-core/types
 frontend/client/shared-core/contracts
 frontend/client/shared-core/api
 frontend/client/shared-core/hooks
@@ -203,6 +240,7 @@ Local:
 ```text
 frontend/admin/shared-core/kits/auth
 frontend/admin/shared-core/kits/users
+frontend/admin/shared-core/types
 frontend/admin/shared-core/contracts
 frontend/admin/shared-core/api
 frontend/admin/shared-core/hooks
@@ -304,6 +342,179 @@ Regra de decisao:
 se client e admin importariam sem if e sem campos sobrando, pode ser global
 se precisa de if client/admin, fica no escopo especifico
 se envolve UI/copy/rota, fica no escopo especifico ou manifest da surface
+```
+
+## Tree Exata Do Kit 01
+
+Esta e a tree alvo antes de implementar o Kit 01. Criar arquivos somente quando
+o contrato daquele arquivo estiver sendo usado ou documentado no passo atual.
+
+```text
+frontend/shared-core/
+  README.md
+  config.ts
+  kits/
+    README.md
+    identity/
+      README.md
+    organization/
+      README.md
+  types/
+    identity.types.ts
+    organization.types.ts
+    api.types.ts
+  contracts/
+    identity.contract.ts
+    organization.contract.ts
+    auth.contract.ts
+  api/
+    headers.api.ts
+    errors.api.ts
+  mappers/
+    api-error.mapper.ts
+
+frontend/client/shared-core/
+  README.md
+  kits/
+    README.md
+    auth/
+      README.md
+      contract.md
+      flow.md
+    customer/
+      README.md
+  types/
+    auth.types.ts
+    customer.types.ts
+  contracts/
+    auth.contract.ts
+    customer.contract.ts
+    session.contract.ts
+  api/
+    auth.api.ts
+    customer.api.ts
+  hooks/
+    useClientAuthSession.ts
+    useClientLogin.ts
+    useClientRegister.ts
+    useClientLogout.ts
+    useCurrentCustomer.ts
+  mappers/
+    auth.mapper.ts
+    customer.mapper.ts
+  view-models/
+    auth.view-model.ts
+    customer.view-model.ts
+  mocks/
+    customer.mock.ts
+  locales/
+    pt-BR.ts
+  manifests/
+  navigation/
+
+frontend/admin/shared-core/
+  README.md
+  kits/
+    README.md
+    auth/
+      README.md
+      contract.md
+      flow.md
+    users/
+      README.md
+      contract.md
+      flow.md
+  types/
+    auth.types.ts
+    user.types.ts
+    permission.types.ts
+  contracts/
+    auth.contract.ts
+    user.contract.ts
+    permission.contract.ts
+    session.contract.ts
+  api/
+    auth.api.ts
+    users.api.ts
+    permissions.api.ts
+  hooks/
+    useAdminAuthSession.ts
+    useAdminLogin.ts
+    useAdminLogout.ts
+    useAdminPermissions.ts
+    useAdminUsers.ts
+    useAdminUserDetail.ts
+  mappers/
+    auth.mapper.ts
+    users.mapper.ts
+    permissions.mapper.ts
+  view-models/
+    auth.view-model.ts
+    users.view-model.ts
+    permissions.view-model.ts
+  mocks/
+    users.mock.ts
+    subscribers.mock.ts
+  locales/
+    pt-BR.ts
+  manifests/
+  navigation/
+```
+
+## Matriz De Arquivos
+
+| Camada | Pasta | Papel | Pode importar | Nao pode importar |
+| --- | --- | --- | --- | --- |
+| Global | `frontend/shared-core/types` | tipos pequenos e universais | nada de React | client/admin/web |
+| Global | `frontend/shared-core/contracts` | contratos comuns de identidade, organizacao e auth base | `types` global | hooks, UI, mocks |
+| Global | `frontend/shared-core/api` | headers, envelopes e helpers HTTP puros | `types`, `contracts` globais | React, router, localStorage direto |
+| Global | `frontend/shared-core/mappers` | normalizacao pura de erro/API comum | contratos globais | copy de UI |
+| Client | `frontend/client/shared-core/contracts` | DTOs e contratos do cliente | global contracts/types | admin contracts |
+| Client | `frontend/client/shared-core/api` | chamadas HTTP do cliente | client contracts, global api | React, JSX, tela |
+| Client | `frontend/client/shared-core/hooks` | estado React e actions do cliente | client api/mappers/view-models | fetch direto em tela, admin |
+| Client | `frontend/client/shared-core/mappers` | DTO -> model de cliente | contracts/types | regra real de negocio |
+| Client | `frontend/client/shared-core/view-models` | formato pronto para render do portal | contracts, locales quando necessario | chamada HTTP |
+| Admin | `frontend/admin/shared-core/contracts` | DTOs e contratos admin | global contracts/types | client contracts |
+| Admin | `frontend/admin/shared-core/api` | chamadas HTTP admin | admin contracts, global api | React, JSX, tela |
+| Admin | `frontend/admin/shared-core/hooks` | estado React e actions admin | admin api/mappers/view-models | fetch direto em tela, client |
+| Admin | `frontend/admin/shared-core/mappers` | DTO -> model admin | contracts/types | regra real de permissao |
+| Admin | `frontend/admin/shared-core/view-models` | tabela, detalhe, form e permissoes para render | contracts, locales quando necessario | chamada HTTP |
+| Docs | `docs/kits/*.md` | mapa de leitura e fronteira de reuso | paths reais | runtime funcional |
+| Docs | `*/shared-core/kits/**` | README/contract/flow da capacidade no escopo | paths reais | runtime duplicado |
+
+## Roteiro De Leitura Do Kit 01
+
+Antes de implementar Auth & Users, ler nesta ordem:
+
+```text
+1. AGENTS.md
+2. ROYALPRIME_CODEX_RULES.md
+3. ROYALPRIME_ARCHITECTURE_CONTRACT.md
+4. docs/CODEX_ENTRYPOINTS.md
+5. docs/kits/README.md
+6. docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
+7. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
+8. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
+9. docs/kits/auth-users-kit.md
+10. docs/kits/kit-01-auth-users-shared-core-map.md
+11. backend/API_CONTRACTS.md
+12. backend/apps/accounts/
+13. backend/apps/organizations/
+14. backend/apps/customers/
+15. frontend/shared-core/README.md
+16. frontend/client/shared-core/README.md
+17. frontend/admin/shared-core/README.md
+```
+
+Depois da leitura:
+
+```text
+1. confirmar o que ja existe fisicamente
+2. criar somente pastas/README faltantes necessarios
+3. criar contratos globais minimos
+4. criar client auth no escopo client
+5. criar admin auth/users no escopo admin
+6. conectar telas apenas depois dos contratos e hooks
 ```
 
 ## Exemplo Pratico: Login
