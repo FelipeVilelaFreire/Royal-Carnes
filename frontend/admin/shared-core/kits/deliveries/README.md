@@ -13,13 +13,26 @@ POST /api/v1/deliveries/admin/deliveries/:id/transition/
 POST /api/v1/deliveries/admin/deliveries/:id/confirm/
 ```
 
-Arquivos futuros esperados quando o runtime renascer:
+Mapa vertical:
 
 ```text
-contracts/admin-delivery.contract.ts
-api/adminDeliveries.api.ts
+docs/kits/kit-06-fulfillment-delivery-shared-core-map.md
+contract.md
+flow.md
+```
+
+Arquivos runtime:
+
+```text
+contracts/deliveries.contract.ts
+api/deliveries.api.ts
 hooks/useAdminDeliveries.ts
-view-models/adminDeliveries.view-model.ts
+hooks/useAdminDeliveryDetail.ts
+hooks/useAdminDeliveryTransition.ts
+hooks/useAdminDeliveryConfirm.ts
+hooks/useAdminDeliveryForm.ts
+mappers/deliveries.mapper.ts
+view-models/deliveries.view-model.ts
 ```
 
 Regra:
@@ -28,20 +41,6 @@ Regra:
 admin pode atualizar e confirmar entrega
 backend decide workflow logistico
 scheduling fica para kit futuro separado
-```
-
-## Audit Atual
-
-Este kit esta resetado na branch `feature/shared-core-kit-reset`.
-
-Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
-
-Leia junto:
-
-```text
-backend/API_CONTRACTS.md
-backend/seeds/royalprime/kits/deliveries.seed.json
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
 ```
 
 Endpoint correto:

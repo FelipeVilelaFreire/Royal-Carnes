@@ -10,13 +10,22 @@ GET /api/v1/deliveries/me/
 GET /api/v1/deliveries/me/:id/
 ```
 
-Arquivos futuros esperados quando o runtime renascer:
+Mapa vertical:
 
 ```text
-contracts/delivery.contract.ts
+docs/kits/kit-06-fulfillment-delivery-shared-core-map.md
+contract.md
+flow.md
+```
+
+Arquivos runtime:
+
+```text
+contracts/deliveries.contract.ts
 api/deliveries.api.ts
-hooks/useDeliveryConfig.ts
-hooks/useMyDeliveries.ts
+hooks/useClientDeliveries.ts
+hooks/useClientDeliveryDetail.ts
+mappers/deliveries.mapper.ts
 view-models/deliveries.view-model.ts
 ```
 
@@ -27,35 +36,16 @@ delivery scheduling e recorrencia ficam fora deste kit por enquanto
 cliente apenas acompanha entrega criada pelo backend
 ```
 
-## Audit Atual
-
-Este kit esta resetado na branch `feature/shared-core-kit-reset`.
-
-Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
-
-Leia junto:
-
-```text
-backend/API_CONTRACTS.md
-backend/seeds/royalprime/kits/deliveries.seed.json
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
-```
-
 Backend usa:
 
 ```text
 status_key: pending | packing | out-for-delivery | delivered | failed | cancelled
 ```
 
+Esses valores sao seed/config do RoyalPrime, nao branches de codigo.
+
 Nao tratar estes valores legados como contrato novo:
 
 ```text
 outForDelivery
-```
-
-Proximo passo:
-
-```text
-criar DTOs reais do backend, mappers DTO -> view-model e fallback dev explicito
-sem marcar mock como source=api.
 ```

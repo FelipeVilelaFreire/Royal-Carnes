@@ -11,13 +11,23 @@ POST /api/v1/orders/me/
 GET  /api/v1/orders/me/:id/
 ```
 
-Arquivos futuros esperados quando o runtime renascer:
+Mapa vertical:
 
 ```text
-contracts/order.contract.ts
+docs/kits/kit-05-orders-shared-core-map.md
+contract.md
+flow.md
+```
+
+Arquivos runtime:
+
+```text
+contracts/orders.contract.ts
 api/orders.api.ts
-hooks/useOrderConfig.ts
-hooks/useMyOrders.ts
+hooks/useClientOrders.ts
+hooks/useClientOrderDetail.ts
+hooks/useClientOrderForm.ts
+mappers/orders.mapper.ts
 view-models/orders.view-model.ts
 ```
 
@@ -37,21 +47,7 @@ tela nao decide workflow
 tela nao calcula preco final
 ```
 
-## Audit Atual
-
-Este kit esta resetado na branch `feature/shared-core-kit-reset`.
-
-Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
-
-Antes de continuar, alinhar com:
-
-```text
-backend/API_CONTRACTS.md
-backend/seeds/royalprime/kits/orders.seed.json
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
-```
-
-Backend usa:
+Backend aceita:
 
 ```text
 kind_key: delivery | subscription-cycle
@@ -60,7 +56,9 @@ items[].product_key
 items[].variant_sku opcional
 ```
 
-Nao tratar estes valores legados como contrato novo:
+Esses valores sao seed/config do RoyalPrime, nao branches de codigo.
+
+Nao usar legado:
 
 ```text
 subscriptionCycle
@@ -68,11 +66,4 @@ royalDelivery
 sentToStore
 preparing
 outForDelivery
-```
-
-Proximo passo:
-
-```text
-criar DTOs reais do backend, mappers DTO -> view-model e fallback dev explicito
-sem marcar mock como source=api.
 ```

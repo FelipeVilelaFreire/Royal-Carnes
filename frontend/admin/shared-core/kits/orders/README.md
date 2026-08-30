@@ -12,13 +12,25 @@ GET  /api/v1/orders/admin/orders/:id/
 POST /api/v1/orders/admin/orders/:id/transition/
 ```
 
-Arquivos futuros esperados quando o runtime renascer:
+Mapa vertical:
 
 ```text
-contracts/admin-order.contract.ts
-api/adminOrders.api.ts
+docs/kits/kit-05-orders-shared-core-map.md
+contract.md
+flow.md
+```
+
+Arquivos runtime:
+
+```text
+contracts/orders.contract.ts
+api/orders.api.ts
 hooks/useAdminOrders.ts
-view-models/adminOrders.view-model.ts
+hooks/useAdminOrderDetail.ts
+hooks/useAdminOrderTransition.ts
+hooks/useAdminOrderForm.ts
+mappers/orders.mapper.ts
+view-models/orders.view-model.ts
 ```
 
 Regra:
@@ -27,20 +39,6 @@ Regra:
 admin pode comandar transicao
 backend decide se transicao e permitida
 status e labels vem da API/config
-```
-
-## Audit Atual
-
-Este kit esta resetado na branch `feature/shared-core-kit-reset`.
-
-Os arquivos funcionais antigos foram removidos para evitar contrato prematuro.
-
-Leia junto:
-
-```text
-backend/API_CONTRACTS.md
-backend/seeds/royalprime/kits/orders.seed.json
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
 ```
 
 Endpoint correto:

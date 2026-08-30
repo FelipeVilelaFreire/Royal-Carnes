@@ -22,6 +22,7 @@ Commits importantes:
 a5a61d9 Document shared-core reset plan
 e7179e8 Reset shared-core runtime for kit-first rebuild
 04e689f Start shared-core auth users kit
+cc32fc4 Build shared-core kits 01-04
 ```
 
 O objetivo desse corte foi limpar implementacoes funcionais prematuras de
@@ -258,15 +259,113 @@ implementados no shared-core porque o backend atual ainda nao publica essas
 rotas.
 ```
 
-## Proxima Etapa: Kit 05
+## Kit 05 Orders - Corte Shared-Core
 
-Seguir para o Kit 05 mantendo a mesma disciplina:
+Kit 05 Orders tambem foi fechado no nivel shared-core para os endpoints client
+e admin que existem hoje no backend.
+
+Arquivos centrais:
+
+```text
+docs/kits/orders-kit.md
+docs/kits/kit-05-orders-shared-core-map.md
+frontend/client/shared-core/kits/orders/contract.md
+frontend/client/shared-core/kits/orders/flow.md
+frontend/admin/shared-core/kits/orders/contract.md
+frontend/admin/shared-core/kits/orders/flow.md
+```
+
+Cobertura backend real:
+
+```text
+GET  /api/v1/orders/config/
+GET  /api/v1/orders/me/
+POST /api/v1/orders/me/
+GET  /api/v1/orders/me/:id/
+GET  /api/v1/orders/admin/orders/
+POST /api/v1/orders/admin/orders/
+GET  /api/v1/orders/admin/orders/:id/
+POST /api/v1/orders/admin/orders/:id/transition/
+```
+
+Limite intencional:
+
+```text
+PATCH/DELETE/cancel shortcut, payment behavior, delivery update e inventory
+release nao foram implementados no shared-core porque o backend atual nao
+publica essas rotas neste kit.
+```
+
+## Kit 06 Fulfillment & Delivery - Corte Shared-Core
+
+Kit 06 Delivery tambem foi fechado no nivel shared-core para os endpoints
+client e admin que existem hoje no backend.
+
+Arquivos centrais:
+
+```text
+docs/kits/fulfillment-delivery-kit.md
+docs/kits/kit-06-fulfillment-delivery-shared-core-map.md
+frontend/client/shared-core/kits/deliveries/contract.md
+frontend/client/shared-core/kits/deliveries/flow.md
+frontend/admin/shared-core/kits/deliveries/contract.md
+frontend/admin/shared-core/kits/deliveries/flow.md
+```
+
+Cobertura backend real:
+
+```text
+GET  /api/v1/deliveries/config/
+GET  /api/v1/deliveries/me/
+GET  /api/v1/deliveries/me/:id/
+GET  /api/v1/deliveries/admin/deliveries/
+POST /api/v1/deliveries/admin/deliveries/
+GET  /api/v1/deliveries/admin/deliveries/:id/
+POST /api/v1/deliveries/admin/deliveries/:id/transition/
+POST /api/v1/deliveries/admin/deliveries/:id/confirm/
+```
+
+Limite intencional:
+
+```text
+package management API, client create/transition/confirm, scheduling, route
+optimization e driver app nao foram implementados porque o backend atual nao
+publica essas capacidades neste kit.
+```
+
+## Documentacao Geral Antes Das Telas
+
+Documentos criados para orientar a proxima fase:
+
+```text
+docs/architecture/OWNERSHIP_TREE.md
+docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
+docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
+```
+
+Eles sao a porta de entrada para qualquer IA ou desenvolvedor entender:
+
+```text
+estado dos Kits 01-06
+ownership backend/shared-core/render
+nome oficial render-apps para a camada de telas
+ordem recomendada das telas
+contrato render-only
+quando parar e voltar para backend
+```
+
+## Proxima Etapa: Fase 2 Render-Only Screens
+
+Nao existe Kit 07 implementavel neste momento. Payments, Checkout, Wallet e
+Vouchers continuam planejados ate nascer backend real.
+
+Seguir para telas mantendo a mesma disciplina:
 
 ```text
 backend real primeiro
 shared-core do menor escopo correto
-kit documenta mapa/contrato/fluxo
-tela render-only somente depois do shared-core fechado
+tela render-only consome hook/view-model
+documentar qualquer gap antes de criar backend novo
 ```
 
 ## O Que Nao Fazer No Proximo Marco
@@ -277,6 +376,7 @@ nao criar hook generico com if client/admin
 nao chamar endpoint direto em tela
 nao guardar permissao real, status permitido ou regra de negocio em locale
 nao voltar com frontend/shared-core/client ou frontend/shared-core/admin
+nao criar Kit 07 sem backend real
 ```
 
 ## Resultado Do Kit 01
@@ -324,6 +424,26 @@ Kit 04 Inventory shared-core fechado para endpoints atuais - DONE
 global minimo com tipos/contratos inventory puros - DONE
 admin inventory operacional iniciado no shared-core do admin - DONE
 client inventory sem runtime proprio neste corte - INTENCIONAL
+telas render-only ainda nao conectadas - INTENCIONAL
+```
+
+## Resultado Do Kit 05
+
+```text
+Kit 05 Orders shared-core fechado para endpoints atuais - DONE
+global minimo com tipos/contratos orders puros - DONE
+client orders iniciado no shared-core do client - DONE
+admin orders iniciado no shared-core do admin - DONE
+telas render-only ainda nao conectadas - INTENCIONAL
+```
+
+## Resultado Do Kit 06
+
+```text
+Kit 06 Fulfillment & Delivery shared-core fechado para endpoints atuais - DONE
+global minimo com tipos/contratos deliveries puros - DONE
+client deliveries iniciado no shared-core do client - DONE
+admin deliveries iniciado no shared-core do admin - DONE
 telas render-only ainda nao conectadas - INTENCIONAL
 ```
 

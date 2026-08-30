@@ -113,17 +113,41 @@ Confirmacao pode mover para status terminal configurado por effect.
 
 ## 4. Escopo Shared-Core
 
-Ainda nao existe shared-core de deliveries.
+Shared-core fechado no Kit 06 para o backend atual.
 
-Quando houver frontend real, criar primeiro em:
+Global minimo:
 
 ```text
-frontend/client/shared-core
-  -> cliente acompanha suas entregas
-
-frontend/admin/shared-core
-  -> admin lista, atualiza e confirma entregas
+frontend/shared-core/types/deliveries.types.ts
+frontend/shared-core/contracts/deliveries.contract.ts
 ```
+
+Client runtime:
+
+```text
+frontend/client/shared-core/contracts/deliveries.contract.ts
+frontend/client/shared-core/api/deliveries.api.ts
+frontend/client/shared-core/hooks/useClientDeliveries.ts
+frontend/client/shared-core/hooks/useClientDeliveryDetail.ts
+frontend/client/shared-core/mappers/deliveries.mapper.ts
+frontend/client/shared-core/view-models/deliveries.view-model.ts
+```
+
+Admin runtime:
+
+```text
+frontend/admin/shared-core/contracts/deliveries.contract.ts
+frontend/admin/shared-core/api/deliveries.api.ts
+frontend/admin/shared-core/hooks/useAdminDeliveries.ts
+frontend/admin/shared-core/hooks/useAdminDeliveryDetail.ts
+frontend/admin/shared-core/hooks/useAdminDeliveryTransition.ts
+frontend/admin/shared-core/hooks/useAdminDeliveryConfirm.ts
+frontend/admin/shared-core/hooks/useAdminDeliveryForm.ts
+frontend/admin/shared-core/mappers/deliveries.mapper.ts
+frontend/admin/shared-core/view-models/deliveries.view-model.ts
+```
+
+Regras de workflow, confirmacao, permissao e scheduling continuam no backend.
 
 ## 5. Escopo Render
 

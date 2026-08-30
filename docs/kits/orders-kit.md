@@ -118,20 +118,41 @@ Quando createsDelivery=true, o backend cria Delivery inicial no create_order.
 
 ## 4. Escopo Shared-Core
 
-Ainda nao existe shared-core de orders.
+Shared-core fechado no Kit 05 para o backend atual.
 
-Quando houver frontend real, criar primeiro no escopo correto:
+Global minimo:
 
 ```text
-frontend/client/shared-core
-  -> criar pedido e listar meus pedidos
-
-frontend/admin/shared-core
-  -> listar pedidos, detalhe e transicao de status
+frontend/shared-core/types/orders.types.ts
+frontend/shared-core/contracts/orders.contract.ts
 ```
 
-Somente mover para `frontend/shared-core` global se client, mobile e admin
-usarem o mesmo contrato.
+Client runtime:
+
+```text
+frontend/client/shared-core/contracts/orders.contract.ts
+frontend/client/shared-core/api/orders.api.ts
+frontend/client/shared-core/hooks/useClientOrders.ts
+frontend/client/shared-core/hooks/useClientOrderDetail.ts
+frontend/client/shared-core/hooks/useClientOrderForm.ts
+frontend/client/shared-core/mappers/orders.mapper.ts
+frontend/client/shared-core/view-models/orders.view-model.ts
+```
+
+Admin runtime:
+
+```text
+frontend/admin/shared-core/contracts/orders.contract.ts
+frontend/admin/shared-core/api/orders.api.ts
+frontend/admin/shared-core/hooks/useAdminOrders.ts
+frontend/admin/shared-core/hooks/useAdminOrderDetail.ts
+frontend/admin/shared-core/hooks/useAdminOrderTransition.ts
+frontend/admin/shared-core/hooks/useAdminOrderForm.ts
+frontend/admin/shared-core/mappers/orders.mapper.ts
+frontend/admin/shared-core/view-models/orders.view-model.ts
+```
+
+Regras de preco, status, reserva de estoque e delivery continuam no backend.
 
 ## 5. Escopo Render
 
