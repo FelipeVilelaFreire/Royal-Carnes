@@ -216,6 +216,7 @@ clientAuthApi.login(input)
 clientAuthApi.register(input)
 clientAuthApi.logout()
 clientAuthApi.me()
+clientAuthApi.refresh(input)
 
 useClientAuthSession()
 useClientLogin()
@@ -288,11 +289,10 @@ API/hook esperados:
 adminAuthApi.login(input)
 adminAuthApi.logout()
 adminAuthApi.me()
+adminAuthApi.refresh(input)
 
 adminUsersApi.list(params)
 adminUsersApi.create(input)
-adminUsersApi.update(id, input)
-adminUsersApi.setRole(id, roleKey)
 
 useAdminAuthSession()
 useAdminPermissions()
@@ -662,4 +662,47 @@ hooks nao chamam fetch direto fora de API client
 UI nao transforma DTO manualmente
 permissoes reais continuam no backend
 copy fica em locale/manifest da surface
+```
+
+## Fechamento Do Primeiro Corte Shared-Core
+
+Status em 2026-08-30:
+
+```text
+Kit 01 fechado no nivel shared-core para os endpoints backend que existem hoje.
+Telas render-only ainda ficam para o proximo marco.
+```
+
+Endpoints cobertos:
+
+```text
+POST /api/v1/auth/login/
+POST /api/v1/auth/refresh/
+POST /api/v1/auth/register/
+POST /api/v1/auth/logout/
+GET  /api/v1/accounts/me/
+GET  /api/v1/accounts/users/
+POST /api/v1/accounts/users/
+```
+
+Nao coberto por escolha tecnica:
+
+```text
+adminUsersApi.detail/update/setRole ainda nao existem porque o backend atual
+nao publica esses endpoints em backend/apps/accounts/views.py.
+Quando o backend publicar, ampliar users.api.ts e o contract do kit.
+```
+
+Critério para seguir ao Kit 02:
+
+```text
+global permanece minimo
+client auth/session/customer inicial nao conhece admin
+admin auth/users/permissions nao conhece portal customer
+hooks chamam API clients
+API clients batem nos endpoints reais
+mappers normalizam DTO do Django
+view-models entregam formato de render
+client/admin builds passam
+backend check passa
 ```

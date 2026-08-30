@@ -1,10 +1,15 @@
 export * from "./types/identity.types";
 export * from "./types/organization.types";
 export * from "./types/api.types";
+export * from "./types/catalog.types";
+export * from "./types/inventory.types";
+export * from "./types/subscriptions.types";
 export * from "./contracts/identity.contract";
 export * from "./contracts/organization.contract";
 export * from "./contracts/auth.contract";
+export * from "./contracts/catalog.contract";
+export * from "./contracts/inventory.contract";
+export * from "./contracts/subscriptions.contract";
 export * from "./api/headers.api";
 export * from "./api/errors.api";
 export * from "./mappers/api-error.mapper";
-

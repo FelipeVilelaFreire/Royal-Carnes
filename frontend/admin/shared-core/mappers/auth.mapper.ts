@@ -3,6 +3,9 @@ import type {
   AdminAuthSession,
   AdminLoginResponseDto,
   AdminMeResponseDto,
+  AdminRefreshInput,
+  AdminRefreshResponseDto,
+  AdminRefreshResult,
 } from "../contracts/auth.contract";
 
 function mapMemberships(
@@ -36,6 +39,8 @@ export function mapAdminLoginResponse(
       id: dto.user.id,
       email: dto.user.email,
       name: dto.user.name ?? null,
+      phone: dto.user.phone ?? null,
+      status: dto.user.is_active === false ? "inactive" : "active",
       memberships,
       activeMembership,
     },
@@ -61,4 +66,17 @@ export function mapAdminMeResponse(
     },
     tenant,
   );
+}
+
+export function mapAdminRefreshResponse(
+  dto: AdminRefreshResponseDto,
+  input: AdminRefreshInput,
+): AdminRefreshResult {
+  return {
+    token: {
+      accessToken: dto.access,
+      refreshToken: dto.refresh ?? input.refreshToken,
+    },
+    source: "api",
+  };
 }

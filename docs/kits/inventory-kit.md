@@ -100,16 +100,31 @@ status e recalculado pelo backend, exceto disabled.
 
 ## 4. Escopo Shared-Core
 
-Ainda nao existe shared-core de inventory.
+Shared-core fechado no Kit 04 para o backend atual.
 
-Quando houver tela admin real, criar primeiro em:
+Global minimo:
 
 ```text
-frontend/admin/shared-core
+frontend/shared-core/types/inventory.types.ts
+frontend/shared-core/contracts/inventory.contract.ts
 ```
 
-Somente mover para `frontend/shared-core` global se client, mobile e admin
-usarem o mesmo contrato.
+Admin runtime:
+
+```text
+frontend/admin/shared-core/contracts/inventory.contract.ts
+frontend/admin/shared-core/api/inventory.api.ts
+frontend/admin/shared-core/hooks/useAdminInventory.ts
+frontend/admin/shared-core/hooks/useAdminInventoryItemDetail.ts
+frontend/admin/shared-core/hooks/useAdminInventoryAdjustment.ts
+frontend/admin/shared-core/hooks/useAdminInventoryItemForm.ts
+frontend/admin/shared-core/mappers/inventory.mapper.ts
+frontend/admin/shared-core/view-models/inventory.view-model.ts
+```
+
+Client nao tem runtime proprio neste corte porque nao existe endpoint client de
+inventory. Disponibilidade para cliente deve vir depois por Catalog, Orders ou
+Checkout, conforme contrato backend publicado.
 
 ## 5. Escopo Render
 
@@ -183,7 +198,7 @@ testes cobrem permissao, ajuste, seed e product-level sem variant
 Status atual:
 
 ```text
-local foundation
+shared-core admin ready
 ```
 
 ## 11. Criterio Para ServiceOS Candidate

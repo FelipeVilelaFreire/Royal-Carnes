@@ -1,6 +1,7 @@
 import type {
   AuthCredentialsBase,
   AuthSessionBase,
+  AuthTokenShape,
   CurrentUserBase,
 } from "../../../shared-core";
 import type { ClientAuthSource } from "../types/auth.types";
@@ -29,6 +30,8 @@ export interface ClientLoginResponseDto {
     id: string | number;
     email: string;
     name?: string | null;
+    phone?: string | null;
+    is_active?: boolean | null;
   };
   memberships?: Array<{
     organization?: {
@@ -40,6 +43,22 @@ export interface ClientLoginResponseDto {
     status?: string;
   }>;
   permissions?: Record<string, string[]>;
+}
+
+export type ClientMeResponseDto = Omit<ClientLoginResponseDto, "access" | "refresh">;
+
+export interface ClientRefreshInput {
+  refreshToken: string;
+}
+
+export interface ClientRefreshResponseDto {
+  access: string;
+  refresh?: string | null;
+}
+
+export interface ClientRefreshResult {
+  token: AuthTokenShape;
+  source: "api";
 }
 
 export interface ClientRegisterResponseDto {

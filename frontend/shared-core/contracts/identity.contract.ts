@@ -14,6 +14,7 @@ export interface CurrentUserBase {
   id: UserId;
   email: string;
   name?: string | null;
+  phone?: string | null;
   status?: UserStatus;
 }
 
@@ -29,4 +30,3 @@ export interface CustomerIdentityBase {
   userId: UserId;
   organizationId: OrganizationId;
 }
-

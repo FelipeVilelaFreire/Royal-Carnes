@@ -1,6 +1,7 @@
 import type {
   AuthCredentialsBase,
   AuthSessionBase,
+  AuthTokenShape,
   CurrentUserBase,
   OrganizationMembershipBase,
 } from "../../../shared-core";
@@ -25,6 +26,8 @@ export interface AdminLoginResponseDto {
     id: string | number;
     email: string;
     name?: string | null;
+    phone?: string | null;
+    is_active?: boolean | null;
   };
   memberships?: Array<{
     organization?: {
@@ -39,3 +42,17 @@ export interface AdminLoginResponseDto {
 }
 
 export type AdminMeResponseDto = Omit<AdminLoginResponseDto, "access" | "refresh">;
+
+export interface AdminRefreshInput {
+  refreshToken: string;
+}
+
+export interface AdminRefreshResponseDto {
+  access: string;
+  refresh?: string | null;
+}
+
+export interface AdminRefreshResult {
+  token: AuthTokenShape;
+  source: "api";
+}

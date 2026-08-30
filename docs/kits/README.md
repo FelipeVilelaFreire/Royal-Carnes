@@ -157,6 +157,9 @@ Mapas detalhados:
 ```text
 docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
 docs/kits/kit-01-auth-users-shared-core-map.md
+docs/kits/kit-02-catalog-shared-core-map.md
+docs/kits/kit-03-subscriptions-shared-core-map.md
+docs/kits/kit-04-inventory-shared-core-map.md
 docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
 docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
 ```

@@ -52,6 +52,47 @@ export function useAdminAuthSession(options: UseAdminAuthSessionOptions = {}) {
     [api, persist],
   );
 
+  const loadCurrentSession = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const nextSession = await api.me();
+      persist(nextSession);
+      return nextSession;
+    } catch (err) {
+      const normalized = normalizeApiError(err);
+      setError(normalized);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [api, persist]);
+
+  const refresh = useCallback(
+    async (refreshToken = session?.token.refreshToken || "") => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await api.refresh({ refreshToken });
+        const nextSession = session
+          ? {
+              ...session,
+              token: result.token,
+            }
+          : null;
+        persist(nextSession);
+        return result;
+      } catch (err) {
+        const normalized = normalizeApiError(err);
+        setError(normalized);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [api, persist, session],
+  );
+
   const logout = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -72,9 +113,10 @@ export function useAdminAuthSession(options: UseAdminAuthSessionOptions = {}) {
       isLoading,
       error,
       login,
+      loadCurrentSession,
+      refresh,
       logout,
     }),
-    [error, isLoading, login, logout, session],
+    [error, isLoading, loadCurrentSession, login, logout, refresh, session],
   );
 }
-

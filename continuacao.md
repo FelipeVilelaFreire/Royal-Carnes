@@ -3,7 +3,7 @@
 Data do ponto de parada:
 
 ```text
-2026-08-28
+2026-08-30
 ```
 
 Branch atual:
@@ -21,6 +21,7 @@ Commits importantes:
 ```text
 a5a61d9 Document shared-core reset plan
 e7179e8 Reset shared-core runtime for kit-first rebuild
+04e689f Start shared-core auth users kit
 ```
 
 O objetivo desse corte foi limpar implementacoes funcionais prematuras de
@@ -107,140 +108,170 @@ Fluxo reutilizavel mora no shared-core do escopo correto.
 Tela apenas apresenta e dispara acao.
 ```
 
-## Proxima Etapa: Kit 01 Auth & Users
+## Kit 01 Auth & Users - Corte Shared-Core
 
-Continuar pelo Kit 01, nao por Orders/Deliveries ainda.
+O Kit 01 foi fechado no nivel shared-core para os endpoints que existem hoje no
+backend.
 
-Ler primeiro:
+Arquivos centrais:
 
 ```text
-AGENTS.md
-ROYALPRIME_CODEX_RULES.md
-ROYALPRIME_ARCHITECTURE_CONTRACT.md
-docs/CODEX_ENTRYPOINTS.md
-docs/kits/README.md
-docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
-docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
 docs/kits/auth-users-kit.md
 docs/kits/kit-01-auth-users-shared-core-map.md
-```
-
-## Objetivo Do Kit 01
-
-Criar a base reutilizavel de Auth & Users sem duplicacao desnecessaria e sem
-promover coisa prematura para o global.
-
-Antes de implementar runtime, respeitar a decisao de organizacao fisica:
-
-```text
-o runtime nao fica fragmentado por kit
-contracts ficam em contracts/
-types auxiliares ficam em types/
-API clients ficam em api/
-hooks ficam em hooks/
-mappers ficam em mappers/
-view-models ficam em view-models/
-mocks ficam em mocks/
-kits documentam onde ler e o papel de cada arquivo
-```
-
-O kit e o mapa de leitura e fronteira de reuso. Ele deve dizer:
-
-```text
-para Kit 01 leia X, Y e Z
-este arquivo e contrato
-este arquivo e API client
-este arquivo e hook
-este arquivo e mapper
-este arquivo e view-model
-esta tela e render-only
-```
-
-Nao criar uma arvore paralela de runtime dentro de `kits/`.
-
-Divisao esperada:
-
-```text
-frontend/shared-core
-  -> identity/organization base realmente comum
-  -> tipos pequenos como UserId, OrganizationId, RoleKey, PermissionKey
-  -> helpers comuns de header somente se client/admin realmente usarem igual
-
-frontend/client/shared-core
-  -> auth do cliente
-  -> sessao do cliente
-  -> current customer/account
-  -> login/register/logout/me do cliente
-
-frontend/admin/shared-core
-  -> auth do admin
-  -> sessao admin
-  -> permissoes/roles/users
-  -> users CRUD/list/detail/form view-models
-```
-
-## Ordem Recomendada De Implementacao
-
-1. Revisar backend real de Fase 1:
-
-```text
-backend/apps/accounts/
-backend/apps/organizations/
-backend/apps/customers/
-backend/API_CONTRACTS.md
-```
-
-2. Criar contratos globais minimos se fizer sentido:
-
-```text
-frontend/shared-core/contracts/identity.contract.ts
-frontend/shared-core/contracts/organization.contract.ts
-```
-
-Somente colocar aqui o que for realmente compartilhado por client, mobile e
-admin.
-
-3. Criar client Auth:
-
-```text
-frontend/client/shared-core/contracts/auth.contract.ts
-frontend/client/shared-core/api/auth.api.ts
-frontend/client/shared-core/hooks/useAuthSession.ts
-frontend/client/shared-core/mappers/auth.mapper.ts
-frontend/client/shared-core/view-models/auth.view-model.ts
 frontend/client/shared-core/kits/auth/contract.md
 frontend/client/shared-core/kits/auth/flow.md
-```
-
-4. Criar admin Auth & Users:
-
-```text
-frontend/admin/shared-core/contracts/auth.contract.ts
-frontend/admin/shared-core/contracts/user.contract.ts
-frontend/admin/shared-core/api/auth.api.ts
-frontend/admin/shared-core/api/users.api.ts
-frontend/admin/shared-core/hooks/useAdminAuthSession.ts
-frontend/admin/shared-core/hooks/useAdminUsers.ts
-frontend/admin/shared-core/mappers/auth.mapper.ts
-frontend/admin/shared-core/mappers/users.mapper.ts
-frontend/admin/shared-core/view-models/auth.view-model.ts
-frontend/admin/shared-core/view-models/users.view-model.ts
 frontend/admin/shared-core/kits/auth/contract.md
 frontend/admin/shared-core/kits/auth/flow.md
 frontend/admin/shared-core/kits/users/contract.md
 frontend/admin/shared-core/kits/users/flow.md
 ```
 
-5. So depois conectar telas.
-
-As telas podem continuar com mock/locales/manifests ate o shared-core do Kit 01
-estar correto.
-
-## O Que Nao Fazer Amanha
+Cobertura backend real:
 
 ```text
-nao recriar Orders/Deliveries antes do Kit 01
+POST /api/v1/auth/login/
+POST /api/v1/auth/refresh/
+POST /api/v1/auth/register/
+POST /api/v1/auth/logout/
+GET  /api/v1/accounts/me/
+GET  /api/v1/accounts/users/
+POST /api/v1/accounts/users/
+```
+
+Limite intencional:
+
+```text
+admin users detail/update/setRole nao foram implementados no API client porque
+o backend atual ainda nao publica esses endpoints.
+```
+
+Validacao deste corte:
+
+```text
+npm run build:client -> OK
+npm run build:admin -> OK
+py manage.py check -> OK
+```
+
+## Kit 02 Catalog - Corte Shared-Core
+
+Kit 02 Catalog tambem foi fechado no nivel shared-core para os endpoints que
+existem hoje no backend.
+
+Arquivos centrais:
+
+```text
+docs/kits/catalog-kit.md
+docs/kits/kit-02-catalog-shared-core-map.md
+frontend/client/shared-core/kits/catalog/contract.md
+frontend/client/shared-core/kits/catalog/flow.md
+frontend/admin/shared-core/kits/catalog/contract.md
+frontend/admin/shared-core/kits/catalog/flow.md
+```
+
+Cobertura backend real:
+
+```text
+GET  /api/v1/catalog/collections/
+GET  /api/v1/catalog/commercial-modes/
+GET  /api/v1/catalog/products/
+GET  /api/v1/catalog/products/:id/
+GET  /api/v1/catalog/admin/products/
+POST /api/v1/catalog/admin/products/
+```
+
+Limite intencional:
+
+```text
+PATCH/DELETE admin product, categories endpoint e measurement-units endpoint
+nao foram implementados no shared-core porque o backend atual ainda nao publica
+essas rotas em backend/apps/catalog/urls.py.
+```
+
+## Kit 03 Subscriptions - Corte Shared-Core
+
+Kit 03 Subscriptions tambem foi fechado no nivel shared-core para os endpoints
+que existem hoje no backend.
+
+Arquivos centrais:
+
+```text
+docs/kits/subscriptions-kit.md
+docs/kits/kit-03-subscriptions-shared-core-map.md
+frontend/client/shared-core/kits/subscriptions/contract.md
+frontend/client/shared-core/kits/subscriptions/flow.md
+frontend/admin/shared-core/kits/subscriptions/contract.md
+frontend/admin/shared-core/kits/subscriptions/flow.md
+```
+
+Cobertura backend real:
+
+```text
+GET  /api/v1/subscriptions/plans/
+GET  /api/v1/subscriptions/me/
+GET  /api/v1/subscriptions/me/cycles/current/
+POST /api/v1/subscriptions/me/cycles/current/items/
+GET  /api/v1/subscriptions/admin/plans/
+POST /api/v1/subscriptions/admin/plans/
+GET  /api/v1/subscriptions/admin/subscriptions/
+POST /api/v1/subscriptions/admin/subscriptions/
+GET  /api/v1/subscriptions/admin/cycles/
+```
+
+Limite intencional:
+
+```text
+update/cancel/pause/detail e transicoes de ciclo nao foram implementados no
+shared-core porque o backend atual ainda nao publica essas rotas.
+```
+
+## Kit 04 Inventory - Corte Shared-Core
+
+Kit 04 Inventory tambem foi fechado no nivel shared-core para os endpoints
+admin que existem hoje no backend.
+
+Arquivos centrais:
+
+```text
+docs/kits/inventory-kit.md
+docs/kits/kit-04-inventory-shared-core-map.md
+frontend/admin/shared-core/kits/inventory/contract.md
+frontend/admin/shared-core/kits/inventory/flow.md
+frontend/client/shared-core/kits/inventory/README.md
+```
+
+Cobertura backend real:
+
+```text
+GET  /api/v1/inventory/admin/items/
+POST /api/v1/inventory/admin/items/
+GET  /api/v1/inventory/admin/items/:id/
+POST /api/v1/inventory/admin/items/:id/adjust/
+GET  /api/v1/inventory/admin/items/:id/movements/
+```
+
+Limite intencional:
+
+```text
+client inventory API, PATCH/DELETE admin item e reservations API nao foram
+implementados no shared-core porque o backend atual ainda nao publica essas
+rotas.
+```
+
+## Proxima Etapa: Kit 05
+
+Seguir para o Kit 05 mantendo a mesma disciplina:
+
+```text
+backend real primeiro
+shared-core do menor escopo correto
+kit documenta mapa/contrato/fluxo
+tela render-only somente depois do shared-core fechado
+```
+
+## O Que Nao Fazer No Proximo Marco
+
+```text
 nao colocar auth inteiro no frontend/shared-core global
 nao criar hook generico com if client/admin
 nao chamar endpoint direto em tela
@@ -248,24 +279,52 @@ nao guardar permissao real, status permitido ou regra de negocio em locale
 nao voltar com frontend/shared-core/client ou frontend/shared-core/admin
 ```
 
-## Resultado Esperado Do Proximo Marco
+## Resultado Do Kit 01
 
 ```text
-Kit 01 documentado e iniciado - DONE
+Kit 01 shared-core fechado para endpoints atuais - DONE
 global minimo com tipos realmente comuns - DONE
-client auth/customer iniciado no shared-core do client - DONE
+client auth/session iniciado no shared-core do client - DONE
 admin auth/users/permissions iniciado no shared-core do admin - DONE
-build client OK
-build admin OK
-commit e push na feature/shared-core-kit-reset
+telas render-only ainda nao conectadas - INTENCIONAL
 ```
 
-Validacao do primeiro corte de codigo:
+Validacao do corte:
 
 ```text
 npm run build:client -> OK
 npm run build:admin -> OK
-tsc direto nos index.ts dos tres shared-cores -> OK
+py manage.py check -> OK
+```
+
+## Resultado Do Kit 02
+
+```text
+Kit 02 Catalog shared-core fechado para endpoints atuais - DONE
+global minimo com tipos/contratos catalog puros - DONE
+client catalog publico iniciado no shared-core do client - DONE
+admin catalog operacional iniciado no shared-core do admin - DONE
+telas render-only ainda nao conectadas - INTENCIONAL
+```
+
+## Resultado Do Kit 03
+
+```text
+Kit 03 Subscriptions shared-core fechado para endpoints atuais - DONE
+global minimo com tipos/contratos subscriptions puros - DONE
+client plans/subscription/current cycle iniciado no shared-core do client - DONE
+admin plans/subscriptions/cycles iniciado no shared-core do admin - DONE
+telas render-only ainda nao conectadas - INTENCIONAL
+```
+
+## Resultado Do Kit 04
+
+```text
+Kit 04 Inventory shared-core fechado para endpoints atuais - DONE
+global minimo com tipos/contratos inventory puros - DONE
+admin inventory operacional iniciado no shared-core do admin - DONE
+client inventory sem runtime proprio neste corte - INTENCIONAL
+telas render-only ainda nao conectadas - INTENCIONAL
 ```
 
 Frase guia:

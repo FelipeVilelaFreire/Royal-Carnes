@@ -46,16 +46,28 @@ SubscriptionCycleItem
 
 ## Escopo Shared-Core
 
-Ainda pendente.
-
-Arquivos esperados:
+Arquivos reais:
 
 ```text
-frontend/client/shared-core/contracts/subscription.contract.ts
+frontend/shared-core/types/subscriptions.types.ts
+frontend/shared-core/contracts/subscriptions.contract.ts
+frontend/client/shared-core/contracts/subscriptions.contract.ts
 frontend/client/shared-core/api/subscriptions.api.ts
-frontend/client/shared-core/hooks/useSubscription.ts
-frontend/admin/shared-core/contracts/subscription.contract.ts
+frontend/client/shared-core/hooks/useClientPlans.ts
+frontend/client/shared-core/hooks/useClientSubscription.ts
+frontend/client/shared-core/hooks/useClientCurrentCycle.ts
+frontend/client/shared-core/hooks/useClientCycleItems.ts
+frontend/client/shared-core/mappers/subscriptions.mapper.ts
+frontend/client/shared-core/view-models/subscriptions.view-model.ts
+frontend/admin/shared-core/contracts/subscriptions.contract.ts
 frontend/admin/shared-core/api/subscriptions.api.ts
+frontend/admin/shared-core/hooks/useAdminSubscriptions.ts
+frontend/admin/shared-core/hooks/useAdminPlans.ts
+frontend/admin/shared-core/hooks/useAdminSubscriptionCycles.ts
+frontend/admin/shared-core/hooks/useAdminPlanForm.ts
+frontend/admin/shared-core/hooks/useAdminSubscriptionForm.ts
+frontend/admin/shared-core/mappers/subscriptions.mapper.ts
+frontend/admin/shared-core/view-models/subscriptions.view-model.ts
 ```
 
 ## Escopo Render
@@ -105,7 +117,8 @@ backend/seeds/tests/kits/subscriptions.seed.json
 - APIs publicas/cliente/admin existirem; DONE
 - Testes cobrirem seed, permissao e validacao generica; DONE
 - Endpoint de selecao de item do ciclo existir; DONE
-- Frontend consumir por shared-core/hooks; DONE em `MeuClubeView`
+- Frontend shared-core ter contracts/api/hooks/mappers/view-models; DONE
+- Telas render-only consumirem hooks; pendente por escolha de sequencia
 
 ## Criterio Para ServiceOS Candidate
 

@@ -9,8 +9,15 @@ import type {
   AdminLoginInput,
   AdminLoginResponseDto,
   AdminMeResponseDto,
+  AdminRefreshInput,
+  AdminRefreshResponseDto,
+  AdminRefreshResult,
 } from "../contracts/auth.contract";
-import { mapAdminLoginResponse, mapAdminMeResponse } from "../mappers/auth.mapper";
+import {
+  mapAdminLoginResponse,
+  mapAdminMeResponse,
+  mapAdminRefreshResponse,
+} from "../mappers/auth.mapper";
 
 function resolveUrl(baseUrl: string | undefined, path: string): string {
   return `${baseUrl || ""}${path}`;
@@ -49,6 +56,20 @@ export function createAdminAuthApi(config: ApiClientConfig = {}) {
       });
 
       await throwIfApiError(response);
+    },
+    async refresh(input: AdminRefreshInput): Promise<AdminRefreshResult> {
+      const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/auth/refresh/"), {
+        method: "POST",
+        headers: buildApiHeaders({
+          organizationSlug: config.organizationSlug,
+        }),
+        body: JSON.stringify({
+          refresh: input.refreshToken,
+        }),
+      });
+
+      await throwIfApiError(response);
+      return mapAdminRefreshResponse((await response.json()) as AdminRefreshResponseDto, input);
     },
     async me(): Promise<AdminAuthSession> {
       const tenant = resolveTenant(config);

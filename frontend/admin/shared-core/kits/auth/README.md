@@ -6,6 +6,7 @@ Inclui:
 
 ```text
 login admin
+refresh
 logout
 usuario atual
 organization atual
@@ -18,6 +19,8 @@ Mapa vertical:
 
 ```text
 docs/kits/kit-01-auth-users-shared-core-map.md
+contract.md
+flow.md
 ```
 
 Regra:
@@ -26,4 +29,17 @@ Regra:
 reusar tipos globais de identity quando forem comuns
 manter sessao admin e permissao operacional neste escopo
 nao reutilizar copy/modal do cliente por conveniencia
+```
+
+Arquivos runtime:
+
+```text
+contracts/auth.contract.ts
+contracts/session.contract.ts
+api/auth.api.ts
+hooks/useAdminAuthSession.ts
+hooks/useAdminLogin.ts
+hooks/useAdminLogout.ts
+mappers/auth.mapper.ts
+view-models/auth.view-model.ts
 ```

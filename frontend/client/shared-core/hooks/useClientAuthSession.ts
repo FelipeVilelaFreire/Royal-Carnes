@@ -56,6 +56,50 @@ export function useClientAuthSession(options: UseClientAuthSessionOptions = {}) 
     [api, persist],
   );
 
+  const loadCurrentSession = useCallback(
+    async (accessToken = session?.token.accessToken || "") => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const nextSession = await api.me(accessToken);
+        persist(nextSession);
+        return nextSession;
+      } catch (err) {
+        const normalized = normalizeApiError(err);
+        setError(normalized);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [api, persist, session],
+  );
+
+  const refresh = useCallback(
+    async (refreshToken = session?.token.refreshToken || "") => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await api.refresh({ refreshToken });
+        const nextSession = session
+          ? {
+              ...session,
+              token: result.token,
+            }
+          : null;
+        persist(nextSession);
+        return result;
+      } catch (err) {
+        const normalized = normalizeApiError(err);
+        setError(normalized);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [api, persist, session],
+  );
+
   const register = useCallback(
     async (input: ClientRegisterInput) => {
       setIsLoading(true);
@@ -93,9 +137,11 @@ export function useClientAuthSession(options: UseClientAuthSessionOptions = {}) 
       isLoading,
       error,
       login,
+      loadCurrentSession,
+      refresh,
       register,
       logout,
     }),
-    [error, isLoading, login, logout, register, session],
+    [error, isLoading, loadCurrentSession, login, logout, refresh, register, session],
   );
 }

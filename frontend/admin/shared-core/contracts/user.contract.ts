@@ -1,9 +1,10 @@
 import type { AdminUserDetail, AdminUserListItem } from "../types/user.types";
 
 export interface AdminUserDto {
-  id: string;
+  id: string | number;
   email: string;
   name?: string | null;
+  phone?: string | null;
   is_active?: boolean | null;
   organization_id?: string | null;
   roles?: string[];
@@ -29,4 +30,3 @@ export interface AdminUserFormInput {
 
 export type AdminUserListItemView = AdminUserListItem;
 export type AdminUserDetailView = AdminUserDetail;
-

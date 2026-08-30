@@ -145,23 +145,37 @@ Contratos:
 
 API clients:
 
-- `catalogApi.listCollections()`;
-- `catalogApi.listProducts(input)`;
+- `clientCatalogApi.listCollections()`;
+- `clientCatalogApi.listCommercialModes()`;
+- `clientCatalogApi.listProducts()`;
+- `clientCatalogApi.detail(productId)`;
+- `adminCatalogApi.listCollections()`;
+- `adminCatalogApi.listCommercialModes()`;
 - `adminCatalogApi.listProducts(input)`;
-- `adminCatalogApi.updateProduct(input)`;
+- `adminCatalogApi.detail(productId)`;
+- `adminCatalogApi.create(input)`;
 
 Hooks:
 
-- `useCatalog`;
-- `useProductDetail`;
+- `useClientCatalog`;
+- `useClientProductDetail`;
 - `useAdminCatalog`;
-- `useAdminProductMutation`;
+- `useAdminProductDetail`;
+- `useAdminProductForm`;
 
 Mappers:
 
 - API catalog DTO -> view model do cliente;
 - API admin catalog DTO -> view model do admin;
 - error code -> chave de locale.
+
+Limite atual:
+
+```text
+PATCH/DELETE admin product, categories endpoint e measurement-units endpoint
+nao entram neste corte porque backend/apps/catalog/urls.py ainda nao publica
+essas rotas.
+```
 
 ## Escopo Render
 
@@ -411,8 +425,10 @@ Este kit vira `kit-ready` quando:
 - seed Royal Carnes criar catalogo inicial; DONE
 - seed exemplo provar dominio alternativo; DONE
 - testes de API cobrirem catalogo publico/admin; DONE
-- cliente e admin consumirem por hooks;
-- os arquivos fonte estiverem listados aqui.
+- cliente e admin terem hooks de shared-core; DONE
+- mapa do Kit 02 listar a tree exata; DONE
+- os arquivos fonte estiverem listados aqui; DONE
+- telas render-only consumirem os hooks;
 
 ## Criterio Para ServiceOS Candidate
 
