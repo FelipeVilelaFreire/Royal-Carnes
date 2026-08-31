@@ -5,6 +5,20 @@ Data: 2026-08-28
 Use este documento para continuar a migracao de Orders/Deliveries no frontend
 depois do audit do pacote compartilhado.
 
+Nota de 2026-08-30:
+
+```text
+Este handoff registra achados historicos do audit. Para novos cortes, a fonte
+oficial de ownership e:
+
+docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
+docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
+```
+
 ## Objetivo
 
 ```text
@@ -139,10 +153,10 @@ nao como contrato do backend.
 Arquivos:
 
 ```text
-frontend/client/shared-core/contracts/order.contract.ts
+frontend/client/shared-core/contracts/orders.contract.ts
 frontend/client/shared-core/api/orders.api.ts
 frontend/client/shared-core/view-models/orders.view-model.ts
-frontend/client/shared-core/hooks/useMyOrders.ts
+frontend/client/shared-core/hooks/useClientOrders.ts
 ```
 
 Problema:
@@ -169,8 +183,8 @@ Correcao esperada:
 Arquivos:
 
 ```text
-frontend/admin/shared-core/api/adminOrders.api.ts
-frontend/admin/shared-core/api/adminDeliveries.api.ts
+frontend/admin/shared-core/api/orders.api.ts
+frontend/admin/shared-core/api/deliveries.api.ts
 ```
 
 Problema:
@@ -200,8 +214,8 @@ Arquivos:
 ```text
 frontend/client/shared-core/api/orders.api.ts
 frontend/client/shared-core/api/deliveries.api.ts
-frontend/client/shared-core/hooks/useMyOrders.ts
-frontend/client/shared-core/hooks/useMyDeliveries.ts
+frontend/client/shared-core/hooks/useClientOrders.ts
+frontend/client/shared-core/hooks/useClientDeliveries.ts
 frontend/admin/shared-core/api/*.api.ts
 frontend/admin/shared-core/hooks/*.ts
 ```
@@ -228,8 +242,8 @@ Correcao esperada:
 Arquivos:
 
 ```text
-frontend/admin/shared-core/view-models/adminOrders.view-model.ts
-frontend/admin/shared-core/view-models/adminDeliveries.view-model.ts
+frontend/admin/shared-core/view-models/orders.view-model.ts
+frontend/admin/shared-core/view-models/deliveries.view-model.ts
 frontend/client/shared-core/view-models/orders.view-model.ts
 frontend/client/shared-core/view-models/deliveries.view-model.ts
 ```

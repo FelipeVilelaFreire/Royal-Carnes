@@ -6,8 +6,7 @@ de catalogo, checkout, conta, assinaturas, pedidos e entregas para as surfaces.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum view-model funcional deve ser tratado como existente
+Kits 01-06 possuem view-models client para contratos implementados.
 ```
 
 Regra:
@@ -15,4 +14,10 @@ Regra:
 ```text
 view-model adapta DTO para render
 view-model nao calcula regra de negocio real
+```
+
+Referencia:
+
+```text
+docs/architecture/SHARED_CORE_RULES.md
 ```

@@ -7,7 +7,7 @@ cliente web/mobile
   -> render-only
 
 client/shared-core
-  -> contratos, DTOs, API clients, hooks, mappers, view-models e mocks
+  -> contratos, DTOs, API clients, hooks, mappers e view-models
 
 backend
   -> regra real
@@ -31,8 +31,8 @@ contracts/order.contract.ts
 api/orders.api.ts
   -> chamadas HTTP
 
-hooks/useMyOrders.ts
-  -> estado de fluxo e fallback temporario
+hooks/useClientOrders.ts
+  -> estado de fluxo, loading, erro e actions
 
 view-models/orders.view-model.ts
   -> adaptacao para render
@@ -48,16 +48,16 @@ screen nao calcula regra real
 
 ## Handoff Atual
 
-Para Orders/Deliveries, a proxima correcao obrigatoria e alinhar contracts,
-API clients, hooks e view-models ao backend real.
+Kits 01-06 estao recriados por contrato real de backend. A proxima fase e
+render-apps consumirem hooks/view-models sem chamar API direta.
 
 Leia:
 
 ```text
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
-backend/API_CONTRACTS.md
-backend/seeds/royalprime/kits/orders.seed.json
-backend/seeds/royalprime/kits/deliveries.seed.json
+docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
+docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 ```
 
 Regra adicional:
@@ -65,6 +65,6 @@ Regra adicional:
 ```text
 contracts descrevem DTO real ou view-model explicitamente separado
 api client fala o endpoint real e nao converte falha em mock silencioso
-hook decide fallback dev e marca source=fallback
+hook organiza loading/error/data/action
 view-model recebe DTO/config e entrega dados prontos para render
 ```

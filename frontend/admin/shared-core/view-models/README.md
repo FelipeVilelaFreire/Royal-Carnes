@@ -6,8 +6,7 @@ operacionais para telas, builders e previews sem acoplar a UI.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum view-model funcional deve ser tratado como existente
+Kits 01-06 possuem view-models admin para contratos implementados.
 ```
 
 Regra:

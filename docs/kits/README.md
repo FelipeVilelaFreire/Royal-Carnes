@@ -30,6 +30,10 @@ workspace, leia:
 
 ```text
 docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
 docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
 docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 docs/kits/REUSE_SOURCE_AUDIT.md
@@ -71,7 +75,7 @@ Orders Kit
   backend
     -> Order, OrderItem, status seedado, service de criacao/transicao
   shared-core
-    -> useMyOrders, orders.api, OrderDto, mapper, view-model
+    -> useClientOrders/useAdminOrders, orders.api, OrderDto, mapper, view-model
   render
     -> MeusPedidosView, OrderDetailModal, admin list/detail
 ```
@@ -159,6 +163,9 @@ Mapas detalhados:
 
 ```text
 docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
 docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
 docs/kits/kit-01-auth-users-shared-core-map.md
 docs/kits/kit-02-catalog-shared-core-map.md

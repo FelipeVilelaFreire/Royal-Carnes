@@ -7,8 +7,7 @@ reutilizados entre runtime, mocks e builders.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum contrato funcional deve ser tratado como existente
+Kits 01-06 possuem contratos admin para endpoints admin/publicos existentes.
 ```
 
 Regra:
@@ -16,4 +15,12 @@ Regra:
 ```text
 contrato admin pode expor campos e comandos operacionais
 cliente nao deve consumir contrato admin
+DTO response segue snake_case do backend
+view-model fica separado do DTO
+```
+
+Referencia:
+
+```text
+docs/architecture/SHARED_CORE_RULES.md
 ```

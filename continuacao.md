@@ -339,6 +339,10 @@ Documentos criados para orientar a proxima fase:
 
 ```text
 docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
 docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
 docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 ```
@@ -349,6 +353,7 @@ Eles sao a porta de entrada para qualquer IA ou desenvolvedor entender:
 estado dos Kits 01-06
 ownership backend/shared-core/render
 nome oficial render-apps para a camada de telas
+analise da tree atual e arquitetura alvo de render-apps
 ordem recomendada das telas
 contrato render-only
 quando parar e voltar para backend
@@ -358,6 +363,21 @@ quando parar e voltar para backend
 
 Nao existe Kit 07 implementavel neste momento. Payments, Checkout, Wallet e
 Vouchers continuam planejados ate nascer backend real.
+
+Ponto exato para continuar:
+
+```text
+Passo 1 concluido: regras de render-apps, i18n, icones, webIsMobile/native e
+ownership foram documentadas.
+
+Passo 2: analisar a tree atual das render-apps antes de codar.
+
+Entrada recomendada:
+docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
+frontend/client/web/src/app/(portal)/meus-pedidos/page.tsx
+frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
+frontend/client/web/src/product-components/ecommerce/OrderDetailModal.tsx
+```
 
 Seguir para telas mantendo a mesma disciplina:
 

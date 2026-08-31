@@ -5,15 +5,18 @@ Hooks reutilizaveis dentro do Admin.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum hook funcional deve ser tratado como existente
+Kits 01-06 possuem hooks admin para endpoints admin existentes.
 ```
 
-Exemplos futuros:
+Hooks atuais principais:
 
+- `useAdminAuthSession`
+- `useAdminUsers`
+- `useAdminCatalog`
+- `useAdminPlans`
+- `useAdminSubscriptions`
+- `useAdminInventory`
 - `useAdminOrders`
-- `useAdminProducts`
-- `useAdminCustomers`
 - `useAdminDeliveries`
 
 Regra:
@@ -23,9 +26,4 @@ hook organiza loading, erro, filtros, comandos e chama api client
 screen admin apenas renderiza tabela, modal, detalhe e botoes
 ```
 
-Regra de migracao:
-
-```text
-hook pode manter fallback para mocks durante a transicao
-admin page nao deve importar mock direto quando existir hook do fluxo
-```
+Admin page nao deve importar mock direto quando existir hook do fluxo.

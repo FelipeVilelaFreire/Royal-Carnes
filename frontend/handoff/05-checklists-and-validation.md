@@ -5,13 +5,17 @@ Use estes checklists antes de finalizar cada corte.
 ## Checklist Arquitetural
 
 ```text
+[ ] docs/architecture/RENDER_APPS_RULES.md foi lido
 [ ] backend continua dono da regra real
 [ ] shared-core correto recebeu contrato/fluxo
 [ ] global shared-core nao recebeu codigo especifico cedo demais
 [ ] screen nao chama endpoint direto
 [ ] screen nao importa mock direto quando hook existe
 [ ] foundation nao conhece regra de produto
-[ ] copy nova foi para locale/manifest quando havia lugar claro
+[ ] copy nova foi para locale/strings
+[ ] nenhum emoji de UI foi adicionado
+[ ] icones usam Foundation/ServiceOS e intencao semantica
+[ ] web e native futuro compartilham o mesmo significado de icone por action
 [ ] manifest nao declara comportamento que runtime nao suporta
 ```
 
@@ -19,6 +23,7 @@ Use estes checklists antes de finalizar cada corte.
 
 ```text
 [ ] client web preserva visual
+[ ] webIsMobile tem o mesmo comportamento esperado para native
 [ ] hooks tem loading/error/data/reload quando aplicavel
 [ ] API client usa contrato tipado
 [ ] fallback mock e explicito e temporario

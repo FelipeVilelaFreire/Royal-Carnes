@@ -10,14 +10,15 @@ nas telas.
 ## Arquivos A Criar
 
 ```text
-frontend/client/shared-core/contracts/order.contract.ts
-frontend/client/shared-core/contracts/delivery.contract.ts
+frontend/client/shared-core/contracts/orders.contract.ts
+frontend/client/shared-core/contracts/deliveries.contract.ts
 frontend/client/shared-core/api/orders.api.ts
 frontend/client/shared-core/api/deliveries.api.ts
-frontend/client/shared-core/hooks/useOrderConfig.ts
-frontend/client/shared-core/hooks/useMyOrders.ts
-frontend/client/shared-core/hooks/useDeliveryConfig.ts
-frontend/client/shared-core/hooks/useMyDeliveries.ts
+frontend/client/shared-core/hooks/useClientOrders.ts
+frontend/client/shared-core/hooks/useClientOrderDetail.ts
+frontend/client/shared-core/hooks/useClientOrderForm.ts
+frontend/client/shared-core/hooks/useClientDeliveries.ts
+frontend/client/shared-core/hooks/useClientDeliveryDetail.ts
 frontend/client/shared-core/view-models/orders.view-model.ts
 frontend/client/shared-core/view-models/deliveries.view-model.ts
 ```

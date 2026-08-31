@@ -4,6 +4,16 @@
 
 Este documento define a separacao oficial das camadas do RoyalPrime.
 
+Leia junto:
+
+```text
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
+docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
+```
+
 A regra central:
 
 ```text

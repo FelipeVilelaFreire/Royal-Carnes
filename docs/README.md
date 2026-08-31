@@ -12,6 +12,11 @@ Toda a documentacao tecnica, contratos de arquitetura, guias de design system e 
   - `SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md`
   - `MOCK_AND_ENV_ARCHITECTURE.md`
 - [Arquitetura e Design System (`docs/architecture/`)](architecture/)
+  - `OWNERSHIP_TREE.md`
+  - `BACKEND_RULES.md`
+  - `SHARED_CORE_RULES.md`
+  - `RENDER_APPS_RULES.md`
+  - `RENDER_APPS_TREE_ANALYSIS.md`
   - `ROYAL_CARNES_DESIGN_SYSTEM.md`
   - `STITCH_PROMPTS_AND_DESIGN_SYSTEM.md`
   - `EXECUTION_ROADMAPPING_SEQUENCE.md`

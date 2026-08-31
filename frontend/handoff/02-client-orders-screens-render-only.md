@@ -27,7 +27,7 @@ pedido atual e historico importados de mocks diretos
 ## Meta Do Corte
 
 ```text
-MeusPedidosView chama useMyOrders/useMyDeliveries
+MeusPedidosView chama useClientOrders/useClientDeliveries
 OrderDetailModal recebe status/copy/timeline prontos por props
 MinhaContaView reutiliza o mesmo view-model de pedidos quando exibir resumo
 screen controla apenas modal, aba ativa, loading e cliques
@@ -50,6 +50,9 @@ scheduling
 MeusPedidosView nao importa mock de orders diretamente
 OrderDetailModal nao tem if de status comercial
 status/tone/label vem de view-model ou manifest
+copy nova vem de locale/strings
+nenhum emoji de UI foi adicionado
+webIsMobile preserva o comportamento esperado para native
 build client passa
 ```
 
@@ -58,10 +61,17 @@ build client passa
 ```text
 Execute o corte 02-client-orders-screens-render-only.md.
 
-Use os hooks/view-models de frontend/client/shared-core criados no corte 01.
-Preserve o visual atual. Substitua imports diretos de mocks de pedidos/entregas
-por hooks com fallback. Remova decisoes de status de OrderDetailModal,
-recebendo statusLabel/statusTone/timeline ja preparados.
+Antes de editar, leia docs/architecture/RENDER_APPS_RULES.md.
+
+Use os hooks/view-models de frontend/client/shared-core ja criados:
+useClientOrders, useClientOrderDetail, useClientOrderForm,
+useClientDeliveries e useClientDeliveryDetail.
+
+Preserve o visual atual. Substitua imports diretos de mocks de
+pedidos/entregas por hooks. Remova decisoes de status de OrderDetailModal,
+recebendo statusLabel/statusTone/timeline ja preparados. Toda copy nova deve
+nascer em locale/strings. O mobile web deve manter o mesmo contrato funcional
+esperado para native.
 
 Rode npm run build em frontend/client/web.
 ```

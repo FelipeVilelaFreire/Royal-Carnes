@@ -6,10 +6,35 @@ mobile e admin.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum contrato global funcional deve ser tratado como existente
+Kits 01-06 possuem contratos globais minimos quando ha reuso real
+contratos globais sao base compartilhada, nao runtime de feature
 ```
 
-Nao colocar aqui contratos de orders, deliveries, checkout, subscriptions ou
-admin operations antes de provar que todas as surfaces usam o mesmo contrato
-base.
+Pode existir aqui:
+
+```text
+identity
+organization
+auth base
+catalog base
+subscriptions base
+inventory base
+orders base
+deliveries base
+```
+
+Nao colocar aqui:
+
+```text
+DTO exclusivo client/admin
+API client de feature
+hook React
+view-model de tela
+regra de negocio
+```
+
+Referencia:
+
+```text
+docs/architecture/SHARED_CORE_RULES.md
+```

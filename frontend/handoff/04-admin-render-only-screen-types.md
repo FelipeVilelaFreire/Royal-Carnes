@@ -39,14 +39,14 @@ workflow de status continua no backend
 ## Admin Shared-Core Esperado
 
 ```text
-frontend/admin/shared-core/contracts/admin-order.contract.ts
-frontend/admin/shared-core/contracts/admin-delivery.contract.ts
-frontend/admin/shared-core/api/adminOrders.api.ts
-frontend/admin/shared-core/api/adminDeliveries.api.ts
+frontend/admin/shared-core/contracts/orders.contract.ts
+frontend/admin/shared-core/contracts/deliveries.contract.ts
+frontend/admin/shared-core/api/orders.api.ts
+frontend/admin/shared-core/api/deliveries.api.ts
 frontend/admin/shared-core/hooks/useAdminOrders.ts
 frontend/admin/shared-core/hooks/useAdminDeliveries.ts
-frontend/admin/shared-core/view-models/adminOrders.view-model.ts
-frontend/admin/shared-core/view-models/adminDeliveries.view-model.ts
+frontend/admin/shared-core/view-models/orders.view-model.ts
+frontend/admin/shared-core/view-models/deliveries.view-model.ts
 ```
 
 ## Prompt Para Outra IA
@@ -54,9 +54,13 @@ frontend/admin/shared-core/view-models/adminDeliveries.view-model.ts
 ```text
 Execute o corte 04-admin-render-only-screen-types.md.
 
+Antes de editar, leia docs/architecture/RENDER_APPS_RULES.md.
+
 Comece por DashboardPage e screen types standard. Mova status labels/tones/icons
-para manifest ou view-model. Nao duplique workflow do backend. Se criar
-adminOrders/adminDeliveries shared-core, mantenha hooks com fallback para mocks.
+para manifest ou view-model. Nao duplique workflow do backend. Use os
+shared-cores admin ja criados para orders e deliveries, sem recriar arquivos
+com prefixo legado. Toda copy nova deve nascer em locale/strings. Nao usar
+emoji em UI.
 
 Rode npm run build em frontend/admin/web.
 ```

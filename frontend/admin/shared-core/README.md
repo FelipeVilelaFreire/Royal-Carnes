@@ -7,7 +7,7 @@ admin web
   -> render-only
 
 admin/shared-core
-  -> contratos, DTOs, API clients, hooks, filtros, comandos e view-models
+  -> contratos, DTOs, API clients, hooks, comandos e view-models
 
 backend
   -> regra real, permissao e auditoria
@@ -23,16 +23,16 @@ Cada capacidade administrativa relevante deve ter um kit documentado em `kits/`.
 kits/orders
   -> explica listagem, detalhe, filtros e transicao de status
 
-contracts/admin-order.contract.ts
+contracts/orders.contract.ts
   -> DTOs e tipos admin
 
-api/adminOrders.api.ts
+api/orders.api.ts
   -> chamadas HTTP admin
 
 hooks/useAdminOrders.ts
   -> estado de tabela, filtros, comandos e erro
 
-view-models/adminOrders.view-model.ts
+view-models/orders.view-model.ts
   -> adaptacao para tabela/detalhe
 ```
 
@@ -46,13 +46,16 @@ admin page nao decide workflow de status
 
 ## Handoff Atual
 
-Para Orders/Deliveries, a proxima correcao obrigatoria e alinhar contratos e
-API clients ao backend real.
+Kits 01-06 estao recriados por contrato real de backend. A proxima fase e
+render-apps consumirem hooks/view-models sem chamar API direta.
 
 Leia:
 
 ```text
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
+docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
+docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 ```
 
 Atencao:

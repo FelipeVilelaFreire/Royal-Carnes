@@ -17,6 +17,10 @@ Referencia de ownership:
 
 ```text
 docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
 ```
 
 ## Ordem Recomendada

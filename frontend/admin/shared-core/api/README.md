@@ -5,16 +5,19 @@ API clients do fluxo administrativo.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum API client funcional deve ser tratado como existente
+Kits 01-06 possuem API clients admin conforme endpoints existentes no backend.
 ```
 
-Exemplos futuros:
+API clients atuais principais:
 
-- `adminOrders.api.ts`
-- `adminProducts.api.ts`
-- `adminCustomers.api.ts`
-- `adminDeliveries.api.ts`
+- `auth.api.ts`
+- `users.api.ts`
+- `permissions.api.ts`
+- `catalog.api.ts`
+- `subscriptions.api.ts`
+- `inventory.api.ts`
+- `orders.api.ts`
+- `deliveries.api.ts`
 
 Regra:
 
@@ -24,16 +27,16 @@ admin screen -> admin hook -> admin api -> backend
 
 O Admin nao chama endpoint direto em componente quando o fluxo for reutilizavel.
 
-Quando o runtime renascer por kit, exemplos esperados:
+Endpoints centrais ja cobertos:
 
 ```text
-adminOrders.api.ts
+orders.api.ts
   -> GET /api/v1/orders/admin/orders/
   -> POST /api/v1/orders/admin/orders/
   -> GET /api/v1/orders/admin/orders/:id/
   -> POST /api/v1/orders/admin/orders/:id/transition/
 
-adminDeliveries.api.ts
+deliveries.api.ts
   -> GET /api/v1/deliveries/admin/deliveries/
   -> POST /api/v1/deliveries/admin/deliveries/
   -> GET /api/v1/deliveries/admin/deliveries/:id/

@@ -65,6 +65,10 @@ Leia nesta ordem:
 
 ```text
 docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/BACKEND_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
 docs/kits/README.md
 docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
 docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md

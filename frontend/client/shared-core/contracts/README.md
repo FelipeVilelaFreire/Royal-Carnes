@@ -5,15 +5,18 @@ Contratos compartilhados do ecommerce client. Tipos e contratos que nao dependem
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum contrato funcional deve ser tratado como existente
+Kits 01-06 possuem contratos client quando o backend publica endpoint client
+ou publico.
 ```
 
-Contratos futuros esperados:
+Contratos atuais principais:
 
-- `subscription.contract.ts`
-- `order.contract.ts`
-- `delivery.contract.ts`
+- `auth.contract.ts`
+- `catalog.contract.ts`
+- `subscriptions.contract.ts`
+- `orders.contract.ts`
+- `deliveries.contract.ts`
+- `customer.contract.ts`
 
 Regra:
 
@@ -25,20 +28,17 @@ status, labels e tipos comerciais devem vir da API/config
 
 ## Regra Para Orders/Deliveries
 
-Nao usar os mocks legados como contrato final.
-
-Leia:
-
-```text
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
-backend/API_CONTRACTS.md
-```
-
-Esperado:
+Esperado em qualquer contrato:
 
 ```text
 OrderDto e DeliveryDto seguem snake_case do backend quando representarem response
 CreateOrderPayload usa kind_key e items[].product_key
 ViewModel de UI fica separado do DTO
 status/kinds nao devem ser union fechada com valores legados de mock
+```
+
+Referencia:
+
+```text
+docs/architecture/SHARED_CORE_RULES.md
 ```

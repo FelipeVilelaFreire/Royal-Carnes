@@ -22,8 +22,9 @@ Pertence aqui:
 Status atual:
 
 ```text
-runtime funcional resetado na branch feature/shared-core-kit-reset
-global deve ficar minimo ate o Kit 01 recriar contratos comprovadamente comuns
+Kits 01-06 recriados por contrato real de backend
+global contem apenas tipos/contratos base e helpers comuns
+fluxos client/admin ficam fora do global
 ```
 
 Nao pertence aqui:
@@ -55,6 +56,14 @@ frontend/admin/shared-core/kits
 Regra:
 
 ```text
-nao promover Orders, Deliveries, Checkout ou Admin Operations para global antes
-de provar que client, mobile e admin usam o mesmo contrato base.
+promover para global somente tipos/contratos base usados por mais de um escopo
+nao colocar fetch, hooks, mappers client/admin ou view-models de tela no global
+```
+
+Leia tambem:
+
+```text
+docs/architecture/OWNERSHIP_TREE.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
 ```

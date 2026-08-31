@@ -5,16 +5,16 @@ API clients do fluxo do cliente.
 Status atual:
 
 ```text
-runtime resetado na branch feature/shared-core-kit-reset
-nenhum API client funcional deve ser tratado como existente
+Kits 01-06 possuem API clients conforme endpoints client/publicos existentes
+no backend.
 ```
 
-Exemplos futuros:
+API clients atuais:
 
-- `products.api.ts`
-- `orders.api.ts`
+- `auth.api.ts`
+- `catalog.api.ts`
 - `customer.api.ts`
-- `subscriptionCycle.api.ts`
+- `orders.api.ts`
 - `subscriptions.api.ts`
 - `deliveries.api.ts`
 
@@ -29,7 +29,7 @@ Screens web/mobile nao chamam endpoint direto quando o fluxo for reutilizavel.
 API client nao deve esconder falha real retornando mock silencioso. Fallback dev
 deve ser decisao do hook, com `source=fallback`.
 
-Quando o runtime renascer por kit, exemplos esperados:
+Endpoints centrais ja cobertos:
 
 ```text
 orders.api.ts
@@ -47,7 +47,6 @@ deliveries.api.ts
 Leia tambem:
 
 ```text
-docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
-backend/API_CONTRACTS.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
 ```
