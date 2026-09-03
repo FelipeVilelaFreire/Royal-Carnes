@@ -188,7 +188,7 @@ Pastas/documentos relevantes:
 ../ServiceOS/docs/BUILDER_DRAFT_AND_MANIFEST_PUBLICATION_CONTRACT.md
 ../ServiceOS/platform/foundation/
 ../ServiceOS/platform/foundation/shells/app-shell/
-../ServiceOS/platform/manifests/
+../ServiceOS/platform/manifest/
 ../ServiceOS/services/ecommerce/
 ../ServiceOS/services/appointments/
 ```
@@ -225,7 +225,7 @@ Risco:
 
 ```text
 tentar transformar RoyalPrime em ServiceOS cedo demais
-criar manifests sem runtime real
+criar manifest sem runtime real
 promover Foundation/AppShell antes do produto provar necessidade
 ```
 

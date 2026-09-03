@@ -8,7 +8,7 @@ export type UiIconState = "active" | "default" | "disabled";
 
 /**
  * Global Icon recipe. The concrete glyph is a runtime binding supplied by the
- * consuming adapter; manifests persist only portable visual decisions.
+ * consuming adapter; manifest persists only portable visual decisions.
  */
 export type UiIconConfig = {
   activeFillTone: UiIconTone;

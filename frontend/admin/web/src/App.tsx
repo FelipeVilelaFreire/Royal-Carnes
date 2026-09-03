@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { AppShell } from "@foundation/shells/appshell";
+import { AppShell } from "@foundation/shells/app-shell";
 import { injectThemeTokens } from "@foundation/tokens/resolver";
-import { adminThemeManifest } from "@/manifests/theme.manifest";
+import { adminThemeManifest } from "@/manifest/theme.manifest";
 import { adminNavigation } from "@/navigation/admin.navigation";
-import { adminAppShellConfig } from "@/manifests/adminAppShell.config";
-import { adminRoutes, adminRouteAliases, getRoutePathByAction } from "@/manifests/routes";
+import { adminAppShellConfig } from "@/manifest/adminAppShell.config";
+import { adminRoutes, adminRouteAliases, getRoutePathByAction } from "@/manifest/routes";
 import { adminPtBR } from "@/locales/pt-BR";
 
-import { dashboardConfig } from "@/manifests/pages/dashboard.config";
-import { produtosConfig } from "@/manifests/pages/produtos.config";
-import { usuariosConfig } from "@/manifests/pages/usuarios.config";
-import { assinaturasConfig } from "@/manifests/pages/assinaturas.config";
-import { pedidosConfig } from "@/manifests/pages/pedidos.config";
-import { deliveriesConfig } from "@/manifests/pages/deliveries.config";
-import { settingsConfig } from "@/manifests/pages/settings.config";
+import { dashboardConfig } from "@/manifest/pages/dashboard.config";
+import { produtosConfig } from "@/manifest/pages/produtos.config";
+import { usuariosConfig } from "@/manifest/pages/usuarios.config";
+import { assinaturasConfig } from "@/manifest/pages/assinaturas.config";
+import { pedidosConfig } from "@/manifest/pages/pedidos.config";
+import { deliveriesConfig } from "@/manifest/pages/deliveries.config";
+import { settingsConfig } from "@/manifest/pages/settings.config";
 
 import { DashboardPage } from "./engines/rendering/screen-types/dashboard/DashboardPage";
 import { ListPage } from "./engines/rendering/screen-types/standard/pages/ListPage";

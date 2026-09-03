@@ -28,8 +28,8 @@
       "@/mocks/*": [
         "../shared-core/mocks/*"
       ],
-      "@/manifests/*": [
-        "../shared-core/manifests/*"
+      "@/manifest/*": [
+        "../shared-core/manifest/*"
       ],
       "@/locales/*": [
         "../shared-core/locales/*"

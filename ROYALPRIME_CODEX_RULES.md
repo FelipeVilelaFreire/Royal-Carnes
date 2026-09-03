@@ -11,7 +11,7 @@ Ao entrar no projeto, leia:
 3. `docs/CODEX_ENTRYPOINTS.md`
 4. `backend/ROADMAP.md`
 5. `backend/ARCHITECTURE.md`
-6. `frontend/TREE.md`
+6. `docs/frontend/TREE.md`
 7. `docs/kits/README.md`
 
 ## Produto-Foco
@@ -64,7 +64,7 @@ backend
   -> regra real, banco, validacao, autorizacao, calculo, auditoria
 
 shared-core do escopo correto
-  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifests e mocks temporarios
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifest e mocks temporarios
 
 web/mobile/admin
   -> renderizacao, layout, inputs, botoes, modais, chamada dos hooks

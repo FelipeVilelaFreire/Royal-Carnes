@@ -1,6 +1,6 @@
 # Frontend Shared-Core Global
 
-Esta pasta guarda somente contratos, manifests base e referencias realmente
+Esta pasta guarda somente contratos, manifest base e referencias realmente
 comuns entre Client, Admin e Mobile.
 
 Nao e dona de runtime visual.

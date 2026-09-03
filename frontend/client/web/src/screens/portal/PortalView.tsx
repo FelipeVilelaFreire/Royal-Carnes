@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { AppShell } from "@foundation/shells/appshell";
+import { AppShell } from "@foundation/shells/app-shell";
 import { Button } from "@foundation/ui/Button";
 import { EmptyState } from "@foundation/ui/EmptyState";
 import { MoonIcon, StoreIcon, SunIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
 import { portalNavigation } from "@/navigation/client.navigation";
-import { portalAppShellConfig } from "@/manifests/portal/appshell.config";
-import { clientRoutes } from "@/manifests/routes";
+import { portalAppShellConfig } from "@/manifest/portal/appshell.config";
+import { clientRoutes } from "@/manifest/routes";
 import { clientPtBR } from "@/locales/pt-BR";
 import { AuthModal } from "../../legacy/app-shell";
 import { HomeOrientationView } from "./tabs/HomeOrientationView";

@@ -7,8 +7,8 @@ Antes de implementar em `frontend/client/web`, leia nesta ordem:
 3. `../../../ROYALPRIME_CODEX_RULES.md`
 4. `../../../ROYALPRIME_ARCHITECTURE_CONTRACT.md`
 5. `../../../docs/CODEX_ENTRYPOINTS.md`
-6. `../../TREE.md`
-7. `../../RENDER_ONLY_AUDIT.md`
+6. `../../../docs/frontend/TREE.md`
+7. `../../../docs/frontend/RENDER_ONLY_AUDIT.md`
 8. `docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
 ## Regra de Surface
@@ -18,7 +18,7 @@ frontend/client/web
   -> render-only
 
 frontend/client/shared-core
-  -> contratos, API clients, hooks, mappers, view-models, manifests e mocks do cliente
+  -> contratos, API clients, hooks, mappers, view-models, manifest e mocks do cliente
 
 frontend/foundation
   -> visual-only
@@ -37,7 +37,7 @@ Quando mexer em uma tela hardcoded, preserve o fluxo e extraia aos poucos:
 
 ```text
 copy repetida -> locales/manifest
-navegacao/titulos/labels -> shared-core/manifests
+navegacao/titulos/labels -> shared-core/manifest
 fluxo reutilizavel -> shared-core hooks/api/contracts
 componentes repetidos de ecommerce -> product-components/ecommerce
 ```

@@ -16,6 +16,12 @@ export const clientPtBR = {
     entrar: "Entrar",
     sair: "Sair"
   },
+  appShell: {
+    closeDrawerAriaLabel: "Fechar navegacao",
+    collapseSidebar: "Recolher menu",
+    openDrawerAriaLabel: "Abrir navegacao",
+    searchPlaceholder: "Buscar"
+  },
   authSession: {
     userName: "Felipe",
     userBadge: "Cliente Royal",

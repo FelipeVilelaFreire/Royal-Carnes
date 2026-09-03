@@ -63,5 +63,5 @@ export const createUiColorTokens = (overrides: any = {}): UiColorTokens => {
 };
 
 export const DEFAULT_UI_COLOR_TOKENS: UiColorTokens = themeDefaultColors;
-export const resolveContrastTextColor = (background: string) => "#FFFFFF";
-export const resolveReadableAccentColor = (accent: string, background: string) => "#D4AF37";
+export const resolveContrastTextColor = (background: string) => themeDefaultColors.text || "currentColor";
+export const resolveReadableAccentColor = (accent: string, background: string) => themeDefaultColors.primary || "currentColor";

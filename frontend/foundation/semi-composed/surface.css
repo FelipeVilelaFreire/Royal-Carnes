@@ -1,32 +1,32 @@
 :root {
   /* Receitas de Superfície (Surface) */
   --semicomposed--surface-bg: var(--theme--color-surface);
-  --semicomposed--surface-border: 1px solid rgba(255, 255, 255, 0.08);
+  --semicomposed--surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
   --semicomposed--surface-radius: var(--theme--radius-lg);
-  --semicomposed--surface-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --semicomposed--surface-shadow: var(--theme--elevation-md-native);
 
-  --semicomposed--glass-bg: rgba(30, 30, 30, 0.75);
-  --semicomposed--glass-border: 1px solid rgba(212, 175, 55, 0.25);
-  --semicomposed--glass-blur: blur(16px);
+  --semicomposed--glass-bg: color-mix(in srgb, var(--theme--color-surface) var(--theme--glass-opacity-md), transparent);
+  --semicomposed--glass-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --semicomposed--glass-blur: blur(var(--theme--glass-blur-md));
 
   /* Receitas de Botão (Button) */
   --semicomposed--button-radius: var(--theme--radius-md);
 
   /* Appearance Solid */
   --semicomposed--button-bg-solid: var(--theme--color-primary);
-  --semicomposed--button-color-solid: #121212;
+  --semicomposed--button-color-solid: var(--theme--color-accent-contrast);
   --semicomposed--button-border-solid: none;
 
   /* Appearance Glass */
-  --semicomposed--button-bg-glass: rgba(212, 175, 55, 0.15);
+  --semicomposed--button-bg-glass: color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-15), transparent);
   --semicomposed--button-color-glass: var(--theme--color-primary);
-  --semicomposed--button-border-glass: 1px solid var(--theme--color-primary);
-  --semicomposed--button-blur-glass: blur(12px);
+  --semicomposed--button-border-glass: var(--theme--borders-hairline) solid var(--theme--color-primary);
+  --semicomposed--button-blur-glass: blur(var(--theme--glass-blur-sm));
 
   /* Appearance Outline */
   --semicomposed--button-bg-outline: transparent;
   --semicomposed--button-color-outline: var(--theme--color-text);
-  --semicomposed--button-border-outline: 1px solid var(--theme--color-text-muted);
+  --semicomposed--button-border-outline: var(--theme--borders-hairline) solid var(--theme--color-text-muted);
 }
 
 .surface-solid {

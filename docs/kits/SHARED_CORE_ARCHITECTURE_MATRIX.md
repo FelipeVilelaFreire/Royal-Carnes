@@ -52,7 +52,7 @@ mappers/
 view-models/
 mocks/
 locales/
-manifests/
+manifest/
 navigation/
 kits/
 ```
@@ -176,7 +176,7 @@ mappers/
 view-models/
 mocks/
 locales/
-manifests/
+manifest/
 navigation/
 kits/
 ```
@@ -251,7 +251,7 @@ mappers/
 view-models/
 mocks/
 locales/
-manifests/
+manifest/
 navigation/
 kits/
 ```

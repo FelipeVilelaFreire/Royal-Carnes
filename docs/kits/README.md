@@ -192,7 +192,7 @@ Syrax
   -> admin real, web/mobile/shared-core, route map, multilanguage
 
 ServiceOS
-  -> Foundation, AppShell, manifests, destino futuro de capacidades maduras
+  -> Foundation, AppShell, manifest, destino futuro de capacidades maduras
 ```
 
 Mapa completo:

@@ -80,7 +80,7 @@ view-models/
 hooks/
 kits/
 locales/
-manifests/
+manifest/
 navigation/
 ```
 
@@ -109,7 +109,7 @@ view-models/
 hooks/
 kits/
 locales/
-manifests/
+manifest/
 navigation/
 ```
 

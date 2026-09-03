@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { clientPtBR } from "@/locales/pt-BR";
-import { clientThemeManifest } from "@/manifests/theme.manifest";
+import { clientThemeManifest } from "@/manifest/theme.manifest";
 
 export interface HomeHeroSectionProps {
   onRouteClick: (routeKey: string) => void;

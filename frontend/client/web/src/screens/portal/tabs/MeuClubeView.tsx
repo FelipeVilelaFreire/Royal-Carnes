@@ -6,7 +6,7 @@ import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { clientPtBR } from "@/locales/pt-BR";
-import { clientThemeManifest } from "@/manifests/theme.manifest";
+import { clientThemeManifest } from "@/manifest/theme.manifest";
 import { catalogSubscriptionPlansMock } from "@/mocks/catalog";
 import { royalCustomerMock } from "@/mocks/customer.mock";
 import { CheckIcon, UserIcon, TruckIcon, SettingsIcon, StarIcon, LogoutIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";

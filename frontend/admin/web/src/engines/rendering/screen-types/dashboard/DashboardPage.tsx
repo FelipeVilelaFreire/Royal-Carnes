@@ -3,7 +3,7 @@ import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { AvatarCell } from "@foundation/ui/Avatar";
-import { adminThemeManifest } from "@/manifests/theme.manifest";
+import { adminThemeManifest } from "@/manifest/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
 import { FlameIcon, BoxIcon, TruckIcon, UserIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
 import type { DashboardConfig } from "../config/types";

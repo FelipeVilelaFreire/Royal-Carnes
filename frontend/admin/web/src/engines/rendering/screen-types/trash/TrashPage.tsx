@@ -2,9 +2,9 @@ import React from "react";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { adminThemeManifest } from "@/manifests/theme.manifest";
+import { adminThemeManifest } from "@/manifest/theme.manifest";
 import { adminPtBR } from "@/locales/pt-BR";
-import { trashConfig } from "@/manifests/pages/trash.config";
+import { trashConfig } from "@/manifest/pages/trash.config";
 import { TrashIcon } from "@foundation/ui/Icon/AppIcons";
 
 export interface TrashPageProps {

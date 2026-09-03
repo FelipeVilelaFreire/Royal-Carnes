@@ -9,22 +9,27 @@ implementar no RoyalPrime.
 1. AGENTS.md
 2. ROYALPRIME_CODEX_RULES.md
 3. ROYALPRIME_ARCHITECTURE_CONTRACT.md
-4. frontend/TREE.md
-5. frontend/RENDER_ONLY_AUDIT.md
-6. frontend/COPY_LOCALE_AUDIT.md
-7. frontend/KIT_FUNCTIONALITY_STRATEGY.md
-8. frontend/handoff/README.md
-9. frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
-10. backend/README.md
-11. backend/ROADMAP.md
-12. backend/ARCHITECTURE.md
-13. backend/API_CONTRACTS.md
-14. docs/kits/README.md
-15. docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
-16. docs/kits/REUSE_SOURCE_AUDIT.md
-17. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-18. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
-19. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
+4. docs/DOCS_ROADMAP.md
+5. docs/architecture/NEXT_STEPS.md
+6. docs/architecture/FRONTEND_TARGET_TREE_ROADMAP.md
+7. docs/architecture/SHARED_CORE_TREE_STANDARD.md
+8. docs/architecture/MANIFEST_DESIGN_SYSTEM_TREE.md
+9. docs/architecture/DESIGN_SYSTEM_V1_TREE.md
+10. docs/frontend/TREE.md
+11. docs/frontend/RENDER_ONLY_AUDIT.md
+12. docs/frontend/COPY_LOCALE_AUDIT.md
+13. docs/frontend/KIT_FUNCTIONALITY_STRATEGY.md
+14. docs/handoff/README.md
+15. backend/README.md
+16. backend/ROADMAP.md
+17. backend/ARCHITECTURE.md
+18. backend/API_CONTRACTS.md
+19. docs/kits/README.md
+20. docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
+21. docs/kits/REUSE_SOURCE_AUDIT.md
+22. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
+23. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
+24. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
 ## Regra De Camadas
@@ -34,7 +39,7 @@ backend
   -> regra real, persistencia, validacao, autorizacao, calculo e auditoria
 
 shared-core do escopo correto
-  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifests e mocks temporarios
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifest e mocks temporarios
 
 web/mobile/admin-web
   -> render-only
@@ -130,7 +135,7 @@ Nao promover para `frontend/shared-core` global por previsao abstrata.
 ```text
 kit descreve capacidade e fronteira de reuso
 contracts/api/hooks/mappers/view-models implementam o fluxo
-manifests guardam configuracao editavel
+manifest guarda configuracao editavel
 surface renderiza
 backend decide regra real
 ```
@@ -154,7 +159,7 @@ frontend/admin/shared-core/kits
 Para decidir quando criar funcionalidade no shared-core, leia:
 
 ```text
-frontend/KIT_FUNCTIONALITY_STRATEGY.md
+docs/frontend/KIT_FUNCTIONALITY_STRATEGY.md
 ```
 
 Para reaproveitar ideias de HobbyMap, Syrax, ServiceOS ou outro projeto:
@@ -213,7 +218,7 @@ e evite transformar copy comercial em regra tecnica.
 Para o audit atual de copy, leia:
 
 ```text
-frontend/COPY_LOCALE_AUDIT.md
+docs/frontend/COPY_LOCALE_AUDIT.md
 ```
 
 ## Ordem Para Orders/Deliveries Frontend
@@ -236,5 +241,5 @@ frontend/COPY_LOCALE_AUDIT.md
 Para continuar a migracao Orders/Deliveries, leia primeiro:
 
 ```text
-frontend/handoff/06-frontend-orders-deliveries-contract-alignment.md
+docs/handoff/06-frontend-orders-deliveries-contract-alignment.md
 ```

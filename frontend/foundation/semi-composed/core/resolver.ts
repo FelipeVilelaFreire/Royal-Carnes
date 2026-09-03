@@ -1,4 +1,4 @@
-import { resolveThemePhysicalTokens, type UiColorTokens, type UiSpacingTokens, type UiThemePhysicalTokens } from "../../tokens";
+import { DEFAULT_UI_COLOR_TOKENS, resolveThemePhysicalTokens, type UiColorTokens, type UiSpacingTokens, type UiThemePhysicalTokens } from "../../tokens";
 import type {
   DisabledRecipe,
   ElevationRecipe,
@@ -39,14 +39,7 @@ export type ResolvedSemiTheme = {
 
 export const resolveSemiTheme = (theme: SemiThemeInput): ResolvedSemiTheme => {
   if (!theme || !theme.modes) {
-    const fallbackColors = (theme as any)?.colors || {
-      primary: "#D4AF37",
-      background: "#121212",
-      surface: "#1E1E1E",
-      border: "rgba(255,255,255,0.1)",
-      text: "#F5F5F5",
-      textMuted: "#A0A0A0"
-    };
+    const fallbackColors = (theme as any)?.colors || DEFAULT_UI_COLOR_TOKENS;
     return {
       colors: fallbackColors,
       tokens: resolveThemePhysicalTokens(theme?.tokens),
@@ -108,7 +101,7 @@ const shadow = (elevation: UiThemePhysicalTokens["elevation"][keyof UiThemePhysi
 
 export const resolveTextRecipe = (recipe: TextRecipe, theme: ResolvedSemiTheme): ResolvedTextRecipe => ({
   ...recipe,
-  color: theme?.colors?.[recipe.toneToken] || "#F5F5F5",
+  color: theme?.colors?.[recipe.toneToken] || theme?.colors?.text || DEFAULT_UI_COLOR_TOKENS.text || "currentColor",
   fontFamily: String(theme?.tokens?.typography?.[recipe.fontToken] || "sans-serif"),
   fontSize: Number(theme?.tokens?.typography?.[sizeKey(recipe.sizeToken as SemiLevel)] || 16),
   fontWeight: Number(theme?.tokens?.typography?.[recipe.weightToken] || 400),
@@ -126,16 +119,16 @@ export const resolveIconRecipe = (recipe: IconRecipe, theme: ResolvedSemiTheme):
 
 export const resolveStrokeRecipe = (recipe: StrokeRecipe, theme: ResolvedSemiTheme): ResolvedStrokeRecipe => ({
   ...recipe,
-  color: theme?.colors?.[recipe.toneToken] || "rgba(255,255,255,0.1)",
+  color: theme?.colors?.[recipe.toneToken] || theme?.colors?.border || DEFAULT_UI_COLOR_TOKENS.border || "currentColor",
   opacity: opacityValue(theme.tokens, recipe.opacityToken),
   width: theme?.tokens?.borders?.[recipe.widthToken] || 1,
 });
 
 export const resolveElevationRecipe = (recipe: ElevationRecipe, theme: ResolvedSemiTheme): ResolvedElevationRecipe => {
-  const level = theme?.tokens?.elevation?.[recipe.level] || { opacity: 100, native: { blur: 0, color: "#000000", opacity: 0.1, x: 0, y: 2 }, x: 0, y: 2, blur: 4, spread: 0 };
+  const level = theme?.tokens?.elevation?.[recipe.level] || theme?.tokens?.elevation?.none || { opacity: 0, native: { blur: 0, color: "currentColor", opacity: 0, x: 0, y: 0 }, x: 0, y: 0, blur: 0, spread: 0 };
   const opacity = recipe.opacityToken ? opacityValue(theme.tokens, recipe.opacityToken) : (level.opacity || 100) / 100;
-  const color = theme?.colors?.[recipe.colorToken] || "#000000";
-  return { ...recipe, color, native: level.native || { blur: 0, color: "#000000", opacity: 0.1, x: 0, y: 2 }, opacity, x: level.x || 0, y: level.y || 0, blur: level.blur || 0, spread: level.spread || 0, shadow: shadow(level, color, opacity) };
+  const color = theme?.colors?.[recipe.colorToken] || theme?.colors?.border || DEFAULT_UI_COLOR_TOKENS.border || "currentColor";
+  return { ...recipe, color, native: level.native || { blur: 0, color: "currentColor", opacity: 0, x: 0, y: 0 }, opacity, x: level.x || 0, y: level.y || 0, blur: level.blur || 0, spread: level.spread || 0, shadow: shadow(level, color, opacity) };
 };
 
 export const resolveStateLayerRecipe = (recipe: StateLayerRecipe, theme: ResolvedSemiTheme): ResolvedStateLayerRecipe => ({
@@ -150,7 +143,7 @@ export const resolveStateLayerRecipe = (recipe: StateLayerRecipe, theme: Resolve
 
 export const resolveFocusRingRecipe = (recipe: FocusRingRecipe, theme: ResolvedSemiTheme): ResolvedFocusRingRecipe => ({
   ...recipe,
-  color: theme?.colors?.[recipe.toneToken] || "#D4AF37",
+  color: theme?.colors?.[recipe.toneToken] || theme?.colors?.primary || DEFAULT_UI_COLOR_TOKENS.primary || "currentColor",
   offset: resolveSemiSpacing(theme.tokens?.spacing, recipe.offsetToken as SemiLevel),
   radius: theme?.tokens?.radius?.[recipe.radiusToken] || 8,
   width: theme?.tokens?.borders?.[recipe.widthToken] || 2,
@@ -165,7 +158,7 @@ export const resolveMotionRecipe = (recipe: MotionRecipe, theme: ResolvedSemiThe
 
 export const resolveDisabledRecipe = (recipe: DisabledRecipe, theme: ResolvedSemiTheme): ResolvedDisabledRecipe => ({
   ...recipe,
-  color: theme?.colors?.[recipe.toneToken] || "#666666",
+  color: theme?.colors?.[recipe.toneToken] || theme?.colors?.textMuted || DEFAULT_UI_COLOR_TOKENS.textMuted || "currentColor",
   opacity: opacityValue(theme.tokens, recipe.opacityToken),
 });
 
@@ -188,7 +181,7 @@ export const resolveGradientRecipe = (recipe: GradientRecipe, theme: ResolvedSem
   const toPosition = theme?.tokens?.gradient?.toPosition?.[fallback.toPositionToken] || 100;
   const stops = (fallback.stops || []).map((stop, index) => ({
     ...stop,
-    color: theme?.colors?.[stop.colorToken] || "#D4AF37",
+    color: theme?.colors?.[stop.colorToken] || theme?.colors?.primary || DEFAULT_UI_COLOR_TOKENS.primary || "currentColor",
     position: index === 0 ? fromPosition : index === (fallback.stops.length - 1) ? toPosition : stop.position,
   }));
   const directions = {
@@ -259,9 +252,9 @@ export const resolveSurfaceRecipe = (
   return {
     ...next,
     appearance,
-    bg: appearance === "outline" || appearance === "transparent" ? "transparent" : theme?.colors?.[bgToken] || "#1E1E1E",
+    bg: appearance === "outline" || appearance === "transparent" ? "transparent" : theme?.colors?.[bgToken] || theme?.colors?.surface || DEFAULT_UI_COLOR_TOKENS.surface || "transparent",
     bgOpacity,
-    color: theme?.colors?.[foregroundToken] || "#F5F5F5",
+    color: theme?.colors?.[foregroundToken] || theme?.colors?.text || DEFAULT_UI_COLOR_TOKENS.text || "currentColor",
     foregroundToken,
     gradientBg: gradient?.cssImage,
     material: appearanceRecipe.material,

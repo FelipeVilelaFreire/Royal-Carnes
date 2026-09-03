@@ -27,7 +27,7 @@ docs/kits/
 README.md das pastas
 kits/**/README.md
 locales
-manifests
+manifest
 navigation
 mocks
 assets
@@ -58,18 +58,18 @@ frontend/shared-core
   -> minimo global real
 
 frontend/client/shared-core
-  -> mocks, locales, manifests, navigation e kits documentados
+  -> mocks, locales, manifest, navigation e kits documentados
   -> sem hooks/API/contracts/view-models funcionais ate o Kit 01 renascer
 
 frontend/admin/shared-core
-  -> mocks, locales, manifests, navigation e kits documentados
+  -> mocks, locales, manifest, navigation e kits documentados
   -> sem hooks/API/contracts/view-models funcionais ate o Kit 01 renascer
 ```
 
 ## Ajuste Obrigatorio
 
 Se alguma tela quebrar por importar hooks, API clients ou view-models removidos,
-ela deve voltar a consumir mocks/locales/manifests diretamente de forma
+ela deve voltar a consumir mocks/locales/manifest diretamente de forma
 temporaria.
 
 Isso e aceitavel porque o objetivo do corte e manter o frontend vivo enquanto o

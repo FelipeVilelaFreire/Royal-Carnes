@@ -22,7 +22,7 @@
       "@/contracts/*": ["../shared-core/contracts/*"],
       "@/api/*": ["../shared-core/api/*"],
       "@/hooks/*": ["../shared-core/hooks/*"],
-      "@/manifests/*": ["../shared-core/manifests/*"],
+      "@/manifest/*": ["../shared-core/manifest/*"],
       "@/locales/*": ["../shared-core/locales/*"],
       "@/navigation/*": ["../shared-core/navigation/*"],
       "@/*": ["src/*"],

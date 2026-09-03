@@ -1,476 +1,339 @@
-# Continuacao - RoyalPrime Shared-Core Kit Reset
+# Continuacao RoyalPrime
 
-Data do ponto de parada:
+## Contexto
+
+Este arquivo e o ponto de entrada rapido para o proximo chat continuar o
+trabalho atual no RoyalPrime.
+
+Leia tambem, nesta ordem, os arquivos obrigatorios do projeto:
 
 ```text
-2026-08-30
-```
-
-Branch atual:
-
-```text
-feature/shared-core-kit-reset
+ROYALPRIME_CODEX_RULES.md
+ROYALPRIME_ARCHITECTURE_CONTRACT.md
+docs/CODEX_ENTRYPOINTS.md
+backend/README.md
+backend/ROADMAP.md
+backend/ARCHITECTURE.md
+docs/frontend/TREE.md
+docs/frontend/RENDER_ONLY_AUDIT.md
+docs/kits/README.md
+frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
 ## Estado Atual
 
-O marco de reset do shared-core foi concluido e enviado ao GitHub.
-
-Commits importantes:
-
-```text
-a5a61d9 Document shared-core reset plan
-e7179e8 Reset shared-core runtime for kit-first rebuild
-04e689f Start shared-core auth users kit
-cc32fc4 Build shared-core kits 01-04
-```
-
-O objetivo desse corte foi limpar implementacoes funcionais prematuras de
-shared-core para recomecar corretamente por kits.
-
-## O Que Foi Preservado
-
-```text
-docs/kits/
-frontend/shared-core/kits/
-frontend/shared-core/manifest/
-frontend/shared-core/public/
-frontend/client/shared-core/kits/
-frontend/client/shared-core/locales/
-frontend/client/shared-core/manifests/
-frontend/client/shared-core/mocks/
-frontend/client/shared-core/navigation/
-frontend/admin/shared-core/kits/
-frontend/admin/shared-core/locales/
-frontend/admin/shared-core/manifests/
-frontend/admin/shared-core/mocks/
-frontend/admin/shared-core/navigation/
-```
-
-## O Que Foi Removido
-
-Runtime funcional prematuro:
-
-```text
-frontend/client/shared-core/api/*.ts
-frontend/client/shared-core/hooks/*.ts
-frontend/client/shared-core/contracts/*.ts
-frontend/client/shared-core/view-models/*.ts
-
-frontend/admin/shared-core/api/*.ts
-frontend/admin/shared-core/hooks/*.ts
-frontend/admin/shared-core/contracts/*.ts
-frontend/admin/shared-core/view-models/*.ts
-```
-
-Legado removido do global:
-
-```text
-frontend/shared-core/client/
-frontend/shared-core/admin/
-frontend/shared-core/contracts/index.ts
-frontend/shared-core/identity.ts
-frontend/shared-core/foundation.ts
-```
-
-## Validacao Do Reset
-
-```text
-git diff --check: OK
-admin web build: OK
-client web build: OK
-client web prerender: 18 rotas
-```
-
-## Regra Central Para Continuar
+RoyalPrime esta seguindo esta direcao:
 
 ```text
 backend
-  -> regra real, banco, validacao, autorizacao, calculo e auditoria
+  -> regra real, persistencia, validacao, autorizacao, calculo e auditoria
 
-frontend/shared-core
-  -> somente contratos/capacidades realmente globais
+shared-core do escopo correto
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifest,
+     navigation, locales e mocks temporarios
 
-frontend/client/shared-core
-  -> fluxos reutilizaveis entre cliente web e futuro mobile
+foundation
+  -> design system, tokens, semi-composed, primitives visuais, AppShell e
+     bridges native-ready
 
-frontend/admin/shared-core
-  -> fluxos reutilizaveis do admin
-
-frontend/client/web e frontend/admin/web
-  -> render-only: mostram dados e disparam actions
+client/web e admin/web
+  -> render-only, compondo telas com Foundation + shared-core
 ```
 
 Regra curta:
 
 ```text
-Regra mora no backend.
-Fluxo reutilizavel mora no shared-core do escopo correto.
-Tela apenas apresenta e dispara acao.
+regra mora no backend
+fluxo reutilizavel mora no shared-core correto
+tela apresenta e dispara acao
+foundation nao conhece regra de produto
 ```
 
-## Kit 01 Auth & Users - Corte Shared-Core
+## Foundation
 
-O Kit 01 foi fechado no nivel shared-core para os endpoints que existem hoje no
-backend.
-
-Arquivos centrais:
+Foi criado o corte atual da Foundation:
 
 ```text
-docs/kits/auth-users-kit.md
-docs/kits/kit-01-auth-users-shared-core-map.md
-frontend/client/shared-core/kits/auth/contract.md
-frontend/client/shared-core/kits/auth/flow.md
-frontend/admin/shared-core/kits/auth/contract.md
-frontend/admin/shared-core/kits/auth/flow.md
-frontend/admin/shared-core/kits/users/contract.md
-frontend/admin/shared-core/kits/users/flow.md
+frontend/foundation/
+  tokens/
+  semi-composed/
+  ui/
+  native/
+  shells/
+    app-shell/
+      foundation/
+      web/
+      native/
 ```
 
-Cobertura backend real:
+Responsabilidade:
 
 ```text
-POST /api/v1/auth/login/
-POST /api/v1/auth/refresh/
-POST /api/v1/auth/register/
-POST /api/v1/auth/logout/
-GET  /api/v1/accounts/me/
-GET  /api/v1/accounts/users/
-POST /api/v1/accounts/users/
+foundation/ui
+  -> primitives visuais web atuais
+
+foundation/semi-composed
+  -> recipes visuais reutilizaveis
+
+foundation/native
+  -> bridge native-ready de primitives e semi-composed
+
+foundation/shells/app-shell/foundation
+  -> contrato, tipos, resolver e modelo visual comum
+
+foundation/shells/app-shell/web
+  -> runtime React web: Header, Drawer, Sidebar, BottomTabBar, Footer e content
+
+foundation/shells/app-shell/native
+  -> resolver native-ready para app mobile futuro
 ```
 
-Limite intencional:
+Native aqui significa `native-ready`, nao app mobile pronto. Ainda nao existe:
 
 ```text
-admin users detail/update/setRole nao foram implementados no API client porque
-o backend atual ainda nao publica esses endpoints.
+frontend/client/native
+frontend/client/mobile
 ```
 
-Validacao deste corte:
+Quando existir, ele deve consumir os mesmos manifests, locales e navigation do
+client shared-core.
+
+## AppShell
+
+Novo AppShell oficial:
 
 ```text
-npm run build:client -> OK
-npm run build:admin -> OK
-py manage.py check -> OK
+@foundation/shells/app-shell
 ```
 
-## Kit 02 Catalog - Corte Shared-Core
-
-Kit 02 Catalog tambem foi fechado no nivel shared-core para os endpoints que
-existem hoje no backend.
-
-Arquivos centrais:
+Entrypoints importantes:
 
 ```text
-docs/kits/catalog-kit.md
-docs/kits/kit-02-catalog-shared-core-map.md
-frontend/client/shared-core/kits/catalog/contract.md
-frontend/client/shared-core/kits/catalog/flow.md
-frontend/admin/shared-core/kits/catalog/contract.md
-frontend/admin/shared-core/kits/catalog/flow.md
+frontend/foundation/shells/app-shell/index.ts
+frontend/foundation/shells/app-shell/foundation/index.ts
+frontend/foundation/shells/app-shell/web/index.ts
+frontend/foundation/shells/app-shell/native/index.ts
 ```
 
-Cobertura backend real:
+O AppShell nao decide:
 
 ```text
-GET  /api/v1/catalog/collections/
-GET  /api/v1/catalog/commercial-modes/
-GET  /api/v1/catalog/products/
-GET  /api/v1/catalog/products/:id/
-GET  /api/v1/catalog/admin/products/
-POST /api/v1/catalog/admin/products/
+rota real
+permissao real
+copy de produto
+navegacao hardcoded
+regra de cliente/admin
+estado de pedido/assinatura
 ```
 
-Limite intencional:
+O AppShell recebe:
 
 ```text
-PATCH/DELETE admin product, categories endpoint e measurement-units endpoint
-nao foram implementados no shared-core porque o backend atual ainda nao publica
-essas rotas em backend/apps/catalog/urls.py.
+navigation declarativa
+routesMap
+strings/locales
+theme/config
+slots
+callbacks de navegacao
 ```
 
-## Kit 03 Subscriptions - Corte Shared-Core
+## Navigation Web E Native
 
-Kit 03 Subscriptions tambem foi fechado no nivel shared-core para os endpoints
-que existem hoje no backend.
-
-Arquivos centrais:
+A mesma navigation deve alimentar:
 
 ```text
-docs/kits/subscriptions-kit.md
-docs/kits/kit-03-subscriptions-shared-core-map.md
-frontend/client/shared-core/kits/subscriptions/contract.md
-frontend/client/shared-core/kits/subscriptions/flow.md
-frontend/admin/shared-core/kits/subscriptions/contract.md
-frontend/admin/shared-core/kits/subscriptions/flow.md
+Header desktop
+Drawer
+BottomTabBar do web mobile
+NativeTabBar futuro
+Footer quando houver
 ```
 
-Cobertura backend real:
+Contrato esperado por item:
 
 ```text
-GET  /api/v1/subscriptions/plans/
-GET  /api/v1/subscriptions/me/
-GET  /api/v1/subscriptions/me/cycles/current/
-POST /api/v1/subscriptions/me/cycles/current/items/
-GET  /api/v1/subscriptions/admin/plans/
-POST /api/v1/subscriptions/admin/plans/
-GET  /api/v1/subscriptions/admin/subscriptions/
-POST /api/v1/subscriptions/admin/subscriptions/
-GET  /api/v1/subscriptions/admin/cycles/
+key
+labelKey ou label
+iconIntent ou iconName
+routeKey ou routePath
+order
+auth
+placements
 ```
 
-Limite intencional:
+Placements:
 
 ```text
-update/cancel/pause/detail e transicoes de ciclo nao foram implementados no
-shared-core porque o backend atual ainda nao publica essas rotas.
+header
+sidebar
+drawer
+bottomTabBar
+nativeTabBar
+footer
 ```
 
-## Kit 04 Inventory - Corte Shared-Core
+Nao criar navegacao separada para desktop, mobile web e native. O que muda e a
+apresentacao, nao a intencao.
 
-Kit 04 Inventory tambem foi fechado no nivel shared-core para os endpoints
-admin que existem hoje no backend.
+## Manifests
 
-Arquivos centrais:
+Caminho correto e singular:
 
 ```text
-docs/kits/inventory-kit.md
-docs/kits/kit-04-inventory-shared-core-map.md
-frontend/admin/shared-core/kits/inventory/contract.md
-frontend/admin/shared-core/kits/inventory/flow.md
-frontend/client/shared-core/kits/inventory/README.md
+manifest/
 ```
 
-Cobertura backend real:
+Nao usar/ressuscitar:
 
 ```text
-GET  /api/v1/inventory/admin/items/
-POST /api/v1/inventory/admin/items/
-GET  /api/v1/inventory/admin/items/:id/
-POST /api/v1/inventory/admin/items/:id/adjust/
-GET  /api/v1/inventory/admin/items/:id/movements/
+manifests/
 ```
 
-Limite intencional:
+Client:
 
 ```text
-client inventory API, PATCH/DELETE admin item e reservations API nao foram
-implementados no shared-core porque o backend atual ainda nao publica essas
-rotas.
+frontend/client/shared-core/manifest/
 ```
 
-## Kit 05 Orders - Corte Shared-Core
-
-Kit 05 Orders tambem foi fechado no nivel shared-core para os endpoints client
-e admin que existem hoje no backend.
-
-Arquivos centrais:
+Admin:
 
 ```text
-docs/kits/orders-kit.md
-docs/kits/kit-05-orders-shared-core-map.md
-frontend/client/shared-core/kits/orders/contract.md
-frontend/client/shared-core/kits/orders/flow.md
-frontend/admin/shared-core/kits/orders/contract.md
-frontend/admin/shared-core/kits/orders/flow.md
+frontend/admin/shared-core/manifest/
 ```
 
-Cobertura backend real:
+Global:
 
 ```text
-GET  /api/v1/orders/config/
-GET  /api/v1/orders/me/
-POST /api/v1/orders/me/
-GET  /api/v1/orders/me/:id/
-GET  /api/v1/orders/admin/orders/
-POST /api/v1/orders/admin/orders/
-GET  /api/v1/orders/admin/orders/:id/
-POST /api/v1/orders/admin/orders/:id/transition/
+frontend/shared-core/manifest/
 ```
 
-Limite intencional:
+## Config E Locales
+
+Nova UI/copy/config deve tentar nascer primeiro em:
 
 ```text
-PATCH/DELETE/cancel shortcut, payment behavior, delivery update e inventory
-release nao foram implementados no shared-core porque o backend atual nao
-publica essas rotas neste kit.
+manifest
+config.jsx/config.ts
+navigation
+locales/strings
+view-model
 ```
 
-## Kit 06 Fulfillment & Delivery - Corte Shared-Core
-
-Kit 06 Delivery tambem foi fechado no nivel shared-core para os endpoints
-client e admin que existem hoje no backend.
-
-Arquivos centrais:
+Hardcode temporario so dentro de:
 
 ```text
-docs/kits/fulfillment-delivery-kit.md
-docs/kits/kit-06-fulfillment-delivery-shared-core-map.md
-frontend/client/shared-core/kits/deliveries/contract.md
-frontend/client/shared-core/kits/deliveries/flow.md
-frontend/admin/shared-core/kits/deliveries/contract.md
-frontend/admin/shared-core/kits/deliveries/flow.md
+frontend/client/web
+frontend/admin/web
 ```
 
-Cobertura backend real:
+Mesmo assim, nao criar novo design system local e nao crescer `legacy`.
+
+## Estado De Qualidade
+
+Nota atual da Foundation: 9/10.
+
+Motivo:
 
 ```text
-GET  /api/v1/deliveries/config/
-GET  /api/v1/deliveries/me/
-GET  /api/v1/deliveries/me/:id/
-GET  /api/v1/deliveries/admin/deliveries/
-POST /api/v1/deliveries/admin/deliveries/
-GET  /api/v1/deliveries/admin/deliveries/:id/
-POST /api/v1/deliveries/admin/deliveries/:id/transition/
-POST /api/v1/deliveries/admin/deliveries/:id/confirm/
+tokens, semi-composed, UI primitives e AppShell estao organizados
+AppShell esta separado em foundation/web/native
+native-ready existe sem criar app mobile prematuro
+manifest/navigation/locales estao conectados
+existe verificador automatico de contrato
+build client/admin passou
 ```
 
-Limite intencional:
+Ainda nao e 10/10 absoluto porque falta provar em uso real:
 
 ```text
-package management API, client create/transition/confirm, scheduling, route
-optimization e driver app nao foram implementados porque o backend atual nao
-publica essas capacidades neste kit.
+migrar mais telas antigas para Foundation
+reduzir imports de legacy/app-shell
+criar runtime React Native real quando existir app native/mobile
 ```
 
-## Documentacao Geral Antes Das Telas
+## Validacoes
 
-Documentos criados para orientar a proxima fase:
+Comandos usados e esperados:
 
 ```text
-docs/architecture/OWNERSHIP_TREE.md
-docs/architecture/BACKEND_RULES.md
-docs/architecture/SHARED_CORE_RULES.md
-docs/architecture/RENDER_APPS_RULES.md
-docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
-docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
-docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
+npm run verify:foundation
+npm run build:client
+npm run build:admin
+git diff --check
 ```
 
-Eles sao a porta de entrada para qualquer IA ou desenvolvedor entender:
+Ultimo estado validado:
 
 ```text
-estado dos Kits 01-06
-ownership backend/shared-core/render
-nome oficial render-apps para a camada de telas
-analise da tree atual e arquitetura alvo de render-apps
-ordem recomendada das telas
-contrato render-only
-quando parar e voltar para backend
+npm run verify:foundation -> passou, 38 checks
+npm run build:client      -> passou
+npm run build:admin       -> passou
+git diff --check          -> passou, apenas warnings LF/CRLF do Windows
 ```
 
-## Proxima Etapa: Fase 2 Render-Only Screens
+## Proximo Corte Recomendado
 
-Nao existe Kit 07 implementavel neste momento. Payments, Checkout, Wallet e
-Vouchers continuam planejados ate nascer backend real.
+Continuar pelas telas render-only usando a Foundation nova.
 
-Ponto exato para continuar:
+Ordem sugerida:
 
 ```text
-Passo 1 concluido: regras de render-apps, i18n, icones, webIsMobile/native e
-ownership foram documentadas.
-
-Passo 2: analisar a tree atual das render-apps antes de codar.
-
-Entrada recomendada:
-docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
-frontend/client/web/src/app/(portal)/meus-pedidos/page.tsx
-frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
-frontend/client/web/src/product-components/ecommerce/OrderDetailModal.tsx
+1. client/web: MeusPedidosView + OrderDetailModal
+2. client/web: MinhaCaixaView
+3. client/web: MeuClubeView
+4. admin/web: DashboardPage
+5. admin/web: ListPage/DetailPage/AddPage por screen type
 ```
 
-Seguir para telas mantendo a mesma disciplina:
+Regra para cada tela:
 
 ```text
-backend real primeiro
-shared-core do menor escopo correto
-tela render-only consome hook/view-model
-documentar qualquer gap antes de criar backend novo
+screen
+  -> shared-core hook
+  -> shared-core API client
+  -> backend
+  -> view-model
+  -> Foundation UI/AppShell
 ```
 
-## O Que Nao Fazer No Proximo Marco
+Nao fazer tela nova importando:
 
 ```text
-nao colocar auth inteiro no frontend/shared-core global
-nao criar hook generico com if client/admin
-nao chamar endpoint direto em tela
-nao guardar permissao real, status permitido ou regra de negocio em locale
-nao voltar com frontend/shared-core/client ou frontend/shared-core/admin
-nao criar Kit 07 sem backend real
+legacy/app-shell
+legacy/design-system
+mock direto quando ja existe hook
+api direto quando ja existe shared-core client
+texto novo hardcoded quando pode ir para locale/config
 ```
 
-## Resultado Do Kit 01
+## Arquivos Chave Criados/Alterados
 
 ```text
-Kit 01 shared-core fechado para endpoints atuais - DONE
-global minimo com tipos realmente comuns - DONE
-client auth/session iniciado no shared-core do client - DONE
-admin auth/users/permissions iniciado no shared-core do admin - DONE
-telas render-only ainda nao conectadas - INTENCIONAL
+frontend/foundation/shells/app-shell/
+frontend/foundation/native/
+frontend/foundation/docs/NATIVE.md
+scripts/verify-foundation-contract.mjs
+package.json
+docs/architecture/DESIGN_SYSTEM_V1_TREE.md
+docs/architecture/FRONTEND_TARGET_TREE_ROADMAP.md
+docs/architecture/NEXT_STEPS.md
+frontend/client/shared-core/navigation/client.navigation.ts
+frontend/admin/shared-core/navigation/admin.navigation.ts
+frontend/client/shared-core/manifest/portal/appshell.config.jsx
+frontend/client/shared-core/manifest/landing/appshell.config.jsx
+frontend/admin/shared-core/manifest/adminAppShell.config.jsx
 ```
 
-Validacao do corte:
+## Observacao Sobre Worktree
+
+O worktree estava sujo antes do commit atual. Nao assumir que toda mudanca do
+commit nasceu no ultimo corte; varias mudancas de docs, manifest singular,
+Foundation primitives e render-only ja estavam acumuladas no trabalho em curso.
+
+O usuario pediu explicitamente para fazer:
 
 ```text
-npm run build:client -> OK
-npm run build:admin -> OK
-py manage.py check -> OK
-```
-
-## Resultado Do Kit 02
-
-```text
-Kit 02 Catalog shared-core fechado para endpoints atuais - DONE
-global minimo com tipos/contratos catalog puros - DONE
-client catalog publico iniciado no shared-core do client - DONE
-admin catalog operacional iniciado no shared-core do admin - DONE
-telas render-only ainda nao conectadas - INTENCIONAL
-```
-
-## Resultado Do Kit 03
-
-```text
-Kit 03 Subscriptions shared-core fechado para endpoints atuais - DONE
-global minimo com tipos/contratos subscriptions puros - DONE
-client plans/subscription/current cycle iniciado no shared-core do client - DONE
-admin plans/subscriptions/cycles iniciado no shared-core do admin - DONE
-telas render-only ainda nao conectadas - INTENCIONAL
-```
-
-## Resultado Do Kit 04
-
-```text
-Kit 04 Inventory shared-core fechado para endpoints atuais - DONE
-global minimo com tipos/contratos inventory puros - DONE
-admin inventory operacional iniciado no shared-core do admin - DONE
-client inventory sem runtime proprio neste corte - INTENCIONAL
-telas render-only ainda nao conectadas - INTENCIONAL
-```
-
-## Resultado Do Kit 05
-
-```text
-Kit 05 Orders shared-core fechado para endpoints atuais - DONE
-global minimo com tipos/contratos orders puros - DONE
-client orders iniciado no shared-core do client - DONE
-admin orders iniciado no shared-core do admin - DONE
-telas render-only ainda nao conectadas - INTENCIONAL
-```
-
-## Resultado Do Kit 06
-
-```text
-Kit 06 Fulfillment & Delivery shared-core fechado para endpoints atuais - DONE
-global minimo com tipos/contratos deliveries puros - DONE
-client deliveries iniciado no shared-core do client - DONE
-admin deliveries iniciado no shared-core do admin - DONE
-telas render-only ainda nao conectadas - INTENCIONAL
-```
-
-Frase guia:
-
-```text
-backend reutiliza por seed/config
-shared-core reutiliza por kit
-web/native/admin-web reutiliza por manifest/render
+git add .
+git commit
+git push
 ```

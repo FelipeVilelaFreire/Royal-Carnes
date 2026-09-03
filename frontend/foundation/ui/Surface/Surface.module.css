@@ -1,0 +1,31 @@
+.surface {
+  background: var(--ui-surface-bg, var(--theme--color-surface));
+  border: var(--ui-surface-border-width, var(--theme--borders-hairline)) solid var(--ui-surface-border, var(--theme--color-border));
+  border-radius: var(--ui-surface-radius, var(--theme--radius-lg));
+  box-shadow: var(--ui-surface-shadow, none);
+  box-sizing: border-box;
+  color: var(--ui-surface-color, var(--theme--color-text));
+  padding: var(--ui-surface-padding-y, 0) var(--ui-surface-padding-x, 0);
+}
+
+.surface[data-appearance="outline"] {
+  background: transparent;
+}
+
+.surface[data-appearance="transparent"] {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.surface[data-appearance="glass"] {
+  backdrop-filter: blur(var(--ui-surface-blur, var(--theme--blur-md)));
+}
+
+.surface[data-interactive="true"] {
+  transition: transform var(--ui-surface-duration, var(--theme--motion-durationSm)) var(--ui-surface-easing, var(--theme--motion-easingStandard)), box-shadow var(--ui-surface-duration, var(--theme--motion-durationSm)) var(--ui-surface-easing, var(--theme--motion-easingStandard));
+}
+
+.surface[data-interactive="true"]:hover {
+  transform: translateY(var(--ui-surface-lift, 0));
+}

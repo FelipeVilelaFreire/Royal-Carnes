@@ -10,8 +10,8 @@ Antes de implementar, leia nesta ordem:
 4. `backend/README.md`
 5. `backend/ROADMAP.md`
 6. `backend/ARCHITECTURE.md`
-7. `frontend/TREE.md`
-8. `frontend/RENDER_ONLY_AUDIT.md`
+7. `docs/frontend/TREE.md`
+8. `docs/frontend/RENDER_ONLY_AUDIT.md`
 9. `docs/kits/README.md`
 10. `frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
@@ -19,7 +19,7 @@ Antes de implementar, leia nesta ordem:
 
 RoyalPrime agora e o produto-foco.
 
-O ServiceOS continua como referencia de organizacao, contratos, AppShell, Foundation, manifests e separacao de responsabilidades. Mas o RoyalPrime nao deve ser bloqueado por uma migracao prematura para ServiceOS.
+O ServiceOS continua como referencia de organizacao, contratos, AppShell, Foundation, manifest e separacao de responsabilidades. Mas o RoyalPrime nao deve ser bloqueado por uma migracao prematura para ServiceOS.
 
 Regra:
 
@@ -35,7 +35,7 @@ backend
   -> regra real, persistencia, validacao, autorizacao, calculo e auditoria
 
 shared-core do escopo correto
-  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifests e mocks temporarios
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifest e mocks temporarios
 
 web/mobile/admin-web
   -> render-only: layout, inputs, modais, tabelas, screen composition e chamada dos hooks
@@ -100,14 +100,14 @@ Regra:
 manter funcionando
 extrair aos poucos
 tirar regra/copy repetida de telas
-levar comportamento configuravel para shared-core/manifests
+levar comportamento configuravel para shared-core/manifest
 levar textos de UI para locales/strings quando mexer no trecho
 ```
 
 Exemplos de extracao gradual:
 
 - `ListPage`, `DetailPage`, filtros, colunas e acoes admin devem caminhar para
-  screen types + manifests em `frontend/admin/shared-core/manifests`.
+  screen types + manifest em `frontend/admin/shared-core/manifest`.
 - Navegacao, titulos, labels e estados vazios devem sair de JSX hardcoded aos
   poucos.
 - Telas podem continuar hardcoded temporariamente quando isso preservar o fluxo,
@@ -160,7 +160,7 @@ frontend/admin/shared-core/kits
 - Nao usar emojis Unicode soltos na UI.
 - UI/copy nova deve nascer em locales/strings quando for texto de interface.
 - Nao hardcodar dados comerciais diretamente em JSX/TSX.
-- Screens devem consumir mocks, manifests, hooks ou dados reais.
+- Screens devem consumir mocks, manifest, hooks ou dados reais.
 - AppShell e Foundation sao donos de capacidades genericas de casca e primitives.
 - Product components reutilizaveis de ecommerce devem ficar em `frontend/client/web/src/product-components/ecommerce`.
 - Fluxo/copy/regra especifica do RoyalPrime fica local no produto.

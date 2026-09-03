@@ -12,6 +12,12 @@ export const adminPtBR = {
     deliveries: "Deliveries",
     configuracoes: "Configurações"
   },
+  appShell: {
+    closeDrawerAriaLabel: "Fechar navegacao",
+    collapseSidebar: "Recolher menu",
+    openDrawerAriaLabel: "Abrir navegacao",
+    searchPlaceholder: "Buscar registros"
+  },
   common: {
     back: "Voltar",
     cancel: "Cancelar",

@@ -9,9 +9,13 @@ Antes de implementar frontend, leia nesta ordem:
 2. `../ROYALPRIME_CODEX_RULES.md`
 3. `../ROYALPRIME_ARCHITECTURE_CONTRACT.md`
 4. `../docs/CODEX_ENTRYPOINTS.md`
-5. `TREE.md`
-6. `RENDER_ONLY_AUDIT.md`
-7. `client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
+5. `../docs/architecture/NEXT_STEPS.md`
+6. `../docs/architecture/FRONTEND_TARGET_TREE_ROADMAP.md`
+7. `../docs/architecture/SHARED_CORE_TREE_STANDARD.md`
+8. `../docs/architecture/MANIFEST_DESIGN_SYSTEM_TREE.md`
+9. `../docs/frontend/TREE.md`
+10. `../docs/frontend/RENDER_ONLY_AUDIT.md`
+11. `client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
 
 ## Ordem Central
 
@@ -20,7 +24,7 @@ foundation
   -> visual-only: design system, primitives, AppShell, tokens e componentes visuais genericos
 
 shared-core do escopo correto
-  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifests e mocks temporarios
+  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifest e mocks temporarios
 
 web/mobile/admin-web
   -> render-only: layout, inputs, modais, tabelas, screen composition e chamada dos hooks

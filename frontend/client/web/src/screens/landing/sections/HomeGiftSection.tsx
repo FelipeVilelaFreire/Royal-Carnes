@@ -3,7 +3,7 @@ import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { clientPtBR } from "@/locales/pt-BR";
-import { clientThemeManifest } from "@/manifests/theme.manifest";
+import { clientThemeManifest } from "@/manifest/theme.manifest";
 import { ScrollToAppear } from "@foundation/ui/ScrollToAppear/ScrollToAppear";
 
 export interface HomeGiftSectionProps {

@@ -27,13 +27,13 @@ frontend/shared-core/public/
 frontend/client/shared-core/README.md
 frontend/client/shared-core/kits/
 frontend/client/shared-core/locales/
-frontend/client/shared-core/manifests/
+frontend/client/shared-core/manifest/
 frontend/client/shared-core/mocks/
 frontend/client/shared-core/navigation/
 frontend/admin/shared-core/README.md
 frontend/admin/shared-core/kits/
 frontend/admin/shared-core/locales/
-frontend/admin/shared-core/manifests/
+frontend/admin/shared-core/manifest/
 frontend/admin/shared-core/mocks/
 frontend/admin/shared-core/navigation/
 ```

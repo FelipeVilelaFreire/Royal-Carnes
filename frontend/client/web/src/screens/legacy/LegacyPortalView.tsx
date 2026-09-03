@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { AppShell } from "@foundation/shells/appshell";
-import { clientAppShellConfig } from "@/manifests/landing/appshell.config";
+import { AppShell } from "@foundation/shells/app-shell";
+import { clientAppShellConfig } from "@/manifest/landing/appshell.config";
 import { clientNavigation } from "@/navigation/client.navigation";
 import { HomeView } from "../portal/tabs/HomeView";
 import { MinhaCaixaView } from "../portal/tabs/MinhaCaixaView";

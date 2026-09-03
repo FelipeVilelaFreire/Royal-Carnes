@@ -1,14 +1,26 @@
 import { clientPtBR } from "../locales/pt-BR";
-import { clientRoutes } from "../manifests/routes";
+import { clientRoutes } from "../manifest/routes";
 
 export type NavItemType = "scroll" | "route";
 
 export interface NavItemConfig {
   key: string;
   label: string;
+  labelKey?: string;
   type: NavItemType;
   targetId?: string;
   routeKey?: keyof typeof clientRoutes;
+  order?: number;
+  placements?: {
+    header?: boolean;
+    sidebar?: boolean;
+    drawer?: boolean;
+    bottomTabBar?: boolean;
+    nativeTabBar?: boolean;
+    footer?: boolean;
+  };
+  auth?: "public" | "required" | "guest";
+  iconIntent?: string;
   iconName?: string;
 }
 

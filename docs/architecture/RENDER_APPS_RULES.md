@@ -139,7 +139,7 @@ id tecnico -> nao traduzir
 
 ## Proibido Emoji Em UI
 
-Nao usar caracteres de emoji em JSX/TSX, strings, manifests ou componentes de
+Nao usar caracteres de emoji em JSX/TSX, strings, manifest ou componentes de
 interface.
 
 Usar icones SVG da Foundation/ServiceOS quando houver necessidade visual.

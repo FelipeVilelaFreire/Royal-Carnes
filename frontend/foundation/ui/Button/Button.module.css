@@ -1,76 +1,26 @@
 .button {
   align-items: center;
+  appearance: none;
+  border: var(--ui-surface-border-width) solid var(--ui-surface-border);
+  border-radius: var(--ui-surface-radius);
+  box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--ui-button-font-family, 'Plus Jakarta Sans', sans-serif);
-  font-size: 14px;
-  font-weight: 700;
-  gap: 8px;
+  font-family: var(--ui-button-font-family);
+  font-size: var(--ui-button-font-size);
+  font-weight: var(--ui-button-font-weight);
+  gap: var(--ui-button-gap);
   justify-content: center;
-  padding: 12px 22px;
-  border-radius: 14px;
-  letter-spacing: 0.5px;
-  border: 1px solid transparent;
+  letter-spacing: var(--ui-button-letter-spacing);
+  line-height: var(--ui-button-line-height);
+  min-height: var(--ui-button-height);
+  min-width: var(--ui-button-min-width);
   outline: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-sizing: border-box;
-}
-
-/* Tamanhos Proporcionais e Elegantes (Zero botoes gigantes desproporcionais) */
-.button[data-size="2xs"] {
-  padding: 6px 12px;
-  font-size: 11px;
-  border-radius: 8px;
-}
-
-.button[data-size="xs"],
-.button[data-size="sm"] {
-  padding: 10px 18px;
-  font-size: 13px;
-  border-radius: 12px;
-}
-
-.button[data-size="md"] {
-  padding: 12px 24px;
-  font-size: 14px;
-  border-radius: 14px;
-}
-
-.button[data-size="lg"],
-.button[data-size="xl"] {
-  padding: 14px 28px;
-  font-size: 15px;
-  border-radius: 16px;
-}
-
-/* Appearance Solid (Preenchimento Primario do Tema) */
-.button[data-appearance="solid"] {
-  background: var(--theme--color-primary, #FFC665);
-  color: var(--theme--color-bg, #0B0908);
-  font-weight: 800;
-  border: 1px solid transparent;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-}
-
-.button[data-appearance="solid"]:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--theme--color-border, rgba(255, 198, 101, 0.4));
-  filter: brightness(1.08);
-}
-
-/* Appearance Outline (Contorno Elegante em Vidro) */
-.button[data-appearance="outline"] {
-  background: transparent;
-  color: var(--theme--color-text, #E8E1DE);
-  border: 1px solid var(--theme--color-border, rgba(80, 69, 53, 0.4));
-  font-weight: 600;
-}
-
-.button[data-appearance="outline"]:not(:disabled):hover {
-  border-color: var(--theme--color-primary, #FFC665);
-  color: var(--theme--color-primary, #FFC665);
-  background: rgba(255, 255, 255, 0.04);
-  transform: translateY(-1px);
+  padding: var(--ui-button-padding-y) var(--ui-button-padding-x);
+  transition:
+    transform var(--ui-button-duration) var(--ui-button-easing),
+    filter var(--ui-button-duration) var(--ui-button-easing),
+    box-shadow var(--ui-button-duration) var(--ui-button-easing);
 }
 
 .button:disabled {
@@ -79,20 +29,18 @@
 }
 
 .button:not(:disabled):active {
-  transform: scale(0.98);
+  transform: scale(var(--ui-button-pressed-scale));
 }
 
 .icon {
   align-items: center;
   display: inline-flex;
-  height: 18px;
   justify-content: center;
-  width: 18px;
 }
 
 .icon > svg {
-  height: 18px;
-  width: 18px;
+  height: 100%;
+  width: 100%;
 }
 
 .spinner {
@@ -100,10 +48,10 @@
   border-color: currentColor;
   border-radius: 50%;
   border-style: solid;
-  border-width: 2px;
+  border-width: var(--theme--borders-medium);
   border-right-color: transparent;
-  height: 16px;
-  width: 16px;
+  height: var(--ui-button-font-size);
+  width: var(--ui-button-font-size);
 }
 
 @keyframes button-spin {

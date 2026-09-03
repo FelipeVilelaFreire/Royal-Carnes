@@ -161,7 +161,7 @@ view-models/
 hooks/
 kits/
 locales/
-manifests/
+manifest/
 navigation/
 ```
 
@@ -205,7 +205,7 @@ view-models/
 hooks/
 kits/
 locales/
-manifests/
+manifest/
 navigation/
 ```
 
@@ -251,7 +251,7 @@ Responsabilidades:
 ```text
 renderizar telas
 montar layout visual
-usar AppShell/manifests
+usar AppShell/manifest
 usar hooks do shared-core correto
 mostrar loading/error/empty/data
 coletar input de usuario

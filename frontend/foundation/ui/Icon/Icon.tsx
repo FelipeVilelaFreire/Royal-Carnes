@@ -22,7 +22,8 @@ export const Icon: React.FC<IconProps> = ({
   style,
   ...props
 }) => {
-  const pixelSize = typeof size === "number" ? size : 16;
+  const resolvedSize = typeof size === "number" ? `${size}px` : `var(--theme--dimensions-icon-${size})`;
+  const resolvedColor = tone === "inherit" ? "inherit" : `var(--theme--color-${tone}, currentColor)`;
 
   return (
     <span
@@ -32,10 +33,10 @@ export const Icon: React.FC<IconProps> = ({
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: `${pixelSize}px`,
-        width: `${pixelSize}px`,
-        height: `${pixelSize}px`,
-        color: tone === "inherit" ? "inherit" : undefined,
+        color: resolvedColor,
+        fontSize: resolvedSize,
+        height: resolvedSize,
+        width: resolvedSize,
         ...style
       }}
     >

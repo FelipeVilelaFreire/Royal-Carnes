@@ -248,7 +248,7 @@ frontend/admin/shared-core/hooks
 frontend/admin/shared-core/mappers
 frontend/admin/shared-core/view-models
 frontend/admin/shared-core/locales
-frontend/admin/shared-core/manifests
+frontend/admin/shared-core/manifest
 ```
 
 Responsabilidades:
@@ -409,7 +409,7 @@ frontend/client/shared-core/
     customer.mock.ts
   locales/
     pt-BR.ts
-  manifests/
+  manifest/
   navigation/
 
 frontend/admin/shared-core/
@@ -457,7 +457,7 @@ frontend/admin/shared-core/
     subscribers.mock.ts
   locales/
     pt-BR.ts
-  manifests/
+  manifest/
   navigation/
 ```
 

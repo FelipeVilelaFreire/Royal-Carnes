@@ -2,9 +2,9 @@ import React from "react";
 import { Button } from "@foundation/ui/Button";
 import { Card } from "@foundation/ui/Card";
 import { Text } from "@foundation/ui/Text";
-import { landingPageConfig } from "@/manifests/landing/pages/landing.config";
+import { landingPageConfig } from "@/manifest/landing/pages/landing.config";
 import { clientPtBR } from "@/locales/pt-BR";
-import { clientThemeManifest } from "@/manifests/theme.manifest";
+import { clientThemeManifest } from "@/manifest/theme.manifest";
 
 export const HomeView: React.FC = () => {
   const palette = clientThemeManifest.colors;

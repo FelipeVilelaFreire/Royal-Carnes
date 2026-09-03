@@ -367,18 +367,23 @@ Tree alvo de alto nivel:
 ```text
 frontend/
   foundation/
-    design-system/
+    tokens/
     semi-composed/
     ui/
-    shells/
-    product-components/
 
   shared-core/
+    api/
     contracts/
+    hooks/
+    kits/
+    locales/
     manifest/
+    mappers/
+    mocks/
+    navigation/
     public/
-    identity.ts
-    foundation.ts
+    types/
+    view-models/
     config.ts
 
   client/
@@ -388,7 +393,7 @@ frontend/
       contracts/
       mappers/
       mocks/
-      manifests/
+      manifest/
       locales/
       navigation/
       view-models/
@@ -410,7 +415,7 @@ frontend/
       contracts/
       mappers/
       mocks/
-      manifests/
+      manifest/
       locales/
       navigation/
       view-models/
@@ -425,17 +430,14 @@ frontend/
 
 ```text
 frontend/foundation
-  -> runtime visual reutilizavel: Design System, Semi-composed, UI,
-     AppShell e Product Components
+  -> runtime visual reutilizavel: Theme tokens, Semi-composed e UI primitives
 
-frontend/foundation/design-system | semi-composed | ui
+frontend/foundation/tokens | semi-composed | ui
   -> tokens, receitas e primitives visuais
 
-frontend/foundation/shells
-  -> AppShell: Header, Sidebar, Drawer, Footer, BottomTabBar e layout
-
-frontend/foundation/product-components
-  -> componentes de produto reutilizaveis quando provarem uso real
+AppShell e product-components
+  -> hoje ficam em render-app/transitional
+  -> so voltam para Foundation quando forem extraidos de uso real e limpos
 
 frontend/shared-core
   -> somente contratos/configs realmente comuns entre client, mobile e admin;
@@ -453,7 +455,7 @@ frontend/shared-core/public
   -> assets publicos realmente comuns entre surfaces
 
 frontend/client/shared-core
-  -> contratos, API clients, hooks, mappers, mocks, manifests, locales,
+  -> contratos, API clients, hooks, mappers, mocks, manifest, locales,
      navigation e view-models do fluxo do cliente
 
 frontend/client/web
@@ -464,7 +466,7 @@ frontend/client/mobile
      quando o fluxo for o mesmo do cliente web
 
 frontend/admin/shared-core
-  -> contratos, API clients, hooks, mappers, mocks, manifests, locales,
+  -> contratos, API clients, hooks, mappers, mocks, manifest, locales,
      navigation e view-models do admin
 
 frontend/admin/web
@@ -474,7 +476,7 @@ frontend/admin/web
 Mapa detalhado:
 
 ```text
-frontend/TREE.md
+docs/frontend/TREE.md
 ```
 
 Ele e o ponto de entrada para organizar `frontend/shared-core`,
@@ -641,10 +643,10 @@ frontend/foundation/shells/appshell
 frontend/shared-core/manifest
   -> define o contrato AppShellConfig e NavigationItem
 
-frontend/client/shared-core/manifests
+frontend/client/shared-core/manifest
   -> escolhe AppShell do cliente: header, bottom tabbar, rotas do portal
 
-frontend/admin/shared-core/manifests
+frontend/admin/shared-core/manifest
   -> escolhe AppShell do admin: sidebar, dashboard, pedidos, produtos
 ```
 
@@ -676,7 +678,7 @@ frontend/client/shared-core/locales
 frontend/client/shared-core/navigation
   -> rotas e navegacao do cliente
 
-frontend/client/shared-core/manifests
+frontend/client/shared-core/manifest
   -> AppShell, landing, portal, catalogo e checkout do cliente
 
 frontend/client/shared-core/api
@@ -704,7 +706,7 @@ frontend/admin/shared-core/locales
 frontend/admin/shared-core/navigation
   -> rotas e navegacao do admin
 
-frontend/admin/shared-core/manifests
+frontend/admin/shared-core/manifest
   -> AppShell, telas, builders e configs do admin
 
 frontend/admin/shared-core/api

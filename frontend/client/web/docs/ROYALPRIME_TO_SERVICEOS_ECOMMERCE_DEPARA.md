@@ -108,7 +108,7 @@ ServiceOS/
             customer.contract.ts
             subscription.contract.ts
 
-          manifests/
+          manifest/
             ecommerce.defaults.ts
             app-shell.manifest.ts
             landing.manifest.ts
@@ -217,7 +217,7 @@ RoyalPrime/frontend/client/
       useMyOrders.ts
       useMyDeliveries.ts
 
-    manifests/
+    manifest/
       app-shell.manifest.ts
       landing.manifest.ts
       portal.manifest.ts
@@ -286,7 +286,7 @@ Quando o Admin entrar no RoyalPrime, ele deve seguir a mesma separacao:
 RoyalPrime/frontend/admin/
   shared-core/
     contracts/
-    manifests/
+    manifest/
     locales/
     navigation/
     mocks/
@@ -320,7 +320,7 @@ O Admin edita manifestos/configs do ecommerce. Ele nao cria uma segunda implemen
 | RoyalPrime transicao | Papel atual | Destino futuro |
 | --- | --- | --- |
 | `frontend/client/shared-core/contracts` | Contratos de dados e dominio | `ServiceOS/services/ecommerce/frontend/shared-core/contracts` |
-| `frontend/client/shared-core/manifests` | Configuracao declarativa de AppShell, landing, portal, catalogo e checkout | `ServiceOS/services/ecommerce/frontend/shared-core/manifests` |
+| `frontend/client/shared-core/manifest` | Configuracao declarativa de AppShell, landing, portal, catalogo e checkout | `ServiceOS/services/ecommerce/frontend/shared-core/manifest` |
 | `frontend/client/shared-core/locales` | Textos traduziveis de UI | `ServiceOS/services/ecommerce/frontend/shared-core/locales` |
 | `frontend/client/shared-core/navigation` | Navegacao declarativa | `ServiceOS/services/ecommerce/frontend/shared-core/navigation` |
 | `frontend/client/shared-core/mocks` | Dados MVP/dev | `ServiceOS/services/ecommerce/frontend/shared-core/mocks` |
@@ -394,7 +394,7 @@ Portanto, a tree local deve ser simples e legivel:
 
 ```text
 shared-core
-  -> dados, manifests, locales, navigation, contratos e view-models do produto.
+  -> dados, manifest, locales, navigation, contratos e view-models do produto.
 
 web/src/screens
   -> telas reais que mostram o que o ecommerce precisa.
@@ -415,7 +415,7 @@ Primeira etapa feita:
 1. Separar legacy/design-system de legacy/app-shell.
 2. Mover componentes reutilizaveis de ecommerce para product-components/ecommerce.
 3. Renomear views para screens. Feito no client web.
-4. Reorganizar shared-core em contracts, manifests, locales, navigation, mocks e view-models.
+4. Reorganizar shared-core em contracts, manifest, locales, navigation, mocks e view-models.
 5. Aplicar aliases/imports novos sem alterar comportamento.
 ```
 
@@ -474,7 +474,7 @@ modules
   -> logica local por dominio.
 
 shared-core
-  -> dados, manifests, locales, navigation, contratos e view-models do produto.
+  -> dados, manifest, locales, navigation, contratos e view-models do produto.
 ```
 
 ## Proximo Corte: Shared-Core Orders/Deliveries
@@ -548,7 +548,7 @@ Local atual:
 Status atual:
 - O que ele faz hoje.
 - Quais dependencias legacy ainda usa.
-- Quais dados/mocks/manifests consome.
+- Quais dados/mocks/manifest consome.
 - Quais partes ainda estao hardcoded.
 
 Manifest necessario:

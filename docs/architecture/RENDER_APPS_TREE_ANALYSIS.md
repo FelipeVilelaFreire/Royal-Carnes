@@ -114,7 +114,7 @@ Leitura:
 
 ```text
 admin web esta mais proximo da arquitetura alvo porque ja renderiza por
-screen-types e manifests, mas os screen-types ainda tem estilo inline,
+screen-types e manifest, mas os screen-types ainda tem estilo inline,
 fallbacks visuais e algumas labels/status locais.
 ```
 
@@ -132,7 +132,7 @@ Decisao:
 
 ```text
 manter a engine de screen-types
-fazer os screen-types consumirem manifests/view-models
+fazer os screen-types consumirem manifest/view-models
 remover status/tones/copy do render
 trocar valores visuais locais por Foundation/AppShell conforme capacidade real
 ```
@@ -156,7 +156,7 @@ frontend/admin/web
   src/App.tsx
     -> bootstrap e roteamento fino
   src/engines/rendering/screen-types/
-    -> renderizadores genericos de manifests
+    -> renderizadores genericos de manifest
   src/locales/
     -> somente se a render-app tiver copy local especifica
   src/adapters/
@@ -195,7 +195,7 @@ Comecar pelo menor fluxo que prova a arquitetura sem destruir a UI:
 2. client MinhaContaView apenas no resumo de pedidos/entregas
 3. client Catalog/Cortes consumindo useClientCatalog
 4. admin DashboardPage removendo status/tones locais
-5. admin ListPage/DetailPage ligados aos manifests/view-models reais
+5. admin ListPage/DetailPage ligados aos manifest/view-models reais
 ```
 
 Motivo:

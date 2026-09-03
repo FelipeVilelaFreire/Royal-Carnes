@@ -40,6 +40,8 @@ export type UiThemePhysicalTokens = {
   gradient: Record<string, any>;
   opacity: Record<string, any>;
   layout: Record<string, any>;
+  blur: Record<string, any>;
+  zIndex: Record<string, any>;
 };
 
 export type UiThemePhysicalTokenOverrides = Partial<UiThemePhysicalTokens>;
@@ -231,6 +233,8 @@ export const resolveThemePhysicalTokens = (tokens: any, scales?: any): UiThemePh
       usefulColsNarrow: 14,
       ...base.layout
     },
+    blur: { sm: 8, md: 16, lg: 24, ...base.blur },
+    zIndex: { base: 0, sticky: 10, overlay: 50, modal: 100, toast: 120, ...base.zIndex },
   };
 };
 

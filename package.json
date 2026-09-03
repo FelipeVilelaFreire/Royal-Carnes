@@ -7,7 +7,8 @@
     "dev:client": "npm --prefix frontend/client/web run dev",
     "dev:admin": "npm --prefix frontend/admin/web run dev",
     "build:client": "npm --prefix frontend/client/web run build",
-    "build:admin": "npm --prefix frontend/admin/web run build"
+    "build:admin": "npm --prefix frontend/admin/web run build",
+    "verify:foundation": "node scripts/verify-foundation-contract.mjs"
   },
   "workspaces": [
     "frontend/foundation",

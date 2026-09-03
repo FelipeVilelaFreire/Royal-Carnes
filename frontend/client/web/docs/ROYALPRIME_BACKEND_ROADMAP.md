@@ -8,7 +8,7 @@ O projeto deixa de ser apenas um MVP visual para apresentacao e passa a ser trat
 
 Por enquanto, o RoyalPrime deve ser priorizado acima do ServiceOS.
 
-O ServiceOS continua sendo uma referencia importante de organizacao, contratos, AppShell, shared-core, manifests e separacao de responsabilidades. Ele e um bom espelho arquitetural para manter disciplina. Mas, neste momento, ele nao deve travar a entrega nem puxar abstracoes antes de o produto real provar a necessidade.
+O ServiceOS continua sendo uma referencia importante de organizacao, contratos, AppShell, shared-core, manifest e separacao de responsabilidades. Ele e um bom espelho arquitetural para manter disciplina. Mas, neste momento, ele nao deve travar a entrega nem puxar abstracoes antes de o produto real provar a necessidade.
 
 Regra atual:
 

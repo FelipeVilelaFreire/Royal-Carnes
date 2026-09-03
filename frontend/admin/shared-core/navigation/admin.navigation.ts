@@ -11,6 +11,8 @@ export interface AdminNavigationItem {
     sidebar: boolean;
     drawer: boolean;
     bottomBar: boolean;
+    bottomTabBar?: boolean;
+    nativeTabBar: boolean;
     footer: boolean;
   };
 }
@@ -24,7 +26,7 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "dashboard",
     routePath: "/admin",
     order: 0,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   },
   {
     key: "produtos",
@@ -34,7 +36,7 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "produtos",
     routePath: "/produtos",
     order: 1,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   },
   {
     key: "usuarios",
@@ -44,7 +46,7 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "usuarios",
     routePath: "/usuarios",
     order: 2,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   },
   {
     key: "assinaturas",
@@ -54,7 +56,7 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "assinaturas",
     routePath: "/assinaturas",
     order: 3,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   },
   {
     key: "pedidos",
@@ -64,7 +66,7 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "pedidos",
     routePath: "/pedidos",
     order: 4,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   },
   {
     key: "deliveries",
@@ -74,7 +76,7 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "deliveries",
     routePath: "/deliveries",
     order: 5,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   },
   {
     key: "configuracoes",
@@ -84,6 +86,6 @@ export const adminNavigation: AdminNavigationItem[] = [
     routeKey: "configuracoes",
     routePath: "/configuracoes",
     order: 6,
-    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, footer: false }
+    placements: { header: false, sidebar: true, drawer: true, bottomBar: true, bottomTabBar: true, nativeTabBar: true, footer: false }
   }
 ];

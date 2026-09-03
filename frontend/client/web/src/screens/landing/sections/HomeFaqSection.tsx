@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
 import { clientPtBR } from "@/locales/pt-BR";
-import { clientThemeManifest } from "@/manifests/theme.manifest";
+import { clientThemeManifest } from "@/manifest/theme.manifest";
 
 export const HomeFaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
