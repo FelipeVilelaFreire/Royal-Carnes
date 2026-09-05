@@ -1,8 +1,5 @@
-"use client";
-
-import React from "react";
 import { PortalView } from "../../../screens/portal/PortalView";
 
-export default function ProdutosPage() {
+export default function MontarBoxPage() {
   return <PortalView initialTab="produtos" />;
 }

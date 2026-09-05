@@ -11,6 +11,11 @@ export interface ThemeManifest {
 
 const px = (value: unknown) => typeof value === "number" ? `${value}px` : String(value);
 
+const formatScaleValue = (prefix: string, value: unknown) => {
+  if (prefix.startsWith("z-index")) return String(value);
+  return px(value);
+};
+
 const setScaleVariables = (
   root: HTMLElement,
   prefix: string,
@@ -22,7 +27,7 @@ const setScaleVariables = (
       setScaleVariables(root, `${prefix}-${key}`, value as Record<string, unknown>);
       return;
     }
-    root.style.setProperty(`--theme--${prefix}-${key}`, px(value));
+    root.style.setProperty(`--theme--${prefix}-${key}`, formatScaleValue(prefix, value));
   });
 };
 

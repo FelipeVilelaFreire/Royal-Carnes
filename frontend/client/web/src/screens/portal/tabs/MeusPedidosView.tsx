@@ -13,9 +13,10 @@ import { royalCustomerOrdersMock } from "@/mocks/orders";
 
 export interface MeusPedidosViewProps {
   onNavigate?: (path: string) => void;
+  showShell?: boolean;
 }
 
-export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) => {
+export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate, showShell = true }) => {
   const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
     if (typeof window !== "undefined") {
       const attr = document.documentElement.getAttribute("data-theme");
@@ -113,12 +114,14 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
 
   return (
     <div style={{ background: tokens.background, color: tokens.text, minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "'Inter', sans-serif" }}>
-      <PortalHeader
-        activeTab="meus-pedidos"
-        themeMode={themeMode}
-        onToggleTheme={toggleTheme}
-        onNavigate={onNavigate}
-      />
+      {showShell ? (
+        <PortalHeader
+          activeTab="meus-pedidos"
+          themeMode={themeMode}
+          onToggleTheme={toggleTheme}
+          onNavigate={onNavigate}
+        />
+      ) : null}
 
       <style>{`
         @keyframes meusPedidosAppear {
@@ -296,7 +299,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
       </main>
       )}
 
-      <BottomTabBar activeTab="meus-pedidos" onNavigate={onNavigate} isDark={isDark} />
+      {showShell ? <BottomTabBar activeTab="meus-pedidos" onNavigate={onNavigate} isDark={isDark} /> : null}
       <OrderDetailModal
         open={Boolean(selectedOrderVM)}
         onClose={() => setSelectedOrderVM(null)}
@@ -305,16 +308,18 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ onNavigate }) 
         isDark={isDark}
         isMobile={isMobileScreen}
       />
-      <AuthModal
-        open={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onAuthenticated={() => {
-          setIsMockAuthenticated(true);
-          setIsAuthModalOpen(false);
-        }}
-        isDark={isDark}
-        context="portal"
-      />
+      {showShell ? (
+        <AuthModal
+          open={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthenticated={() => {
+            setIsMockAuthenticated(true);
+            setIsAuthModalOpen(false);
+          }}
+          isDark={isDark}
+          context="portal"
+        />
+      ) : null}
     </div>
   );
 };

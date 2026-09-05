@@ -7,7 +7,7 @@ import { DEFAULT_DIVIDER_CONFIG, resolveDividerConfig } from "./divider";
 import { DEFAULT_DROPDOWN_PICKER_CONFIG, resolveDropdownPickerConfig } from "./dropdown-picker";
 import { DEFAULT_COLOR_FIELD_CONFIG, DEFAULT_FIELD_CONFIG, resolveColorFieldConfig, resolveFieldConfig } from "./field";
 import { DEFAULT_UI_ICON_CONFIG, resolveUiIconConfig } from "./icon";
-import { DEFAULT_UI_LAYOUT_CONFIG } from "./layout";
+import { DEFAULT_UI_LAYOUT_CONFIG, resolveLayoutConfig } from "./layout";
 import { DEFAULT_SEGMENTED_CONTROL_CONFIG, resolveSegmentedControlConfig } from "./segmented-control";
 import { DEFAULT_SELECT_CONFIG, resolveSelectConfig } from "./select";
 import { DEFAULT_UI_TEXT_CONFIG } from "./text";
@@ -75,10 +75,7 @@ export function resolveSurfaceUiConfig(config?: Partial<SurfaceUiConfig>): Resol
     field: resolveFieldConfig(config?.field),
     focusRing: config?.focusRing ?? DEFAULT_SURFACE_UI_CONFIG.focusRing,
     icon: resolveUiIconConfig(config?.icon),
-    layout: {
-      ...DEFAULT_UI_LAYOUT_CONFIG,
-      ...config?.layout,
-    },
+    layout: resolveLayoutConfig(config?.layout),
     segmentedControl: resolveSegmentedControlConfig(config?.segmentedControl),
     select: resolveSelectConfig(config?.select),
     sizeRecipes: config?.sizeRecipes,

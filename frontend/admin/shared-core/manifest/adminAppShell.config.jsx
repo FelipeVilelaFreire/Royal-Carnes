@@ -5,6 +5,12 @@ export const adminAppShellConfig = {
   mode: "admin",
   theme: adminThemeManifest,
   strings: adminPtBR.appShell,
+  navigationGroups: [
+    { key: "overview", labelKey: "navigationGroups.overview", order: 0 },
+    { key: "commerce", labelKey: "navigationGroups.commerce", order: 1 },
+    { key: "people", labelKey: "navigationGroups.people", order: 2 },
+    { key: "system", labelKey: "navigationGroups.system", order: 3 }
+  ],
   header: {
     enabled: false
   },

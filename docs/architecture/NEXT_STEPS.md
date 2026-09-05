@@ -101,12 +101,70 @@ NativeTabBar native-ready
 
 Todos devem ler a mesma key, labelKey, iconIntent, order e regra de auth.
 
+Sidebar e Drawer podem agrupar itens com:
+
+```text
+groupKey
+groupLabelKey
+groupOrder
+navigationGroups no appshell.config
+```
+
+O resolver comum do AppShell deve gerar `sidebarGroups` e `drawerGroups`.
+BottomTabBar e NativeTabBar continuam planos, consumindo as mesmas intencoes de
+navegacao por placement.
+
 Regra curta:
 
 ```text
 nao criar uma navegacao para desktop e outra para mobile/native
 criar uma navegacao semantica e mudar apenas a apresentacao por placement
 ```
+
+## Regra De Layout V1
+
+O AppShell agora deve ser o primeiro consumidor do contrato de Layout. A
+configuracao nasce em `appShell.config.jsx` por viewport:
+
+```text
+layout.viewports.desktop
+layout.viewports.mobile
+layout.viewports.native
+```
+
+Cada viewport declara somente intencao:
+
+```text
+content/header/footer/bottomTabBar
+  -> width
+  -> gutter
+  -> align
+  -> enabled quando a regiao existir
+```
+
+Semantica de largura:
+
+```text
+compact      -> span menor para leitura
+comfortable  -> span intermediario
+wide         -> span amplo
+full         -> span completo da matriz do viewport
+```
+
+No desktop, `full` deve corresponder as 20 colunas da matriz, preservando o
+gutter externo quando `gutter: "page"` estiver ativo. Isso e diferente de
+remover toda delimitacao: o elemento fica full pela malha, nao por CSS solto.
+
+O native pode herdar do mobile com:
+
+```text
+native.inheritFrom: "mobile"
+```
+
+As telas do portal devem migrar aos poucos para `Container`, `Grid`,
+`GridItem`, `Stack`, `Inline`, `Flex` e `Box`, evitando novos `maxWidth`,
+`padding`, `gridTemplateColumns` e media queries locais quando a decisao puder
+vir do manifest/layout.
 
 ## Proximo Corte
 

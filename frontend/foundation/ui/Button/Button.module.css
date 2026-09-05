@@ -28,8 +28,12 @@
   opacity: 0.5;
 }
 
+.button:not(:disabled):hover {
+  transform: translateY(calc(var(--ui-button-lift) * -1));
+}
+
 .button:not(:disabled):active {
-  transform: scale(var(--ui-button-pressed-scale));
+  transform: translateY(0) scale(var(--ui-button-pressed-scale));
 }
 
 .icon {

@@ -1870,7 +1870,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         ) : null}
       </main>
 
-      <BottomTabBar activeTab="produtos" onNavigate={onNavigate} isDark={isDark} />
+      {showHeader ? <BottomTabBar activeTab="produtos" onNavigate={onNavigate} isDark={isDark} /> : null}
       <AuthModal
         open={isAuthModalOpen}
         onClose={() => {

@@ -16,5 +16,9 @@ export const handleAppShellNavigation = (
   if (onNavigate) {
     event.preventDefault();
     onNavigate(item.routePath);
+    return;
+  }
+  if (item.routePath && typeof window !== "undefined") {
+    window.location.assign(item.routePath);
   }
 };

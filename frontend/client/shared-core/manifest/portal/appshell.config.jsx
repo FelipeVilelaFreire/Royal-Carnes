@@ -5,10 +5,42 @@ export const portalAppShellConfig = {
   mode: "client",
   theme: clientThemeManifest,
   strings: clientPtBR.appShell,
+  navigationGroups: [
+    { key: "shop", labelKey: "navigationGroups.shop", order: 0 },
+    { key: "account", labelKey: "navigationGroups.account", order: 1 },
+    { key: "support", labelKey: "navigationGroups.support", order: 2 }
+  ],
+  navigationPlacements: {
+    bottomTabBar: {
+      routeKeys: ["home", "cortes", "produtos", "minhaConta"]
+    },
+    nativeTabBar: {
+      inheritFrom: "bottomTabBar"
+    }
+  },
   layout: {
     desktop: "header",
     mobile: "headerMobile",
-    totalCols: 20
+    totalCols: 20,
+    viewports: {
+      desktop: {
+        content: { width: "full", gutter: "none" },
+        header: { width: "full", gutter: "page", align: "between" },
+        footer: { width: "wide", gutter: "page" },
+        bottomTabBar: { enabled: false, width: "full", gutter: "none" }
+      },
+      mobile: {
+        content: { width: "full", gutter: "none" },
+        header: { enabled: false, width: "full", gutter: "page" },
+        footer: { enabled: false, width: "full", gutter: "page" },
+        bottomTabBar: { enabled: true, width: "full", gutter: "page" }
+      },
+      native: {
+        inheritFrom: "mobile",
+        content: { width: "full", gutter: "page" },
+        bottomTabBar: { enabled: true, width: "full", gutter: "page" }
+      }
+    }
   },
   sidebar: {
     enabled: false,
@@ -16,23 +48,21 @@ export const portalAppShellConfig = {
     defaultCollapsed: false,
     expandedCols: 3,
     collapsedCols: 1,
-    brandName: "ROYAL PRIME",
+    brandNameKey: "brand.name",
     brandLogo: "/assets/brand/royal-prime-logo.jpg",
-    showUserProfile: true,
-    userProfile: {
-      name: "Felipe",
-      badge: "Membro Royal VIP",
-      since: "Agosto/2026"
-    }
+    showUserProfile: false
   },
   header: {
     enabled: true,
     layoutMode: "attached",
-    surfaceStyle: "glassBlur",
+    visualStyle: "portalClassic",
+    surfaceStyle: "solid",
+    brandDisplay: "text",
+    drawerTrigger: false,
+    navAppearance: "pill",
     navAlignment: "left",
-    contentOffsetTop: "92px",
-    brandKicker: "Carnes premium",
-    brandSurface: "elevated",
+    contentOffsetTop: "var(--theme--dimensions-height-3xl)",
+    brandSurface: "none",
     brandRoutePath: "/home",
     mobile: {
       enabled: false
@@ -42,21 +72,26 @@ export const portalAppShellConfig = {
     paddingYToken: "md",
     gapLateralToken: "md",
     navGapToken: "xl",
-    brandName: "ROYAL PRIME",
+    brandNameKey: "brand.name",
     brandLogo: "/assets/brand/royal-prime-logo.jpg"
   },
   auth: {
     mockAuthenticated: false,
     mobileMockAuthenticated: false,
-    publicNavKeys: ["cortes", "produtos"],
-    protectedNavKeys: ["minhaCaixa", "royalDelivery", "meuClube"]
+    publicNavKeys: ["home", "cortes", "produtos"],
+    protectedNavKeys: ["minhaCaixa", "royalDelivery", "meuClube", "meusPedidos", "minhaConta"]
   },
   bottomTabBar: {
     enabled: true,
-    contentOffsetBottom: "76px"
+    contentOffsetBottom: "var(--theme--dimensions-height-3xl)"
   },
   nativeTabBar: {
     enabled: true
+  },
+  native: {
+    header: {
+      enabled: false
+    }
   },
   drawer: {
     enabled: true,

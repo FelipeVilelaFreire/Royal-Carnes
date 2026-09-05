@@ -26,7 +26,7 @@ export function renderAppShellIcon(item: AppShellNavigationItem, color: string, 
   const name = normalizeIconName(item);
   if (["box", "package", "subscription", "assinaturas", "minhacaixa"].includes(name)) return <BoxIcon size={size} color={color} />;
   if (["cart", "order", "orders", "pedidos", "pedir", "checkout"].includes(name)) return <CartIcon size={size} color={color} />;
-  if (["catalog", "catalogo", "store", "produtos", "cortes", "home"].includes(name)) return <StoreIcon size={size} color={color} />;
+  if (["catalog", "catalogo", "store", "produtos", "cortes", "home", "dashboard"].includes(name)) return <StoreIcon size={size} color={color} />;
   if (["delivery", "deliveries", "truck", "royaldelivery", "tracking"].includes(name)) return <TruckIcon size={size} color={color} />;
   if (["settings", "configuracoes"].includes(name)) return <SettingsIcon size={size} color={color} />;
   if (["success", "check"].includes(name)) return <CheckIcon size={size} color={color} />;

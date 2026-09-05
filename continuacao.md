@@ -76,7 +76,7 @@ foundation/semi-composed
   -> recipes visuais reutilizaveis
 
 foundation/native
-  -> bridge native-ready de primitives e semi-composed
+  -> bridge native-ready de theme, primitives e semi-composed
 
 foundation/shells/app-shell/foundation
   -> contrato, tipos, resolver e modelo visual comum
@@ -85,7 +85,7 @@ foundation/shells/app-shell/web
   -> runtime React web: Header, Drawer, Sidebar, BottomTabBar, Footer e content
 
 foundation/shells/app-shell/native
-  -> resolver native-ready para app mobile futuro
+  -> resolver native-ready para app mobile futuro com designSystem
 ```
 
 Native aqui significa `native-ready`, nao app mobile pronto. Ainda nao existe:
@@ -97,6 +97,80 @@ frontend/client/mobile
 
 Quando existir, ele deve consumir os mesmos manifests, locales e navigation do
 client shared-core.
+
+Native Design System agora possui:
+
+```text
+frontend/foundation/native/tokens.ts
+  -> resolveNativeThemeTokens()
+
+frontend/foundation/native/semi-composed.ts
+  -> resolveNativeSemiComposedDescriptor()
+
+frontend/foundation/native/ui.ts
+  -> resolveNativeUiManifest()
+  -> createNativeFoundationBridge()
+```
+
+O contrato native-ready cobre:
+
+```text
+Avatar
+Badge
+Button
+Card
+Divider
+DropdownPicker
+EmptyState
+Field
+Icon
+Input
+Layout
+SegmentedControl
+Select
+Surface
+Text
+```
+
+Cada primitive resolve um `NativeStyleDescriptor` a partir de manifest/theme,
+semi-composed e ui config. Nao existe cor local native fora do manifest.
+
+## Theme E Design System
+
+A hierarquia atual de tema ficou assim:
+
+```text
+frontend/shared-core/manifest/theme/colors.ts
+  -> cores globais dark/light de fallback comum
+
+frontend/shared-core/manifest/theme/tokens.ts
+  -> tokens fisicos globais e resolveRoyalPrimeThemeMode()
+
+frontend/client/shared-core/manifest/theme/colors.ts
+  -> cores reais do portal/client dark/light
+
+frontend/client/shared-core/manifest/theme/tokens.ts
+  -> clientThemeTokens e resolveClientThemeMode()
+
+frontend/admin/shared-core/manifest/theme/colors.ts
+  -> cores reais do admin dark/light/admin
+
+frontend/admin/shared-core/manifest/theme/tokens.ts
+  -> adminThemeTokens e resolveAdminThemeMode()
+```
+
+Regra curta:
+
+```text
+global shared-core e fallback
+client shared-core e design system do portal/client
+admin shared-core e design system do admin
+surface especifica sobrescreve cor do global por mode
+```
+
+O AppShell recebe o `theme` do manifest da surface. Para trocar light/dark no
+portal, a tela seleciona `clientThemeManifest.modes[mode]` e injeta esse mode
+como `theme.colors` antes de passar para `@foundation/shells/app-shell`.
 
 ## AppShell
 
@@ -137,6 +211,25 @@ slots
 callbacks de navegacao
 ```
 
+Uso de Design System dentro do AppShell:
+
+```text
+Header/Sidebar/Drawer/Footer/BottomTabBar
+  -> usam Surface como casca visual
+
+itens clicaveis de navegacao
+  -> usam Button
+  -> inactive: appearance="transparent"
+  -> active: appearance="soft"
+
+icones
+  -> usam Icon/AppIcons via iconIntent
+```
+
+O AppShell nao deve recriar visual local de botao/link quando a Foundation ja
+tem primitive. Classes do AppShell podem apenas posicionar a casca e mapear
+variaveis `--app-shell-*` para `--ui-surface-*`.
+
 ## Navigation Web E Native
 
 A mesma navigation deve alimentar:
@@ -154,6 +247,7 @@ Contrato esperado por item:
 ```text
 key
 labelKey ou label
+groupKey/groupLabelKey quando Sidebar/Drawer precisam de seções
 iconIntent ou iconName
 routeKey ou routePath
 order
@@ -174,6 +268,111 @@ footer
 
 Nao criar navegacao separada para desktop, mobile web e native. O que muda e a
 apresentacao, nao a intencao.
+
+Sidebar e Drawer agora podem receber grupos declarativos:
+
+```text
+navigation item
+  -> groupKey
+  -> groupLabelKey
+  -> groupOrder
+
+appshell.config.jsx
+  -> navigationGroups
+
+resolveAppShellModel
+  -> sidebarGroups
+  -> drawerGroups
+```
+
+BottomTabBar e NativeTabBar continuam usando a mesma lista de intencoes, mas
+sem virar menu complexo. Grupos existem principalmente para SidebarMenu e
+Drawer.
+
+## Layout V1
+
+O corte atual adicionou um contrato de Layout inspirado no ServiceOS, mas menor
+e pragmatico para RoyalPrime.
+
+Foundation agora possui:
+
+```text
+frontend/foundation/ui/Layout
+  -> Box
+  -> Flex
+  -> Stack
+  -> Inline
+  -> Grid
+  -> GridItem
+  -> Container
+```
+
+O contrato semantico fica em:
+
+```text
+frontend/foundation/ui/core/layout.ts
+```
+
+Regra curta:
+
+```text
+theme define a matriz fisica
+ui layout define nomes reutilizaveis
+appShell escolhe regioes por viewport
+telas escolhem ocupacao sem CSS solto quando possivel
+```
+
+Hoje o AppShell e o primeiro consumidor real desse contrato. A configuracao
+nasce em:
+
+```text
+frontend/client/shared-core/manifest/portal/appshell.config.jsx
+```
+
+Exemplo atual do portal:
+
+```text
+layout.viewports.desktop.header
+  -> width: "full"
+  -> gutter: "page"
+  -> align: "between"
+
+layout.viewports.desktop.content
+  -> width: "full"
+  -> gutter: "none"
+
+layout.viewports.mobile.bottomTabBar
+  -> width: "full"
+  -> gutter: "page"
+
+layout.viewports.native
+  -> inheritFrom: "mobile"
+```
+
+Importante sobre `full`:
+
+```text
+full nao significa elemento sem regra ocupando a tela de forma solta.
+full significa ocupar o span completo da matriz do viewport.
+
+desktop -> 20 colunas
+tablet  -> 8 colunas
+mobile  -> 4 colunas
+```
+
+Quando `gutter: "page"` esta ativo, o Container preserva o gutter externo da
+pagina. Entao, no desktop, o Header full do portal ocupa as 20 colunas uteis
+com margem externa de pagina, em vez de usar um `max-width` antigo fixo.
+
+O CSS antigo do Header nao deve voltar a forcar:
+
+```text
+max-width
+margin-inline: auto
+```
+
+em `.headerPortalClassic .headerInner`, porque isso quebra o contrato do
+Container e faz o manifest perder autoridade.
 
 ## Manifests
 
@@ -265,7 +464,7 @@ git diff --check
 Ultimo estado validado:
 
 ```text
-npm run verify:foundation -> passou, 38 checks
+npm run verify:foundation -> passou, 65 checks
 npm run build:client      -> passou
 npm run build:admin       -> passou
 git diff --check          -> passou, apenas warnings LF/CRLF do Windows

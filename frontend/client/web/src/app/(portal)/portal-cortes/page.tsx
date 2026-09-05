@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
-import { HeroCortesView } from "../../../screens/cuts/HeroCortesView";
+import { PortalView } from "../../../screens/portal/PortalView";
 
 export default function PortalCortesPage() {
-  const router = useRouter();
-  return <HeroCortesView onNavigate={(path) => router.push(path)} />;
+  return <PortalView initialTab="cortes" />;
 }

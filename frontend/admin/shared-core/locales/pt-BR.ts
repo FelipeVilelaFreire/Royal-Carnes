@@ -16,7 +16,22 @@ export const adminPtBR = {
     closeDrawerAriaLabel: "Fechar navegacao",
     collapseSidebar: "Recolher menu",
     openDrawerAriaLabel: "Abrir navegacao",
-    searchPlaceholder: "Buscar registros"
+    searchPlaceholder: "Buscar registros",
+    navigation: {
+      dashboard: "Dashboard",
+      produtos: "Produtos",
+      usuarios: "UsuÃ¡rios",
+      assinaturas: "Assinaturas",
+      pedidos: "Pedidos",
+      deliveries: "Deliveries",
+      configuracoes: "ConfiguraÃ§Ãµes"
+    },
+    navigationGroups: {
+      overview: "Visao geral",
+      commerce: "Operacao comercial",
+      people: "Pessoas",
+      system: "Sistema"
+    }
   },
   common: {
     back: "Voltar",

@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
-import { HomeOrientationView } from "../../../screens/portal/tabs/HomeOrientationView";
+import { PortalView } from "../../../screens/portal/PortalView";
 
 export default function PortalHomePage() {
-  const router = useRouter();
-  return <HomeOrientationView onNavigate={(path) => router.push(path)} />;
+  return <PortalView initialTab="home" />;
 }

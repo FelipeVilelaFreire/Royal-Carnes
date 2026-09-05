@@ -17,15 +17,38 @@ export const clientPtBR = {
     sair: "Sair"
   },
   appShell: {
+    brand: {
+      name: "Royal Carnes"
+    },
     closeDrawerAriaLabel: "Fechar navegacao",
     collapseSidebar: "Recolher menu",
     openDrawerAriaLabel: "Abrir navegacao",
-    searchPlaceholder: "Buscar"
+    searchPlaceholder: "Buscar",
+    navigation: {
+      home: "Home",
+      cortes: "Cortes",
+      catalogo: "Catálogo",
+      produtos: "Montar Box",
+      royalBox: "Royal Box",
+      royalDelivery: "Royal Delivery",
+      meusPedidos: "Meus Pedidos",
+      meuClube: "Meu Clube",
+      minhaCaixa: "Minha Caixa",
+      minhaConta: "Minha Conta",
+      perfil: "Perfil"
+    },
+    navigationGroups: {
+      shop: "Comprar",
+      account: "Conta",
+      support: "Acompanhamento"
+    }
   },
   authSession: {
     userName: "Felipe",
     userBadge: "Cliente Royal",
-    accountLabel: "Minha conta"
+    accountLabel: "Minha conta",
+    themeDark: "Dark",
+    themeLight: "Light"
   },
   authEmptyState: {
     title: "Entre para continuar",

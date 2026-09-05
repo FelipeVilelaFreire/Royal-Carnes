@@ -41,6 +41,10 @@ frontend/foundation/ui/Card
 frontend/foundation/ui/UiProvider
 frontend/foundation/shells/app-shell
 frontend/foundation/native
+frontend/client/shared-core/manifest/theme/colors.ts
+frontend/client/shared-core/manifest/theme/tokens.ts
+frontend/admin/shared-core/manifest/theme/colors.ts
+frontend/admin/shared-core/manifest/theme/tokens.ts
 frontend/client/web/src/transitional/app-shell
 frontend/client/web/src/transitional/product-components
 frontend/admin/web/src/transitional/app-shell
@@ -70,6 +74,120 @@ manifest declara configuracao
 foundation veste UI
 render-app apresenta
 ```
+
+## Contrato De Layout
+
+Layout segue a mesma intencao do ServiceOS: nomes simples e genericos em
+Foundation, ativacao por manifest e resolucao por viewport.
+
+```text
+theme.tokens.layout
+  -> matriz fisica global: desktop/tablet/mobile, gutters e containers
+
+ui.layout
+  -> defaults semanticos: Container, Grid, GridItem, Stack, Inline, Flex e Box
+
+appShell.layout.viewports
+  -> como Header, Content, Footer, Drawer e BottomTabBar usam a matriz
+
+screens.<screenKey>.layout
+  -> futuro contrato de como cada tela ocupa a matriz
+```
+
+O manifest deve declarar matematica e intencao de layout, nao CSS solto:
+
+```text
+width: "wide" | "comfortable" | "compact" | "full"
+gutter: "page" | "none"
+gridColumns: "theme" | number
+align: "start" | "center" | "between" | "end"
+```
+
+Significado de `full`:
+
+```text
+full ocupa o span completo da matriz do viewport, preservando o gutter quando
+gutter: "page" estiver ativo.
+
+desktop -> 20 colunas
+tablet  -> 8 colunas
+mobile  -> 4 colunas
+```
+
+Exemplo pratico: se o desktop tem 20 colunas, gutter externo de pagina e gap
+entre colunas, `width: "full"` ocupa as 20 colunas uteis. Ele nao deve virar um
+bloco sem delimitacao visual, nem ser limitado por `max-width` local no Header.
+
+Desktop, web mobile e native podem divergir por viewport sem duplicar tudo.
+Quando o native seguir o mobile, usar `inheritFrom: "mobile"`.
+
+Regra curta:
+
+```text
+Theme define a malha
+UI Layout define os nomes
+AppShell escolhe a casca por viewport
+Telas escolhem ocupacao de conteudo
+```
+
+No portal atual, o Header desktop usa:
+
+```text
+layout.viewports.desktop.header
+  -> width: "full"
+  -> gutter: "page"
+  -> align: "between"
+```
+
+O AppShell deve respeitar esse contrato usando `Container` de Foundation. CSS
+de casca pode controlar altura, z-index, posicao e variaveis visuais, mas nao
+deve sobrescrever a largura declarada no manifest com `max-width` fixo.
+
+## Hierarquia De Tema
+
+O tema global em `frontend/shared-core/manifest/theme` nao e o design final de
+cada app. Ele fornece fallback comum de tokens e modes:
+
+```text
+shared-core/manifest/theme/colors.ts
+  -> royalPrimeGlobalThemeModes.dark/light
+
+shared-core/manifest/theme/tokens.ts
+  -> royalPrimeThemeTokens
+  -> resolveRoyalPrimeThemeMode(mode, scopedModes)
+```
+
+Cada surface tem seu proprio design system no shared-core correto:
+
+```text
+client/shared-core/manifest/theme/colors.ts
+  -> clientThemeModes.dark/light
+
+client/shared-core/manifest/theme/tokens.ts
+  -> clientThemeTokens
+  -> resolveClientThemeMode()
+
+admin/shared-core/manifest/theme/colors.ts
+  -> adminThemeModes.dark/light/admin
+
+admin/shared-core/manifest/theme/tokens.ts
+  -> adminThemeTokens
+  -> resolveAdminThemeMode()
+```
+
+Fluxo de resolucao:
+
+```text
+global fallback mode
+  -> merge com mode especifico da surface
+  -> theme.manifest.js exporta o tema final da surface
+  -> AppShell/Foundation resolvem CSS variables
+```
+
+Assim, se o client/admin nao declarar uma cor, ela vem do global; se declarar,
+a surface vence. O portal usa cores dark/light proximas ao header legacy:
+fundo escuro `#0B0908`, ivory `#FCFBF7`, copper `#B87333`, header translúcido
+e active pill por `activeBg`.
 
 Render-app nao deve ser dono de:
 
@@ -157,11 +275,12 @@ frontend/
       Select/
       EmptyState/
 
-    native/
-      index.ts
-      types.ts
-      ui.ts
-      semi-composed.ts
+  native/
+    tokens.ts
+    ui.ts
+    semi-composed.ts
+    types.ts
+    index.ts
 
     shells/
       app-shell/
@@ -817,6 +936,38 @@ ainda `client/native` ou `client/mobile`; o que existe agora e a ponte de
 Foundation para que o app native futuro use os mesmos tokens, recipes,
 navigation, locales e manifests.
 
+O Design System native-ready resolve estes contratos:
+
+```text
+foundation/native/tokens.ts
+  -> theme mode da surface
+  -> cores e tokens fisicos como objeto nativo
+
+foundation/native/semi-composed.ts
+  -> recipes de surface/text/icon/stroke/motion/etc em NativeStyleDescriptor
+
+foundation/native/ui.ts
+  -> Button, Input, Select, Field, Card, Surface, Text, Icon, Badge,
+     Divider, DropdownPicker, SegmentedControl, EmptyState, Layout
+
+foundation/shells/app-shell/native
+  -> regioes Header/Drawer/NativeTabBar
+  -> designSystem
+  -> navigationStyles active/inactive
+```
+
+Regra de estado para navegacao:
+
+```text
+inactive -> Button transparent
+active -> Button soft
+container/regiao -> Surface
+```
+
+Nenhuma pagina do portal deve criar uma variacao web-only quando a intencao
+tambem precisa existir no native futuro. A diferenca permitida fica no runtime:
+web usa CSS/DOM; native usa `NativeStyleDescriptor`.
+
 ### Navegacao Compartilhada Entre Web Mobile E Native
 
 O AppShell de Foundation nao deve ter uma navegacao propria para desktop, outra
@@ -829,6 +980,7 @@ Contrato esperado:
 navigation item
   -> key
   -> labelKey
+  -> groupKey/groupLabelKey quando Sidebar/Drawer precisarem de secoes
   -> iconIntent/iconName semantico
   -> routeKey ou routePath
   -> order
@@ -884,6 +1036,26 @@ web resolve por Foundation/AppIcons
 native resolve por biblioteca nativa equivalente
 Foundation/ServiceOS controlam tamanho, tom, stroke e receita visual
 ```
+
+Sidebar e Drawer podem renderizar grupos declarados, sem criar SidebarMenu
+paralelo:
+
+```text
+shared-core/navigation
+  -> groupKey, groupLabelKey, groupOrder por item
+
+shared-core/manifest/*/appshell.config.jsx
+  -> navigationGroups com ordem e labels
+
+foundation/shells/app-shell/foundation/resolver.ts
+  -> resolve sidebarGroups e drawerGroups
+
+foundation/shells/app-shell/web
+  -> AppShellSidebar e AppShellDrawer renderizam os grupos
+```
+
+BottomTabBar e NativeTabBar devem permanecer planos e continuar lendo os mesmos
+itens por placement.
 
 Nao fazer:
 

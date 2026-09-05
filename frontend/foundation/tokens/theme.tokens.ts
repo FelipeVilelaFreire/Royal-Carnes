@@ -234,7 +234,7 @@ export const resolveThemePhysicalTokens = (tokens: any, scales?: any): UiThemePh
       ...base.layout
     },
     blur: { sm: 8, md: 16, lg: 24, ...base.blur },
-    zIndex: { base: 0, sticky: 10, overlay: 50, modal: 100, toast: 120, ...base.zIndex },
+    zIndex: { base: 0, sticky: 10, overlay: 50, modal: 100, toast: 120, appShellBottomBar: 980, appShellDrawer: 1200, appShellHeader: 1300, ...base.zIndex },
   };
 };
 

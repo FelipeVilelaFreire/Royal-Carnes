@@ -674,7 +674,7 @@ export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
       </main>
 
       {showHeader ? <Footer /> : null}
-      <BottomTabBar activeTab="portal-home" onNavigate={onNavigate} isDark={isDark} />
+      {showHeader ? <BottomTabBar activeTab="portal-home" onNavigate={onNavigate} isDark={isDark} /> : null}
     </div>
   );
 };

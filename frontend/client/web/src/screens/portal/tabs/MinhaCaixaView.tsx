@@ -10,6 +10,7 @@ import { royalCustomerMock } from "@/mocks/customer.mock";
 
 export interface MinhaCaixaViewProps {
   onNavigate?: (path: string) => void;
+  showShell?: boolean;
 }
 
 interface CartItem {
@@ -22,7 +23,7 @@ interface CartItem {
   quantity: number;
 }
 
-export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) => {
+export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate, showShell = true }) => {
   const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       const attr = document.documentElement.getAttribute("data-theme");
@@ -163,22 +164,24 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
       }}
     >
       {/* 1. Header Único e Universal do Portal */}
-      <PortalHeader
-        activeTab="produtos"
-        themeMode={themeMode}
-        onToggleTheme={() => {
-          const next = themeMode === "dark" ? "light" : "dark";
-          setThemeMode(next);
-          if (typeof document !== "undefined") {
-            document.documentElement.setAttribute("data-theme", next);
-            document.documentElement.style.backgroundColor = next === "dark" ? "#0B0908" : "#FCFBF7";
-            document.documentElement.style.color = next === "dark" ? "#E8E1DE" : "#1A1A1A";
-          }
-          localStorage.setItem("royal_prime_theme", next);
-          window.dispatchEvent(new Event("royal_theme_changed"));
-        }}
-        onNavigate={onNavigate}
-      />
+      {showShell ? (
+        <PortalHeader
+          activeTab="produtos"
+          themeMode={themeMode}
+          onToggleTheme={() => {
+            const next = themeMode === "dark" ? "light" : "dark";
+            setThemeMode(next);
+            if (typeof document !== "undefined") {
+              document.documentElement.setAttribute("data-theme", next);
+              document.documentElement.style.backgroundColor = next === "dark" ? "#0B0908" : "#FCFBF7";
+              document.documentElement.style.color = next === "dark" ? "#E8E1DE" : "#1A1A1A";
+            }
+            localStorage.setItem("royal_prime_theme", next);
+            window.dispatchEvent(new Event("royal_theme_changed"));
+          }}
+          onNavigate={onNavigate}
+        />
+      ) : null}
 
       {/* 2. Main Content da Página Royal Delivery */}
       <main
@@ -733,10 +736,10 @@ export const MinhaCaixaView: React.FC<MinhaCaixaViewProps> = ({ onNavigate }) =>
       </main>
 
       {/* 3. BottomTabBar Mobile */}
-      <BottomTabBar activeTab="minha-caixa" onNavigate={onNavigate} isDark={isDark} />
+      {showShell ? <BottomTabBar activeTab="minha-caixa" onNavigate={onNavigate} isDark={isDark} /> : null}
 
       {/* 4. Footer */}
-      <Footer onNavigate={onNavigate} isDark={isDark} />
+      {showShell ? <Footer onNavigate={onNavigate} isDark={isDark} /> : null}
     </div>
   );
 };

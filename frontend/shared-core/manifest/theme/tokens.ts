@@ -1,11 +1,24 @@
-import { royalPrimeBaseColors, royalPrimeLightColors } from "./colors";
+import { royalPrimeGlobalThemeModes } from "./colors";
+
+export const resolveRoyalPrimeThemeMode = (
+  mode: string = "dark",
+  scopedModes: Record<string, Record<string, string>> = {},
+) => {
+  const fallbackMode = mode === "admin" ? "dark" : mode;
+  const globalColors =
+    royalPrimeThemeTokens.modes[fallbackMode as keyof typeof royalPrimeThemeTokens.modes] ||
+    royalPrimeThemeTokens.modes[royalPrimeThemeTokens.defaultMode as keyof typeof royalPrimeThemeTokens.modes];
+  const scopedColors = scopedModes[mode] || scopedModes[fallbackMode] || {};
+
+  return {
+    ...globalColors,
+    ...scopedColors,
+  };
+};
 
 export const royalPrimeThemeTokens = {
   defaultMode: "dark",
-  modes: {
-    dark: royalPrimeBaseColors,
-    light: royalPrimeLightColors,
-  },
+  modes: royalPrimeGlobalThemeModes,
   tokens: {
     typography: {
       fontToken: "'Plus Jakarta Sans', sans-serif",
@@ -148,6 +161,9 @@ export const royalPrimeThemeTokens = {
       overlay: 50,
       modal: 100,
       toast: 120,
+      appShellBottomBar: 980,
+      appShellDrawer: 1200,
+      appShellHeader: 1300,
     },
   },
 };

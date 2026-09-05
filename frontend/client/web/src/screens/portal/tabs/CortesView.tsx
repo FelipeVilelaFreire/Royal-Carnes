@@ -10,9 +10,10 @@ import { ProductItemCard } from "../../../product-components/ecommerce";
 export interface CortesViewProps {
   isMember?: boolean;
   onNavigate?: (path: string) => void;
+  showShell?: boolean;
 }
 
-export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavigate }) => {
+export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavigate, showShell = true }) => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("relevance");
@@ -66,17 +67,19 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
       }}
     >
       {/* 1. Header Único do Portal Logado */}
-      <PortalHeader
-        activeTab="portal-cortes"
-        themeMode={themeMode}
-        onToggleTheme={() => {
-          const next = themeMode === "dark" ? "light" : "dark";
-          setThemeMode(next);
-          localStorage.setItem("royal_prime_theme", next);
-          window.dispatchEvent(new Event("royal_theme_changed"));
-        }}
-        onNavigate={onNavigate}
-      />
+      {showShell ? (
+        <PortalHeader
+          activeTab="portal-cortes"
+          themeMode={themeMode}
+          onToggleTheme={() => {
+            const next = themeMode === "dark" ? "light" : "dark";
+            setThemeMode(next);
+            localStorage.setItem("royal_prime_theme", next);
+            window.dispatchEvent(new Event("royal_theme_changed"));
+          }}
+          onNavigate={onNavigate}
+        />
+      ) : null}
 
       <style>{`
         @media (max-width: 768px) {
@@ -303,8 +306,8 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
       </div>
 
       {/* 6. BottomTabBar Mobile & Footer */}
-      <BottomTabBar activeTab="portal-cortes" onNavigate={onNavigate} isDark={isDark} />
-      <Footer onNavigate={onNavigate} isDark={isDark} />
+      {showShell ? <BottomTabBar activeTab="portal-cortes" onNavigate={onNavigate} isDark={isDark} /> : null}
+      {showShell ? <Footer onNavigate={onNavigate} isDark={isDark} /> : null}
     </div>
   );
 };

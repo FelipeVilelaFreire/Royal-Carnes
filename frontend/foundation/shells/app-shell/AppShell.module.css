@@ -1,8 +1,17 @@
 .shell {
+  --app-shell-border-width: var(--theme--borders-hairline);
+  --app-shell-bottom-shadow: var(--theme--elevation-md-x) calc(var(--theme--elevation-md-y) * -1) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--app-shell-background) 70%, transparent);
+  --app-shell-brand-name-size: var(--theme--typography-sizeXl);
+  --app-shell-divider-size: var(--theme--borders-hairline);
+  --app-shell-drawer-backdrop-bg: color-mix(in srgb, var(--app-shell-background) 72%, transparent);
+  --app-shell-space-none: var(--theme--borders-none);
+  --app-shell-panel-shadow: calc(var(--theme--elevation-lg-x) * -1) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--app-shell-background) 70%, transparent);
   background: var(--app-shell-background);
   color: var(--app-shell-color);
+  isolation: isolate;
   min-height: 100vh;
-  transition: background 180ms ease, color 180ms ease;
+  position: relative;
+  transition: background var(--theme--motion-durationSm) var(--theme--motion-easingStandard), color var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
 }
 
 .shellWithSidebar {
@@ -23,30 +32,45 @@
   box-sizing: border-box;
   color: inherit;
   flex: 1;
-  min-height: calc(100vh - 140px);
+  min-height: calc(100vh - var(--app-shell-content-min-offset, var(--theme--dimensions-height-3xl)));
   width: 100%;
 }
 
 .header {
-  background: var(--app-shell-header-bg);
-  border-block-end: 1px solid var(--app-shell-border);
+  background: var(--app-shell-header-bg, var(--theme--color-surface));
+  border-block-end: var(--app-shell-border-width) solid var(--app-shell-border);
   box-sizing: border-box;
   color: inherit;
   inset-inline: 0;
+  isolation: isolate;
+  opacity: 1;
   position: fixed;
   top: 0;
-  transition: background 180ms ease, border-color 180ms ease;
+  transition: background var(--theme--motion-durationSm) var(--theme--motion-easingStandard), border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
   width: 100%;
-  z-index: 100;
+  z-index: var(--theme--z-index-appShellHeader, 1300);
+}
+
+.header::before {
+  background: var(--app-shell-header-bg, var(--theme--color-surface));
+  content: "";
+  inset: 0;
+  opacity: 1;
+  position: absolute;
+  z-index: -1;
+}
+
+.headerPortalClassic {
+  box-shadow: none;
 }
 
 .headerFloating {
-  border: 1px solid var(--app-shell-border);
-  border-radius: 16px;
+  border: var(--app-shell-border-width) solid var(--app-shell-border);
+  border-radius: var(--theme--radius-2xl);
   inset-inline: auto;
   margin-inline: auto;
-  max-width: 1280px;
-  width: calc(100% - 32px);
+  max-width: var(--theme--layout-container-xl);
+  width: calc(100% - (var(--theme--spacing-spaceXl) * 2));
 }
 
 .headerInner {
@@ -55,58 +79,104 @@
   display: flex;
   gap: var(--app-shell-gap);
   justify-content: space-between;
-  min-height: 76px;
+  min-height: var(--theme--dimensions-height-3xl);
   overflow: hidden;
   padding: var(--app-shell-header-padding-y) var(--app-shell-header-padding-x);
   width: 100%;
 }
 
+.headerPortalClassic .headerInner {
+  height: var(--theme--dimensions-height-3xl);
+  min-height: var(--theme--dimensions-height-3xl);
+}
+
+.headerInnerLayout {
+  width: 100%;
+}
+
 .brand {
+  --ui-surface-bg: var(--app-shell-brand-bg);
+  --ui-surface-border: var(--app-shell-brand-border);
+  --ui-surface-border-width: var(--app-shell-border-width);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-radius: var(--theme--radius-xl);
   align-items: center;
-  background: var(--app-shell-brand-bg);
-  border: 1px solid var(--app-shell-brand-border);
-  border-radius: 16px;
   color: inherit;
-  cursor: pointer;
-  display: inline-flex;
   flex-shrink: 0;
-  gap: 12px;
   min-width: 0;
-  padding: 7px 13px 7px 7px;
+}
+
+.brand > span {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--theme--spacing-spaceSm);
+  min-width: 0;
+}
+
+.brandCollapsed {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-button-min-width: var(--theme--dimensions-height-lg);
+  --ui-button-padding-x: var(--app-shell-space-none);
+  --ui-button-padding-y: var(--app-shell-space-none);
+}
+
+.brandTextOnly {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-surface-radius: var(--theme--radius-none);
+  --ui-button-padding-x: var(--app-shell-space-none);
+  --ui-button-padding-y: var(--app-shell-space-none);
+}
+
+.brandTextOnly .brandText {
+  gap: 0;
+}
+
+.brandTextOnly .brandText span:first-child {
+  font-size: var(--app-shell-brand-name-size) !important;
+  font-weight: var(--theme--typography-bold) !important;
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  line-height: var(--theme--typography-lineHeightLg) !important;
+}
+
+.brandLogoOnly {
+  --ui-button-padding-x: var(--app-shell-space-none);
+  --ui-button-padding-y: var(--app-shell-space-none);
 }
 
 .brandLogoFrame {
   align-items: center;
   background: var(--app-shell-accent);
-  border-radius: 13px;
+  border-radius: var(--theme--radius-xl);
   box-sizing: border-box;
   display: inline-flex;
-  height: 42px;
+  height: var(--theme--dimensions-height-lg);
   justify-content: center;
-  padding: 4px;
-  width: 42px;
+  padding: var(--theme--spacing-space2xs);
+  width: var(--theme--dimensions-height-lg);
 }
 
 .brandLogo {
-  border-radius: 10px;
-  height: 34px;
+  border-radius: var(--theme--radius-lg);
+  height: var(--theme--dimensions-height-md);
   object-fit: cover;
-  width: 34px;
+  width: var(--theme--dimensions-height-md);
 }
 
 .brandText {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: var(--theme--borders-hairline);
   min-width: 0;
 }
 
 .brandKicker {
   color: var(--app-shell-accent);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1;
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  line-height: var(--theme--typography-lineHeight2xs);
   text-transform: uppercase;
 }
 
@@ -114,7 +184,20 @@
   align-items: center;
   display: flex;
   gap: var(--app-shell-gap);
+  height: 100%;
   min-width: 0;
+}
+
+.headerDivider {
+  background: var(--app-shell-border);
+  display: none;
+  flex-shrink: 0;
+  height: var(--theme--dimensions-height-2xs);
+  width: var(--app-shell-divider-size);
+}
+
+.headerPortalClassic .headerDivider {
+  display: block;
 }
 
 .headerNav {
@@ -124,40 +207,75 @@
   min-width: 0;
 }
 
+.headerNavPill {
+  gap: var(--theme--spacing-spaceXs);
+}
+
 .navLink {
-  border-block-end: 2px solid transparent;
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-surface-color: var(--app-shell-muted);
+  border-block-end: var(--theme--borders-medium) solid transparent;
   color: var(--app-shell-muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 10px 0;
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  padding: var(--theme--spacing-spaceXs) 0;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 160ms ease, border-color 160ms ease;
+  transition: color var(--theme--motion-durationXs) var(--theme--motion-easingStandard), border-color var(--theme--motion-durationXs) var(--theme--motion-easingStandard);
   white-space: nowrap;
 }
 
+.headerNavPill .navLink {
+  --ui-surface-radius: var(--theme--radius-full);
+  align-items: center;
+  border: var(--app-shell-border-width) solid transparent;
+  border-radius: var(--theme--radius-full);
+  display: inline-flex;
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-medium);
+  height: var(--theme--dimensions-height-md);
+  justify-content: center;
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  padding: var(--app-shell-space-none) var(--theme--spacing-spaceMd);
+  text-transform: none;
+}
+
 .navLinkActive {
+  --ui-surface-bg: var(--app-shell-active-bg);
+  --ui-surface-border: var(--app-shell-accent);
+  --ui-surface-color: var(--app-shell-accent);
   border-block-end-color: var(--app-shell-accent);
   color: var(--app-shell-accent);
 }
 
+.headerNavPill .navLinkActive {
+  background: var(--app-shell-active-bg);
+  border-color: var(--app-shell-accent);
+}
+
 .iconButton {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-surface-color: currentColor;
+  --ui-button-height: var(--theme--dimensions-height-md);
+  --ui-button-min-width: var(--theme--dimensions-height-md);
+  --ui-button-padding-x: var(--theme--spacing-space2xs);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
   align-items: center;
   background: transparent;
-  border: 0;
+  border: var(--theme--borders-none) solid transparent;
   color: inherit;
-  cursor: pointer;
   display: inline-flex;
   justify-content: center;
-  padding: 4px;
 }
 
 .drawerLayer {
   display: flex;
   inset: 0;
   position: fixed;
-  z-index: 200;
+  z-index: var(--theme--z-index-appShellDrawer, 1200);
 }
 
 .drawerLayerRight {
@@ -165,25 +283,26 @@
 }
 
 .drawerBackdrop {
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(4px);
+  background: var(--app-shell-drawer-backdrop-bg);
+  backdrop-filter: blur(var(--theme--blur-sm));
+  border: var(--theme--borders-none) solid transparent;
   inset: 0;
   position: absolute;
 }
 
 .drawerPanel {
   background: var(--app-shell-panel-bg);
-  border-inline-start: 1px solid var(--app-shell-border);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  border-inline-start: var(--app-shell-border-width) solid var(--app-shell-border);
+  box-shadow: var(--app-shell-panel-shadow);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--theme--spacing-spaceLg);
   height: 100%;
-  padding: 24px;
+  padding: var(--theme--spacing-spaceLg);
   position: relative;
-  width: min(320px, 86vw);
-  z-index: 210;
+  width: min(var(--theme--dimensions-minWidth-3xl), 86vw);
+  z-index: var(--theme--z-index-appShellDrawer, 1200);
 }
 
 .drawerHeader {
@@ -195,22 +314,57 @@
 .verticalNav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--theme--spacing-spaceXs);
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-spaceXs);
+}
+
+.navGroup + .navGroup {
+  border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
+  margin-block-start: var(--theme--spacing-spaceXs);
+  padding-block-start: var(--theme--spacing-spaceMd);
+}
+
+.navGroupLabel {
+  color: var(--app-shell-muted);
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  padding-inline: var(--theme--spacing-spaceSm);
+  text-transform: uppercase;
+}
+
+.navGroupItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-space2xs);
 }
 
 .verticalLink {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-radius: var(--theme--radius-xl);
   align-items: center;
-  border-radius: 12px;
+  border-radius: var(--theme--radius-xl);
   color: var(--app-shell-color);
   display: flex;
-  font-size: 15px;
-  font-weight: 650;
-  gap: 10px;
-  padding: 12px 14px;
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-semibold);
+  gap: var(--theme--spacing-spaceXs);
+  padding: var(--theme--spacing-spaceSm);
   text-decoration: none;
+  width: 100%;
 }
 
 .verticalLinkActive {
+  --ui-surface-bg: var(--app-shell-active-bg);
+  --ui-surface-border: var(--app-shell-accent);
+  --ui-surface-color: var(--app-shell-accent);
   background: var(--app-shell-active-bg);
   color: var(--app-shell-accent);
 }
@@ -218,47 +372,53 @@
 .bottomTabBar {
   align-items: center;
   background: var(--app-shell-panel-bg);
-  border-block-start: 1px solid var(--app-shell-border);
+  border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
   bottom: 0;
-  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--app-shell-bottom-shadow);
   box-sizing: border-box;
   display: none;
   inset-inline: 0;
   justify-content: center;
-  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  padding: var(--theme--spacing-spaceXs) var(--theme--spacing-spaceXs) calc(var(--theme--spacing-spaceXs) + env(safe-area-inset-bottom));
   position: fixed;
-  z-index: 100;
+  z-index: var(--theme--z-index-appShellBottomBar, 980);
 }
 
 .bottomTabButton {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-surface-color: var(--app-shell-muted);
+  --ui-surface-radius: var(--theme--radius-xl);
   align-items: center;
   background: transparent;
-  border: 0;
-  border-radius: 14px;
+  border: var(--theme--borders-none) solid transparent;
+  border-radius: var(--theme--radius-xl);
   color: var(--app-shell-muted);
-  cursor: pointer;
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
-  font-size: 10px;
-  font-weight: 700;
-  gap: 4px;
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-bold);
+  gap: var(--theme--spacing-space2xs);
   justify-content: center;
-  max-width: 84px;
-  min-height: 52px;
+  max-width: var(--theme--dimensions-minWidth-sm);
+  min-height: var(--theme--dimensions-height-xl);
   min-width: 0;
-  padding: 6px 4px;
+  padding: var(--theme--spacing-space2xs);
 }
 
 .bottomTabButtonActive {
+  --ui-surface-bg: var(--app-shell-active-bg);
+  --ui-surface-border: var(--app-shell-accent);
+  --ui-surface-color: var(--app-shell-accent);
   background: var(--app-shell-active-bg);
   color: var(--app-shell-accent);
 }
 
 .bottomTabLabel {
   display: block;
-  line-height: 1.15;
-  max-height: 24px;
+  line-height: var(--theme--typography-lineHeight2xs);
+  max-height: var(--theme--dimensions-height-2xs);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
@@ -267,7 +427,7 @@
 
 .sidebar {
   background: var(--app-shell-panel-bg);
-  border-inline-end: 1px solid var(--app-shell-border);
+  border-inline-end: var(--app-shell-border-width) solid var(--app-shell-border);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -275,27 +435,27 @@
   justify-content: space-between;
   max-height: 100vh;
   min-height: 100vh;
-  min-width: 260px;
+  min-width: var(--theme--dimensions-minWidth-3xl);
   overflow-y: auto;
-  padding: 28px 20px;
+  padding: var(--theme--spacing-spaceLg) var(--theme--spacing-spaceMd);
   position: sticky;
   top: 0;
-  transition: width 180ms ease, min-width 180ms ease;
+  transition: width var(--theme--motion-durationSm) var(--theme--motion-easingStandard), min-width var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
   width: var(--app-shell-sidebar-width);
-  z-index: 90;
+  z-index: var(--theme--z-index-sticky);
 }
 
 .sidebarCollapsed {
-  min-width: 72px;
-  padding-inline: 12px;
+  min-width: var(--theme--dimensions-height-3xl);
+  padding-inline: var(--theme--spacing-spaceSm);
 }
 
 .sidebarBrand {
   align-items: center;
-  border-block-end: 1px solid var(--app-shell-border);
+  border-block-end: var(--app-shell-border-width) solid var(--app-shell-border);
   display: flex;
-  gap: 10px;
-  padding-block-end: 20px;
+  gap: var(--theme--spacing-spaceXs);
+  padding-block-end: var(--theme--spacing-spaceMd);
 }
 
 .sidebarCollapsed .sidebarBrand {
@@ -303,36 +463,36 @@
 }
 
 .sidebarFooter {
-  border-block-start: 1px solid var(--app-shell-border);
+  border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-block-start: 20px;
+  gap: var(--theme--spacing-spaceMd);
+  padding-block-start: var(--theme--spacing-spaceMd);
 }
 
 .userProfile {
   align-items: center;
   background: var(--app-shell-surface-bg);
-  border: 1px solid var(--app-shell-border);
-  border-radius: 16px;
+  border: var(--app-shell-border-width) solid var(--app-shell-border);
+  border-radius: var(--theme--radius-2xl);
   display: flex;
-  gap: 12px;
-  padding: 12px;
+  gap: var(--theme--spacing-spaceSm);
+  padding: var(--theme--spacing-spaceSm);
 }
 
 .userAvatar {
   align-items: center;
   background: var(--app-shell-active-bg);
-  border: 1px solid var(--app-shell-border);
-  border-radius: 999px;
+  border: var(--app-shell-border-width) solid var(--app-shell-border);
+  border-radius: var(--theme--radius-full);
   color: var(--app-shell-accent);
   display: inline-flex;
   flex-shrink: 0;
-  font-size: 14px;
-  font-weight: 700;
-  height: 40px;
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-bold);
+  height: var(--theme--dimensions-height-md);
   justify-content: center;
-  width: 40px;
+  width: var(--theme--dimensions-height-md);
 }
 
 .userText {
@@ -344,8 +504,8 @@
 
 .userName {
   color: var(--app-shell-color);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-bold);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -353,27 +513,27 @@
 
 .userBadge {
   color: var(--app-shell-accent);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-semibold);
 }
 
 .footer {
   background: var(--app-shell-panel-bg);
-  border-block-start: 1px solid var(--app-shell-border);
-  margin-block-start: 80px;
-  padding: 32px;
+  border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
+  margin-block-start: var(--theme--spacing-space3xl);
+  padding: var(--theme--spacing-spaceXl);
 }
 
 .footerInner {
   align-items: center;
   display: flex;
-  gap: 20px;
+  gap: var(--theme--spacing-spaceMd);
   justify-content: center;
   margin-inline: auto;
-  max-width: 1280px;
+  max-width: var(--theme--layout-container-xl);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .headerDesktopNav {
     display: none;
   }

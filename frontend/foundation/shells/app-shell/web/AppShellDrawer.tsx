@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
+import { Button } from "../../../ui/Button";
 import { Icon } from "../../../ui/Icon";
 import { CloseIcon } from "../../../ui/Icon/AppIcons";
+import { Surface } from "../../../ui/Surface";
 import { renderAppShellIcon } from "../iconResolver";
 import { AppShellBrand } from "./AppShellBrand";
 import { handleAppShellNavigation } from "./navigation";
@@ -23,36 +25,57 @@ export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, 
 
   return (
     <div className={[styles.drawerLayer, isRight ? styles.drawerLayerRight : ""].filter(Boolean).join(" ")}>
-      <button aria-label={model.strings.closeDrawerAriaLabel || "Close navigation"} className={styles.drawerBackdrop} onClick={onClose} type="button" />
-      <div className={styles.drawerPanel}>
+      <Button aria-label={model.strings.closeDrawerAriaLabel} appearance="transparent" className={styles.drawerBackdrop} onClick={onClose} type="button" />
+      <Surface
+        appearance="solid"
+        className={styles.drawerPanel}
+        style={{
+          "--ui-surface-bg": "var(--app-shell-panel-bg)",
+          "--ui-surface-border": "var(--app-shell-border)",
+          "--ui-surface-color": "var(--app-shell-color)",
+          "--ui-surface-shadow": "var(--app-shell-panel-shadow, none)"
+        } as React.CSSProperties}
+      >
         <div className={styles.drawerHeader}>
           <AppShellBrand brand={model.brand} onNavigate={onNavigate} />
-          <button
-            aria-label={model.strings.closeDrawerAriaLabel || "Close navigation"}
+          <Button
+            aria-label={model.strings.closeDrawerAriaLabel}
+            appearance="transparent"
             className={styles.iconButton}
+            icon={<CloseIcon color="currentColor" />}
+            iconPosition="only"
             onClick={onClose}
+            size="sm"
+            tone="neutral"
             type="button"
-          >
-            <CloseIcon size={20} color="currentColor" />
-          </button>
+          />
         </div>
         <nav className={styles.verticalNav}>
-          {model.drawerItems.map((item) => {
-            const isActive = model.activePath === item.routePath;
-            return (
-              <a
-                className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
-                href={item.routePath}
-                key={item.key}
-                onClick={(event) => handleAppShellNavigation(event, item, onNavigate, onClose)}
-              >
-                <Icon tone="inherit" size="md">{renderAppShellIcon(item, "currentColor", 18)}</Icon>
-                <span>{item.label}</span>
-              </a>
-            );
-          })}
+          {model.drawerGroups.map((group) => (
+            <div className={styles.navGroup} key={group.key}>
+              {group.label ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
+              <div className={styles.navGroupItems}>
+                {group.items.map((item) => {
+                  const isActive = model.activePath === item.routePath;
+                  return (
+                    <Button
+                      appearance={isActive ? "soft" : "transparent"}
+                      className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
+                      key={item.key}
+                      onClick={(event) => handleAppShellNavigation(event, item, onNavigate, onClose)}
+                      size="md"
+                      tone={isActive ? "primary" : "neutral"}
+                    >
+                      <Icon tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
+                      <span>{item.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
-      </div>
+      </Surface>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AppShell } from "@foundation/shells/app-shell";
 import { Button } from "@foundation/ui/Button";
@@ -11,15 +11,17 @@ import { portalAppShellConfig } from "@/manifest/portal/appshell.config";
 import { clientRoutes } from "@/manifest/routes";
 import { clientPtBR } from "@/locales/pt-BR";
 import { AuthModal } from "../../legacy/app-shell";
+import styles from "./PortalView.module.css";
 import { HomeOrientationView } from "./tabs/HomeOrientationView";
 import { CortesView } from "./tabs/CortesView";
 import { PedidoView } from "./tabs/PedidoView";
 import { MinhaCaixaView } from "./tabs/MinhaCaixaView";
 import { MeuClubeView } from "./tabs/MeuClubeView";
 import { MinhaContaView } from "./tabs/MinhaContaView";
+import { MeusPedidosView } from "./tabs/MeusPedidosView";
 
 export interface PortalViewProps {
-  initialTab?: "home" | "cortes" | "produtos" | "minhaCaixa" | "royalDelivery" | "meuClube" | "minhaConta";
+  initialTab?: "home" | "cortes" | "produtos" | "minhaCaixa" | "royalDelivery" | "meuClube" | "meusPedidos" | "minhaConta";
 }
 
 export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) => {
@@ -58,13 +60,14 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
   }, []);
 
   const getTabFromPath = (path: string) => {
-    if (path === "/cortes") return "cortes";
-    if (path === "/produtos") return "produtos";
-    if (path === "/minha-caixa") return "minhaCaixa";
+    if (path === "/cortes" || path === "/portal-cortes") return "cortes";
+    if (path === "/produtos" || path === "/montar-box") return "produtos";
+    if (path === "/minha-caixa" || path === "/portal-minha-caixa") return "minhaCaixa";
     if (path === "/royal-delivery") return "royalDelivery";
     if (path === "/meu-clube" || path === "/minha-assinatura") return "meuClube";
-    if (path === "/minha-conta") return "minhaConta";
-    if (path === "/home") return "home";
+    if (path === "/meus-pedidos") return "meusPedidos";
+    if (path === "/minha-conta" || path === "/portal-minha-conta" || path === "/perfil") return "minhaConta";
+    if (path === "/home" || path === "/portal-home") return "home";
     return "home";
   };
 
@@ -87,6 +90,18 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
   const visiblePortalNavigation = isMockAuthenticated
     ? portalNavigation
     : portalNavigation.filter((item) => portalAppShellConfig.auth?.publicNavKeys?.includes(item.key) || item.key === "minhaConta");
+  const activeThemeColors =
+    portalAppShellConfig.theme?.modes?.[themeMode] ||
+    portalAppShellConfig.theme?.colors;
+  const portalShellConfig = useMemo(() => {
+    return {
+      ...portalAppShellConfig,
+      theme: {
+        ...portalAppShellConfig.theme,
+        colors: activeThemeColors,
+      },
+    };
+  }, [activeThemeColors]);
 
   const handleNavigate = (routePath: string) => {
     const found = portalNavigation.find(
@@ -122,11 +137,11 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
 
     switch (activeScreenKey) {
       case "cortes":
-        return <CortesView isMember={true} onNavigate={handleNavigate} />;
+        return <CortesView isMember={true} onNavigate={handleNavigate} showShell={false} />;
       case "produtos":
         return <PedidoView onNavigate={handleNavigate} showHeader={false} />;
       case "minhaCaixa":
-        return <MinhaCaixaView onNavigate={handleNavigate} />;
+        return <MinhaCaixaView onNavigate={handleNavigate} showShell={false} />;
       case "royalDelivery":
         return (
           <EmptyState
@@ -143,8 +158,10 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
         );
       case "meuClube":
         return <MeuClubeView onNavigate={handleNavigate} />;
+      case "meusPedidos":
+        return <MeusPedidosView onNavigate={handleNavigate} showShell={false} />;
       case "minhaConta":
-        return <MinhaContaView onNavigate={handleNavigate} />;
+        return <MinhaContaView onNavigate={handleNavigate} showShell={false} />;
       case "home":
       default:
         return <HomeOrientationView onNavigate={handleNavigate} showHeader={false} />;
@@ -156,68 +173,63 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     setThemeMode(next);
     if (typeof document !== "undefined") {
       document.documentElement.setAttribute("data-theme", next);
-      document.documentElement.style.backgroundColor = next === "dark" ? "#0B0908" : "#FCFBF7";
-      document.documentElement.style.color = next === "dark" ? "#E8E1DE" : "#1A1A1A";
+      const nextThemeColors =
+        portalAppShellConfig.theme?.modes?.[next] ||
+        portalAppShellConfig.theme?.colors;
+      document.documentElement.style.backgroundColor = nextThemeColors.background;
+      document.documentElement.style.color = nextThemeColors.text;
     }
     localStorage.setItem("royal_prime_theme", next);
     window.dispatchEvent(new Event("royal_theme_changed"));
   };
 
+  const headerActionButtonStyle = {
+    "--ui-surface-bg": "var(--app-shell-surface-bg)",
+    "--ui-surface-border": "var(--app-shell-border)",
+    "--ui-surface-border-width": "var(--theme--borders-hairline)",
+    "--ui-surface-color": "var(--app-shell-color)",
+    "--ui-surface-radius": "var(--theme--radius-full)",
+    "--ui-button-height": "var(--theme--dimensions-height-lg)",
+    "--ui-button-min-width": "var(--theme--dimensions-minWidth-sm)",
+    "--ui-button-padding-x": "var(--theme--spacing-spaceSm)",
+    "--ui-button-padding-y": "var(--theme--spacing-space2xs)"
+  } as React.CSSProperties;
+  const profileInitial = clientPtBR.authSession.userName.trim().slice(0, 1).toUpperCase();
+
   const renderHeaderActions = () => (
-    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+    <div className={styles.headerActions}>
       <Button
-        appearance="outline"
+        appearance="soft"
         tone="neutral"
         size="sm"
+        className={styles.themeButton}
         onClick={toggleTheme}
+        icon={themeMode === "dark" ? <SunIcon /> : <MoonIcon />}
+        style={headerActionButtonStyle}
       >
-        <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
-          {themeMode === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
-          {themeMode === "dark" ? "Light" : "Dark"}
-        </span>
+        {themeMode === "dark" ? clientPtBR.authSession.themeLight : clientPtBR.authSession.themeDark}
       </Button>
       {isMockAuthenticated ? (
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <button
-            type="button"
-            onClick={() => handleNavigate(clientRoutes.minhaConta)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              minHeight: "42px",
-              border: "1px solid var(--theme--color-border, rgba(80, 69, 53, 0.28))",
-              borderRadius: "999px",
-              background: "var(--theme--color-surfaceContainer, rgba(255, 255, 255, 0.06))",
-              color: "var(--theme--color-text, #E8E1DE)",
-              padding: "5px 13px 5px 5px",
-              cursor: "pointer",
-              fontFamily: "'Inter', sans-serif"
-            }}
-          >
-            <span
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "999px",
-                display: "grid",
-                placeItems: "center",
-                background: "var(--theme--color-primary, #B87333)",
-                color: "#FFFFFF",
-                fontWeight: 900,
-                fontSize: "13px"
-              }}
-            >
-              F
+        <Button
+          appearance="soft"
+          tone="neutral"
+          size="sm"
+          className={styles.profileButton}
+          onClick={() => handleNavigate(clientRoutes.minhaConta)}
+          style={headerActionButtonStyle}
+        >
+          <span className={styles.profileContent}>
+            <span className={styles.profileAvatar}>
+              {profileInitial}
             </span>
-            <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "1px", lineHeight: 1 }}>
-              <strong style={{ fontSize: "12px" }}>{clientPtBR.authSession.userName}</strong>
-              <span style={{ fontSize: "10px", color: "var(--theme--color-textMuted, #A09A92)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <span className={styles.profileText}>
+              <strong className={styles.profileName}>{clientPtBR.authSession.userName}</strong>
+              <span className={styles.profileBadge}>
                 {clientPtBR.authSession.userBadge}
               </span>
             </span>
-          </button>
-        </div>
+          </span>
+        </Button>
       ) : (
         <Button appearance="solid" tone="primary" size="sm" onClick={() => setIsAuthModalOpen(true)}>
           {clientPtBR.navigation.entrar}
@@ -228,15 +240,15 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
 
   return (
     <AppShell
-      config={portalAppShellConfig}
-      brandName={clientPtBR.brand.name}
+      config={portalShellConfig}
       brandLogo="/assets/brand/royal-prime-logo.jpg"
       navItems={visiblePortalNavigation as any}
       activePath={activeRoutePath}
       onNavigate={handleNavigate}
       rightSlot={renderHeaderActions()}
+      routesMap={clientRoutes}
     >
-      <div style={{ paddingBottom: "40px" }}>
+      <div className={styles.portalContent}>
         {renderActiveScreenType()}
       </div>
       <AuthModal

@@ -1,0 +1,71 @@
+.headerActions {
+  align-items: center;
+  display: flex;
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.themeButton,
+.profileButton {
+  flex-shrink: 0;
+}
+
+.profileContent {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--theme--spacing-spaceXs);
+}
+
+.profileAvatar {
+  align-items: center;
+  background: var(--app-shell-accent);
+  border: var(--theme--borders-hairline) solid var(--app-shell-border);
+  border-radius: var(--theme--radius-full);
+  color: var(--app-shell-accent-contrast);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  height: var(--theme--dimensions-height-sm);
+  justify-content: center;
+  line-height: var(--theme--typography-lineHeight2xs);
+  width: var(--theme--dimensions-height-sm);
+}
+
+.profileText {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--borders-hairline);
+  line-height: var(--theme--typography-lineHeight2xs);
+  min-width: 0;
+}
+
+.profileName {
+  color: var(--app-shell-color);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  line-height: var(--theme--typography-lineHeightXs);
+}
+
+.profileBadge {
+  color: var(--app-shell-muted);
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  line-height: var(--theme--typography-lineHeight2xs);
+  text-transform: uppercase;
+}
+
+.portalContent {
+  padding-bottom: var(--theme--spacing-spaceXl);
+}
+
+@media (max-width: 48em) {
+  .headerActions {
+    gap: var(--theme--spacing-spaceXs);
+  }
+
+  .profileText {
+    display: none;
+  }
+}

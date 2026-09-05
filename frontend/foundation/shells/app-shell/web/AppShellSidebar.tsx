@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "../../../ui/Button";
 import { Icon } from "../../../ui/Icon";
 import { ChevronRightIcon } from "../../../ui/Icon/AppIcons";
+import { Surface } from "../../../ui/Surface";
 import { renderAppShellIcon } from "../iconResolver";
 import { AppShellBrand } from "./AppShellBrand";
 import { handleAppShellNavigation } from "./navigation";
@@ -29,27 +30,46 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
   const profile = config?.sidebar?.userProfile;
 
   return (
-    <aside className={[styles.sidebar, isCollapsed ? styles.sidebarCollapsed : ""].filter(Boolean).join(" ")}>
+    <Surface
+      as="aside"
+      appearance="solid"
+      className={[styles.sidebar, isCollapsed ? styles.sidebarCollapsed : ""].filter(Boolean).join(" ")}
+      style={{
+        "--ui-surface-bg": "var(--app-shell-panel-bg)",
+        "--ui-surface-border": "var(--app-shell-border)",
+        "--ui-surface-color": "var(--app-shell-color)",
+        "--ui-surface-shadow": "none"
+      } as React.CSSProperties}
+    >
       <div className={styles.verticalNav}>
         <div className={styles.sidebarBrand}>
           <AppShellBrand brand={model.brand} collapsed={isCollapsed} onNavigate={onNavigate} />
         </div>
         <nav className={styles.verticalNav}>
-          {model.sidebarItems.map((item) => {
-            const isActive = model.activePath === item.routePath;
-            return (
-              <a
-                className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
-                href={item.routePath}
-                key={item.key}
-                onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
-                title={isCollapsed ? item.label : undefined}
-              >
-                <Icon tone="inherit" size="md">{renderAppShellIcon(item, "currentColor", 20)}</Icon>
-                {!isCollapsed && <span>{item.label}</span>}
-              </a>
-            );
-          })}
+          {model.sidebarGroups.map((group) => (
+            <div className={styles.navGroup} key={group.key}>
+              {group.label && !isCollapsed ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
+              <div className={styles.navGroupItems}>
+                {group.items.map((item) => {
+                  const isActive = model.activePath === item.routePath;
+                  return (
+                    <Button
+                      appearance={isActive ? "soft" : "transparent"}
+                      className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
+                      key={item.key}
+                      onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
+                      size="md"
+                      title={isCollapsed ? item.label : undefined}
+                      tone={isActive ? "primary" : "neutral"}
+                    >
+                      <Icon tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
+                      {!isCollapsed && <span>{item.label}</span>}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
       </div>
       <div className={styles.sidebarFooter}>
@@ -65,16 +85,16 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
         {config?.sidebar?.collapsible !== false && (
           <Button
             appearance="outline"
-            icon={isCollapsed ? <ChevronRightIcon size={16} /> : undefined}
+            icon={isCollapsed ? <ChevronRightIcon /> : undefined}
             iconPosition={isCollapsed ? "only" : "start"}
             onClick={onToggleCollapsed}
             size="sm"
             tone="neutral"
           >
-            {isCollapsed ? null : model.strings.collapseSidebar || "Collapse"}
+            {isCollapsed ? null : model.strings.collapseSidebar}
           </Button>
         )}
       </div>
-    </aside>
+    </Surface>
   );
 };

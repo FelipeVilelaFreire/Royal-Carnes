@@ -16,9 +16,10 @@ import { clientPtBR } from "@/locales/pt-BR";
 
 export interface MinhaContaViewProps {
   onNavigate?: (path: string) => void;
+  showShell?: boolean;
 }
 
-export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) => {
+export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate, showShell = true }) => {
   const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
     if (typeof window !== "undefined") {
       const attr = document.documentElement.getAttribute("data-theme");
@@ -203,12 +204,14 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
       }}
     >
       {/* 1. Header Único Logado do Portal */}
-      <PortalHeader
-        activeTab="portal-minha-conta"
-        themeMode={themeMode}
-        onToggleTheme={toggleTheme}
-        onNavigate={onNavigate}
-      />
+      {showShell ? (
+        <PortalHeader
+          activeTab="portal-minha-conta"
+          themeMode={themeMode}
+          onToggleTheme={toggleTheme}
+          onNavigate={onNavigate}
+        />
+      ) : null}
 
       <style>{`
         .minha-conta-root {
@@ -1657,22 +1660,24 @@ export const MinhaContaView: React.FC<MinhaContaViewProps> = ({ onNavigate }) =>
       />
 
       {/* 3. BottomTabBar Mobile */}
-      <BottomTabBar activeTab="portal-minha-conta" onNavigate={onNavigate} isDark={isDark} />
+      {showShell ? <BottomTabBar activeTab="portal-minha-conta" onNavigate={onNavigate} isDark={isDark} /> : null}
 
       {/* 4. Footer */}
-      <div className="minha-conta-desktop-footer">
+      {showShell ? <div className="minha-conta-desktop-footer">
         <Footer onNavigate={onNavigate} isDark={isDark} />
-      </div>
-      <AuthModal
-        open={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onAuthenticated={() => {
-          setIsMockAuthenticated(true);
-          setIsAuthModalOpen(false);
-        }}
-        isDark={isDark}
-        context="portal"
-      />
+      </div> : null}
+      {showShell ? (
+        <AuthModal
+          open={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthenticated={() => {
+            setIsMockAuthenticated(true);
+            setIsAuthModalOpen(false);
+          }}
+          isDark={isDark}
+          context="portal"
+        />
+      ) : null}
     </div>
   );
 };

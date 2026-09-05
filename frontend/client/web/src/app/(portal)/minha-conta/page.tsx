@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
-import { MinhaContaView } from "../../../screens/portal/tabs/MinhaContaView";
+import { PortalView } from "../../../screens/portal/PortalView";
 
 export default function MinhaContaPage() {
-  const router = useRouter();
-  return <MinhaContaView onNavigate={(path) => router.push(path)} />;
+  return <PortalView initialTab="minhaConta" />;
 }
