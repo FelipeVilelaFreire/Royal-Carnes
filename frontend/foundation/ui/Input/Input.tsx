@@ -1,39 +1,30 @@
-import React from "react";
+"use client";
 
-export interface UiInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+import React, { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
+import styles from "./Input.module.css";
+
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
+  label?: string;
 }
 
-export const UiInput: React.FC<UiInputProps> = ({ label, error, icon, style = {}, ...props }) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  { className, error, icon, id, label, style, ...props },
+  ref,
+) {
+  const inputId = id || props.name;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "6px", width: "100%" }}>
-      {label && <label style={{ fontSize: "13px", fontWeight: "600", color: "var(--theme--color-text-muted, #8DA7C4)" }}>{label}</label>}
-      <div style={{ position: "relative", width: "100%", display: "flex", alignItems: "center" }}>
-        {icon && (
-          <span style={{ position: "absolute", left: "16px", display: "inline-flex", alignItems: "center", color: "var(--theme--color-text-muted)" }}>
-            {icon}
-          </span>
-        )}
-        <input
-          style={{
-            width: "100%",
-            background: "var(--theme--color-surface, rgba(255, 255, 255, 0.04))",
-            border: error ? "1px solid #EF4444" : "1px solid var(--theme--color-border, rgba(255, 255, 255, 0.15))",
-            borderRadius: "14px",
-            padding: icon ? "12px 16px 12px 46px" : "12px 16px",
-            color: "var(--theme--color-text, inherit)",
-            fontSize: "14px",
-            outline: "none",
-            boxSizing: "border-box",
-            transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-            ...style
-          }}
-          {...props}
-        />
-      </div>
-      {error && <span style={{ fontSize: "12px", color: "#EF4444", fontWeight: "500" }}>{error}</span>}
-    </div>
+    <label className={[styles.root, className].filter(Boolean).join(" ")} htmlFor={inputId} style={style}>
+      {label ? <span className={styles.label}>{label}</span> : null}
+      <span className={styles.control} data-invalid={Boolean(error) || undefined} data-with-icon={Boolean(icon) || undefined}>
+        {icon ? <span className={styles.icon} aria-hidden="true">{icon}</span> : null}
+        <input {...props} className={styles.input} id={inputId} ref={ref} />
+      </span>
+      {error ? <span className={styles.error}>{error}</span> : null}
+    </label>
   );
-};
+});
+
+export const UiInput = Input;

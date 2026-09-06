@@ -1,11 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SearchIcon } from "@foundation/ui/Icon/AppIcons";
-import { mockCutCategories, mockCutsCatalog } from "@/mocks/cuts.mock";
+import { Button } from "@foundation/ui/Button";
+import { DropdownPicker } from "@foundation/ui/DropdownPicker";
+import { Input } from "@foundation/ui/Input";
+import { Container, Grid, Inline, Stack } from "@foundation/ui/Layout";
+import { Surface } from "@foundation/ui/Surface";
+import { Text } from "@foundation/ui/Text";
+import {
+  createCortesCatalogViewModel,
+  type CortesCatalogSortKey,
+} from "@/view-models/cortes-catalog.view-model";
+import { useClientCatalog } from "@/hooks/useClientCatalog";
 import { PortalHeader, BottomTabBar, Footer } from "../../../legacy/app-shell";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 import { ProductItemCard } from "../../../product-components/ecommerce";
+import { clientPtBR } from "@/locales/pt-BR";
+import styles from "./CortesView.module.css";
 
 export interface CortesViewProps {
   isMember?: boolean;
@@ -13,10 +25,39 @@ export interface CortesViewProps {
   showShell?: boolean;
 }
 
+const moneyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL"
+});
+
+const categoryButtonStyle = (tokens: typeof themeColorsDefault.dark, isDark: boolean, isActive: boolean) => ({
+  "--ui-surface-bg": isActive
+    ? isDark
+      ? tokens.ivory
+      : tokens.charcoal
+    : isDark
+      ? `color-mix(in srgb, ${tokens.surfaceContainer} 82%, ${tokens.copper})`
+      : tokens.surfaceContainer,
+  "--ui-surface-border": isActive
+    ? isDark
+      ? tokens.ivory
+      : tokens.charcoal
+    : isDark
+      ? `color-mix(in srgb, ${tokens.border} 68%, ${tokens.copper})`
+      : tokens.border,
+  "--ui-surface-color": isActive ? (isDark ? tokens.charcoal : tokens.ivory) : tokens.text,
+  "--ui-button-font-weight": isActive ? "var(--theme--typography-bold)" : "var(--theme--typography-semibold)",
+  "--ui-button-height": "var(--theme--dimensions-height-md)",
+  "--ui-button-min-width": "var(--theme--dimensions-minWidth-sm)",
+  "--ui-button-padding-x": "var(--theme--spacing-spaceMd)",
+  "--ui-button-padding-y": "var(--theme--spacing-space2xs)",
+  "--ui-surface-radius": "var(--theme--radius-full)"
+}) as React.CSSProperties;
+
 export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavigate, showShell = true }) => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("relevance");
+  const [sortBy, setSortBy] = useState<CortesCatalogSortKey>("relevance");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
     if (typeof window !== "undefined") {
@@ -39,34 +80,59 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
 
   const isDark = themeMode === "dark";
   const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
+  const strings = clientPtBR.cortes.catalogPage;
+  const productCardStrings = clientPtBR.pedido.productCard;
+  const catalog = useClientCatalog();
+
+  React.useEffect(() => {
+    catalog.load().catch(() => undefined);
+  }, [catalog.load]);
+
+  const catalogViewModel = useMemo(
+    () => createCortesCatalogViewModel({
+      activeCategoryId: activeTab,
+      apiProducts: catalog.snapshot.products,
+      defaultLineLabel: strings.defaultLineLabel,
+      searchQuery,
+      sortBy,
+    }),
+    [activeTab, catalog.snapshot.products, searchQuery, sortBy, strings.defaultLineLabel],
+  );
+  const sortOptions = useMemo(
+    () => [
+      { value: "relevance", label: strings.sortOptions.relevance },
+      { value: "best_sellers", label: strings.sortOptions.bestSellers },
+      { value: "price_asc", label: strings.sortOptions.priceAsc },
+      { value: "price_desc", label: strings.sortOptions.priceDesc },
+    ],
+    [strings.sortOptions.bestSellers, strings.sortOptions.priceAsc, strings.sortOptions.priceDesc, strings.sortOptions.relevance],
+  );
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const filteredCuts = mockCutsCatalog.filter((item) => {
-    const matchesCategory = activeTab === "all" || item.category === activeTab;
-    const matchesSearch =
-      searchQuery.trim() === "" ||
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const clearFilters = () => {
+    setActiveTab("all");
+    setSearchQuery("");
+    setSortBy("relevance");
+  };
+
+  const filteredCuts = catalogViewModel.filteredProducts;
 
   return (
-    <div
+    <main
+      className={styles.root}
       style={{
-        width: "100%",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: tokens.background,
-        color: tokens.text,
-        boxSizing: "border-box",
-        fontFamily: "'Inter', sans-serif"
-      }}
+        "--cortes-bg": tokens.background,
+        "--cortes-surface": tokens.surfaceContainer,
+        "--cortes-border": tokens.border,
+        "--cortes-text": tokens.text,
+        "--cortes-muted": tokens.textMuted,
+        "--cortes-accent": tokens.copper
+      } as React.CSSProperties}
+      data-standalone={showShell || undefined}
     >
-      {/* 1. Header Único do Portal Logado */}
       {showShell ? (
         <PortalHeader
           activeTab="portal-cortes"
@@ -81,233 +147,134 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
         />
       ) : null}
 
-      <style>{`
-        @media (max-width: 768px) {
-          .portal-header {
-            display: none !important;
-          }
+      <Container className={styles.main} width="wide" gutter="page">
+        <Stack gap="2xl">
+          <header className={styles.hero}>
+            <Stack gap="sm">
+              <Text className={styles.eyebrow} as="span" tone="inherit" variant="caption">
+                {strings.badge}
+              </Text>
+              <Text className={styles.title} as="h1" tone="inherit" variant="h1">
+                {strings.title}
+              </Text>
+              <Text className={styles.description} tone="inherit">
+                {strings.description}
+              </Text>
+            </Stack>
+          </header>
 
-          .cortes-view-main {
-            padding: 28px 18px 96px !important;
-          }
-        }
-      `}</style>
+          <nav className={styles.categoryScroller} aria-label={strings.categoryNavigationLabel}>
+            <ul className={styles.categoryList}>
+              {catalogViewModel.categories.map((cat) => {
+                const isActive = activeTab === cat.id;
+                return (
+                  <li key={cat.id}>
+                    <Button
+                      appearance={isActive ? "solid" : "outline"}
+                      className={styles.categoryButton}
+                      onClick={() => setActiveTab(cat.id)}
+                      size="sm"
+                      style={categoryButtonStyle(tokens, isDark, isActive)}
+                      tone={isActive ? "primary" : "neutral"}
+                      type="button"
+                    >
+                      {cat.name}
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
-      <div
-        className="cortes-view-main appear-on-scroll"
-        style={{
-          flex: 1,
-          width: "100%",
-          maxWidth: "1560px",
-          margin: "0 auto",
-          padding: "40px 32px 80px 32px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "40px",
-          boxSizing: "border-box"
-        }}
-      >
-        {/* 2. Header da Página Cortes */}
-        <header style={{ textAlign: "left", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <span style={{ fontSize: "12px", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", color: tokens.copper }}>
-            CATÁLOGO COMPLETO ROYAL CARNES
-          </span>
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "48px",
-              fontWeight: "700",
-              lineHeight: "1.1",
-              letterSpacing: "-0.02em",
-              margin: 0,
-              color: tokens.text
-            }}
-          >
-            Produtos & Seleções Especiais
-          </h1>
-          <p
-            style={{
-              fontSize: "16px",
-              lineHeight: "1.6",
-              margin: 0,
-              maxWidth: "680px",
-              color: tokens.textMuted
-            }}
-          >
-            Explore carnes, linguiças, frango, suínos, espetinhos, temperos, carvão, utensílios e combos para churrasco.
-          </p>
-        </header>
-
-        {/* 3. Navegação Horizontal por Categorias */}
-        <div
-          style={{
-            width: "100%",
-            overflowX: "auto",
-            borderBottom: `1px solid ${tokens.border}`,
-            paddingBottom: "12px"
-          }}
-        >
-          <ul
-            style={{
-              display: "flex",
-              gap: "12px",
-              listStyle: "none",
-              padding: 0,
-              margin: 0,
-              minWidth: "max-content"
-            }}
-          >
-            {mockCutCategories.map((cat) => {
-              const isActive = activeTab === cat.id;
-              return (
-                <li key={cat.id}>
-                  <button
-                    onClick={() => setActiveTab(cat.id)}
-                    style={{
-                      background: isActive ? tokens.copper : tokens.surfaceContainer,
-                      color: isActive ? "#FFFFFF" : tokens.textMuted,
-                      border: `1px solid ${isActive ? tokens.copper : tokens.border}`,
-                      borderRadius: "9999px",
-                      padding: "10px 22px",
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: "13px",
-                      fontWeight: isActive ? "700" : "500",
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                      boxShadow: isActive ? "0 4px 12px rgba(184, 115, 51, 0.3)" : "none",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
-                    {cat.name}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        {/* 4. Catalog Toolbar (Busca & Ordenação) */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "16px",
-            background: tokens.surfaceContainer,
-            padding: "16px 24px",
-            borderRadius: "16px",
-            border: `1px solid ${tokens.border}`,
-            flexWrap: "wrap"
-          }}
-        >
-          {/* Campo de Busca */}
-          <div
-            style={{
-              position: "relative",
-              flex: "1 1 300px",
-              display: "flex",
-              alignItems: "center"
-            }}
-          >
-            <span style={{ position: "absolute", left: "14px", display: "flex", color: tokens.textMuted }}>
-              <SearchIcon size={18} />
-            </span>
-            <input
-              type="text"
-              placeholder="Buscar por Wagyu, Picanha, Tomahawk, Chorizo..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: "100%",
-                background: tokens.background,
-                color: tokens.text,
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "10px",
-                padding: "12px 16px 12px 42px",
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
-                outline: "none"
-              }}
-            />
-          </div>
-
-          {/* Seletor de Ordenação */}
-          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <span style={{ fontSize: "13px", color: tokens.textMuted, fontWeight: "500" }}>
-              Ordenar por:
-            </span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                background: tokens.background,
-                color: tokens.text,
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "10px",
-                padding: "12px 20px",
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
-                fontWeight: "600",
-                cursor: "pointer",
-                outline: "none"
-              }}
-            >
-              <option value="relevance">Relevância</option>
-              <option value="best_sellers">Mais Vendidos</option>
-              <option value="price_asc">Menor Preço</option>
-              <option value="price_desc">Maior Preço</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Total de Resultados Disponíveis */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "14px", color: tokens.textMuted }}>
-            Exibindo <strong style={{ color: tokens.copper }}>{filteredCuts.length}</strong> produtos disponíveis
-          </span>
-        </div>
-
-        {/* 5. Product Grid (Exibindo 100% dos 36 Cards Direta e Continuamente) */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "28px",
-            width: "100%"
-          }}
-        >
-          {filteredCuts.map((cut) => {
-            const isFav = Boolean(favorites[cut.id]);
-            return (
-              <ProductItemCard
-                key={cut.id}
-                name={cut.name}
-                description={cut.subtitle}
-                image={cut.image}
-                categoryLabel={cut.line}
-                detailLabel={`${cut.weight} | Origem: ${cut.origin}`}
-                price={cut.price}
-                originalPrice={cut.originalPrice}
-                badge={cut.badge}
-                badgeTone={cut.badgeType}
-                favorite={isFav}
-                showPrice={true}
-                showAction={false}
-                onFavoriteToggle={() => toggleFavorite(cut.id)}
-                favoriteAriaLabel="Adicionar aos favoritos"
-                removeFavoriteAriaLabel="Remover dos favoritos"
-                isDark={isDark}
-                tokens={tokens}
+          <Inline className={styles.toolbar} justify="between">
+            <div className={styles.searchField}>
+              <Input
+                type="text"
+                aria-label={strings.searchAriaLabel}
+                icon={<SearchIcon size={18} />}
+                placeholder={strings.searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-            );
-          })}
-        </div>
-      </div>
+            </div>
 
-      {/* 6. BottomTabBar Mobile & Footer */}
+            <div className={styles.sortGroup}>
+              <DropdownPicker
+                ariaLabel={strings.sortAriaLabel}
+                className={styles.sortPicker}
+                label={strings.sortLabel}
+                options={sortOptions}
+                value={sortBy}
+                onChange={(next) => setSortBy(next as CortesCatalogSortKey)}
+              />
+            </div>
+          </Inline>
+
+          <Inline className={styles.resultsBar} justify="between">
+            <Text className={styles.resultCount} as="span" tone="inherit" variant="caption">
+              {strings.resultPrefix} <strong className={styles.resultNumber}>{filteredCuts.length}</strong> {strings.resultSuffix}
+            </Text>
+            {(searchQuery || activeTab !== "all" || sortBy !== "relevance") ? (
+              <Button appearance="outline" className={styles.clearFiltersButton} size="sm" tone="neutral" type="button" onClick={clearFilters}>
+                {strings.clearFilters}
+              </Button>
+            ) : null}
+          </Inline>
+
+          {filteredCuts.length > 0 ? (
+            <Grid className={styles.productGrid}>
+              {filteredCuts.map((cut) => {
+                const isFav = Boolean(favorites[cut.id]);
+                return (
+                  <ProductItemCard
+                    key={cut.id}
+                    name={cut.name}
+                    description={cut.subtitle}
+                    image={cut.image}
+                    categoryLabel={cut.line}
+                    detailLabel={cut.origin ? `${cut.weight} | ${strings.originLabel}: ${cut.origin}` : cut.weight}
+                    price={cut.price}
+                    originalPrice={cut.originalPrice}
+                    formatPrice={moneyFormatter.format}
+                    badge={cut.badge}
+                    badgeTone={cut.badgeType}
+                    favorite={isFav}
+                    showPrice={true}
+                    showAction={false}
+                    onFavoriteToggle={() => toggleFavorite(cut.id)}
+                    favoriteAriaLabel={productCardStrings.addFavorite}
+                    removeFavoriteAriaLabel={productCardStrings.removeFavorite}
+                    isDark={isDark}
+                    tokens={tokens}
+                  />
+                );
+              })}
+            </Grid>
+          ) : (
+            <Surface appearance="solid" className={styles.emptyPanel}>
+              <Stack align="center" gap="md">
+                <span className={styles.emptyIcon} aria-hidden="true">
+                  <SearchIcon size={24} />
+                </span>
+                <Stack align="center" gap="xs">
+                  <Text as="h2" className={styles.emptyTitle} tone="inherit" variant="h3">
+                    {strings.emptyTitle}
+                  </Text>
+                  <Text className={styles.emptyDescription} tone="inherit">
+                    {strings.emptyDescription}
+                  </Text>
+                </Stack>
+                <Button appearance="solid" size="sm" tone="primary" type="button" onClick={clearFilters}>
+                  {strings.clearFilters}
+                </Button>
+              </Stack>
+            </Surface>
+          )}
+        </Stack>
+      </Container>
+
       {showShell ? <BottomTabBar activeTab="portal-cortes" onNavigate={onNavigate} isDark={isDark} /> : null}
       {showShell ? <Footer onNavigate={onNavigate} isDark={isDark} /> : null}
-    </div>
+    </main>
   );
 };

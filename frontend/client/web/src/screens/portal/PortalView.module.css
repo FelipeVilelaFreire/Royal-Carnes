@@ -6,7 +6,29 @@
 
 .themeButton,
 .profileButton {
+  --ui-surface-bg: var(--app-shell-surface-bg);
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-radius: var(--theme--radius-full);
+  --ui-button-height: var(--theme--dimensions-height-lg);
+  --ui-button-min-width: var(--theme--dimensions-minWidth-sm);
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
   flex-shrink: 0;
+}
+
+.portalPrimaryAction {
+  --ui-surface-bg: var(--theme--color-accent);
+  --ui-surface-border: var(--theme--color-accentBorder, var(--theme--color-accent));
+  --ui-surface-color: var(--theme--color-accentContrast, var(--theme--color-accent-contrast));
+}
+
+.portalEmptyState {
+  --ui-empty-state-bg: color-mix(in srgb, var(--theme--color-surface) 88%, var(--theme--color-accentSurface, var(--theme--color-accent)) 12%);
+  --ui-empty-state-border-color: color-mix(in srgb, var(--theme--color-border) 58%, var(--theme--color-accentBorder, var(--theme--color-accent)) 42%);
+  --ui-empty-state-icon-bg: var(--theme--color-accentSurface, var(--theme--color-surface-container));
+  --ui-empty-state-icon-color: var(--theme--color-accent);
 }
 
 .profileContent {

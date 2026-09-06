@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Badge, Card } from "../../legacy/design-system";
 import { PlanBenefitCard, ProductItemCard, planBenefitCardManifest, productItemCardManifest } from "../../product-components/ecommerce";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { Button } from "@foundation/ui/Button";
+import { Card } from "@foundation/ui/Card";
+import { Container, Grid, GridItem, Inline, Stack } from "@foundation/ui/Layout";
+import { Text } from "@foundation/ui/Text";
 import { clientPtBR } from "@/locales/pt-BR";
 import { libraryCandidatesMock } from "@/mocks/library.mock";
 import { catalogSubscriptionPlansMock, productCategoriesMock, productsMock } from "@/mocks/catalog";
 import { paymentInstallmentsMock, paymentMethodsMock } from "@/mocks/payment.mock";
+import styles from "./LibraryView.module.css";
 
 export interface LibraryViewProps {
   onNavigate?: (path: string) => void;
@@ -329,41 +333,16 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
       return (
         <label
           key={option.key}
+          className={styles.optionLabel}
           title={`${option.control} | ${option.owner}`}
-          style={{
-            width: "100%",
-            minHeight: "34px",
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1fr) minmax(118px, 150px)",
-            alignItems: "center",
-            gap: "8px",
-            border: `1px solid ${tokens.border}`,
-            borderRadius: "6px",
-            padding: "6px 8px",
-            background: tokens.surfaceContainer,
-            color: tokens.text,
-            fontSize: "11px",
-            fontFamily: "'Inter', sans-serif"
-          }}
         >
-          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <Text className={styles.codeText} as="span" tone="inherit" variant="caption">
             {optionKey}
-          </span>
+          </Text>
           <select
+            className={styles.optionSelect}
             value={value}
             onChange={(event) => onSelectValue(optionKey, event.target.value)}
-            style={{
-              width: "100%",
-              minWidth: 0,
-              height: "26px",
-              border: `1px solid ${tokens.border}`,
-              borderRadius: "5px",
-              background: tokens.background,
-              color: tokens.copper,
-              fontSize: "10px",
-              fontWeight: 800,
-              fontFamily: "'Inter', sans-serif"
-            }}
           >
             {option.values.map((optionValue) => (
               <option key={optionValue} value={optionValue}>
@@ -376,57 +355,30 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
     }
 
     return (
-      <button
+      <Button
         key={option.key}
-        type="button"
+        appearance="outline"
+        className={styles.candidateTab}
         onClick={() => onToggle(option)}
+        size="sm"
         title={`${option.control} | ${option.owner}`}
-        style={{
-          width: "100%",
-          minHeight: "32px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "8px",
-          border: `1px solid ${tokens.border}`,
-          borderRadius: "6px",
-          padding: "6px 8px",
-          background: tokens.surfaceContainer,
-          color: tokens.text,
-          cursor: "pointer",
-          fontSize: "11px",
-          fontFamily: "'Inter', sans-serif"
-        }}
+        tone={isOn ? "primary" : "neutral"}
+        type="button"
       >
-        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {optionKey}
-        </span>
+        <Inline justify="between" wrap={false}>
+          <Text className={styles.codeText} as="span" tone="inherit" variant="caption">
+            {optionKey}
+          </Text>
         {value ? (
           <code
-            style={{
-              minWidth: isBooleanValue ? "34px" : undefined,
-              padding: "3px 7px",
-              borderRadius: "999px",
-              border: `1px solid ${isOn ? tokens.copper : tokens.border}`,
-              background: isBooleanValue
-                ? isOn
-                  ? "rgba(184, 115, 51, 0.18)"
-                  : "rgba(255, 255, 255, 0.04)"
-                : "rgba(184, 115, 51, 0.1)",
-              color: isOn || !isBooleanValue ? tokens.copper : tokens.textMuted,
-              fontSize: "10px",
-              fontWeight: 900,
-              textAlign: "center",
-              textTransform: isBooleanValue ? "uppercase" : undefined,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap"
-            }}
+            className={styles.optionValue}
+            data-on={isOn || !isBooleanValue || undefined}
           >
             {value}
           </code>
         ) : null}
-      </button>
+        </Inline>
+      </Button>
     );
   };
   const handleProductAction = (productId: string) => {
@@ -476,51 +428,28 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
       >;
 
       return (
-        <div style={{ display: "grid", gap: "14px" }}>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        <Stack className={styles.previewShell} gap="md">
+          <Inline gap="sm">
             {productItemCompositionEntries.map(([compositionId]) => {
               const isActive = productCardConfig.compositionId === compositionId;
 
               return (
-                <button
+                <Button
                   key={compositionId}
-                  type="button"
+                  appearance={isActive ? "solid" : "outline"}
                   onClick={() => setProductCardConfig(createProductItemCardRuntimeConfig(compositionId))}
-                  style={{
-                    minHeight: "34px",
-                    padding: "7px 10px",
-                    borderRadius: "999px",
-                    border: `1px solid ${isActive ? tokens.copper : tokens.border}`,
-                    background: isActive ? tokens.surfaceContainer : tokens.background,
-                    color: isActive ? tokens.text : tokens.textMuted,
-                    cursor: "pointer",
-                    fontSize: "12px",
-                    fontFamily: "'Inter', sans-serif"
-                  }}
+                  size="sm"
+                  tone={isActive ? "primary" : "neutral"}
+                  type="button"
                 >
                   {compositionId}
-                </button>
+                </Button>
               );
             })}
-          </div>
+          </Inline>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) minmax(260px, 340px)",
-              gap: "16px",
-              alignItems: "stretch"
-            }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                justifyContent: "stretch",
-                alignItems: "start",
-                gap: "14px"
-              }}
-            >
+          <div className={styles.previewGrid}>
+            <div className={styles.productGrid}>
               {previewProducts.map((product, index) => {
                 const category = productCategoriesMock.find((item) => item.id === product.categoryId);
                 const previewState = productPreviewState[product.id] || { quantity: 0, favorite: false };
@@ -542,8 +471,8 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                       width: "100%",
                       gridColumn: isLargePreview ? "span 2" : undefined,
                       minHeight: productCardConfig.showImage
-                        ? isLargePreview ? "430px" : "360px"
-                        : isLargePreview ? "330px" : "260px"
+                        ? isLargePreview ? "360px" : "312px"
+                        : isLargePreview ? "260px" : "220px"
                     }}
                     name={product.name}
                     description={product.description}
@@ -553,6 +482,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                     price={product.price}
                     originalPrice={productCardConfig.originalPrice}
                     priceLabel={strings.labels.priceLabel}
+                    formatPrice={moneyFormatter.format}
                     badge={badge}
                     badgeTone={productCardConfig.badgeTone}
                     showImage={productCardConfig.showImage}
@@ -580,6 +510,8 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                     onFavoriteToggle={productCardConfig.favoriteMode === "toggle" ? () => handleProductFavoriteToggle(product.id) : undefined}
                     favoriteAriaLabel={clientPtBR.pedido.productCard.select}
                     removeFavoriteAriaLabel={clientPtBR.pedido.productCard.selected}
+                    increaseQuantityAriaLabel={clientPtBR.pedido.productCard.increaseQuantity}
+                    decreaseQuantityAriaLabel={clientPtBR.pedido.productCard.decreaseQuantity}
                     isDark={isDark}
                     tokens={{
                       background: tokens.background,
@@ -594,37 +526,32 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
               })}
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gap: "8px",
-                padding: "12px",
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "8px",
-                background: tokens.background,
-                alignSelf: "stretch",
-                minHeight: "834px",
-                boxSizing: "border-box",
-                alignContent: "start"
-              }}
+            <Stack
+              className={styles.panel}
+              gap="sm"
+              style={{ "--library-panel-min-height": "834px" } as React.CSSProperties}
             >
-              <code style={{ color: tokens.copper, fontSize: "12px", fontWeight: 800 }}>composition</code>
-              <div style={{ display: "grid", gap: "10px" }}>
+              <Text className={styles.eyebrow} as="span" tone="inherit" variant="caption">
+                composition
+              </Text>
+              <Stack gap="md">
                 {productItemPanelOptionGroups.map((group) => (
-                  <div key={group.id} style={{ display: "grid", gap: "6px" }}>
-                    <code style={{ color: tokens.textMuted, fontSize: "10px", fontWeight: 800 }}>{group.id}</code>
+                  <Stack key={group.id} gap="xs">
+                    <Text className={styles.codeText} as="span" tone="inherit" variant="caption">
+                      {group.id}
+                    </Text>
                     {group.options.map((option) => {
                       const optionKey = String(option.key);
                       const value = getProductOptionValue(optionKey);
 
                       return renderManifestOption(option, value, updateProductOption, setProductSelectOption);
                     })}
-                  </div>
+                  </Stack>
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </div>
-        </div>
+        </Stack>
       );
     }
 
@@ -634,51 +561,28 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
       >;
 
       return (
-        <div style={{ display: "grid", gap: "14px" }}>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        <Stack className={styles.previewShell} gap="md">
+          <Inline gap="sm">
             {planBenefitCompositionEntries.map(([compositionId]) => {
               const isActive = planBenefitCardConfig.compositionId === compositionId;
 
               return (
-                <button
+                <Button
                   key={compositionId}
-                  type="button"
+                  appearance={isActive ? "solid" : "outline"}
                   onClick={() => setPlanBenefitCardConfig(createPlanBenefitCardRuntimeConfig(compositionId))}
-                  style={{
-                    minHeight: "34px",
-                    padding: "7px 10px",
-                    borderRadius: "999px",
-                    border: `1px solid ${isActive ? tokens.copper : tokens.border}`,
-                    background: isActive ? tokens.surfaceContainer : tokens.background,
-                    color: isActive ? tokens.text : tokens.textMuted,
-                    cursor: "pointer",
-                    fontSize: "12px",
-                    fontFamily: "'Inter', sans-serif"
-                  }}
+                  size="sm"
+                  tone={isActive ? "primary" : "neutral"}
+                  type="button"
                 >
                   {compositionId}
-                </button>
+                </Button>
               );
             })}
-          </div>
+          </Inline>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) minmax(260px, 340px)",
-              gap: "16px",
-              alignItems: "stretch"
-            }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-                justifyContent: "stretch",
-                alignItems: "start",
-                gap: "14px"
-              }}
-            >
+          <div className={styles.previewGrid}>
+            <div className={styles.planGrid}>
               {catalogSubscriptionPlansMock.map((plan) => (
                 <PlanBenefitCard
                   key={plan.id}
@@ -730,37 +634,32 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
               ))}
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gap: "8px",
-                padding: "12px",
-                border: `1px solid ${tokens.border}`,
-                borderRadius: "8px",
-                background: tokens.background,
-                alignSelf: "stretch",
-                minHeight: "500px",
-                boxSizing: "border-box",
-                alignContent: "start"
-              }}
+            <Stack
+              className={styles.panel}
+              gap="sm"
+              style={{ "--library-panel-min-height": "500px" } as React.CSSProperties}
             >
-              <code style={{ color: tokens.copper, fontSize: "12px", fontWeight: 800 }}>composition</code>
-              <div style={{ display: "grid", gap: "10px" }}>
+              <Text className={styles.eyebrow} as="span" tone="inherit" variant="caption">
+                composition
+              </Text>
+              <Stack gap="md">
                 {planBenefitPanelOptionGroups.map((group) => (
-                  <div key={group.id} style={{ display: "grid", gap: "6px" }}>
-                    <code style={{ color: tokens.textMuted, fontSize: "10px", fontWeight: 800 }}>{group.id}</code>
+                  <Stack key={group.id} gap="xs">
+                    <Text className={styles.codeText} as="span" tone="inherit" variant="caption">
+                      {group.id}
+                    </Text>
                     {group.options.map((option) => {
                       const optionKey = String(option.key);
                       const value = getPlanBenefitOptionValue(optionKey);
 
                       return renderManifestOption(option, value, updatePlanBenefitOption, setPlanBenefitSelectOption);
                     })}
-                  </div>
+                  </Stack>
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Stack>
           </div>
-        </div>
+        </Stack>
       );
     }
 
@@ -769,139 +668,115 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
       const description = paymentStrings.methods[featuredPaymentMethod.descriptionKey];
 
       return (
-        <div style={{ display: "grid", gap: "12px", padding: "18px", border: `1px solid ${tokens.border}`, borderRadius: "8px", background: tokens.background }}>
-          <Badge variant="limited">{paymentStrings.methodsTitle}</Badge>
-          <h3 style={{ margin: 0, fontSize: "22px" }}>{label}</h3>
-          <p style={{ margin: 0, color: tokens.textMuted, lineHeight: 1.45 }}>{description}</p>
-          <code style={{ color: tokens.copper, fontSize: "12px" }}>
+        <Stack className={styles.fallbackPreview} gap="md">
+          <span className={styles.statusPill}>{paymentStrings.methodsTitle}</span>
+          <Text as="h3" tone="inherit" variant="h3">{label}</Text>
+          <Text className={styles.muted} tone="inherit">{description}</Text>
+          <code className={styles.eyebrow}>
             {paymentStrings.installmentsTitle}: {paymentInstallmentsMock[0]}{paymentStrings.installmentsSuffix}
           </code>
-        </div>
+        </Stack>
       );
     }
 
     return (
-      <div style={{ display: "grid", gap: "12px", padding: "18px", border: `1px solid ${tokens.border}`, borderRadius: "8px", background: tokens.background }}>
-        <Badge variant="copper">{summaryStrings.title}</Badge>
-        <h3 style={{ margin: 0, fontSize: "22px" }}>{summaryStrings.selectedItems}</h3>
-        <div style={{ display: "grid", gap: "8px", color: tokens.textMuted, fontSize: "13px" }}>
-          <span>{featuredProduct.name}</span>
-          <span>{featuredPlan.name}</span>
-          <span>{paymentStrings.methods[featuredPaymentMethod.labelKey]}</span>
-        </div>
-        <strong style={{ color: tokens.copper, fontSize: "20px" }}>
+      <Stack className={styles.fallbackPreview} gap="md">
+        <span className={styles.statusPill} data-active="true">{summaryStrings.title}</span>
+        <Text as="h3" tone="inherit" variant="h3">{summaryStrings.selectedItems}</Text>
+        <Stack className={styles.muted} gap="xs">
+          <Text as="span" tone="inherit" variant="caption">{featuredProduct.name}</Text>
+          <Text as="span" tone="inherit" variant="caption">{featuredPlan.name}</Text>
+          <Text as="span" tone="inherit" variant="caption">{paymentStrings.methods[featuredPaymentMethod.labelKey]}</Text>
+        </Stack>
+        <Text className={styles.eyebrow} as="strong" tone="inherit" variant="h3">
           {moneyFormatter.format(featuredProduct.price + featuredPlan.monthlyPrice)}
-        </strong>
-      </div>
+        </Text>
+      </Stack>
     );
   };
 
   return (
-    <div
+    <main
+      className={styles.root}
       style={{
-        minHeight: "100vh",
-        background: tokens.background,
-        color: tokens.text,
-        fontFamily: "'Inter', sans-serif"
-      }}
+        "--library-bg": tokens.background,
+        "--library-surface": tokens.surfaceContainer,
+        "--library-border": tokens.border,
+        "--library-text": tokens.text,
+        "--library-muted": tokens.textMuted,
+        "--library-accent": tokens.copper
+      } as React.CSSProperties}
     >
-      <main style={{ padding: "32px 24px 56px" }}>
-        <section style={{ maxWidth: "1680px", margin: "0 auto", display: "grid", gap: "18px" }}>
-          <div style={{ display: "grid", gap: "10px", maxWidth: "720px" }}>
-            <h1
-              style={{
-                margin: 0,
-                color: tokens.text,
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "42px",
-                lineHeight: 1,
-                letterSpacing: 0
-              }}
-            >
+      <Container className={styles.main} width="full" gutter="page">
+        <Stack gap="lg">
+          <Stack gap="sm" style={{ maxWidth: "720px" }}>
+            <Text as="h1" tone="inherit" variant="h1">
               {strings.hero.title}
-            </h1>
-            <code style={{ color: tokens.copper, fontSize: "13px" }}>
+            </Text>
+            <code className={styles.eyebrow}>
               {strings.labels.route}: /library | {strings.labels.command}: npm run build
             </code>
-          </div>
+          </Stack>
 
-          <section style={{ display: "grid", gap: "12px" }}>
-            <h2 style={{ margin: 0, fontSize: "16px", fontWeight: 800 }}>{strings.sections.candidates}</h2>
-            <div
+          <section>
+          <Stack gap="md">
+            <Text as="h2" tone="inherit" variant="body" weight="bold">{strings.sections.candidates}</Text>
+            <Grid
               role="tablist"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                gap: "8px"
-              }}
+              style={{ gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))" }}
             >
               {libraryCandidatesMock.map((candidate) => {
                 const isSelected = candidate.id === selectedCandidate.id;
 
                 return (
-                  <button
+                  <Button
                     key={candidate.id}
-                    role="tab"
                     aria-selected={isSelected}
+                    appearance={isSelected ? "solid" : "outline"}
+                    className={styles.candidateTab}
                     onClick={() => setSelectedCandidateId(candidate.id)}
-                    style={{
-                      minHeight: "64px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: "12px",
-                      padding: "12px 14px",
-                      borderRadius: "8px",
-                      border: `1px solid ${isSelected ? tokens.copper : tokens.border}`,
-                      background: isSelected ? tokens.surface : tokens.surfaceContainer,
-                      color: tokens.text,
-                      cursor: "pointer",
-                      textAlign: "left"
-                    }}
+                    role="tab"
+                    size="md"
+                    tone={isSelected ? "primary" : "neutral"}
+                    type="button"
                   >
-                    <span style={{ minWidth: 0, display: "grid", gap: "3px" }}>
-                      <strong style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "14px" }}>
+                    <Inline justify="between" wrap={false}>
+                      <Stack gap="2xs">
+                        <Text as="strong" tone="inherit" variant="caption" weight="bold">
                         {candidate.name}
-                      </strong>
-                      <code style={{ color: tokens.textMuted, fontSize: "11px" }}>
-                        {strings.labels.level}: {candidate.maturityLevel}
-                      </code>
-                    </span>
-                    <Badge variant={isSelected ? "copper" : "limited"}>
-                      {statusLabelMap[candidate.status]}
-                    </Badge>
-                  </button>
+                        </Text>
+                        <code className={styles.codeText}>
+                          {strings.labels.level}: {candidate.maturityLevel}
+                        </code>
+                      </Stack>
+                      <span className={styles.statusPill} data-active={isSelected || undefined}>
+                        {statusLabelMap[candidate.status]}
+                      </span>
+                    </Inline>
+                  </Button>
                 );
               })}
-            </div>
+            </Grid>
+          </Stack>
           </section>
 
-          <Card isDark={isDark} hoverable={false} style={{ padding: "18px", gap: "16px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
-              <div style={{ minWidth: 0 }}>
-                <h2 style={{ margin: "0 0 6px", fontSize: "18px", fontWeight: 800 }}>{selectedCandidate.name}</h2>
-                <code style={{ color: tokens.textMuted, fontSize: "12px" }}>
+          <Card size="md">
+            <Stack gap="md">
+              <Inline justify="between">
+                <Stack gap="2xs">
+                  <Text as="h2" tone="inherit" variant="body" weight="bold">{selectedCandidate.name}</Text>
+                  <code className={styles.codeText}>
                   {selectedTypeLabel} | {strings.labels.level}: {selectedCandidate.maturityLevel}
-                </code>
-              </div>
-              <Badge variant="copper">{selectedStatusLabel}</Badge>
-            </div>
+                  </code>
+                </Stack>
+                <span className={styles.statusPill} data-active="true">{selectedStatusLabel}</span>
+              </Inline>
 
-            <div style={{ display: "grid", gap: "14px" }}>
+              <Stack gap="md">
               {renderSelectedPreview()}
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
-                  gap: "8px",
-                  color: tokens.textMuted,
-                  fontSize: "12px",
-                  lineHeight: 1.5,
-                  paddingTop: "4px"
-                }}
-              >
-                <code>{selectedCandidate.currentPath}</code>
+              <div className={styles.metadataGrid}>
+                <code className={styles.codeText}>{selectedCandidate.currentPath}</code>
                 <code>
                   {strings.labels.manifest}: {selectedManifest ? selectedManifest.manifestPath : selectedCandidate.manifestKey}
                 </code>
@@ -923,10 +798,11 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                 ) : null}
                 <code>{strings.labels.command}: npm run build</code>
               </div>
-            </div>
+              </Stack>
+            </Stack>
           </Card>
-        </section>
-      </main>
-    </div>
+        </Stack>
+      </Container>
+    </main>
   );
 };

@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "../../../ui/Button";
 import { Icon } from "../../../ui/Icon";
 import { ChevronRightIcon } from "../../../ui/Icon/AppIcons";
+import { Flex, Stack } from "../../../ui/Layout";
 import { Surface } from "../../../ui/Surface";
 import { renderAppShellIcon } from "../iconResolver";
 import { AppShellBrand } from "./AppShellBrand";
@@ -41,15 +42,16 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
         "--ui-surface-shadow": "none"
       } as React.CSSProperties}
     >
-      <div className={styles.verticalNav}>
+      <Stack className={styles.sidebarMain} gap="md">
         <div className={styles.sidebarBrand}>
           <AppShellBrand brand={model.brand} collapsed={isCollapsed} onNavigate={onNavigate} />
         </div>
         <nav className={styles.verticalNav}>
-          {model.sidebarGroups.map((group) => (
-            <div className={styles.navGroup} key={group.key}>
+          <Stack className={styles.navGroups} gap="sm">
+            {model.sidebarGroups.map((group) => (
+              <Stack className={styles.navGroup} gap="xs" key={group.key}>
               {group.label && !isCollapsed ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
-              <div className={styles.navGroupItems}>
+              <Stack className={styles.navGroupItems} gap="2xs">
                 {group.items.map((item) => {
                   const isActive = model.activePath === item.routePath;
                   return (
@@ -67,20 +69,21 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
                     </Button>
                   );
                 })}
-              </div>
-            </div>
-          ))}
+              </Stack>
+            </Stack>
+            ))}
+          </Stack>
         </nav>
-      </div>
-      <div className={styles.sidebarFooter}>
+      </Stack>
+      <Stack className={styles.sidebarFooter} gap="md">
         {config?.sidebar?.showUserProfile && profile && !isCollapsed && (
-          <div className={styles.userProfile}>
+          <Flex align="center" className={styles.userProfile} gap="sm">
             <span className={styles.userAvatar}>{String(profile.name || "A").slice(0, 1).toUpperCase()}</span>
             <span className={styles.userText}>
               <span className={styles.userName}>{profile.name}</span>
               {profile.badge && <span className={styles.userBadge}>{profile.badge}</span>}
             </span>
-          </div>
+          </Flex>
         )}
         {config?.sidebar?.collapsible !== false && (
           <Button
@@ -94,7 +97,7 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
             {isCollapsed ? null : model.strings.collapseSidebar}
           </Button>
         )}
-      </div>
+      </Stack>
     </Surface>
   );
 };

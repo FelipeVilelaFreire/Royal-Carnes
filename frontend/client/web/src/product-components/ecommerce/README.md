@@ -1,6 +1,13 @@
 # Ecommerce product components
 
-Esta pasta guarda componentes de produto do RoyalPrime que podem amadurecer para um futuro `services/ecommerce`.
+Esta pasta guarda componentes de produto do RoyalPrime que ainda estao no
+render-app client ou em facade de compatibilidade.
+
+O novo dono canonico de componentes reutilizaveis de ecommerce e:
+
+```text
+frontend/product-components/ecommerce
+```
 
 Para a intencao da rota `/library`, ver `LIBRARY.md`.
 
@@ -20,6 +27,13 @@ Arquivo:
 ```text
 frontend/client/web/src/product-components/ecommerce/ProductItemCard.tsx
 frontend/client/web/src/product-components/ecommerce/product-item-card.manifest.ts
+```
+
+Esses caminhos agora reexportam o componente canonico:
+
+```text
+frontend/product-components/ecommerce/ProductItemCard.tsx
+frontend/product-components/ecommerce/product-item-card.manifest.ts
 ```
 
 Uso previsto:
@@ -57,7 +71,10 @@ Na `/library`, os exemplos deste card devem ser interativos. O manifest define q
 
 `compositions` e o contrato principal por modo de uso. A tela escolhe uma composicao como `catalog`, `checkout`, `compact`, `readonly` ou `includedInPlan`; depois o card recebe os `show*` e os modos daquela composicao.
 
-O manifest nao controla estetica fina. Raio do card, escala tipografica, espacamento, estilo do botao, desenho de icones, cor e receita de superficie pertencem ao Design System/Foundation. No RoyalPrime MVP isso ainda passa pelo `legacy/design-system`, mas o contrato futuro deve tratar essas decisoes como Foundation/AppShell, nao como regra do `ProductItemCard`.
+O manifest nao controla estetica fina. Raio do card, escala tipografica,
+espacamento, estilo do botao, desenho de icones, cor e receita de superficie
+pertencem ao Design System/Foundation. O `ProductItemCard` canonico ja compoe
+Foundation diretamente.
 
 Composicao do `ProductItemCard`:
 

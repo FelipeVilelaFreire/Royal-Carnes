@@ -128,6 +128,9 @@ export const clientPtBR = {
       lastRating: "Ultima avaliacao",
       deliveredOrders: "Pedidos entregues"
     },
+    states: {
+      loading: "Carregando"
+    },
     currentOrder: {
       badge: "Pedido atual",
       total: "Valor total",
@@ -150,6 +153,7 @@ export const clientPtBR = {
       status: "Status",
       value: "Valor",
       actions: "Acoes",
+      itemSuffix: "itens",
       details: "Detalhes",
       review: "Avaliar"
     }
@@ -206,6 +210,10 @@ export const clientPtBR = {
       select: "Selecionar",
       selected: "Selecionado",
       add: "Adicionar",
+      addFavorite: "Adicionar aos favoritos",
+      removeFavorite: "Remover dos favoritos",
+      increaseQuantity: "Adicionar unidade",
+      decreaseQuantity: "Remover unidade",
       limitReached: "Limite atingido",
       limitReachedHint: "Saldo insuficiente neste ciclo.",
       quantitySuffix: "un.",
@@ -262,7 +270,9 @@ export const clientPtBR = {
       montagem: "Montagem",
       entrega: "Entrega",
       pagamento: "Pagamento",
-      resumo: "Resumo"
+      resumo: "Resumo",
+      completed: "OK",
+      stepPrefix: "Etapa"
     },
     deliveryStep: {
       badge: "Etapa 2",
@@ -281,12 +291,21 @@ export const clientPtBR = {
         removeAddress: "Remover",
         addAddress: "Adicionar outro endereço",
         newAddressTitle: "Novo endereço",
+        newAddressLabelPrefix: "Endereco",
         zipCode: "CEP",
         street: "Rua",
         number: "Número",
         neighborhood: "Bairro",
         city: "Cidade",
         complement: "Complemento",
+        addressPlaceholders: {
+          zipCode: "00000-000",
+          street: "Rua das Palmeiras",
+          number: "120",
+          neighborhood: "Centro",
+          city: "Sao Paulo",
+          complement: "Apto, bloco ou referencia"
+        },
         saveAddress: "Salvar endereço",
         cancelAddress: "Cancelar",
         notesTitle: "Observações",
@@ -361,6 +380,80 @@ export const clientPtBR = {
     }
   },
   home: {
+    vitrine: {
+      hero: {
+        badge: "Vitrine Royal",
+        guestTitle: "Novidades, cortes e formas de comprar em um so lugar",
+        customerTitle: "Sua vitrine Royal com novidades e proximos passos",
+        guestDescription: "Explore cortes, boxes e pedidos avulsos antes de entrar no portal.",
+        customerDescription: "Veja novidades, continue sua montagem e acompanhe os proximos movimentos da sua conta.",
+        primaryAction: "Ver catalogo",
+        secondaryAction: "Montar Box",
+        mediaAlt: "Selecao de cortes Royal Carnes",
+        mediaTitle: "Produtos novos entram primeiro aqui",
+        mediaDescription: "A Home passa a ser uma vitrine viva do portal, aberta para visitantes e mais contextual para clientes."
+      },
+      noticesSectionLabel: "Avisos da vitrine",
+      guestNoticeAction: "Entrar no portal",
+      customerNoticeAction: "Abrir detalhe",
+      guestNotice: {
+        title: "Entre para personalizar",
+        description: "Clientes veem avisos de caixa, pedido em andamento e atalhos da propria conta."
+      },
+      customerNotices: {
+        nextBox: {
+          title: "Proxima caixa em aberto",
+          description: "Revise produtos, dia de entrega e preferencias antes do fechamento do ciclo."
+        },
+        currentOrder: {
+          title: "Pedido em andamento",
+          description: "Acompanhe status, itens e codigo de entrega quando houver pedido ativo."
+        }
+      },
+      actions: {
+        badge: "Caminhos principais",
+        title: "Comece pelo que voce precisa agora",
+        guestHint: "Visitantes acessam a vitrine publica e entram quando precisarem salvar algo.",
+        customerHint: "Clientes tambem recebem atalhos de conta, caixa e pedidos.",
+        openAction: "Abrir",
+        catalog: {
+          title: "Catalogo",
+          description: "Veja cortes, categorias e disponibilidade antes de montar um pedido."
+        },
+        box: {
+          title: "Montar Box",
+          description: "Escolha produtos para uma caixa recorrente ou um pedido avulso."
+        },
+        orders: {
+          title: "Meus Pedidos",
+          description: "Acompanhe historico, entregas e detalhes dos pedidos."
+        },
+        account: {
+          title: "Minha Conta",
+          description: "Gerencie dados, preferencias, enderecos e acesso."
+        }
+      },
+      products: {
+        badge: "Novos produtos",
+        title: "Destaques para conhecer",
+        action: "Ver catalogo completo",
+        cardAction: "Ver produto",
+        defaultMeta: "Vitrine Royal",
+        fallbackNotice: "Catalogo real indisponivel agora; exibindo vitrine configurada.",
+        brasaClassica: {
+          title: "Brasa classica",
+          description: "Cortes essenciais para montar um churrasco direto e confiavel."
+        },
+        boxFamilia: {
+          title: "Box familia",
+          description: "Selecao pensada para mesa maior, acompanhamentos e preparo simples."
+        },
+        linhaNobre: {
+          title: "Linha nobre",
+          description: "Produtos especiais para quem quer uma vitrine mais premium."
+        }
+      }
+    },
     hero: {
       nextBoxAlert: "Sua próxima caixa chega em 12 de setembro.",
       ctaViewBox: "Ver minha caixa"
@@ -491,6 +584,30 @@ export const clientPtBR = {
   cortes: {
     title: "Catálogo de Cortes",
     subtitle: "Explore toda a curadoria de carnes nobres do clube.",
+    catalogPage: {
+      badge: "CATÁLOGO COMPLETO ROYAL CARNES",
+      title: "Produtos & Seleções Especiais",
+      description: "Explore carnes, linguiças, frango, suínos, espetinhos, temperos, carvão, utensílios e combos para churrasco.",
+      categoryNavigationLabel: "Categorias de produtos",
+      searchAriaLabel: "Buscar produtos no catalogo",
+      searchLabel: "Buscar",
+      searchPlaceholder: "Buscar por Wagyu, Picanha, Tomahawk, Chorizo...",
+      sortAriaLabel: "Ordenar produtos",
+      sortLabel: "Ordenar por",
+      sortOptions: {
+        relevance: "Relevância",
+        bestSellers: "Mais Vendidos",
+        priceAsc: "Menor Preço",
+        priceDesc: "Maior Preço"
+      },
+      resultPrefix: "Exibindo",
+      resultSuffix: "produtos disponíveis",
+      originLabel: "Origem",
+      defaultLineLabel: "Catalogo Royal",
+      emptyTitle: "Nenhum produto encontrado",
+      emptyDescription: "Ajuste a busca ou escolha outra categoria para continuar explorando o catalogo.",
+      clearFilters: "Limpar filtros"
+    },
     memberPriceLabel: "Preço para Membro:",
     exclusiveBadge: "Exclusivo para membros",
     ctaAddBox: "Adicionar à minha caixa",
@@ -817,6 +934,143 @@ export const clientPtBR = {
       cancelSubscription: "Cancelar Assinatura"
     },
     legalNotice: "Ao cancelar ou pausar a assinatura, os benefícios de preços diferenciados e a garantia de cota mensal serão interrompidos ao término do período vigente."
+  },
+  minhaContaV2: {
+    title: "Minha Conta",
+    subtitle: "Gerencie plano, pedidos, dados pessoais, enderecos, pagamentos e preferencias.",
+    eyebrow: "Area do cliente",
+    headerGreeting: "Gerencie seu plano, enderecos, metodos de pagamento e preferencias da sua conta.",
+    greetingPrefix: "Ola",
+    badge: "SOCIO ATIVO",
+    planLabel: "Plano Ativo",
+    renewLabel: "Proxima renovacao",
+    deliveryLabel: "Proxima entrega",
+    cycleLabel: "Cota do Ciclo Atual",
+    memberSinceLabel: "Cliente desde",
+    sourceFallback: "Dados mockados conectados pelo shared-core",
+    currencyPrefix: "R$",
+    planNamePrefix: "Royal",
+    tabs: {
+      overview: "Resumo",
+      subscription: "Minha Assinatura",
+      orders: "Pedidos & Entregas",
+      personalData: "Dados Pessoais",
+      addresses: "Enderecos",
+      payment: "Pagamento",
+      preferences: "Preferencias",
+      security: "Seguranca"
+    },
+    sections: {
+      overviewTitle: "Painel da conta",
+      overviewDescription: "Resumo do plano, ciclo atual e proximas acoes da conta.",
+      subscriptionTitle: "Minha assinatura",
+      subscriptionDescription: "Plano ativo, cota mensal e opcoes disponiveis para troca.",
+      capacityTitle: "Uso & Capacidade da Assinatura",
+      capacityDescription: "Acompanhe quanto do ciclo atual ja foi usado.",
+      recentOrdersTitle: "Pedidos Recentes",
+      recentOrdersDescription: "Royal Delivery e ciclos de assinatura vinculados a sua conta.",
+      personalTitle: "Informacoes Pessoais",
+      personalDescription: "Dados usados para atendimento, entrega e identificacao da conta.",
+      addressesTitle: "Meus Enderecos",
+      addressesDescription: "Locais salvos para Royal Delivery e ciclos de assinatura.",
+      paymentTitle: "Metodos de Pagamento",
+      paymentDescription: "Cartoes e metodos cadastrados para cobrancas e pedidos.",
+      invoiceTitle: "Historico de pagamentos",
+      invoiceDescription: "Comprovantes e cobrancas recentes.",
+      notificationsTitle: "Preferencias de notificacao",
+      notificationsDescription: "Escolha como deseja receber alertas de entrega e novidades.",
+      securityTitle: "Privacidade e seguranca",
+      securityDescription: "Acesso, LGPD e encerramento da conta.",
+      legalTitle: "Politicas e Cancelamento"
+    },
+    actions: {
+      changePlan: "Alterar Plano",
+      viewDetails: "Ver Detalhes",
+      manageSubscription: "Gerenciar assinatura",
+      saveChanges: "Salvar Alteracoes",
+      addAddress: "Adicionar Endereco",
+      addPayment: "Adicionar Cartao",
+      addPaymentMethod: "Adicionar metodo",
+      edit: "Editar",
+      downloadReceipt: "Baixar comprovante",
+      keepPlan: "Manter plano atual",
+      confirmPlan: "Confirmar plano",
+      closeModal: "Fechar",
+      changePassword: "Alterar senha",
+      exportData: "Baixar dados",
+      closeAccount: "Encerrar Conta",
+      cancelSubscription: "Cancelar Assinatura"
+    },
+    labels: {
+      name: "Nome completo",
+      email: "E-mail de acesso",
+      phone: "WhatsApp / Celular",
+      cpf: "CPF",
+      birthdate: "Data de nascimento",
+      preferredDoneness: "Ponto de carne preferido",
+      plan: "Plano",
+      price: "Mensalidade",
+      billing: "Cobranca",
+      delivery: "Entrega",
+      status: "Status",
+      estimate: "Previsao",
+      total: "Total",
+      defaultAddress: "Principal",
+      defaultPayment: "Padrao",
+      cardEnding: "Final",
+      expiresAt: "Validade"
+    },
+    usage: {
+      cuts: "Cortes",
+      meat: "Carnes",
+      charcoal: "Carvao",
+      complements: "Complementos",
+      utensils: "Utensilios"
+    },
+    states: {
+      active: "Ativo",
+      inactive: "Inativo",
+      current: "Atual",
+      selected: "Selecionado"
+    },
+    notifications: {
+      whatsapp: {
+        title: "Alertas por WhatsApp",
+        description: "Avisos sobre separacao, saida para entrega e confirmacao."
+      },
+      email: {
+        title: "Resumo por e-mail",
+        description: "Receba curadoria mensal, comprovantes e atualizacoes da conta."
+      },
+      sms: {
+        title: "SMS de prioridade",
+        description: "Use SMS para alertas rapidos de lotes especiais e validacao."
+      },
+      offers: {
+        title: "Ofertas e novidades",
+        description: "Receba recomendacoes leves de produtos e combos."
+      }
+    },
+    security: {
+      passwordTitle: "Senha de acesso",
+      passwordDescription: "Mantenha sua conta protegida com credenciais atualizadas.",
+      exportTitle: "Exportar meus dados",
+      exportDescription: "Baixe um arquivo com dados cadastrais, pedidos e historico.",
+      closeTitle: "Encerrar conta Royal Prime",
+      closeDescription: "Solicite remocao de dados e cancelamento definitivo."
+    },
+    modal: {
+      planTitle: "Escolha seu plano",
+      planDescription: "Compare limites e beneficios antes de confirmar a troca."
+    },
+    feedback: {
+      saved: "Dados salvos com sucesso."
+    },
+    empty: {
+      noOrders: "Nenhum pedido encontrado.",
+      noInvoices: "Nenhum pagamento encontrado."
+    },
+    legalNotice: "Ao cancelar ou pausar a assinatura, os beneficios de precos diferenciados e a garantia de cota mensal serao interrompidos ao termino do periodo vigente."
   },
   orderDetailModal: {
     title: "Detalhes do Pedido",

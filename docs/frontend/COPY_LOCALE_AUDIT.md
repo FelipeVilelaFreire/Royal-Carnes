@@ -279,7 +279,8 @@ Arquivos:
 frontend/client/web/src/screens/portal/tabs/CortesView.tsx
 frontend/client/web/src/screens/cuts/HeroCortesView.tsx
 frontend/client/web/src/screens/portal/tabs/HomeView.tsx
-frontend/client/web/src/screens/portal/tabs/HomeOrientationView.tsx
+frontend/client/web/src/screens/portal/tabs/HomeVitrineView.tsx
+frontend/client/web/src/screens/portal/tabs/HomeVitrineViewLegacy.tsx
 frontend/client/web/src/screens/portal/tabs/MinhaCaixaView.tsx
 frontend/client/web/src/screens/portal/tabs/MeuClubeView.tsx
 frontend/client/web/src/screens/portal/NovoPortalHomeView.tsx

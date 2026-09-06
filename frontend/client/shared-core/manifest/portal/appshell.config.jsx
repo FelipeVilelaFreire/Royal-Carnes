@@ -12,7 +12,7 @@ export const portalAppShellConfig = {
   ],
   navigationPlacements: {
     bottomTabBar: {
-      routeKeys: ["home", "cortes", "produtos", "minhaConta"]
+      routeKeys: ["home", "cortes", "produtos", "meusPedidos", "minhaConta"]
     },
     nativeTabBar: {
       inheritFrom: "bottomTabBar"

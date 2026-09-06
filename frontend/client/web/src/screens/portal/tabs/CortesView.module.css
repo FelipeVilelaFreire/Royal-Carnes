@@ -1,0 +1,173 @@
+.root {
+  background: var(--cortes-bg);
+  box-sizing: border-box;
+  color: var(--cortes-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+}
+
+.root[data-standalone="true"] {
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  padding-block: var(--theme--spacing-space2xl) var(--theme--spacing-space3xl);
+}
+
+.hero {
+  max-width: var(--theme--layout-container-sm);
+}
+
+.eyebrow {
+  color: var(--cortes-accent);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  text-transform: uppercase;
+}
+
+.title {
+  color: var(--cortes-text);
+}
+
+.description {
+  color: var(--cortes-muted);
+  max-width: var(--theme--layout-container-sm);
+}
+
+.categoryScroller {
+  border-block-end: var(--theme--borders-hairline) solid var(--cortes-border);
+  overflow-x: auto;
+  padding-block-end: var(--theme--spacing-spaceSm);
+  width: 100%;
+}
+
+.categoryList {
+  display: flex;
+  gap: var(--theme--spacing-spaceSm);
+  list-style: none;
+  margin: 0;
+  min-width: max-content;
+  padding: 0;
+}
+
+.categoryButton {
+  white-space: nowrap;
+}
+
+.categoryButton:not(:disabled) {
+  color: var(--ui-surface-color) !important;
+}
+
+.toolbar {
+  align-items: flex-end;
+  background: color-mix(in srgb, var(--cortes-surface) 78%, var(--cortes-bg));
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--cortes-border) 68%, var(--cortes-accent));
+  border-radius: var(--theme--radius-lg);
+  gap: var(--theme--spacing-spaceMd);
+  padding: var(--theme--spacing-spaceSm);
+}
+
+.searchField {
+  flex: 1 1 calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-xl));
+  min-width: min(var(--theme--dimensions-minWidth-3xl), 100%);
+}
+
+.sortGroup {
+  flex: 0 0 auto;
+  min-width: min(var(--theme--dimensions-minWidth-3xl), 100%);
+}
+
+.sortPicker {
+  width: 100%;
+}
+
+.resultsBar {
+  min-height: var(--theme--dimensions-height-md);
+}
+
+.clearFiltersButton {
+  --ui-surface-bg: color-mix(in srgb, var(--cortes-surface) 84%, var(--cortes-bg));
+  --ui-surface-border: color-mix(in srgb, var(--cortes-border) 62%, var(--cortes-accent));
+  --ui-surface-color: var(--cortes-text);
+  color: var(--cortes-text) !important;
+}
+
+.clearFiltersButton:not(:disabled):hover {
+  --ui-surface-bg: color-mix(in srgb, var(--cortes-surface) 76%, var(--cortes-accent));
+  --ui-surface-border: color-mix(in srgb, var(--cortes-border) 44%, var(--cortes-accent));
+}
+
+.resultCount {
+  color: var(--cortes-muted);
+}
+
+.resultNumber {
+  color: var(--cortes-accent);
+}
+
+.productGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceXl);
+  grid-template-columns: repeat(auto-fill, minmax(min(calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--spacing-spaceXl)), 100%), 1fr));
+  width: 100%;
+}
+
+.emptyPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--cortes-surface) 90%, var(--cortes-bg));
+  --ui-surface-border: color-mix(in srgb, var(--cortes-border) 84%, transparent);
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-color: var(--cortes-text);
+  --ui-surface-padding-x: var(--theme--spacing-space2xl);
+  --ui-surface-padding-y: var(--theme--spacing-space2xl);
+  --ui-surface-radius: var(--theme--radius-xl);
+  text-align: center;
+}
+
+.emptyIcon {
+  align-items: center;
+  background: color-mix(in srgb, var(--cortes-accent) 14%, var(--cortes-surface));
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--cortes-accent) 36%, transparent);
+  border-radius: var(--theme--radius-lg);
+  color: var(--cortes-accent);
+  display: inline-flex;
+  height: var(--theme--dimensions-height-xl);
+  justify-content: center;
+  width: var(--theme--dimensions-height-xl);
+}
+
+.emptyTitle {
+  color: var(--cortes-text);
+}
+
+.emptyDescription {
+  color: var(--cortes-muted);
+  max-width: var(--theme--layout-container-sm);
+}
+
+@media (max-width: 48em) {
+  .main {
+    padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
+  }
+
+  .emptyPanel {
+    --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+    --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+  }
+
+  .toolbar,
+  .searchField,
+  .sortGroup,
+  .sortPicker {
+    width: 100%;
+  }
+
+  .toolbar {
+    background: transparent;
+    border-color: transparent;
+    padding: 0;
+  }
+}

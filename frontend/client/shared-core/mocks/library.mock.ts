@@ -59,7 +59,7 @@ export const libraryCandidatesMock: LibraryCandidate[] = [
     name: "ProductItemCard",
     type: "product-component",
     previewKind: "product-item",
-    currentPath: "frontend/client/web/src/product-components/ecommerce/ProductItemCard.tsx",
+    currentPath: "frontend/product-components/ecommerce/ProductItemCard.tsx",
     maturityLevel: "level-1",
     manifestKey: "product-item-card.manifest.ts",
     status: "mapped"

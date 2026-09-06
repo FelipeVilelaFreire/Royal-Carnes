@@ -115,6 +115,30 @@ const resolveInheritedPlacement = (placement: string | undefined) => {
   return appShellPlacements.includes(placement as AppShellPlacement) ? placement as AppShellPlacement : undefined;
 };
 
+const sortPlacementItems = (
+  items: ResolvedAppShellNavigationItem[],
+  placement: AppShellPlacement,
+  config?: AppShellConfig
+) => {
+  const rule = config?.navigationPlacements?.[placement];
+  const orderedKeys = rule?.keys || [];
+  const orderedRouteKeys = rule?.routeKeys || [];
+
+  if (orderedKeys.length === 0 && orderedRouteKeys.length === 0) return items;
+
+  const resolvePlacementOrder = (item: ResolvedAppShellNavigationItem) => {
+    const keyIndex = orderedKeys.indexOf(item.key);
+    const routeKeyIndex = item.routeKey ? orderedRouteKeys.indexOf(item.routeKey) : -1;
+    const indexes = [keyIndex, routeKeyIndex].filter((index) => index >= 0);
+    return indexes.length > 0 ? Math.min(...indexes) : Number.MAX_SAFE_INTEGER;
+  };
+
+  return [...items].sort((a, b) => {
+    const placementOrder = resolvePlacementOrder(a) - resolvePlacementOrder(b);
+    return placementOrder !== 0 ? placementOrder : (a.order ?? 0) - (b.order ?? 0);
+  });
+};
+
 export const resolveAppShellPlacement = (
   item: AppShellNavigationItem,
   placement: AppShellPlacement,
@@ -214,20 +238,30 @@ export const resolveAppShellModel = ({
   const themeColors = (config?.theme?.colors || fallbackTheme(effectiveMode)) as Record<string, string>;
   const strings = config?.strings || {};
   const resolvedNavigation = resolveAppShellNavigation(navigation || navItems || [], routesMap, strings);
+  const currentLayout = resolveAppShellViewportLayout(config, isMobileScreen ? "mobile" : "desktop");
   const sidebarEnabled = Boolean(config?.sidebar?.enabled) || effectiveMode === "admin";
-  const headerEnabled = config?.header?.enabled !== false && !(isMobileScreen && config?.header?.mobile?.enabled === false);
-  const footerEnabled = Boolean(config?.footer?.enabled);
-  const bottomTabEnabled = config?.bottomTabBar?.enabled !== false;
+  const headerEnabled = config?.header?.enabled !== false && currentLayout.header?.enabled !== false && !(isMobileScreen && config?.header?.mobile?.enabled === false);
+  const footerEnabled = Boolean(config?.footer?.enabled) && currentLayout.footer?.enabled !== false;
+  const bottomTabEnabled = config?.bottomTabBar?.enabled !== false && currentLayout.bottomTabBar?.enabled !== false;
   const headerLayout = config?.header?.layoutMode || "attached";
   const sidebarCols = (isSidebarCollapsed ? config?.sidebar?.collapsedCols : config?.sidebar?.expandedCols) || (isSidebarCollapsed ? 1 : 3);
   const sidebarWidth = `${(sidebarCols / 20) * 100}%`;
   const drawerItems = resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "drawer", config));
   const sidebarItems = resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "sidebar", config));
-  const currentLayout = resolveAppShellViewportLayout(config, isMobileScreen ? "mobile" : "desktop");
+  const bottomItems = sortPlacementItems(
+    resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "bottomTabBar", config)),
+    "bottomTabBar",
+    config
+  );
+  const nativeTabItems = sortPlacementItems(
+    resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "nativeTabBar", config)),
+    "nativeTabBar",
+    config
+  );
 
   return {
     activePath,
-    bottomItems: resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "bottomTabBar", config)),
+    bottomItems,
     bottomTabEnabled,
     brand: {
       name:
@@ -277,7 +311,7 @@ export const resolveAppShellModel = ({
     headerEnabled,
     headerItems: resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "header", config) && !item.hideInHeader),
     isFloatingHeader: headerLayout === "floating",
-    nativeTabItems: resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "nativeTabBar", config)),
+    nativeTabItems,
     sidebarEnabled,
     sidebarItems,
     sidebarGroups: resolveAppShellNavigationGroups(sidebarItems, config?.navigationGroups, "sidebar", strings),

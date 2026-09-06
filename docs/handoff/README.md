@@ -53,6 +53,7 @@ foundation
 04-admin-render-only-screen-types.md
 05-checklists-and-validation.md
 06-frontend-orders-deliveries-contract-alignment.md
+07-montarbox-pedidoview-phase1-map.md
 ```
 
 Audit complementar:
@@ -86,13 +87,12 @@ docs/handoff/06-frontend-orders-deliveries-contract-alignment.md
 ## Ordem Recomendada
 
 ```text
-1. Corrigir contratos Orders/Deliveries contra backend/API_CONTRACTS.md.
-2. Corrigir API clients cliente/admin para endpoints reais.
-3. Separar fallback dev sem mascarar erro como source=api.
-4. MeusPedidosView, MinhaContaView e OrderDetailModal seguem render-only.
-5. PedidoView usando hook para criar pedido real.
-6. Landing copy/FAQ/showcase para manifest/locale.
-7. Admin Dashboard/ListPage/DetailPage com status/copy via config/view-model.
+1. Ler 07-montarbox-pedidoview-phase1-map.md.
+2. Continuar o proximo corte de MontarBox/PedidoView: CSS/layout e Foundation Button/Input.
+3. Extrair componentes locais em tabs/pedido/ somente quando reduzirem complexidade real.
+4. Avaliar product-components/ecommerce depois de prova em outra tela.
+5. MeusPedidosView, MinhaContaView e OrderDetailModal seguem render-only.
+6. Admin Dashboard/ListPage/DetailPage com status/copy via config/view-model.
 ```
 
 ## Corte Copy-Only Recomendado

@@ -113,6 +113,8 @@ export interface AdminProductFormInput {
   variants?: AdminProductVariantFormInput[];
 }
 
+export type AdminProductUpdateInput = Partial<AdminProductFormInput>;
+
 export interface AdminProductCreateDto {
   key: string;
   name: string;

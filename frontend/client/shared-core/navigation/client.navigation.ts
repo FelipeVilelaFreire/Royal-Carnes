@@ -139,7 +139,7 @@ export const portalNavigation: NavItemConfig[] = [
     routeKey: "meusPedidos",
     iconIntent: "orders",
     order: 7,
-    placements: { header: false, drawer: true, footer: false },
+    placements: { header: true, drawer: true, footer: false },
     auth: "required",
   },
 ];

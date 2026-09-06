@@ -10,6 +10,7 @@ export interface ThemeManifest {
 }
 
 const px = (value: unknown) => typeof value === "number" ? `${value}px` : String(value);
+const toKebab = (value: string) => value.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 
 const formatScaleValue = (prefix: string, value: unknown) => {
   if (prefix.startsWith("z-index")) return String(value);
@@ -59,7 +60,9 @@ export function injectThemeTokens(target: "client" | "admin" = "client", customM
   root.style.setProperty("--theme--status-canceled", colors.statusCanceled || colors.danger || themeTokens.colors.statusCanceled);
 
   Object.entries(colors).forEach(([key, value]) => {
-    if (value) root.style.setProperty(`--theme--color-${key}`, value);
+    if (!value) return;
+    root.style.setProperty(`--theme--color-${key}`, value);
+    root.style.setProperty(`--theme--color-${toKebab(key)}`, value);
   });
 
   setScaleVariables(root, "typography", tokens.typography);

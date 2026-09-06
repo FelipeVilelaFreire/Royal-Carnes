@@ -204,3 +204,32 @@ class ProductCreateSerializer(serializers.Serializer):
         required=False,
         default=list,
     )
+
+
+class ProductUpdateSerializer(serializers.Serializer):
+    key = serializers.SlugField(max_length=120, required=False)
+    name = serializers.CharField(max_length=180, required=False)
+    category_keys = serializers.ListField(
+        child=serializers.SlugField(max_length=100),
+        required=False,
+        allow_empty=False,
+    )
+    unit = serializers.CharField(max_length=32, required=False)
+    price_cents = serializers.IntegerField(min_value=0, required=False)
+    price_type = serializers.ChoiceField(
+        choices=ProductPrice.PriceType.choices,
+        required=False,
+        default=ProductPrice.PriceType.BASE,
+    )
+    commercial_mode_keys = serializers.ListField(
+        child=serializers.SlugField(max_length=80),
+        required=False,
+    )
+    collection_keys = serializers.ListField(
+        child=serializers.SlugField(max_length=100),
+        required=False,
+    )
+    variants = serializers.ListField(
+        child=serializers.DictField(),
+        required=False,
+    )

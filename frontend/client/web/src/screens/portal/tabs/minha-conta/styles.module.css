@@ -1,0 +1,202 @@
+.page {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--theme--color-background) 94%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 6%),
+      var(--theme--color-background)
+    );
+  color: var(--theme--color-text);
+  min-height: 100%;
+  width: 100%;
+}
+
+.content {
+  animation: account-enter var(--theme--motion-durationSm) var(--theme--motion-easingStandard) both;
+  padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
+}
+
+.shellGrid {
+  align-items: start;
+}
+
+.mainGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceXl);
+  grid-template-columns: minmax(0, 4fr) minmax(0, 16fr);
+}
+
+.statsGrid,
+.cardsGrid,
+.metricsGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.statsGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cardsGrid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
+}
+
+.metricsGrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--theme--spacing-spaceXl);
+}
+
+.tabList {
+  border-inline-start: var(--theme--borders-medium) solid color-mix(in srgb, var(--theme--color-border) 72%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 28%);
+  flex-direction: column;
+  padding-inline-start: var(--theme--spacing-spaceSm);
+}
+
+.tabButton {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.tabButton[data-appearance="soft"] {
+  --ui-surface-bg: var(--theme--color-accent-surface, var(--theme--color-accentSurface));
+  --ui-surface-border: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  --ui-surface-color: var(--theme--color-text);
+}
+
+.heroCard {
+  overflow: hidden;
+}
+
+.avatar {
+  align-items: center;
+  background: var(--theme--color-accent-surface, var(--theme--color-accentSurface));
+  border: var(--theme--borders-hairline) solid var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  border-radius: var(--theme--radius-full);
+  color: var(--theme--color-text);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-weight: var(--theme--typography-bold);
+  height: var(--theme--dimensions-height-2xl);
+  justify-content: center;
+  width: var(--theme--dimensions-height-2xl);
+}
+
+.chip {
+  align-items: center;
+  background: var(--theme--color-accent-surface, var(--theme--color-accentSurface));
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 62%, var(--theme--color-border));
+  border-radius: var(--theme--radius-full);
+  color: var(--theme--color-text);
+  display: inline-flex;
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-semibold);
+  gap: var(--theme--spacing-space2xs);
+  min-height: var(--theme--dimensions-height-sm);
+  padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceSm);
+}
+
+.mutedChip {
+  color: var(--theme--color-text-muted);
+}
+
+.metricBar {
+  background: color-mix(in srgb, var(--theme--color-surface-container) 76%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 24%);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-border) 70%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 30%);
+  border-radius: var(--theme--radius-full);
+  height: var(--theme--spacing-spaceXs);
+  overflow: hidden;
+  width: 100%;
+}
+
+.metricFill {
+  background: var(--theme--color-accent);
+  border-radius: inherit;
+  height: 100%;
+  transition: width var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.orderImage {
+  aspect-ratio: 1;
+  background: var(--theme--color-surface-container);
+  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-xl);
+  object-fit: cover;
+  overflow: hidden;
+  width: var(--theme--dimensions-height-3xl);
+}
+
+.divider {
+  background: var(--theme--color-border);
+  height: var(--theme--borders-hairline);
+  width: 100%;
+}
+
+.statusSuccess {
+  color: var(--theme--status-active);
+}
+
+.statusDanger {
+  color: var(--theme--status-canceled);
+}
+
+.statusPending {
+  color: var(--theme--status-paused);
+}
+
+.switch {
+  min-width: var(--theme--dimensions-minWidth-sm);
+}
+
+.dangerText {
+  color: var(--theme--status-canceled);
+}
+
+@keyframes account-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--theme--spacing-spaceSm));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 56em) {
+  .content {
+    padding-block: var(--theme--spacing-spaceLg) calc(var(--theme--spacing-space3xl) + env(safe-area-inset-bottom));
+  }
+
+  .mainGrid,
+  .statsGrid,
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .tabList {
+    border-block-end: var(--theme--borders-hairline) solid var(--theme--color-border);
+    border-inline-start: 0;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-block-end: var(--theme--spacing-spaceSm);
+    padding-inline-start: 0;
+    scrollbar-width: none;
+  }
+
+  .tabList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabButton {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}

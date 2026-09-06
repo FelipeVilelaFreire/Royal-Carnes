@@ -46,7 +46,11 @@ Nasce dentro de uma tela para resolver uma necessidade concreta. Pode ser bagunc
 
 `level-1`: product component local.
 
-Quando uma parte aparece em mais de uma tela ou claramente representa uma unidade de ecommerce, ela pode ir para `frontend/client/web/src/product-components/ecommerce`.
+Quando uma parte aparece em mais de uma tela ou claramente representa uma
+unidade de ecommerce, ela pode ir para `frontend/product-components/ecommerce`.
+O caminho antigo em `frontend/client/web/src/product-components/ecommerce`
+continua apenas para componentes ainda nao migrados ou facades de
+compatibilidade.
 
 `level-2`: candidato multi-service.
 
@@ -58,7 +62,7 @@ Quando a decisao deixa de ser produto e vira primitive visual, token, receita, l
 
 ## Como um componente entra na library
 
-1. Criar o componente real em `frontend/client/web/src/product-components/ecommerce`.
+1. Criar o componente real em `frontend/product-components/ecommerce`.
 2. Criar um manifest ao lado do componente.
 3. Exportar componente e manifest em `index.ts`.
 4. Adicionar o candidato em `frontend/client/shared-core/mocks/library.mock.ts`.

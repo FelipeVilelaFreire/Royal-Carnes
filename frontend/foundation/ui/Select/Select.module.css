@@ -1,0 +1,22 @@
+.select {
+  appearance: none;
+  background: var(--theme--color-surface-container);
+  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-md);
+  box-sizing: border-box;
+  color: var(--theme--color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-semibold);
+  min-height: var(--theme--dimensions-height-lg);
+  outline: none;
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg);
+  transition:
+    border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+  width: 100%;
+}
+
+.select:focus {
+  border-color: var(--theme--color-copper);
+}

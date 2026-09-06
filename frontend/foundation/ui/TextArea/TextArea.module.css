@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-space2xs);
+  width: 100%;
+}
+
+.label {
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-semibold);
+  line-height: var(--theme--typography-lineHeightXs);
+}
+
+.control {
+  background: color-mix(in srgb, var(--theme--color-surface-container) 84%, var(--theme--color-background));
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-border) 72%, transparent);
+  border-radius: var(--theme--radius-lg);
+  box-sizing: border-box;
+  color: var(--theme--color-text);
+  display: flex;
+  min-height: calc(var(--theme--dimensions-height-lg) * 2);
+  overflow: hidden;
+  position: relative;
+  transition:
+    border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
+    background var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+  width: 100%;
+}
+
+.control:focus-within {
+  background: color-mix(in srgb, var(--theme--color-surface-container) 92%, var(--theme--color-background));
+  border-color: color-mix(in srgb, var(--theme--color-copper) 58%, var(--theme--color-border));
+  box-shadow: 0 0 0 var(--theme--borders-medium) color-mix(in srgb, var(--theme--color-copper) 10%, transparent);
+}
+
+.control:hover {
+  border-color: color-mix(in srgb, var(--theme--color-copper) 42%, var(--theme--color-border));
+}
+
+.control[data-invalid="true"] {
+  border-color: var(--theme--status-canceled);
+}
+
+.textarea {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  font-family: var(--theme--typography-bodyFamily);
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-medium);
+  letter-spacing: 0;
+  line-height: var(--theme--typography-lineHeightSm);
+  min-height: inherit;
+  outline: none;
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg);
+  resize: vertical;
+  width: 100%;
+}
+
+.textarea::placeholder {
+  color: var(--theme--color-text-muted);
+}
+
+.error {
+  color: var(--theme--status-canceled);
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-semibold);
+}

@@ -17,7 +17,7 @@ import {
   TruckIcon
 } from "../../../legacy/design-system/Icons";
 
-export interface HomeOrientationViewProps {
+export interface HomeVitrineViewLegacyProps {
   onNavigate?: (path: string) => void;
   showHeader?: boolean;
 }
@@ -39,7 +39,7 @@ const catalogImages = [
   }
 ];
 
-export const HomeOrientationView: React.FC<HomeOrientationViewProps> = ({
+export const HomeVitrineViewLegacy: React.FC<HomeVitrineViewLegacyProps> = ({
   onNavigate,
   showHeader = true
 }) => {

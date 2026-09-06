@@ -23,7 +23,14 @@
     box-shadow var(--ui-button-duration) var(--ui-button-easing);
 }
 
+.button:not(:disabled)[data-appearance="outline"],
+.button:not(:disabled)[data-appearance="transparent"] {
+  --ui-button-readable-color: var(--theme--color-text);
+  color: var(--ui-button-readable-color) !important;
+}
+
 .button:disabled {
+  color: var(--theme--color-text-muted);
   cursor: not-allowed;
   opacity: 0.5;
 }

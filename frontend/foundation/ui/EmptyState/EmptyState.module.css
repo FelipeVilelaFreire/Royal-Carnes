@@ -1,4 +1,11 @@
 .emptyState {
+  --ui-surface-bg: var(--ui-empty-state-bg);
+  --ui-surface-border: var(--ui-empty-state-border-color);
+  --ui-surface-border-width: var(--ui-empty-state-border-width);
+  --ui-surface-color: var(--ui-empty-state-color);
+  --ui-surface-padding-x: var(--ui-empty-state-padding-x);
+  --ui-surface-padding-y: var(--ui-empty-state-padding-y);
+  --ui-surface-radius: var(--theme--radius-2xl);
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -7,7 +14,6 @@
   justify-content: center;
   gap: var(--ui-empty-state-gap);
   min-height: var(--ui-empty-state-min-height);
-  padding: var(--ui-empty-state-padding-y) var(--ui-empty-state-padding-x);
   text-align: var(--ui-empty-state-text-align);
 }
 
@@ -60,8 +66,9 @@
 
 @media (max-width: 768px) {
   .emptyState {
+    --ui-surface-padding-x: var(--ui-empty-state-mobile-padding-x);
+    --ui-surface-padding-y: var(--ui-empty-state-mobile-padding-y);
     min-height: var(--ui-empty-state-mobile-min-height);
-    padding: var(--ui-empty-state-mobile-padding-y) var(--ui-empty-state-mobile-padding-x);
   }
 
   .actions {

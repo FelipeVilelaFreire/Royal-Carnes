@@ -18,8 +18,9 @@ from .serializers import (
     CommercialModeSerializer,
     ProductCreateSerializer,
     ProductSerializer,
+    ProductUpdateSerializer,
 )
-from .services import create_admin_product
+from .services import create_admin_product, update_admin_product
 
 
 @api_view(["GET"])
@@ -69,3 +70,23 @@ def admin_products(request):
         **serializer.validated_data,
     )
     return Response(ProductSerializer(product_obj).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def admin_product(request, product_id):
+    organization = get_request_organization(request)
+    require_organization_permission(request.user, organization, "products.manage")
+    product_obj = product_detail(product_id, organization)
+
+    if request.method == "GET":
+        return Response(ProductSerializer(product_obj).data)
+
+    serializer = ProductUpdateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    product_obj = update_admin_product(
+        organization=organization,
+        product=product_obj,
+        **serializer.validated_data,
+    )
+    return Response(ProductSerializer(product_detail(product_obj.id, organization)).data)

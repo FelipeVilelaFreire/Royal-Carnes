@@ -555,6 +555,55 @@ Variant response inclui:
 }
 ```
 
+### GET /api/v1/catalog/admin/products/:id/
+
+Objetivo:
+
+```text
+detalhar produto para admin na request.organization
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+### PATCH /api/v1/catalog/admin/products/:id/
+
+Objetivo:
+
+```text
+editar dados de catalogo do produto na request.organization
+sincronizar categorias, colecoes, disponibilidade, precos simples e variantes
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+Request parcial:
+
+```json
+{
+  "name": "Picanha suina",
+  "category_keys": ["suinos"],
+  "price_cents": 8990,
+  "commercial_mode_keys": ["delivery"],
+  "collection_keys": ["dia-a-dia"]
+}
+```
+
+Reflexo no client:
+
+```text
+GET /api/v1/catalog/products/
+GET /api/v1/catalog/products/:id/
+retornam o catalogo publico atualizado quando o produto segue active.
+```
+
 Garantias de Catalog:
 
 ```text
@@ -961,6 +1010,14 @@ Response inclui:
   "items": [],
   "status_history": []
 }
+```
+
+Kinds seedados no RoyalPrime:
+
+```text
+delivery -> Royal Delivery, commercial mode delivery
+subscription-cycle -> ciclo de assinatura, commercial mode subscription
+royal-box -> Royal Box, commercial mode box
 ```
 
 ### GET /api/v1/orders/me/:id/

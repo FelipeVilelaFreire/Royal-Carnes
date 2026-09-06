@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Button } from "../../../ui/Button";
+import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/Layout";
 import { Surface } from "../../../ui/Surface";
 import { handleAppShellNavigation } from "./navigation";
 import styles from "../AppShell.module.css";
@@ -27,23 +28,29 @@ export const AppShellFooter: React.FC<AppShellFooterProps> = ({ model, onNavigat
         "--ui-surface-shadow": "none"
       } as React.CSSProperties}
     >
-      <div className={styles.footerInner}>
-        {model.footerItems.map((item) => {
-          const isActive = model.activePath === item.routePath;
-          return (
-            <Button
-              appearance={isActive ? "soft" : "transparent"}
-              className={[styles.navLink, isActive ? styles.navLinkActive : ""].filter(Boolean).join(" ")}
-              key={item.key}
-              onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
-              size="sm"
-              tone={isActive ? "primary" : "neutral"}
-            >
-              {item.label}
-            </Button>
-          );
-        })}
-      </div>
+      <Container
+        className={styles.footerInner}
+        gutter={model.currentLayout.footer?.gutter as ContainerProps["gutter"]}
+        width={model.currentLayout.footer?.width as ContainerProps["width"]}
+      >
+        <Inline align="center" className={styles.footerItems} justify={(model.currentLayout.footer?.align || "center") as InlineProps["justify"]}>
+          {model.footerItems.map((item) => {
+            const isActive = model.activePath === item.routePath;
+            return (
+              <Button
+                appearance={isActive ? "soft" : "transparent"}
+                className={[styles.navLink, isActive ? styles.navLinkActive : ""].filter(Boolean).join(" ")}
+                key={item.key}
+                onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
+                size="sm"
+                tone={isActive ? "primary" : "neutral"}
+              >
+                {item.label}
+              </Button>
+            );
+          })}
+        </Inline>
+      </Container>
     </Surface>
   );
 };

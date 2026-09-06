@@ -27,10 +27,11 @@ class OrdersApiTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
 
     def test_seed_creates_order_config_without_orders(self):
-        self.assertEqual(OrderKindDefinition.objects.count(), 2)
+        self.assertEqual(OrderKindDefinition.objects.count(), 3)
         self.assertEqual(OrderStatusDefinition.objects.count(), 6)
         self.assertEqual(Order.objects.count(), 0)
         self.assertTrue(OrderStatusDefinition.objects.get(key="received").is_initial)
+        self.assertEqual(OrderKindDefinition.objects.get(key="royal-box").commercial_mode.key, "box")
 
     def test_customer_can_create_order_and_inventory_is_reserved(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -81,6 +82,30 @@ class OrdersApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 400, response.data)
         self.assertEqual(response.data["code"], "order_item_quantity_invalid")
+
+    def test_customer_can_create_royal_box_order_from_seeded_kind(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+
+        response = self.client.post(
+            "/api/v1/orders/me/",
+            {
+                "kind_key": "royal-box",
+                "items": [
+                    {
+                        "product_key": "picanha",
+                        "variant_sku": "PICANHA-1KG",
+                        "quantity": "1.000",
+                    }
+                ],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["kind_key"], "royal-box")
+        self.assertEqual(response.data["total_cents"], 8990)
+        self.assertEqual(Delivery.objects.count(), 1)
 
     def test_admin_can_list_and_transition_order_by_seeded_workflow(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

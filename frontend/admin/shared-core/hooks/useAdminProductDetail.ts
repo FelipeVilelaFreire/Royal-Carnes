@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { normalizeApiError, type ApiErrorEnvelope } from "../../../shared-core";
 import { adminCatalogApi, type createAdminCatalogApi } from "../api/catalog.api";
-import type { AdminProductView } from "../contracts/catalog.contract";
+import type { AdminProductUpdateInput, AdminProductView } from "../contracts/catalog.contract";
 import { createAdminProductRowViewModel } from "../view-models/catalog.view-model";
 
 type AdminCatalogApi = ReturnType<typeof createAdminCatalogApi>;
@@ -38,6 +38,25 @@ export function useAdminProductDetail(options: UseAdminProductDetailOptions = {}
     [api],
   );
 
+  const update = useCallback(
+    async (productId: string | number, input: AdminProductUpdateInput) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const nextProduct = await api.update(productId, input);
+        setProduct(nextProduct);
+        return nextProduct;
+      } catch (err) {
+        const normalized = normalizeApiError(err);
+        setError(normalized);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [api],
+  );
+
   return useMemo(
     () => ({
       product,
@@ -45,7 +64,8 @@ export function useAdminProductDetail(options: UseAdminProductDetailOptions = {}
       isLoading,
       error,
       load,
+      update,
     }),
-    [error, isLoading, load, product],
+    [error, isLoading, load, product, update],
   );
 }

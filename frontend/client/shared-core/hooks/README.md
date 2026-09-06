@@ -20,6 +20,7 @@ Hooks atuais principais:
 - `useClientOrderDetail`
 - `useClientDeliveries`
 - `useClientDeliveryDetail`
+- `useClientCheckout`
 
 Regra:
 
@@ -27,6 +28,15 @@ Regra:
 hook organiza loading, erro, estado de fluxo e chama api client
 screen apenas renderiza e dispara acao
 ```
+
+Para `MontarBox/PedidoView`, `useClientCheckout` e o ponto unico do fluxo:
+
+```text
+screen -> useClientCheckout -> checkout view-model -> mocks/seed agora, API depois
+```
+
+Produtos visiveis entram por `viewModel.availableProducts`. A screen nao decide
+se um produto aparece para um plano, categoria ou modalidade.
 
 Importante:
 

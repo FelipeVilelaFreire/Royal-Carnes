@@ -46,6 +46,82 @@ nao recolocar product-components em Foundation sem contrato provado
 nao criar novo hardcode fora do render-app
 ```
 
+## Regra De Fases Para Telas
+
+A sequencia atual das telas deve priorizar entrega funcional antes de
+refinamento visual fino.
+
+```text
+Fase 1 - funcional e arquitetural
+  -> mostrar os dados essenciais
+  -> permitir as acoes essenciais
+  -> conectar hook/view-model/API/backend ou fallback mockado explicito
+  -> separar regra de negocio da screen
+  -> mover copy para locale e configuracao repetida para manifest
+  -> organizar componentes reutilizaveis na tree correta
+  -> manter design apresentavel usando Foundation/AppShell existentes
+
+Fase 2 - refinamento visual
+  -> polir espacamento fino, borda, animacao, composicao e densidade
+  -> melhorar hierarquia visual depois que o fluxo estiver separado
+  -> ajustar variantes visuais globais quando houver repeticao real
+```
+
+Na pratica, nao bloquear uma tela funcional por detalhe estetico pequeno se ela
+ja esta apresentavel e segue Foundation. O corte deve primeiro deixar a tela
+editavel, conectavel e facil de evoluir.
+
+## Roadmap Padrao Por Tela
+
+Toda tela funcional deve seguir o mesmo roteiro antes de receber polimento
+visual fino.
+
+```text
+Passo 1 - Layout/config
+  -> verificar se a tela respeita AppShell, Layout e config.jsx/manifest
+  -> identificar maxWidth, padding, grids, media queries e shell local
+
+Passo 2 - Locales/strings
+  -> mover copy de interface para locales/strings
+  -> manter dados comerciais como dados, mock ou seed
+
+Passo 3 - Mapa de componentes
+  -> listar blocos que podem virar component local, product-component ou UI
+  -> separar componente visual de regra funcional
+
+Passo 4 - Proposta de extracao
+  -> escrever quais itens seriam extraidos e para qual pasta
+  -> nao mover nem criar componente reutilizavel ainda
+
+Pausa obrigatoria
+  -> perguntar no chat se a extracao proposta faz sentido
+  -> continuar somente depois da aprovacao do usuario
+
+Passo 5 - Extrair itens aprovados
+  -> mover para a pasta especifica aprovada
+  -> manter imports e ownership claros
+
+Passo 6 - Avaliar UI nova
+  -> verificar se falta uma primitive/capacidade generica
+  -> se for necessidade repetivel, propor Foundation/ServiceOS
+
+Passo 7 - Criar UI somente se aprovado
+  -> criar ou amadurecer UI apenas quando o Passo 6 justificar
+  -> nao criar biblioteca paralela local
+
+Passo 8 - Aplicar design-system corretamente
+  -> usar UI, semi-composed, theme, AppShell e product-components
+  -> remover hardcode visual novo fora do render-app
+
+Passo 9 - Audit geral
+  -> conferir render-only, locale, manifest, backend/fallback e builds
+  -> registrar pendencias da Fase 2 visual
+```
+
+Entre os Passos 4 e 5, a resposta deve parar no plano de extracao e pedir
+aprovacao. Isso evita mover componentes cedo demais ou criar UI nova sem
+evidencia real de reuso.
+
 ## Regra De Pressao E Config
 
 Mesmo com pressao de prazo, cada mudanca de tela deve passar primeiro por uma
@@ -166,24 +242,107 @@ As telas do portal devem migrar aos poucos para `Container`, `Grid`,
 `padding`, `gridTemplateColumns` e media queries locais quando a decisao puder
 vir do manifest/layout.
 
+## Regra Web Mobile E Native Juntos
+
+Depois do primeiro pass responsivo de uma tela web funcional, o proximo corte
+da mesma tela deve considerar native junto. O objetivo nao e criar uma
+experiencia paralela: `webIsMobile` e o espelho funcional do futuro native.
+
+Regra obrigatoria:
+
+```text
+webIsMobile == native behavior
+```
+
+Na pratica, cada tela funcional do cliente deve andar assim:
+
+```text
+1. web desktop render-only
+2. web mobile responsivo usando os mesmos hooks/view-models/actions
+3. native screen usando o mesmo contrato de dados e comportamento do web mobile
+```
+
+O native pode mudar somente a camada de render:
+
+```text
+web mobile -> DOM/CSS/Foundation web
+native     -> React Native/native bridge equivalente
+```
+
+Nao permitido:
+
+```text
+web mobile chamar endpoint diferente do native
+web mobile ter estado/copy/action que native nao consiga reproduzir
+native recriar regra de negocio que ja esta no hook/view-model client
+native virar uma tela conceitualmente diferente da web mobile
+```
+
+Para a sequencia atual do portal, a decisao operacional e:
+
+```text
+fechar o responsivo web uma vez
+seguir para native da mesma tela funcional
+so depois abrir a proxima tela grande
+```
+
+## Regra Tree Mobile Igual A Web
+
+O mobile deve nascer com a mesma linguagem publica do web. A pasta define a
+plataforma; o nome do componente continua igual.
+
+```text
+web Button -> mobile Button
+web Text -> mobile Text
+web Surface -> mobile Surface
+web Layout -> mobile Layout
+web Icon -> mobile Icon
+web AppShell -> mobile AppShell
+web ProductItemCard -> mobile ProductItemCard
+```
+
+Nao usar prefixos como `NativeButton`, `NativeText`, `NativeSurface`,
+`NativeProductItemCard` em componentes de UI/produto. Quando Expo/React Native
+entrar, `View`, `Text`, `Pressable`, listas e inputs reais entram como hosts do
+runtime ou adapters internos, nao como imports espalhados por telas de produto.
+
+Toda navegacao, icone semantico e ativacao de Header/BottomTabBar/Drawer deve
+continuar vindo de manifest/navigation. Exemplo: trocar `iconIntent` ou
+`iconName` no manifest/navigation deve refletir web header, web bottom tabbar e
+mobile AppShell sem editar cada runtime manualmente.
+
+Tree minima atual do mobile:
+
+```text
+frontend/client/mobile/src/
+  app/
+  shell/
+  ui/
+  product-components/
+  screens/
+```
+
 ## Proximo Corte
 
 ```text
-1. escolher uma tela pequena do client/web ou admin/web
-2. ler hook, manifest, locale, navigation e mock usados por ela
-3. mover copy/config repetida para o shared-core correto
-4. manter JSX como render-only
-5. validar build client/admin
+1. escolher uma tela funcional do client/web ou admin/web
+2. executar os Passos 1-4 do Roadmap Padrao Por Tela
+3. pausar e pedir aprovacao para extracoes/componentes/UI novos
+4. executar Passos 5-9 somente depois da aprovacao
+5. fechar responsivo web mobile da tela quando ela for client
+6. preparar ou implementar native usando o mesmo contrato do webIsMobile
+7. validar build client/admin e contratos Foundation
 ```
 
 ## Ordem Recomendada
 
 ```text
-1. client/web: MeusPedidosView + OrderDetailModal
-2. client/web: MinhaCaixaView
-3. client/web: MeuClubeView
-4. admin/web: DashboardPage
-5. admin/web: ListPage/DetailPage/AddPage por screen type
+1. client/web: MontarBox/PedidoView em Fase 1 funcional
+2. client/web: MeusPedidosView + OrderDetailModal em Fase 1 funcional
+3. client/web: MinhaCaixaView em Fase 1 funcional
+4. client/web: MeuClubeView em Fase 1 funcional
+5. admin/web: DashboardPage em Fase 1 funcional
+6. admin/web: ListPage/DetailPage/AddPage por screen type
 ```
 
 ## Criterio De Pronto

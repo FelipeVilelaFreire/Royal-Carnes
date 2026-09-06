@@ -1,238 +1,159 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import React from "react";
 import { AppShell } from "@foundation/shells/app-shell";
 import { Button } from "@foundation/ui/Button";
 import { EmptyState } from "@foundation/ui/EmptyState";
 import { MoonIcon, StoreIcon, SunIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
-import { portalNavigation } from "@/navigation/client.navigation";
-import { portalAppShellConfig } from "@/manifest/portal/appshell.config";
 import { clientRoutes } from "@/manifest/routes";
-import { clientPtBR } from "@/locales/pt-BR";
+import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
+import type { PortalScreenKey } from "@royalprime/client/manifest/portal/routes.config";
 import { AuthModal } from "../../legacy/app-shell";
 import styles from "./PortalView.module.css";
-import { HomeOrientationView } from "./tabs/HomeOrientationView";
+import { portalSurfaceStyles } from "./portalSurfaceStyles";
+import { HomeVitrineView } from "./tabs/HomeVitrineView";
 import { CortesView } from "./tabs/CortesView";
 import { PedidoView } from "./tabs/PedidoView";
 import { MinhaCaixaView } from "./tabs/MinhaCaixaView";
 import { MeuClubeView } from "./tabs/MeuClubeView";
 import { MinhaContaView } from "./tabs/MinhaContaView";
 import { MeusPedidosView } from "./tabs/MeusPedidosView";
+import { usePortalRuntime } from "./usePortalRuntime";
 
 export interface PortalViewProps {
-  initialTab?: "home" | "cortes" | "produtos" | "minhaCaixa" | "royalDelivery" | "meuClube" | "meusPedidos" | "minhaConta";
+  initialTab?: PortalScreenKey;
 }
 
 export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [isMobileScreen, setIsMobileScreen] = useState(false);
-  const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("royal_prime_theme");
-      if (stored === "dark" || stored === "light") return stored;
-    }
-    return "dark";
-  });
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [mockAuthenticatedOverride, setMockAuthenticatedOverride] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("royal_prime_mock_authenticated") === "true";
-    }
-    return false;
-  });
+  const strings = useClientStrings();
+  const {
+    activeRoutePath,
+    activeScreenKey,
+    isAuthModalOpen,
+    isMockAuthenticated,
+    isProtectedScreen,
+    navigate,
+    portalShellConfig,
+    setIsAuthModalOpen,
+    setMockAuthenticatedOverride,
+    themeMode,
+    toggleTheme,
+    visiblePortalNavigation,
+  } = usePortalRuntime(initialTab);
+  const profileInitial = strings.authSession.userName.trim().slice(0, 1).toUpperCase();
+  const isProfileActionActive = activeScreenKey === "minhaConta";
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileScreen(window.innerWidth <= 768);
-    };
-    const handleAuthChange = () => {
-      setMockAuthenticatedOverride(localStorage.getItem("royal_prime_mock_authenticated") === "true");
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("royal_auth_changed", handleAuthChange);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("royal_auth_changed", handleAuthChange);
-    };
-  }, []);
-
-  const getTabFromPath = (path: string) => {
-    if (path === "/cortes" || path === "/portal-cortes") return "cortes";
-    if (path === "/produtos" || path === "/montar-box") return "produtos";
-    if (path === "/minha-caixa" || path === "/portal-minha-caixa") return "minhaCaixa";
-    if (path === "/royal-delivery") return "royalDelivery";
-    if (path === "/meu-clube" || path === "/minha-assinatura") return "meuClube";
-    if (path === "/meus-pedidos") return "meusPedidos";
-    if (path === "/minha-conta" || path === "/portal-minha-conta" || path === "/perfil") return "minhaConta";
-    if (path === "/home" || path === "/portal-home") return "home";
-    return "home";
-  };
-
-  const [activeScreenKey, setActiveScreenKey] = useState<string>(
-    pathname ? getTabFromPath(pathname) : initialTab
+  const renderProtectedGate = () => (
+    <EmptyState
+      className={styles.portalEmptyState}
+      description={strings.authEmptyState.description}
+      framed
+      icon={<UserIcon size={28} />}
+      style={portalSurfaceStyles.emptyState}
+      actions={
+        <Button
+          appearance="solid"
+          className={styles.portalPrimaryAction}
+          onClick={() => setIsAuthModalOpen(true)}
+          size="md"
+          style={portalSurfaceStyles.primaryAction}
+          tone="neutral"
+        >
+          {strings.navigation.entrar}
+        </Button>
+      }
+      size="spacious"
+      title={strings.authEmptyState.title}
+    />
   );
 
-  useEffect(() => {
-    if (pathname) {
-      setActiveScreenKey(getTabFromPath(pathname));
-    }
-  }, [pathname]);
-
-  const activeRoutePath = clientRoutes[activeScreenKey as keyof typeof clientRoutes] || clientRoutes.home;
-  const isMockAuthenticated = isMobileScreen
-    ? Boolean(portalAppShellConfig.auth?.mobileMockAuthenticated) || mockAuthenticatedOverride
-    : Boolean(portalAppShellConfig.auth?.mockAuthenticated) || mockAuthenticatedOverride;
-  const protectedNavKeys = portalAppShellConfig.auth?.protectedNavKeys || [];
-  const isProtectedScreen = protectedNavKeys.includes(activeScreenKey);
-  const visiblePortalNavigation = isMockAuthenticated
-    ? portalNavigation
-    : portalNavigation.filter((item) => portalAppShellConfig.auth?.publicNavKeys?.includes(item.key) || item.key === "minhaConta");
-  const activeThemeColors =
-    portalAppShellConfig.theme?.modes?.[themeMode] ||
-    portalAppShellConfig.theme?.colors;
-  const portalShellConfig = useMemo(() => {
-    return {
-      ...portalAppShellConfig,
-      theme: {
-        ...portalAppShellConfig.theme,
-        colors: activeThemeColors,
-      },
-    };
-  }, [activeThemeColors]);
-
-  const handleNavigate = (routePath: string) => {
-    const found = portalNavigation.find(
-      (item) => item.routeKey && clientRoutes[item.routeKey] === routePath
-    );
-    if (found) {
-      setActiveScreenKey(found.key);
-    } else {
-      setActiveScreenKey(getTabFromPath(routePath));
-    }
-
-    if (typeof window !== "undefined" && window.location.pathname !== routePath) {
-      router.push(routePath);
-    }
-  };
-
   const renderActiveScreenType = () => {
-    if (isProtectedScreen && !isMockAuthenticated) {
-      return (
-        <EmptyState
-          title={clientPtBR.authEmptyState.title}
-          description={clientPtBR.authEmptyState.description}
-          icon={<UserIcon size={28} />}
-          actions={
-            <Button appearance="solid" tone="primary" size="md" onClick={() => setIsAuthModalOpen(true)}>
-              {clientPtBR.navigation.entrar}
-            </Button>
-          }
-          size="spacious"
-        />
-      );
-    }
+    if (isProtectedScreen && !isMockAuthenticated) return renderProtectedGate();
 
     switch (activeScreenKey) {
       case "cortes":
-        return <CortesView isMember={true} onNavigate={handleNavigate} showShell={false} />;
+        return <CortesView isMember={true} onNavigate={navigate} showShell={false} />;
       case "produtos":
-        return <PedidoView onNavigate={handleNavigate} showHeader={false} />;
+        return <PedidoView onNavigate={navigate} showHeader={false} />;
       case "minhaCaixa":
-        return <MinhaCaixaView onNavigate={handleNavigate} showShell={false} />;
+        return <MinhaCaixaView onNavigate={navigate} showShell={false} />;
       case "royalDelivery":
         return (
           <EmptyState
-            title={clientPtBR.royalDelivery.emptyTitle}
-            description={clientPtBR.royalDelivery.emptyDescription}
+            className={styles.portalEmptyState}
+            description={strings.royalDelivery.emptyDescription}
+            framed
             icon={<StoreIcon size={28} />}
+            style={portalSurfaceStyles.emptyState}
             actions={
-              <Button appearance="solid" tone="primary" size="md" onClick={() => handleNavigate(clientRoutes.cortes)}>
-                {clientPtBR.authEmptyState.action}
+              <Button
+                appearance="solid"
+                className={styles.portalPrimaryAction}
+                onClick={() => navigate(clientRoutes.cortes)}
+                size="md"
+                style={portalSurfaceStyles.primaryAction}
+                tone="neutral"
+              >
+                {strings.authEmptyState.action}
               </Button>
             }
             size="spacious"
+            title={strings.royalDelivery.emptyTitle}
           />
         );
       case "meuClube":
-        return <MeuClubeView onNavigate={handleNavigate} />;
+        return <MeuClubeView onNavigate={navigate} />;
       case "meusPedidos":
-        return <MeusPedidosView onNavigate={handleNavigate} showShell={false} />;
+        return <MeusPedidosView onNavigate={navigate} showShell={false} />;
       case "minhaConta":
-        return <MinhaContaView onNavigate={handleNavigate} showShell={false} />;
+        return <MinhaContaView onNavigate={navigate} showShell={false} />;
       case "home":
       default:
-        return <HomeOrientationView onNavigate={handleNavigate} showHeader={false} />;
+        return <HomeVitrineView isAuthenticated={isMockAuthenticated} onNavigate={navigate} />;
     }
   };
-
-  const toggleTheme = () => {
-    const next = themeMode === "dark" ? "light" : "dark";
-    setThemeMode(next);
-    if (typeof document !== "undefined") {
-      document.documentElement.setAttribute("data-theme", next);
-      const nextThemeColors =
-        portalAppShellConfig.theme?.modes?.[next] ||
-        portalAppShellConfig.theme?.colors;
-      document.documentElement.style.backgroundColor = nextThemeColors.background;
-      document.documentElement.style.color = nextThemeColors.text;
-    }
-    localStorage.setItem("royal_prime_theme", next);
-    window.dispatchEvent(new Event("royal_theme_changed"));
-  };
-
-  const headerActionButtonStyle = {
-    "--ui-surface-bg": "var(--app-shell-surface-bg)",
-    "--ui-surface-border": "var(--app-shell-border)",
-    "--ui-surface-border-width": "var(--theme--borders-hairline)",
-    "--ui-surface-color": "var(--app-shell-color)",
-    "--ui-surface-radius": "var(--theme--radius-full)",
-    "--ui-button-height": "var(--theme--dimensions-height-lg)",
-    "--ui-button-min-width": "var(--theme--dimensions-minWidth-sm)",
-    "--ui-button-padding-x": "var(--theme--spacing-spaceSm)",
-    "--ui-button-padding-y": "var(--theme--spacing-space2xs)"
-  } as React.CSSProperties;
-  const profileInitial = clientPtBR.authSession.userName.trim().slice(0, 1).toUpperCase();
 
   const renderHeaderActions = () => (
     <div className={styles.headerActions}>
       <Button
         appearance="soft"
-        tone="neutral"
-        size="sm"
         className={styles.themeButton}
-        onClick={toggleTheme}
         icon={themeMode === "dark" ? <SunIcon /> : <MoonIcon />}
-        style={headerActionButtonStyle}
+        onClick={toggleTheme}
+        size="sm"
+        style={portalSurfaceStyles.headerAction}
+        tone="neutral"
       >
-        {themeMode === "dark" ? clientPtBR.authSession.themeLight : clientPtBR.authSession.themeDark}
+        {themeMode === "dark" ? strings.authSession.themeLight : strings.authSession.themeDark}
       </Button>
       {isMockAuthenticated ? (
         <Button
           appearance="soft"
-          tone="neutral"
+          aria-current={isProfileActionActive ? "page" : undefined}
+          className={[styles.profileButton, isProfileActionActive ? styles.profileButtonActive : ""].filter(Boolean).join(" ")}
+          onClick={() => navigate(clientRoutes.minhaConta)}
           size="sm"
-          className={styles.profileButton}
-          onClick={() => handleNavigate(clientRoutes.minhaConta)}
-          style={headerActionButtonStyle}
+          style={isProfileActionActive ? portalSurfaceStyles.profileActiveAction : portalSurfaceStyles.headerAction}
+          tone="neutral"
         >
           <span className={styles.profileContent}>
-            <span className={styles.profileAvatar}>
-              {profileInitial}
-            </span>
+            <span className={styles.profileAvatar}>{profileInitial}</span>
             <span className={styles.profileText}>
-              <strong className={styles.profileName}>{clientPtBR.authSession.userName}</strong>
-              <span className={styles.profileBadge}>
-                {clientPtBR.authSession.userBadge}
-              </span>
+              <strong className={styles.profileName}>{strings.authSession.userName}</strong>
+              <span className={styles.profileBadge}>{strings.authSession.userBadge}</span>
             </span>
           </span>
         </Button>
       ) : (
-        <Button appearance="solid" tone="primary" size="sm" onClick={() => setIsAuthModalOpen(true)}>
-          {clientPtBR.navigation.entrar}
+        <Button
+          appearance="solid"
+          className={styles.portalPrimaryAction}
+          onClick={() => setIsAuthModalOpen(true)}
+          size="sm"
+          style={portalSurfaceStyles.primaryAction}
+          tone="neutral"
+        >
+          {strings.navigation.entrar}
         </Button>
       )}
     </div>
@@ -240,25 +161,23 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
 
   return (
     <AppShell
-      config={portalShellConfig}
-      brandLogo="/assets/brand/royal-prime-logo.jpg"
-      navItems={visiblePortalNavigation as any}
       activePath={activeRoutePath}
-      onNavigate={handleNavigate}
+      brandLogo="/assets/brand/royal-prime-logo.jpg"
+      config={portalShellConfig}
+      navItems={visiblePortalNavigation as any}
+      onNavigate={navigate}
       rightSlot={renderHeaderActions()}
       routesMap={clientRoutes}
     >
-      <div className={styles.portalContent}>
-        {renderActiveScreenType()}
-      </div>
+      <div className={styles.portalContent}>{renderActiveScreenType()}</div>
       <AuthModal
-        open={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        isDark={themeMode === "dark"}
         onAuthenticated={() => {
           setMockAuthenticatedOverride(true);
-          handleNavigate(clientRoutes.home);
+          navigate(clientRoutes.home);
         }}
-        isDark={themeMode === "dark"}
+        onClose={() => setIsAuthModalOpen(false)}
+        open={isAuthModalOpen}
       />
     </AppShell>
   );

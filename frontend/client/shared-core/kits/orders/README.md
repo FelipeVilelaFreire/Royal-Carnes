@@ -50,7 +50,7 @@ tela nao calcula preco final
 Backend aceita:
 
 ```text
-kind_key: delivery | subscription-cycle
+kind_key: delivery | subscription-cycle | royal-box
 status_key: received | approved | separating | ready | completed | cancelled
 items[].product_key
 items[].variant_sku opcional

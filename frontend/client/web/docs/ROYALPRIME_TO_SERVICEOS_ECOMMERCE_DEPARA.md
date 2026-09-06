@@ -576,7 +576,7 @@ Tipo:
 product-component
 
 Local atual:
-`frontend/client/web/src/product-components/ecommerce/ProductItemCard.tsx`
+`frontend/product-components/ecommerce/ProductItemCard.tsx`
 
 Status atual:
 - Componente reutilizavel de ecommerce.

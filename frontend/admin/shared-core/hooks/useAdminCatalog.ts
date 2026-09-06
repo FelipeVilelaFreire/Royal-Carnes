@@ -4,6 +4,7 @@ import { adminCatalogApi, type createAdminCatalogApi } from "../api/catalog.api"
 import type {
   AdminCatalogSnapshot,
   AdminProductFormInput,
+  AdminProductUpdateInput,
 } from "../contracts/catalog.contract";
 import { createAdminCatalogViewModel } from "../view-models/catalog.view-model";
 
@@ -71,6 +72,30 @@ export function useAdminCatalog(options: UseAdminCatalogOptions = {}) {
     [api],
   );
 
+  const update = useCallback(
+    async (productId: string | number, input: AdminProductUpdateInput) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const product = await api.update(productId, input);
+        setSnapshot((current) => ({
+          ...current,
+          products: current.products.map((currentProduct) =>
+            currentProduct.id === product.id ? product : currentProduct,
+          ),
+        }));
+        return product;
+      } catch (err) {
+        const normalized = normalizeApiError(err);
+        setError(normalized);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [api],
+  );
+
   return useMemo(
     () => ({
       snapshot,
@@ -79,7 +104,8 @@ export function useAdminCatalog(options: UseAdminCatalogOptions = {}) {
       error,
       load,
       create,
+      update,
     }),
-    [create, error, isLoading, load, snapshot],
+    [create, error, isLoading, load, snapshot, update],
   );
 }

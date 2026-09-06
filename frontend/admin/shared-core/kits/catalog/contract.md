@@ -18,8 +18,9 @@ Endpoints backend consumidos:
 GET  /api/v1/catalog/collections/
 GET  /api/v1/catalog/commercial-modes/
 GET  /api/v1/catalog/admin/products/
-GET  /api/v1/catalog/products/:id/
 POST /api/v1/catalog/admin/products/
+GET  /api/v1/catalog/admin/products/:id/
+PATCH /api/v1/catalog/admin/products/:id/
 ```
 
 Contrato fechado neste kit:
@@ -27,18 +28,12 @@ Contrato fechado neste kit:
 ```text
 AdminProductDto
 AdminProductFormInput
+AdminProductUpdateInput
 AdminProductCreateDto
 AdminCatalogSnapshot
 AdminCatalogViewModel
 AdminProductRowViewModel
 AdminProductFormViewModel
-```
-
-Limite intencional:
-
-```text
-PATCH /api/v1/catalog/admin/products/:id/ aparece como desejo antigo em docs,
-mas backend/apps/catalog/urls.py ainda nao publica esse endpoint.
 ```
 
 Garantias:

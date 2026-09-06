@@ -108,6 +108,10 @@ def upsert_product(
 
 @transaction.atomic
 def set_product_categories(*, organization, product: Product, categories: list[Category]) -> None:
+    category_ids = [category.id for category in categories]
+    ProductCategory.objects.filter(organization=organization, product=product).exclude(
+        category_id__in=category_ids,
+    ).delete()
     for sort_order, category in enumerate(categories):
         ProductCategory.objects.update_or_create(
             organization=organization,
@@ -122,6 +126,10 @@ def set_product_categories(*, organization, product: Product, categories: list[C
 
 @transaction.atomic
 def set_product_collections(*, organization, product: Product, collections: list[Collection]) -> None:
+    collection_ids = [collection.id for collection in collections]
+    CollectionProduct.objects.filter(organization=organization, product=product).exclude(
+        collection_id__in=collection_ids,
+    ).delete()
     for sort_order, collection in enumerate(collections):
         CollectionProduct.objects.update_or_create(
             organization=organization,
@@ -322,4 +330,132 @@ def create_admin_product(
                 product=product,
                 commercial_mode=commercial_mode,
             )
+    return product
+
+
+@transaction.atomic
+def update_admin_product(
+    *,
+    organization,
+    product: Product,
+    key: str | None = None,
+    name: str | None = None,
+    category_keys: list[str] | None = None,
+    unit: str | None = None,
+    price_cents: int | None = None,
+    commercial_mode_keys: list[str] | None = None,
+    collection_keys: list[str] | None = None,
+    price_type: str = ProductPrice.PriceType.BASE,
+    variants: list[dict] | None = None,
+) -> Product:
+    update_fields = []
+    if key is not None:
+        product.key = key
+        product.slug = slugify(key or product.name)
+        update_fields.extend(["key", "slug"])
+    if name is not None:
+        product.name = name
+        update_fields.append("name")
+    if unit is not None:
+        product.unit = unit
+        update_fields.append("unit")
+    if update_fields:
+        product.save(update_fields=update_fields)
+
+    if category_keys is not None:
+        categories = list(
+            Category.objects.filter(
+                organization=organization,
+                key__in=category_keys,
+            )
+        )
+        set_product_categories(organization=organization, product=product, categories=categories)
+
+    if collection_keys is not None:
+        collections = list(
+            Collection.objects.filter(
+                organization=organization,
+                key__in=collection_keys,
+            )
+        )
+        set_product_collections(organization=organization, product=product, collections=collections)
+
+    if commercial_mode_keys is not None:
+        modes = list(
+            CommercialMode.objects.filter(
+                organization=organization,
+                key__in=commercial_mode_keys,
+            )
+        )
+        mode_ids = [mode.id for mode in modes]
+        CatalogAvailability.objects.filter(organization=organization, product=product).exclude(
+            commercial_mode_id__in=mode_ids,
+        ).update(is_available=False)
+        for commercial_mode in modes:
+            set_product_availability(
+                organization=organization,
+                product=product,
+                commercial_mode=commercial_mode,
+            )
+            if price_cents is not None:
+                set_product_price(
+                    organization=organization,
+                    product=product,
+                    commercial_mode=commercial_mode,
+                    amount_cents=price_cents,
+                    currency=organization.currency,
+                    price_type=price_type,
+                )
+
+    if price_cents is not None and commercial_mode_keys is None:
+        existing_prices = ProductPrice.objects.filter(
+            organization=organization,
+            product=product,
+            variant__isnull=True,
+            collection__isnull=True,
+            price_type=price_type,
+        )
+        for price in existing_prices:
+            price.amount_cents = price_cents
+            price.currency = organization.currency
+            price.save(update_fields=["amount_cents", "currency"])
+
+    if variants is not None:
+        active_variant_ids = []
+        for variant_data in variants:
+            variant = upsert_product_variant(
+                organization=organization,
+                product=product,
+                sku=variant_data.get("sku", ""),
+                name=variant_data["name"],
+                unit=variant_data.get("unit", unit or product.unit),
+                measurement_unit=MeasurementUnit.objects.filter(
+                    organization=organization,
+                    key=variant_data.get("unit_key", variant_data.get("unit", unit or product.unit)),
+                ).first(),
+                unit_quantity=variant_data.get("unit_quantity", 1),
+                weight_grams=variant_data.get("weight_grams"),
+                attributes=variant_data.get("attributes", {}),
+                is_active=variant_data.get("is_active", True),
+            )
+            active_variant_ids.append(variant.id)
+            variant_price_cents = variant_data.get("price_cents")
+            if variant_price_cents is not None:
+                for commercial_mode in CommercialMode.objects.filter(
+                    organization=organization,
+                    key__in=variant_data.get("commercial_mode_keys", commercial_mode_keys or []),
+                ):
+                    set_product_price(
+                        organization=organization,
+                        product=product,
+                        variant=variant,
+                        commercial_mode=commercial_mode,
+                        amount_cents=variant_price_cents,
+                        currency=organization.currency,
+                        price_type=variant_data.get("price_type", price_type),
+                    )
+        ProductVariant.objects.filter(organization=organization, product=product).exclude(
+            id__in=active_variant_ids,
+        ).update(is_active=False)
+
     return product

@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "../../../ui/Button";
 import { Icon } from "../../../ui/Icon";
 import { CloseIcon } from "../../../ui/Icon/AppIcons";
+import { Inline, Stack } from "../../../ui/Layout";
 import { Surface } from "../../../ui/Surface";
 import { renderAppShellIcon } from "../iconResolver";
 import { AppShellBrand } from "./AppShellBrand";
@@ -36,7 +37,7 @@ export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, 
           "--ui-surface-shadow": "var(--app-shell-panel-shadow, none)"
         } as React.CSSProperties}
       >
-        <div className={styles.drawerHeader}>
+        <Inline align="center" className={styles.drawerHeader} justify="between" wrap={false}>
           <AppShellBrand brand={model.brand} onNavigate={onNavigate} />
           <Button
             aria-label={model.strings.closeDrawerAriaLabel}
@@ -49,12 +50,13 @@ export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, 
             tone="neutral"
             type="button"
           />
-        </div>
+        </Inline>
         <nav className={styles.verticalNav}>
-          {model.drawerGroups.map((group) => (
-            <div className={styles.navGroup} key={group.key}>
+          <Stack className={styles.navGroups} gap="sm">
+            {model.drawerGroups.map((group) => (
+              <Stack className={styles.navGroup} gap="xs" key={group.key}>
               {group.label ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
-              <div className={styles.navGroupItems}>
+              <Stack className={styles.navGroupItems} gap="2xs">
                 {group.items.map((item) => {
                   const isActive = model.activePath === item.routePath;
                   return (
@@ -71,9 +73,10 @@ export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, 
                     </Button>
                   );
                 })}
-              </div>
-            </div>
-          ))}
+              </Stack>
+            </Stack>
+            ))}
+          </Stack>
         </nav>
       </Surface>
     </div>

@@ -5,6 +5,7 @@ import type {
   AdminProductCreateDto,
   AdminProductDto,
   AdminProductFormInput,
+  AdminProductUpdateInput,
   AdminProductPriceDto,
   AdminProductVariantDto,
 } from "../contracts/catalog.contract";
@@ -111,7 +112,7 @@ export function mapAdminProductDto(dto: AdminProductDto): ProductBase {
   };
 }
 
-export function mapAdminProductFormInput(input: AdminProductFormInput): AdminProductCreateDto {
+export function mapAdminProductFormInput(input: AdminProductFormInput | AdminProductUpdateInput): Partial<AdminProductCreateDto> {
   return {
     key: input.key,
     name: input.name,

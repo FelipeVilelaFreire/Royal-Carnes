@@ -323,6 +323,10 @@
   gap: var(--theme--spacing-spaceXs);
 }
 
+.navGroups {
+  min-width: 0;
+}
+
 .navGroup + .navGroup {
   border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
   margin-block-start: var(--theme--spacing-spaceXs);
@@ -384,6 +388,17 @@
   z-index: var(--theme--z-index-appShellBottomBar, 980);
 }
 
+.bottomTabInner {
+  width: 100%;
+}
+
+.bottomTabItems {
+  display: grid;
+  gap: var(--theme--spacing-spaceXs);
+  grid-template-columns: repeat(var(--app-shell-bottom-count, 4), minmax(0, 1fr));
+  width: 100%;
+}
+
 .bottomTabButton {
   --ui-surface-bg: transparent;
   --ui-surface-border: transparent;
@@ -395,16 +410,16 @@
   border-radius: var(--theme--radius-xl);
   color: var(--app-shell-muted);
   display: flex;
-  flex: 1 1 0;
   flex-direction: column;
   font-size: var(--theme--typography-size2xs);
   font-weight: var(--theme--typography-bold);
   gap: var(--theme--spacing-space2xs);
   justify-content: center;
-  max-width: var(--theme--dimensions-minWidth-sm);
+  max-width: none;
   min-height: var(--theme--dimensions-height-xl);
   min-width: 0;
   padding: var(--theme--spacing-space2xs);
+  width: 100%;
 }
 
 .bottomTabButtonActive {
@@ -448,6 +463,10 @@
 .sidebarCollapsed {
   min-width: var(--theme--dimensions-height-3xl);
   padding-inline: var(--theme--spacing-spaceSm);
+}
+
+.sidebarMain {
+  min-width: 0;
 }
 
 .sidebarBrand {
@@ -525,12 +544,11 @@
 }
 
 .footerInner {
-  align-items: center;
-  display: flex;
-  gap: var(--theme--spacing-spaceMd);
-  justify-content: center;
-  margin-inline: auto;
-  max-width: var(--theme--layout-container-xl);
+  width: 100%;
+}
+
+.footerItems {
+  width: 100%;
 }
 
 @media (max-width: 48em) {

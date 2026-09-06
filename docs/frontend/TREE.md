@@ -39,6 +39,73 @@ manifest/locales/navigation/config reduzem hardcode visual/composicional
 backend continua dono de regra real
 ```
 
+## Fases De Tela
+
+O trabalho atual deve fechar a Fase 1 das telas antes de buscar acabamento
+visual fino em cada uma.
+
+```text
+Fase 1 - funcional primeiro
+  -> dados essenciais aparecem
+  -> inputs, filtros, botoes e steps executam a acao esperada
+  -> screen chama hooks/actions e nao calcula regra de negocio pesada
+  -> view-model prepara estado de renderizacao
+  -> API client conversa com backend real
+  -> fallback mockado fica explicito no shared-core correto
+  -> product-components reutilizaveis ficam fora da screen
+  -> design fica apresentavel, consistente e Foundation-first
+
+Fase 2 - design melhorado
+  -> ajustar detalhe fino de layout, contraste, borda, animacao e ritmo
+  -> promover padroes repetidos para Foundation/AppShell quando provado
+  -> revisar visual depois que o fluxo ja estiver separado
+```
+
+Detalhe visual pequeno nao deve bloquear a migracao funcional de uma tela quando
+o design ja esta apresentavel. A prioridade e melhorar a tree e deixar tudo
+mudavel por backend, shared-core, manifest ou locale.
+
+## Roadmap Operacional Por Tela
+
+Cada tela deve ser migrada por etapas, com pausa antes de extrair componentes
+ou criar UI nova.
+
+```text
+1. Layout/config
+   -> AppShell, Layout, config.jsx/manifest e grid/padding locais
+
+2. Locales/strings
+   -> copy de interface para locales; dados livres continuam dados
+
+3. Mapa de componentes
+   -> identificar componentes locais, product-components e possiveis UI
+
+4. Proposta de extracao
+   -> listar destino dos itens sem mover ainda
+
+PAUSA
+   -> pedir aprovacao do usuario antes de extrair ou criar UI
+
+5. Extrair itens aprovados
+   -> mover para screen components, product-components ou shared-core correto
+
+6. Avaliar UI nova
+   -> so propor Foundation/ServiceOS quando for generico e reutilizavel
+
+7. Criar UI aprovada
+   -> sem design system paralelo e sem prefixos native artificiais
+
+8. Aplicar design-system
+   -> UI, semi-composed, theme, AppShell e tokens no lugar correto
+
+9. Audit geral
+   -> render-only, locale, manifest, backend/fallback, responsivo e builds
+```
+
+Para `MontarBox/PedidoView`, os Passos 1-4 devem produzir primeiro um mapa de
+layout, copy, estado, calculos, mocks e componentes candidatos. A extracao so
+comeca depois da aprovacao explicita desse mapa.
+
 ## Tree Atual
 
 ```text
@@ -267,13 +334,14 @@ endpoint direto.
 ## Ordem Recomendada
 
 ```text
-1. Client contracts para Orders/Deliveries.
-2. Client API clients para endpoints /orders/me e /deliveries/me.
-3. Client hooks com fallback para mocks atuais.
-4. MeusPedidosView lendo hook em vez de mock direto.
-5. PedidoView enviando create_order pelo hook.
-6. Admin contracts/API/hooks para orders e deliveries.
-7. Admin pages ligando listagem, detalhe, transicao e confirmacao.
+1. MontarBox/PedidoView: extrair fluxo funcional para shared-core.
+2. Client contracts para checkout/orders/deliveries.
+3. Client API clients para catalogo, checkout, orders e deliveries.
+4. Client hooks com fallback explicito para mocks atuais.
+5. PedidoView render-only lendo view-model e disparando actions.
+6. MeusPedidosView lendo hook em vez de mock direto.
+7. Admin contracts/API/hooks para catalog, orders e deliveries.
+8. Admin pages ligando listagem, detalhe, transicao e confirmacao.
 ```
 
 Audit render-only:

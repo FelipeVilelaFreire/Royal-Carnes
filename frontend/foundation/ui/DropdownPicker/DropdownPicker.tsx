@@ -1,82 +1,108 @@
 "use client";
 
-import React, { useState } from "react";
-import { themeColorsDefault } from "../../tokens/theme.tokens";
+import React, { useId, useMemo, useState } from "react";
+import { ChevronRightIcon } from "../Icon/AppIcons";
+import { Button } from "../Button";
+import { Surface } from "../Surface";
+import styles from "./DropdownPicker.module.css";
+
+export interface DropdownPickerOption {
+  disabled?: boolean;
+  label: string;
+  value: string;
+}
 
 export interface DropdownPickerProps {
-  options: Array<{ label: string; value: string }>;
-  value?: string;
-  onChange?: (val: string) => void;
+  ariaLabel?: string;
+  className?: string;
+  disabled?: boolean;
+  label?: string;
+  onChange?: (value: string) => void;
+  options: DropdownPickerOption[];
   placeholder?: string;
+  value?: string;
+  width?: "auto" | "full";
 }
 
 export const DropdownPicker: React.FC<DropdownPickerProps> = ({
-  options = [],
-  value,
+  ariaLabel,
+  className,
+  disabled = false,
+  label,
   onChange,
-  placeholder = "Selecione..."
+  options = [],
+  placeholder,
+  value,
+  width = "full",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const selected = options.find((o) => o.value === value);
+  const listboxId = useId();
+  const selected = useMemo(() => options.find((option) => option.value === value), [options, value]);
+  const selectedLabel = selected?.label || placeholder || options[0]?.label || "";
+
+  const close = () => setIsOpen(false);
 
   return (
-    <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: "100%",
-          background: themeColorsDefault.dark.surface,
-          color: themeColorsDefault.dark.text,
-          border: `1px solid ${themeColorsDefault.dark.border}`,
-          borderRadius: "8px",
-          padding: "10px 14px",
-          textAlign: "left",
-          fontSize: "14px",
-          cursor: "pointer",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}
+    <div
+      className={[styles.root, className].filter(Boolean).join(" ")}
+      data-open={isOpen || undefined}
+      data-width={width}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) close();
+      }}
+    >
+      <Button
+        aria-controls={listboxId}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label={ariaLabel}
+        appearance="outline"
+        className={styles.trigger}
+        disabled={disabled}
+        icon={<ChevronRightIcon />}
+        iconPosition="end"
+        onClick={() => setIsOpen((current) => !current)}
+        size="sm"
+        tone="neutral"
+        type="button"
       >
-        <span>{selected ? selected.label : placeholder}</span>
-        <span>▼</span>
-      </button>
+        <span className={styles.value}>
+          {label ? <span className={styles.inlineLabel}>{label}</span> : null}
+          <span>{selectedLabel}</span>
+        </span>
+      </Button>
 
-      {isOpen && (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            marginTop: "4px",
-            background: themeColorsDefault.dark.surface,
-            border: `1px solid ${themeColorsDefault.dark.border}`,
-            borderRadius: "8px",
-            zIndex: 200,
-            overflow: "hidden"
-          }}
-        >
-          {options.map((opt) => (
-            <div
-              key={opt.value}
+      <Surface
+        appearance="solid"
+        className={styles.panel}
+        id={listboxId}
+        role="listbox"
+        tabIndex={-1}
+      >
+        {options.map((option) => {
+          const isSelected = option.value === value;
+          return (
+            <Button
+              aria-selected={isSelected}
+              appearance={isSelected ? "soft" : "transparent"}
+              className={styles.option}
+              disabled={option.disabled}
+              key={option.value}
               onClick={() => {
-                if (onChange) onChange(opt.value);
-                setIsOpen(false);
+                if (option.disabled) return;
+                onChange?.(option.value);
+                close();
               }}
-              style={{
-                padding: "10px 14px",
-                fontSize: "14px",
-                color: themeColorsDefault.dark.text,
-                cursor: "pointer",
-                background: opt.value === value ? "rgba(212, 175, 55, 0.15)" : "transparent"
-              }}
+              role="option"
+              size="sm"
+              tone={isSelected ? "primary" : "neutral"}
+              type="button"
             >
-              {opt.label}
-            </div>
-          ))}
-        </div>
-      )}
+              {option.label}
+            </Button>
+          );
+        })}
+      </Surface>
     </div>
   );
 };

@@ -28,6 +28,15 @@
       "requiresInventory": true,
       "createsDelivery": true,
       "sortOrder": 2
+    },
+    {
+      "key": "royal-box",
+      "label": "Royal Box",
+      "commercialModeKey": "box",
+      "codeSequenceKey": "orders",
+      "requiresInventory": true,
+      "createsDelivery": true,
+      "sortOrder": 3
     }
   ],
   "statuses": [

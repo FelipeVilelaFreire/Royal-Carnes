@@ -2,6 +2,8 @@
 
 import React, { type CSSProperties, type HTMLAttributes } from "react";
 import { themeColorsDefault, themeSpacingDefault } from "../../tokens/theme.tokens";
+import { Surface } from "../Surface";
+import { Text } from "../Text";
 import { useUiConfig } from "../UiProvider";
 import styles from "./EmptyState.module.css";
 
@@ -11,6 +13,7 @@ export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
   icon?: React.ReactNode;
   actions?: React.ReactNode;
   align?: "left" | "center";
+  framed?: boolean;
   size?: "compact" | "regular" | "spacious";
 }
 
@@ -20,6 +23,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
   actions,
   align = "center",
+  framed = false,
   size = "regular",
   className,
   style,
@@ -69,12 +73,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     "--ui-empty-state-content-width": "560px",
     "--ui-empty-state-icon-frame": sizeConfig.iconFrame,
     "--ui-empty-state-icon-radius": "18px",
-    "--ui-empty-state-icon-bg": themeColors.surfaceContainer || themeColors.surface,
+    "--ui-empty-state-bg": framed ? themeColors.surfaceContainer || themeColors.surface : "transparent",
+    "--ui-empty-state-color": themeColors.text,
+    "--ui-empty-state-icon-bg": themeColors.surface || themeColors.surfaceContainer,
     "--ui-empty-state-icon-color": themeColors.primary,
-    "--ui-empty-state-border-width": "1px",
-    "--ui-empty-state-border-color": themeColors.border,
+    "--ui-empty-state-border-width": "var(--theme--borders-hairline)",
+    "--ui-empty-state-border-color": framed ? themeColors.border : "transparent",
     "--ui-empty-state-title-color": themeColors.text,
-    "--ui-empty-state-title-family": "'Playfair Display', serif",
+    "--ui-empty-state-title-family": "var(--theme--typography-headingFamily)",
     "--ui-empty-state-title-size": sizeConfig.titleSize,
     "--ui-empty-state-title-weight": 800,
     "--ui-empty-state-title-line-height": 1.1,
@@ -85,17 +91,25 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   } as CSSProperties;
 
   return (
-    <div
+    <Surface
       {...props}
+      appearance={framed ? "solid" : "transparent"}
       className={[styles.emptyState, className].filter(Boolean).join(" ")}
+      data-framed={framed || undefined}
       style={emptyStateStyle}
     >
       {icon && <div className={styles.iconFrame}>{icon}</div>}
       <div className={styles.content}>
-        <h2 className={styles.title}>{title}</h2>
-        {description && <p className={styles.description}>{description}</p>}
+        <Text as="h2" className={styles.title} tone="inherit" variant="h2">
+          {title}
+        </Text>
+        {description ? (
+          <Text className={styles.description} tone="inherit">
+            {description}
+          </Text>
+        ) : null}
       </div>
       {actions && <div className={styles.actions}>{actions}</div>}
-    </div>
+    </Surface>
   );
 };

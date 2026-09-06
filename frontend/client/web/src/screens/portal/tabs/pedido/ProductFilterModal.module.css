@@ -1,0 +1,30 @@
+.categoryList {
+  display: grid;
+  gap: var(--theme--spacing-spaceXs);
+  max-height: min(calc(var(--theme--dimensions-height-lg) * 7), 58dvh);
+  overflow: auto;
+  padding-right: var(--theme--spacing-space2xs);
+}
+
+.categoryOption {
+  --ui-button-height: auto;
+  --ui-button-padding-x: var(--theme--spacing-spaceMd);
+  --ui-button-padding-y: var(--theme--spacing-spaceSm);
+  --ui-surface-bg: transparent;
+  --ui-surface-border: var(--pedido-filter-option-border);
+  --ui-surface-color: var(--pedido-filter-option-color);
+  --ui-surface-radius: var(--theme--radius-lg);
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.categoryOption[aria-selected="true"] {
+  --ui-surface-bg: var(--pedido-filter-option-active-bg);
+  --ui-surface-border: var(--pedido-filter-option-active-border);
+  --ui-surface-color: var(--pedido-filter-option-active-color);
+}
+
+.actions {
+  margin-top: var(--theme--spacing-spaceLg);
+}

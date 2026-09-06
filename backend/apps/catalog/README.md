@@ -41,17 +41,12 @@ GET  /api/v1/catalog/products/:id/
 GET  /api/v1/catalog/commercial-modes/
 GET  /api/v1/catalog/admin/products/
 POST /api/v1/catalog/admin/products/
+GET  /api/v1/catalog/admin/products/:id/
+PATCH /api/v1/catalog/admin/products/:id/
 ```
 
 Permissoes:
 
 ```text
 products.manage -> criar/editar catalogo via admin
-```
-
-Limite atual:
-
-```text
-PATCH/DELETE admin product ainda nao estao publicados em urls.py.
-Nao criar shared-core ou tela para essas rotas ate o backend existir.
 ```

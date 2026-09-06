@@ -8,8 +8,9 @@ export const resolveNativeAppShellModel = (input: NativeAppShellInput): NativeAp
   const headerEnabled = input.config?.native?.header?.enabled === false || input.config?.header?.mobile?.enabled === false
     ? false
     : model.headerEnabled;
+  const nativeThemeMode = input.config?.theme?.defaultMode || input.config?.theme?.mode || model.effectiveMode;
   const designSystem = resolveNativeUiManifest({
-    mode: model.effectiveMode,
+    mode: nativeThemeMode,
     ui: { theme: input.config?.theme } as any,
   });
   const surface = designSystem.primitives.Surface?.states || {};

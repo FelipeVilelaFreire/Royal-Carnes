@@ -126,6 +126,48 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(response.data["variants"][0]["attributes"]["cut"], "chorizo")
         self.assertEqual(response.data["prices"][0]["variant_sku"], "CHORIZO-1KG")
 
+    def test_admin_can_update_product_and_public_catalog_reflects_it(self):
+        self.authenticate()
+        product = Product.objects.get(key="picanha")
+
+        response = self.client.patch(
+            f"/api/v1/catalog/admin/products/{product.id}/",
+            {
+                "name": "Picanha suina",
+                "category_keys": ["suinos"],
+                "price_cents": 8990,
+                "commercial_mode_keys": ["delivery"],
+                "collection_keys": ["dia-a-dia"],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["name"], "Picanha suina")
+        self.assertEqual([category["key"] for category in response.data["categories"]], ["suinos"])
+        self.assertEqual(response.data["collection_keys"], ["dia-a-dia"])
+        delivery_base_price = next(
+            price
+            for price in response.data["prices"]
+            if (
+                price["commercial_mode_key"] == "delivery"
+                and price["price_type"] == "base"
+                and price["collection_key"] is None
+                and price["variant_sku"] is None
+            )
+        )
+        self.assertEqual(delivery_base_price["amount_cents"], 8990)
+
+        public_response = self.client.get(
+            f"/api/v1/catalog/products/{product.id}/",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(public_response.status_code, 200, public_response.data)
+        self.assertEqual(public_response.data["name"], "Picanha suina")
+        self.assertEqual([category["key"] for category in public_response.data["categories"]], ["suinos"])
+
     def test_variant_sku_is_unique_per_organization(self):
         product = Product.objects.get(key="maminha")
         existing = ProductVariant.objects.get(sku="PICANHA-1KG")

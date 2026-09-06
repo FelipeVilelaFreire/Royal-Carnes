@@ -42,4 +42,10 @@ deliveries.api.ts
   -> GET /api/v1/deliveries/admin/deliveries/:id/
   -> POST /api/v1/deliveries/admin/deliveries/:id/transition/
   -> POST /api/v1/deliveries/admin/deliveries/:id/confirm/
+
+catalog.api.ts
+  -> GET /api/v1/catalog/admin/products/
+  -> POST /api/v1/catalog/admin/products/
+  -> GET /api/v1/catalog/admin/products/:id/
+  -> PATCH /api/v1/catalog/admin/products/:id/
 ```

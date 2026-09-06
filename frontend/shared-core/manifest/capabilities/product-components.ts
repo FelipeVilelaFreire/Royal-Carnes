@@ -1,6 +1,7 @@
 export const royalPrimeProductComponentsCapability = {
   status: "transitional",
   currentOwners: [
+    "product-components/ecommerce",
     "client/web/src/transitional/product-components",
     "admin/web/src/transitional/product-components",
     "client/web/src/product-components/ecommerce",

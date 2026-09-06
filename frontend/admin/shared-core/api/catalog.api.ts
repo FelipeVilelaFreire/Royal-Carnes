@@ -10,6 +10,7 @@ import type {
   AdminCommercialModeView,
   AdminProductDto,
   AdminProductFormInput,
+  AdminProductUpdateInput,
   AdminProductView,
 } from "../contracts/catalog.contract";
 import {
@@ -79,6 +80,22 @@ export function createAdminCatalogApi(config: ApiClientConfig = {}) {
         resolveUrl(config.baseUrl, "/api/v1/catalog/admin/products/"),
         {
           method: "POST",
+          headers: buildApiHeaders({
+            token: config.getAccessToken?.(),
+            organizationSlug: config.organizationSlug,
+          }),
+          body: JSON.stringify(mapAdminProductFormInput(input)),
+        },
+      );
+
+      await throwIfApiError(response);
+      return mapAdminProductDto((await response.json()) as AdminProductDto);
+    },
+    async update(productId: string | number, input: AdminProductUpdateInput): Promise<AdminProductView> {
+      const response = await fetcher(
+        resolveUrl(config.baseUrl, `/api/v1/catalog/admin/products/${productId}/`),
+        {
+          method: "PATCH",
           headers: buildApiHeaders({
             token: config.getAccessToken?.(),
             organizationSlug: config.organizationSlug,

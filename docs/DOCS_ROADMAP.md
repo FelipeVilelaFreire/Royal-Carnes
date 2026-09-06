@@ -39,7 +39,7 @@ handoff
 
 ```text
 architecture/NEXT_STEPS.md
-  -> proxima sequencia oficial de cortes
+  -> proxima sequencia oficial, regra Fase 1/Fase 2 e roadmap padrao por tela
 
 architecture/FRONTEND_TARGET_TREE_ROADMAP.md
   -> tree alvo do frontend
@@ -60,7 +60,7 @@ architecture/RENDER_APPS_TREE_ANALYSIS.md
   -> analise das telas atuais em transicao
 
 frontend/TREE.md
-  -> tree detalhada do frontend
+  -> tree detalhada do frontend e ownership do roadmap por tela
 
 kits/README.md
   -> mapa de reuso por capacidade
@@ -103,3 +103,21 @@ frontend/admin/web
 ```
 
 O caminho oficial e sempre `shared-core/manifest`.
+
+## Prioridade Operacional Atual
+
+```text
+Fase 1
+  -> funcional primeiro
+  -> tela mostra dados, aceita acoes e usa hook/view-model/API
+  -> mocks ficam como fallback explicito no shared-core correto
+  -> componentes reutilizaveis ficam na tree correta
+  -> design apenas apresentavel com Foundation/AppShell
+
+Fase 2
+  -> refinamento visual fino depois
+  -> polimento de borda, espacamento, animacao, contraste e composicao
+```
+
+Para o portal cliente, a proxima tela grande e `MontarBox/PedidoView`: primeiro
+separar fluxo, estado, calculos e mocks diretos; depois polir visualmente.

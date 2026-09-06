@@ -26,6 +26,30 @@ foundation
   -> visual-only
 ```
 
+## Regra De Fase Atual
+
+O portal deve terminar a Fase 1 funcional das telas antes de entrar em
+refinamento visual fino.
+
+```text
+Fase 1
+  -> funcionalidade basica completa
+  -> dados exibidos
+  -> acoes essenciais funcionando
+  -> regra pesada fora da screen
+  -> hook/view-model/API/backend ou fallback explicito
+  -> copy em locale e config repetida em manifest
+  -> componentes reutilizaveis extraidos para product-components/Foundation
+
+Fase 2
+  -> polimento de design
+  -> ajuste fino de borda, cor, espacamento, animacao e densidade
+```
+
+Durante a Fase 1, corrigir problemas visuais que impedem uso ou leitura. Nao
+parar a migracao funcional por detalhe estetico pequeno se a tela ja esta
+apresentavel.
+
 ## Status Geral
 
 O frontend ainda tem hardcode esperado de MVP. Isso nao e um erro por si so.
@@ -150,9 +174,10 @@ frontend/client/shared-core/manifest/checkout.manifest.ts
 Acao recomendada:
 
 ```text
-primeiro criar contrato/API/hook de Orders
+primeiro separar MontarBox/PedidoView em fluxo funcional de shared-core
+depois criar contrato/API/hook de checkout/orders
 depois extrair checkout manifest com steps, modes, labels e campos
-por ultimo deixar PedidoView apenas renderizando o view-model e disparando acoes
+por ultimo deixar PedidoView render-only, exibindo view-model e disparando acoes
 ```
 
 ### P0 - MeusPedidos/MinhaConta Duplicam Status E Copy De Pedidos

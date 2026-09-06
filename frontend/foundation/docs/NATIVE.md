@@ -120,6 +120,35 @@ client/native screen
 ```
 
 O runtime React Native local pode mapear `Surface`, `Text`, `Icon`, `Button`,
-`Input`, `Select`, `Field`, `Card`, `Badge`, `Divider`, `DropdownPicker`,
-`SegmentedControl`, `EmptyState`, `Layout` e `AppShell` para componentes
+`Input`, `TextArea`, `Select`, `Field`, `Card`, `Badge`, `Divider`, `DropdownPicker`,
+`SegmentedControl`, `EmptyState`, `Layout`, `Modal`, `BottomModal` e `AppShell` para componentes
 nativos, mas nao deve mudar o contrato funcional.
+
+## Modal
+
+```text
+web desktop -> Modal centralizado
+web mobile  -> BottomModal quando variant="auto"
+native      -> Modal/BottomModal mapeados para runtime nativo
+```
+
+Arquivos publicos:
+
+```text
+frontend/foundation/ui/Modal/Modal.tsx
+frontend/foundation/ui/Modal/BottomModal.tsx
+frontend/foundation/ui/Modal/types.ts
+```
+
+`ModalFrame.tsx` e implementacao interna compartilhada. Produto consome
+`Modal` ou `BottomModal`; nao importa o frame interno.
+
+Regra:
+
+```text
+screen nao monta overlay proprio
+screen nao decide media query de modal
+screen passa open/onClose/title/closeLabel/content
+Foundation decide apresentacao por runtime e viewport
+copy como closeLabel e title vem de locales
+```

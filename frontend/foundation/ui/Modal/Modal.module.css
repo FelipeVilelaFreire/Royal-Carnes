@@ -1,0 +1,154 @@
+.backdrop {
+  align-items: center;
+  animation: modalBackdropEnter var(--ui-modal-duration, var(--theme--motion-durationMd)) var(--ui-modal-easing, var(--theme--motion-easingStandard)) both;
+  background: color-mix(in srgb, var(--theme--color-background) 70%, transparent);
+  backdrop-filter: blur(var(--theme--blur-md));
+  box-sizing: border-box;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: var(--theme--spacing-spaceLg);
+  position: fixed;
+  z-index: var(--theme--z-index-modal);
+}
+
+.panel {
+  --ui-surface-bg: var(--theme--color-surface-container);
+  --ui-surface-border: var(--theme--color-border);
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-color: var(--theme--color-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceXl);
+  --ui-surface-padding-y: var(--theme--spacing-spaceXl);
+  --ui-surface-radius: var(--theme--radius-xl);
+  animation: modalPanelEnter var(--ui-modal-duration, var(--theme--motion-durationMd)) var(--ui-modal-easing, var(--theme--motion-easingEmphasized)) both;
+  max-height: calc(100dvh - (var(--theme--spacing-spaceLg) * 2));
+  max-width: var(--ui-modal-width);
+  overflow-y: auto;
+  width: 100%;
+}
+
+.panel[data-size="sm"] {
+  --ui-modal-width: var(--theme--layout-container-sm);
+}
+
+.panel[data-size="md"] {
+  --ui-modal-width: var(--theme--layout-container-sm);
+}
+
+.panel[data-size="lg"] {
+  --ui-modal-width: var(--theme--layout-container-md);
+}
+
+.panel[data-size="full"] {
+  --ui-modal-width: var(--theme--layout-container-lg);
+}
+
+.header {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--theme--spacing-spaceMd);
+  justify-content: space-between;
+}
+
+.heading {
+  display: grid;
+  gap: var(--theme--spacing-spaceXs);
+  min-width: 0;
+}
+
+.title {
+  color: var(--theme--color-text);
+}
+
+.description {
+  color: var(--theme--color-textMuted, var(--theme--color-text-muted));
+}
+
+.closeButton {
+  --ui-button-height: var(--theme--dimensions-height-md);
+  --ui-button-min-width: var(--theme--dimensions-height-md);
+  --ui-button-padding-x: var(--theme--spacing-space2xs);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
+  flex: 0 0 auto;
+}
+
+.body {
+  margin-block-start: var(--theme--spacing-spaceLg);
+}
+
+.handle {
+  background: color-mix(in srgb, var(--theme--color-border) 74%, transparent);
+  border-radius: var(--theme--radius-full);
+  display: none;
+  height: var(--theme--borders-thick);
+  margin: 0 auto var(--theme--spacing-spaceMd);
+  width: var(--theme--dimensions-minWidth-xs);
+}
+
+.backdrop[data-variant="bottom"] {
+  align-items: flex-end;
+  padding: 0;
+}
+
+.backdrop[data-variant="bottom"] .panel {
+  --ui-surface-radius: var(--theme--radius-xl) var(--theme--radius-xl) 0 0;
+  animation-name: modalSheetEnter;
+  max-height: calc(100dvh - var(--theme--spacing-spaceLg));
+  max-width: none;
+}
+
+.backdrop[data-variant="bottom"] .handle {
+  display: block;
+}
+
+@media (max-width: 48em) {
+  .backdrop[data-variant="auto"] {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .backdrop[data-variant="auto"] .panel {
+    --ui-surface-radius: var(--theme--radius-xl) var(--theme--radius-xl) 0 0;
+    animation-name: modalSheetEnter;
+    max-height: calc(100dvh - var(--theme--spacing-spaceLg));
+    max-width: none;
+  }
+
+  .backdrop[data-variant="auto"] .handle {
+    display: block;
+  }
+}
+
+@keyframes modalBackdropEnter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPanelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--theme--spacing-spaceMd)) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalSheetEnter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--theme--spacing-space2xl));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
