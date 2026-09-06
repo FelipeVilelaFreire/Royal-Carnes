@@ -3,6 +3,7 @@ export * from "./DropdownPicker";
 export * from "./Icon";
 export * from "./Input";
 export * from "./Layout";
+export * from "./Modal";
 export * from "./Select";
 export * from "./Surface";
 export * from "./Text";

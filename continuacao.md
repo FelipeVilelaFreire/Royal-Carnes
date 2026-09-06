@@ -49,6 +49,56 @@ tela apresenta e dispara acao
 foundation nao conhece regra de produto
 ```
 
+## Checkpoint 2026-09-06
+
+Ultimo commit publicado antes deste checkpoint:
+
+```text
+180152f feat: advance client app shell and render-only flows
+branch: feature/shared-core-kit-reset
+remote: origin/feature/shared-core-kit-reset
+```
+
+Depois desse commit, foi feito o corte de `/meus-pedidos`:
+
+```text
+client/web MeusPedidosView
+  -> saiu de legacy/design-system e legacy/app-shell
+  -> nao importa mocks diretamente
+  -> nao importa clientPtBR diretamente
+  -> usa useClientOrders({ fallbackOnError: true })
+  -> usa Container, Grid, Stack, Inline, Card, Button, Text, EmptyState,
+     Modal e BottomModal da Foundation
+  -> modal de detalhe usa BottomModal no webIsMobile
+
+client/mobile MeusPedidosView
+  -> usa o mesmo useClientOrders e useClientStrings
+  -> espelha o webIsMobile em comportamento: resumo, pedido atual, proximo
+     ciclo, historico e modal de detalhe
+  -> usa Container, Surface, Stack, Inline, Button, Text e Modal mobile
+
+client/shared-core/orders
+  -> orders.fallback.ts centraliza dados mockados temporarios
+  -> useClientOrders tenta API/backend e cai em fallback explicito
+  -> orders.view-model.ts prepara labels, totais, status, timeline, itens,
+     ciclo, pagamento e pedido atual para render
+```
+
+Validado neste corte:
+
+```text
+npm run build:client -> passou
+node node_modules\typescript\bin\tsc -p frontend\client\mobile\tsconfig.json -> passou
+git diff --check -> passou, apenas warnings LF/CRLF do Windows
+curl.exe -I http://localhost:3000/meus-pedidos -> 200 OK
+```
+
+Handoff especifico:
+
+```text
+docs/handoff/09-meus-pedidos-render-only-audit.md
+```
+
 ## Foundation
 
 Foi criado o corte atual da Foundation:
@@ -88,15 +138,16 @@ foundation/shells/app-shell/native
   -> resolver native-ready para app mobile futuro com designSystem
 ```
 
-Native aqui significa `native-ready`, nao app mobile pronto. Ainda nao existe:
+Native aqui comecou como `native-ready`, mas agora ja existe uma base mobile
+inicial para acompanhar o webIsMobile.
 
 ```text
-frontend/client/native
 frontend/client/mobile
 ```
 
-Quando existir, ele deve consumir os mesmos manifests, locales e navigation do
-client shared-core.
+Essa base ainda nao e um app Expo final publicado, mas ja deve consumir os
+mesmos manifests, locales, navigation, hooks e view-models do client
+shared-core. Nao criar tela mobile conceitualmente diferente da web mobile.
 
 Native Design System agora possui:
 
@@ -477,10 +528,11 @@ Continuar pelas telas render-only usando a Foundation nova.
 Ordem sugerida:
 
 ```text
-1. client/web: MeusPedidosView + OrderDetailModal
-2. client/web: MinhaCaixaView
-3. client/web: MeuClubeView
-4. admin/web: DashboardPage
+1. client/web + client/mobile: revisar se MeusPedidosView precisa apenas de
+   ajuste visual pequeno; nao voltar para legacy
+2. client/web + client/mobile: MinhaCaixaView em Fase 1 funcional
+3. client/web + client/mobile: MeuClubeView em Fase 1 funcional
+4. admin/web: DashboardPage em Fase 1 funcional
 5. admin/web: ListPage/DetailPage/AddPage por screen type
 ```
 
@@ -535,4 +587,27 @@ O usuario pediu explicitamente para fazer:
 git add .
 git commit
 git push
+```
+
+## Continuacao Amanhã
+
+Se o proximo chat for continuar sem mudar de prioridade, fazer nesta ordem:
+
+```text
+1. conferir git status e ultimo commit/push
+2. abrir docs/handoff/09-meus-pedidos-render-only-audit.md
+3. abrir frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
+4. abrir frontend/client/mobile/src/screens/portal/tabs/MeusPedidosView.tsx
+5. se `/meus-pedidos` estiver visualmente aceitavel, nao polir mais detalhes
+6. iniciar MinhaCaixaView com o mesmo roteiro:
+   Layout/config -> locales -> mapa de componentes -> shared-core hook/API
+   -> render-only web -> webIsMobile -> native
+```
+
+Regra pratica para amanha:
+
+```text
+prioridade 1: funcional e arquitetura
+prioridade 2: webIsMobile == native behavior
+prioridade 3: visual apenas ate ficar apresentavel
 ```

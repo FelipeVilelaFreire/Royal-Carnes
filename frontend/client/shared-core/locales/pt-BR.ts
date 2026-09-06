@@ -122,6 +122,10 @@ export const clientPtBR = {
   meusPedidos: {
     title: "Meus Pedidos",
     subtitle: "Acompanhe suas compras, caixas e entregas Royal Delivery.",
+    source: {
+      fallback: "Dados demonstrativos",
+      api: "Dados da conta"
+    },
     stats: {
       activeOrders: "Pedidos em andamento",
       nextBox: "Proximo ciclo",
@@ -129,7 +133,9 @@ export const clientPtBR = {
       deliveredOrders: "Pedidos entregues"
     },
     states: {
-      loading: "Carregando"
+      loading: "Carregando",
+      empty: "Nenhum pedido encontrado",
+      error: "Nao foi possivel sincronizar com o backend agora."
     },
     currentOrder: {
       badge: "Pedido atual",
@@ -156,6 +162,25 @@ export const clientPtBR = {
       itemSuffix: "itens",
       details: "Detalhes",
       review: "Avaliar"
+    },
+    cycle: {
+      title: "Uso do ciclo",
+      remaining: "Cortes do ciclo",
+      cuts: "Cortes",
+      protein: "Proteina",
+      charcoal: "Carvao",
+      complements: "Compl.",
+      utensils: "Utensilio"
+    },
+    detail: {
+      title: "Detalhes do pedido",
+      close: "Fechar",
+      date: "Data",
+      estimate: "Previsao",
+      payment: "Pagamento",
+      deliveryCode: "Codigo",
+      items: "Itens do pedido",
+      tracking: "Acompanhamento"
     }
   },
   pedido: {
