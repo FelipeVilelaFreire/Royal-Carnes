@@ -26,12 +26,13 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(response.status_code, 200, response.data)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
 
-    def test_seed_creates_order_config_without_orders(self):
+    def test_seed_creates_order_config_and_demo_orders(self):
         self.assertEqual(OrderKindDefinition.objects.count(), 3)
         self.assertEqual(OrderStatusDefinition.objects.count(), 6)
-        self.assertEqual(Order.objects.count(), 0)
+        self.assertEqual(Order.objects.count(), 4)
         self.assertTrue(OrderStatusDefinition.objects.get(key="received").is_initial)
         self.assertEqual(OrderKindDefinition.objects.get(key="royal-box").commercial_mode.key, "box")
+        self.assertTrue(Order.objects.filter(metadata__seedKey="pedido-felipe-churrasco-familia").exists())
 
     def test_customer_can_create_order_and_inventory_is_reserved(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -53,13 +54,13 @@ class OrdersApiTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 201, response.data)
-        self.assertEqual(response.data["code"], "RP-000001")
+        self.assertEqual(response.data["code"], "RP-000005")
         self.assertEqual(response.data["status_key"], "received")
         self.assertEqual(response.data["total_cents"], 8990)
-        self.assertEqual(Delivery.objects.count(), 1)
+        self.assertEqual(Delivery.objects.count(), 5)
         self.assertEqual(Delivery.objects.get(order_id=response.data["id"]).status_key, "pending")
         item = InventoryItem.objects.get(variant__sku="PICANHA-1KG")
-        self.assertEqual(item.reserved_quantity, Decimal("3.000"))
+        self.assertEqual(item.reserved_quantity, Decimal("6.000"))
 
     def test_customer_cannot_create_order_with_zero_quantity(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -105,7 +106,7 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data["kind_key"], "royal-box")
         self.assertEqual(response.data["total_cents"], 8990)
-        self.assertEqual(Delivery.objects.count(), 1)
+        self.assertEqual(Delivery.objects.count(), 5)
 
     def test_admin_can_list_and_transition_order_by_seeded_workflow(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

@@ -2,7 +2,7 @@ export const cortesConfig = {
   screenKey: "cortes",
   titleKey: "cortes.title",
   subtitleKey: "cortes.subtitle",
-  entityName: "Corte Nobre",
+  entityNameKey: "entities.cut",
   actionLabelKey: "cortes.ctaAdd",
   columns: [
     { key: "name", labelKey: "cortes.tableHeaders.name" },

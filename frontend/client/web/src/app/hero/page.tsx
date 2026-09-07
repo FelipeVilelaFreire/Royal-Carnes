@@ -2,7 +2,10 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { HeroMarketplaceView } from "../../screens/landing/HeroMarketplaceView";
+import { AppShell } from "@foundation/shells/app-shell";
+import { landingAppShellConfig } from "@royalprime/client/manifest/landing/appshell.config";
+import { landingNavigation } from "@royalprime/client/navigation/landing.navigation";
+import { LandingView } from "../../screens/landing/LandingView";
 
 export default function HeroPage() {
   const router = useRouter();
@@ -11,5 +14,14 @@ export default function HeroPage() {
     router.push(path);
   };
 
-  return <HeroMarketplaceView onNavigate={handleNavigate} />;
+  return (
+    <AppShell
+      activePath="/hero"
+      config={landingAppShellConfig}
+      navItems={landingNavigation as any}
+      onNavigate={handleNavigate}
+    >
+      <LandingView onNavigate={handleNavigate} />
+    </AppShell>
+  );
 }

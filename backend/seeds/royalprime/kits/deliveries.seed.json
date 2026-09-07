@@ -50,5 +50,34 @@
       "sortOrder": 99
     }
   ],
-  "deliveries": []
+  "deliveries": [
+    {
+      "key": "entrega-assinatura-pro-setembro",
+      "orderKey": "pedido-assinatura-pro-setembro",
+      "statusPath": ["packing"],
+      "confirmationCode": "9314",
+      "notes": "Separacao em caixa termica com controle de cadeia fria."
+    },
+    {
+      "key": "entrega-felipe-churrasco-familia",
+      "orderKey": "pedido-felipe-churrasco-familia",
+      "statusPath": ["packing", "out-for-delivery"],
+      "confirmationCode": "4827",
+      "notes": "Rota prioritaria para janela de entrega do sabado."
+    },
+    {
+      "key": "entrega-lucas-delivery-picanha",
+      "orderKey": "pedido-lucas-delivery-picanha",
+      "statusPath": [],
+      "confirmationCode": "7051",
+      "notes": "Entrega aguardando embalagem."
+    },
+    {
+      "key": "entrega-cliente-recebido",
+      "orderKey": "pedido-cliente-recebido",
+      "statusPath": [],
+      "confirmationCode": "1198",
+      "notes": "Entrega sera criada apos aprovacao do pedido."
+    }
+  ]
 }

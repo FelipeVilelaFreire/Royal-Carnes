@@ -510,6 +510,14 @@ class BackendSeedApplier:
             )
             self.order_statuses_by_key[status.key] = status
         for order_data in data.get("orders", []):
+            existing_order = Order.objects.filter(
+                organization=organization,
+                metadata__seedKey=order_data["key"],
+            ).first()
+            if existing_order:
+                self.orders_by_key[order_data["key"]] = existing_order
+                continue
+
             customer = self.customers_by_key[order_data["customerKey"]]
             address = customer.addresses.filter(is_default=True).first()
             subscription = None
@@ -524,9 +532,19 @@ class BackendSeedApplier:
                 kind_key=order_data["kindKey"],
                 items=order_data.get("items", []),
                 notes=order_data.get("notes", ""),
+                create_delivery=False,
             )
-            target_status_key = order_data.get("statusKey")
-            if target_status_key and target_status_key != order.status_key:
+            order.metadata = {
+                **(order.metadata or {}),
+                "seedKey": order_data["key"],
+            }
+            order.save(update_fields=["metadata", "updated_at"])
+            status_path = order_data.get("statusPath")
+            if status_path is None and order_data.get("statusKey"):
+                status_path = [order_data["statusKey"]]
+            for target_status_key in status_path or []:
+                if target_status_key == order.status_key:
+                    continue
                 transition_order_status(
                     organization=organization,
                     order=order,
@@ -563,15 +581,38 @@ class BackendSeedApplier:
             self.delivery_statuses_by_key[status.key] = status
         for delivery_data in data.get("deliveries", []):
             order = self.orders_by_key[delivery_data["orderKey"]]
-            delivery = create_delivery_for_order(
+            delivery = Delivery.objects.filter(
                 organization=organization,
-                order=order,
-                code_sequence_key=delivery_data.get("codeSequenceKey", "deliveries"),
-                confirmation_code=delivery_data.get("confirmationCode", ""),
-                notes=delivery_data.get("notes", ""),
-            )
-            target_status_key = delivery_data.get("statusKey")
-            if target_status_key and target_status_key != delivery.status_key:
+                metadata__seedKey=delivery_data["key"],
+            ).first()
+            if delivery is None:
+                delivery = Delivery.objects.filter(
+                    organization=organization,
+                    order=order,
+                ).first()
+            if delivery is None:
+                delivery = create_delivery_for_order(
+                    organization=organization,
+                    order=order,
+                    code_sequence_key=delivery_data.get("codeSequenceKey", "deliveries"),
+                    confirmation_code=delivery_data.get("confirmationCode", ""),
+                    notes=delivery_data.get("notes", ""),
+                )
+            delivery.metadata = {
+                **(delivery.metadata or {}),
+                "seedKey": delivery_data["key"],
+            }
+            delivery.confirmation_code = delivery_data.get("confirmationCode", delivery.confirmation_code)
+            delivery.notes = delivery_data.get("notes", delivery.notes)
+            delivery.save(update_fields=["metadata", "confirmation_code", "notes", "updated_at"])
+            status_path = delivery_data.get("statusPath")
+            if status_path is None and delivery_data.get("statusKey"):
+                status_path = [delivery_data["statusKey"]]
+            if delivery.status_key in (status_path or []):
+                status_path = status_path[status_path.index(delivery.status_key) + 1:]
+            for target_status_key in status_path or []:
+                if target_status_key == delivery.status_key:
+                    continue
                 transition_delivery_status(
                     organization=organization,
                     delivery=delivery,

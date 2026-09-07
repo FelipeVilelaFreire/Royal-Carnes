@@ -1,4 +1,11 @@
 .root {
+  --library-bg: var(--theme--color-background);
+  --library-surface: var(--theme--color-surface-container);
+  --library-border: var(--theme--color-border);
+  --library-text: var(--theme--color-text);
+  --library-muted: var(--theme--color-text-muted);
+  --library-accent: var(--theme--color-copper);
+
   background: var(--library-bg);
   color: var(--library-text);
   min-height: 100vh;
@@ -54,6 +61,14 @@
   width: 100%;
 }
 
+.heroCopy {
+  max-width: var(--theme--layout-container-sm);
+}
+
+.candidateGrid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
+}
+
 .previewShell {
   min-width: 0;
 }
@@ -70,6 +85,29 @@
   display: grid;
   gap: var(--theme--spacing-spaceMd);
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.productPreviewSlot {
+  min-height: calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-height-lg));
+  width: 100%;
+}
+
+.productPreviewSlot[data-large="true"] {
+  grid-column: span 2;
+  min-height: calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-height-2xl));
+}
+
+.productPreviewSlot[data-show-image="true"] {
+  min-height: calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-height-3xl));
+}
+
+.productPreviewSlot[data-large="true"][data-show-image="true"] {
+  min-height: calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-sm));
+}
+
+.productPreviewSlot > * {
+  min-height: inherit;
+  width: 100%;
 }
 
 .planGrid {
@@ -90,6 +128,14 @@
   gap: var(--theme--spacing-spaceSm);
   min-height: var(--library-panel-min-height, auto);
   padding: var(--theme--spacing-spaceSm);
+}
+
+.productPanel {
+  --library-panel-min-height: calc(var(--theme--dimensions-minWidth-3xl) * 4 + var(--theme--spacing-spaceXl));
+}
+
+.planPanel {
+  --library-panel-min-height: calc(var(--theme--dimensions-minWidth-3xl) * 2 + var(--theme--dimensions-minWidth-sm));
 }
 
 .optionLabel {

@@ -1,0 +1,277 @@
+.section {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--theme--spacing-spaceSm);
+  margin-bottom: var(--theme--spacing-space2xl);
+  text-align: center;
+}
+
+.title,
+.planTitle,
+.priceValue {
+  font-family: var(--theme--typography-headingFamily);
+  color: var(--theme--color-text);
+  letter-spacing: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--theme--typography-size4xl);
+  font-weight: var(--theme--typography-bold);
+}
+
+.subtitle {
+  max-width: var(--theme--layout-container-sm);
+  margin: 0;
+  color: var(--theme--color-text-muted);
+}
+
+.billingWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--theme--spacing-space2xl);
+}
+
+.billingControl {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--theme--spacing-spaceXs);
+  padding: var(--theme--spacing-space2xs);
+  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-full);
+  background: var(--theme--color-surface-container);
+}
+
+.billingButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--theme--spacing-spaceXs);
+  min-height: var(--theme--dimensions-height-lg);
+  padding: 0 var(--theme--spacing-spaceLg);
+  border: 0;
+  border-radius: var(--theme--radius-full);
+  background: transparent;
+  color: var(--theme--color-text-muted);
+  cursor: pointer;
+  font-family: var(--theme--typography-bodyFamily);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingSm);
+  text-transform: uppercase;
+  transition: background var(--theme--motion-durationMd) ease, color var(--theme--motion-durationMd) ease;
+}
+
+.billingButton[data-active="true"] {
+  background: var(--theme--color-primary);
+  color: var(--theme--color-accent-contrast);
+}
+
+.annualBanner {
+  --ui-surface-bg: var(--theme--color-surface);
+  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-primary);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  max-width: var(--theme--layout-container-md);
+  margin: 0 auto var(--theme--spacing-space3xl);
+  padding: var(--theme--spacing-spaceXl) var(--theme--spacing-space2xl);
+}
+
+.annualBannerGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--theme--spacing-spaceLg);
+  text-align: center;
+}
+
+.annualBannerItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-space2xs);
+}
+
+.annualBannerItem + .annualBannerItem {
+  border-left: var(--theme--borders-hairline) solid var(--theme--color-border);
+  padding-left: var(--theme--spacing-spaceLg);
+}
+
+.annualBannerLabel,
+.savingsText,
+.currency,
+.featureIcon,
+.featureItem[data-emphasis="true"] {
+  color: var(--theme--color-primary);
+}
+
+.annualBannerLabel {
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-bold);
+  text-transform: uppercase;
+}
+
+.annualBannerTitle,
+.annualBannerDescription,
+.planSubtitle {
+  margin: 0;
+}
+
+.annualBannerTitle {
+  color: var(--theme--color-text);
+  font-size: var(--theme--typography-sizeMd);
+  font-weight: var(--theme--typography-bold);
+}
+
+.annualBannerDescription {
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeSm);
+}
+
+.planGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--theme--dimensions-minWidth-3xl)), 1fr));
+  align-items: stretch;
+  gap: var(--theme--spacing-space2xl);
+  width: 100%;
+}
+
+.planCard {
+  --ui-surface-bg: var(--theme--color-surface);
+  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --ui-surface-radius: var(--theme--radius-2xl);
+
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: var(--theme--spacing-space2xl) var(--theme--spacing-spaceXl);
+}
+
+.planCard[data-featured="true"] {
+  --ui-surface-border: var(--theme--borders-medium) solid var(--theme--color-primary);
+}
+
+.featuredBadge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.planBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.planMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--theme--spacing-spaceSm);
+  min-height: var(--theme--dimensions-height-md);
+  margin-bottom: var(--theme--spacing-spaceMd);
+}
+
+.savingsText {
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+}
+
+.planTitle {
+  margin: 0 0 var(--theme--spacing-spaceXs);
+  font-size: var(--theme--typography-size3xl);
+  font-weight: var(--theme--typography-bold);
+}
+
+.planSubtitle {
+  min-height: 3.2em;
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeSm);
+  line-height: var(--theme--typography-lineHeightMd);
+}
+
+.priceLine {
+  display: flex;
+  align-items: baseline;
+  gap: var(--theme--spacing-space2xs);
+  margin: var(--theme--spacing-spaceXl) 0;
+}
+
+.currency {
+  font-size: var(--theme--typography-sizeLg);
+  font-weight: var(--theme--typography-bold);
+}
+
+.priceValue {
+  font-size: var(--theme--typography-size4xl);
+  font-weight: var(--theme--typography-bold);
+  line-height: var(--theme--typography-lineHeight2xs);
+}
+
+.priceSuffix {
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeSm);
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-spaceSm);
+  margin: 0 0 var(--theme--spacing-space2xl);
+  padding: 0;
+  list-style: none;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: var(--theme--spacing-spaceXs);
+  color: var(--theme--color-text);
+  font-size: var(--theme--typography-sizeSm);
+  font-weight: var(--theme--typography-regular);
+}
+
+.featureItem[data-emphasis="true"] {
+  font-weight: var(--theme--typography-bold);
+}
+
+.featureIcon {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 48em) {
+  .title {
+    font-size: var(--theme--typography-size3xl);
+  }
+
+  .billingControl,
+  .billingButton {
+    width: 100%;
+  }
+
+  .billingControl {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .annualBannerGrid {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .annualBannerItem + .annualBannerItem {
+    border-left: 0;
+    border-top: var(--theme--borders-hairline) solid var(--theme--color-border);
+    padding-top: var(--theme--spacing-spaceMd);
+    padding-left: 0;
+  }
+
+  .planCard {
+    padding: var(--theme--spacing-spaceXl);
+  }
+}

@@ -4,36 +4,36 @@ export const sociosConfig = {
   screenKey: "socios",
   titleKey: "socios.title",
   subtitleKey: "socios.subtitle",
-  entityName: "Sócio",
-  actionLabelKey: "+ Novo Sócio",
+  entityNameKey: "entities.member",
+  actionLabelKey: "socios.ctaAdd",
   columns: [
     { key: "customerName", labelKey: "socios.tableHeaders.customerName" },
     { key: "planName", labelKey: "socios.tableHeaders.planName" },
     {
       key: "priceMonthly",
       labelKey: "socios.tableHeaders.priceMonthly",
-      render: (row) => `R$ ${row.priceMonthly?.toFixed(2)}`
+      render: (row) => `R$ ${row.priceMonthly?.toFixed(2)}`,
     },
     { key: "status", labelKey: "socios.tableHeaders.status" },
-    { key: "joinedDate", labelKey: "socios.tableHeaders.joinedDate" }
+    { key: "joinedDate", labelKey: "socios.tableHeaders.joinedDate" },
   ],
   filters: [
     {
       key: "status",
-      labelKey: "Status Contrato",
+      labelKey: "socios.filters.status",
       options: [
-        { value: "active", labelKey: "Ativo" },
-        { value: "paused", labelKey: "Pausado" }
-      ]
-    }
+        { value: "active", labelKey: "common.statusActive" },
+        { value: "paused", labelKey: "common.statusPaused" },
+      ],
+    },
   ],
   form: {
     fields: [
-      { key: "customerName", labelKey: "Nome do Cliente", required: true },
-      { key: "email", labelKey: "E-mail de Contato" },
-      { key: "planName", labelKey: "Plano Assinado" },
-      { key: "priceMonthly", labelKey: "Valor Mensal (R$)" }
-    ]
+      { key: "customerName", labelKey: "socios.form.customerName", required: true },
+      { key: "email", labelKey: "socios.form.email" },
+      { key: "planName", labelKey: "socios.form.planName" },
+      { key: "priceMonthly", labelKey: "socios.form.priceMonthly" },
+    ],
   },
-  rows: mockAdminSubscribers
+  rows: mockAdminSubscribers,
 };

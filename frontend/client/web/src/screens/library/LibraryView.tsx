@@ -465,16 +465,14 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                       : undefined;
 
                 return (
-                  <ProductItemCard
+                  <div
+                    className={styles.productPreviewSlot}
+                    data-large={isLargePreview || undefined}
+                    data-show-image={productCardConfig.showImage || undefined}
                     key={product.id}
-                    style={{
-                      width: "100%",
-                      gridColumn: isLargePreview ? "span 2" : undefined,
-                      minHeight: productCardConfig.showImage
-                        ? isLargePreview ? "360px" : "312px"
-                        : isLargePreview ? "260px" : "220px"
-                    }}
-                    name={product.name}
+                  >
+                    <ProductItemCard
+                      name={product.name}
                     description={product.description}
                     image={product.image}
                     categoryLabel={category?.name || strings.labels.category}
@@ -521,16 +519,13 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
                       textMuted: tokens.textMuted,
                       copper: tokens.copper
                     }}
-                  />
+                    />
+                  </div>
                 );
               })}
             </div>
 
-            <Stack
-              className={styles.panel}
-              gap="sm"
-              style={{ "--library-panel-min-height": "834px" } as React.CSSProperties}
-            >
+            <Stack className={[styles.panel, styles.productPanel].join(" ")} gap="sm">
               <Text className={styles.eyebrow} as="span" tone="inherit" variant="caption">
                 composition
               </Text>
@@ -586,7 +581,6 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
               {catalogSubscriptionPlansMock.map((plan) => (
                 <PlanBenefitCard
                   key={plan.id}
-                  style={{ width: "100%" }}
                   name={plan.name}
                   description={plan.subtitle}
                   monthlyPrice={plan.monthlyPrice}
@@ -634,11 +628,7 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
               ))}
             </div>
 
-            <Stack
-              className={styles.panel}
-              gap="sm"
-              style={{ "--library-panel-min-height": "500px" } as React.CSSProperties}
-            >
+            <Stack className={[styles.panel, styles.planPanel].join(" ")} gap="sm">
               <Text className={styles.eyebrow} as="span" tone="inherit" variant="caption">
                 composition
               </Text>
@@ -696,20 +686,10 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
   };
 
   return (
-    <main
-      className={styles.root}
-      style={{
-        "--library-bg": tokens.background,
-        "--library-surface": tokens.surfaceContainer,
-        "--library-border": tokens.border,
-        "--library-text": tokens.text,
-        "--library-muted": tokens.textMuted,
-        "--library-accent": tokens.copper
-      } as React.CSSProperties}
-    >
+    <main className={styles.root}>
       <Container className={styles.main} width="full" gutter="page">
         <Stack gap="lg">
-          <Stack gap="sm" style={{ maxWidth: "720px" }}>
+          <Stack className={styles.heroCopy} gap="sm">
             <Text as="h1" tone="inherit" variant="h1">
               {strings.hero.title}
             </Text>
@@ -722,8 +702,8 @@ export const LibraryView: React.FC<LibraryViewProps> = () => {
           <Stack gap="md">
             <Text as="h2" tone="inherit" variant="body" weight="bold">{strings.sections.candidates}</Text>
             <Grid
+              className={styles.candidateGrid}
               role="tablist"
-              style={{ gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))" }}
             >
               {libraryCandidatesMock.map((candidate) => {
                 const isSelected = candidate.id === selectedCandidate.id;

@@ -1,86 +1,59 @@
 import React from "react";
-import { Text } from "@foundation/ui/Text";
-import { Surface } from "@foundation/ui/Surface";
+import { Inline, Stack } from "@foundation/ui/Layout";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { adminThemeManifest } from "@/manifest/theme.manifest";
+import { Surface } from "@foundation/ui/Surface";
+import { Text } from "@foundation/ui/Text";
+import { TrashIcon } from "@foundation/ui/Icon/AppIcons";
 import { adminPtBR } from "@/locales/pt-BR";
 import { trashConfig } from "@/manifest/pages/trash.config";
-import { TrashIcon } from "@foundation/ui/Icon/AppIcons";
+import styles from "./TrashPage.module.css";
 
 export interface TrashPageProps {
   config?: typeof trashConfig;
 }
 
 export const TrashPage: React.FC<TrashPageProps> = ({ config = trashConfig }) => {
-  const themeColors = adminThemeManifest.colors;
-  const { primary, text, textMuted, border, background, surface } = themeColors;
-
   const items = config?.items || [];
 
   return (
-    <div style={{ width: "100%", background, minHeight: "100vh", paddingBottom: "60px" }}>
+    <div className={styles.page}>
       <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <TrashIcon size={32} color={primary} />
-              <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "40px", margin: 0, fontWeight: "800" }}>
+        <Stack className={styles.content} gap="lg">
+          <Stack gap="xs">
+            <Inline align="center" className={styles.titleLine} gap="sm" wrap={false}>
+              <TrashIcon aria-hidden="true" size={32} />
+              <Text as="h1" variant="h1">
                 {adminPtBR.lixeira.title}
               </Text>
-            </div>
-            <Text variant="body" style={{ color: textMuted, fontSize: "15px", marginTop: "4px" }}>
+            </Inline>
+            <Text tone="muted" variant="body">
               {adminPtBR.lixeira.subtitle}
             </Text>
-          </div>
+          </Stack>
 
-          <Surface
-            style={{
-              background: surface,
-              border: `1px solid ${border}`,
-              borderRadius: "24px",
-              padding: "24px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-              boxSizing: "border-box"
-            }}
-          >
+          <Surface className={styles.surface}>
             {items.length === 0 ? (
-              <div style={{ textAlign: "center", color: textMuted, padding: "32px 0", fontSize: "15px" }}>
-                {adminPtBR.lixeira.emptyText}
-              </div>
+              <div className={styles.emptyState}>{adminPtBR.lixeira.emptyText}</div>
             ) : (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+              <div className={styles.tableScroller}>
+                <table className={styles.table}>
                   <thead>
-                    <tr style={{ borderBottom: `1px solid ${border}` }}>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                        {adminPtBR.lixeira.tableHeaders.title}
-                      </th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                        {adminPtBR.lixeira.tableHeaders.type}
-                      </th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                        {adminPtBR.lixeira.tableHeaders.deletedBy}
-                      </th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                        {adminPtBR.lixeira.tableHeaders.deletedAt}
-                      </th>
-                      <th style={{ padding: "12px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
-                        {adminPtBR.lixeira.tableHeaders.retention}
-                      </th>
+                    <tr>
+                      <th>{adminPtBR.lixeira.tableHeaders.title}</th>
+                      <th>{adminPtBR.lixeira.tableHeaders.type}</th>
+                      <th>{adminPtBR.lixeira.tableHeaders.deletedBy}</th>
+                      <th>{adminPtBR.lixeira.tableHeaders.deletedAt}</th>
+                      <th>{adminPtBR.lixeira.tableHeaders.retention}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {items.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: `1px solid ${border}` }}>
-                        <td style={{ padding: "16px", color: text, fontWeight: "600", fontSize: "14px" }}>{item.title}</td>
-                        <td style={{ padding: "16px", color: primary, fontSize: "13px", fontWeight: "700" }}>{item.entityType}</td>
-                        <td style={{ padding: "16px", color: textMuted, fontSize: "13px" }}>{item.deletedBy}</td>
-                        <td style={{ padding: "16px", color: textMuted, fontSize: "13px" }}>{item.deletedAt}</td>
-                        <td style={{ padding: "16px", color: "#F59E0B", fontSize: "13px", fontWeight: "600" }}>
-                          {item.daysRemaining} dias restantes
-                        </td>
+                      <tr key={item.id}>
+                        <td className={styles.titleCell}>{item.title}</td>
+                        <td className={styles.typeCell}>{item.entityType}</td>
+                        <td className={styles.mutedCell}>{item.deletedBy}</td>
+                        <td className={styles.mutedCell}>{item.deletedAt}</td>
+                        <td className={styles.retentionCell}>{item.daysRemaining} dias restantes</td>
                       </tr>
                     ))}
                   </tbody>
@@ -88,7 +61,7 @@ export const TrashPage: React.FC<TrashPageProps> = ({ config = trashConfig }) =>
               </div>
             )}
           </Surface>
-        </div>
+        </Stack>
       </SectionContainer>
     </div>
   );

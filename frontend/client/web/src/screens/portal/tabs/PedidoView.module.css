@@ -914,6 +914,19 @@
 
 .addressField {
   display: grid;
+  min-width: 0;
+}
+
+.addressField[data-grid-column="span-3"] {
+  grid-column: span 3;
+}
+
+.addressField[data-grid-column="span-4"] {
+  grid-column: span 4;
+}
+
+.addressField[data-grid-column="span-6"] {
+  grid-column: span 6;
 }
 
 .summary {

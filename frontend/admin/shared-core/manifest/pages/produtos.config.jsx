@@ -4,49 +4,55 @@ export const produtosConfig = {
   screenKey: "produtos",
   titleKey: "produtos.title",
   subtitleKey: "produtos.subtitle",
-  entityName: "Produto",
+  entityNameKey: "entities.product",
   actionLabelKey: "produtos.ctaAdd",
+  dataSource: { key: "produtos", fallbackOnError: false },
   columns: [
     { key: "name", labelKey: "produtos.tableHeaders.name", showMedia: true },
-    { key: "line", labelKey: "Linha / Categoria" },
-    { key: "weight", labelKey: "Peso / Unidade" },
+    { key: "line", labelKey: "produtos.tableHeaders.line" },
+    { key: "weight", labelKey: "produtos.tableHeaders.weight" },
     { key: "priceFormatted", labelKey: "produtos.tableHeaders.price" },
-    { key: "origin", labelKey: "Origem" },
-    { key: "preparation", labelKey: "Preparo" }
+    { key: "origin", labelKey: "produtos.tableHeaders.origin" },
+    { key: "preparation", labelKey: "produtos.tableHeaders.preparation" },
   ],
   filters: [
     {
       key: "line",
-      labelKey: "Linha",
+      labelKey: "produtos.filters.line",
       options: [
-        { value: "Cortes do dia a dia", labelKey: "Cortes do dia a dia" },
-        { value: "Cortes premium", labelKey: "Cortes premium" },
-        { value: "Linha nobre", labelKey: "Linha nobre" },
-        { value: "Combos Royal", labelKey: "Combos Royal" }
-      ]
-    }
+        { value: "Cortes do dia a dia", labelKey: "produtos.filterOptions.dailyCuts" },
+        { value: "Cortes premium", labelKey: "produtos.filterOptions.premiumCuts" },
+        { value: "Linha nobre", labelKey: "produtos.filterOptions.nobleLine" },
+        { value: "Combos Royal", labelKey: "produtos.filterOptions.royalCombos" },
+      ],
+    },
   ],
   form: {
     fields: [
-      { key: "name", labelKey: "Nome do Produto", required: true },
-      { key: "line", labelKey: "Linha", type: "select", options: [
-        { value: "Cortes do dia a dia", labelKey: "Cortes do dia a dia" },
-        { value: "Cortes premium", labelKey: "Cortes premium" },
-        { value: "Linha nobre", labelKey: "Linha nobre" },
-        { value: "Combos Royal", labelKey: "Combos Royal" }
-      ]},
-      { key: "weight", labelKey: "Peso / Unidade" },
-      { key: "price", labelKey: "Preço (R$)" }
-    ]
+      { key: "name", labelKey: "produtos.form.name", required: true },
+      {
+        key: "line",
+        labelKey: "produtos.form.line",
+        type: "select",
+        options: [
+          { value: "Cortes do dia a dia", labelKey: "produtos.filterOptions.dailyCuts" },
+          { value: "Cortes premium", labelKey: "produtos.filterOptions.premiumCuts" },
+          { value: "Linha nobre", labelKey: "produtos.filterOptions.nobleLine" },
+          { value: "Combos Royal", labelKey: "produtos.filterOptions.royalCombos" },
+        ],
+      },
+      { key: "weight", labelKey: "produtos.form.weight" },
+      { key: "price", labelKey: "produtos.form.price" },
+    ],
   },
   rows: mockCutsCatalog.map((item) => ({
     id: item.id,
-    name: item.name,
+    image: item.image,
     line: item.line,
-    weight: item.weight,
-    priceFormatted: `R$ ${item.price.toFixed(2)}`,
+    name: item.name,
     origin: item.origin || "Brasil",
     preparation: item.preparation || "Churrasqueira",
-    image: item.image
-  }))
+    priceFormatted: `R$ ${item.price.toFixed(2)}`,
+    weight: item.weight,
+  })),
 };

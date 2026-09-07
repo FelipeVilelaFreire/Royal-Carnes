@@ -78,5 +78,86 @@
       "sortOrder": 99
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "key": "pedido-assinatura-pro-setembro",
+      "customerKey": "cliente-royalprime",
+      "subscriptionKey": "cliente-royalprime-pro",
+      "planKey": "pro",
+      "kindKey": "subscription-cycle",
+      "statusPath": ["approved", "separating"],
+      "notes": "Box Pro de setembro com cortes premium selecionados pelo cliente.",
+      "items": [
+        {
+          "product_key": "picanha",
+          "variant_sku": "PICANHA-1KG",
+          "quantity": 2,
+          "source_type": "subscription-cycle",
+          "source_key": "cliente-royalprime-pro-2026-09"
+        },
+        {
+          "product_key": "ancho",
+          "variant_sku": "ANCHO-1KG",
+          "quantity": 1,
+          "source_type": "subscription-cycle",
+          "source_key": "cliente-royalprime-pro-2026-09"
+        }
+      ]
+    },
+    {
+      "key": "pedido-felipe-churrasco-familia",
+      "customerKey": "felipe-vilela",
+      "kindKey": "royal-box",
+      "statusPath": ["approved", "separating", "ready"],
+      "notes": "Royal Box para churrasco de familia no fim de semana.",
+      "items": [
+        {
+          "product_key": "maminha",
+          "variant_sku": "MAMINHA-1KG",
+          "quantity": 2,
+          "source_type": "royal-box",
+          "source_key": "familia"
+        },
+        {
+          "product_key": "carvao-premium",
+          "variant_sku": "CARVAO-5KG",
+          "quantity": 1,
+          "source_type": "royal-box",
+          "source_key": "familia"
+        }
+      ]
+    },
+    {
+      "key": "pedido-lucas-delivery-picanha",
+      "customerKey": "lucas-dias",
+      "kindKey": "delivery",
+      "statusPath": ["approved"],
+      "notes": "Pedido avulso de delivery para entrega express.",
+      "items": [
+        {
+          "product_key": "picanha",
+          "variant_sku": "PICANHA-1KG",
+          "quantity": 1,
+          "source_type": "delivery",
+          "source_key": "express"
+        }
+      ]
+    },
+    {
+      "key": "pedido-cliente-recebido",
+      "customerKey": "cliente-royalprime",
+      "kindKey": "delivery",
+      "statusPath": [],
+      "notes": "Pedido recebido aguardando aprovacao operacional.",
+      "items": [
+        {
+          "product_key": "maminha",
+          "variant_sku": "MAMINHA-1KG",
+          "quantity": 1,
+          "source_type": "delivery",
+          "source_key": "avulso"
+        }
+      ]
+    }
+  ]
 }

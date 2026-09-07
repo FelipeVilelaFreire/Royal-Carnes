@@ -13,15 +13,11 @@ import {
   type CortesCatalogSortKey,
 } from "@/view-models/cortes-catalog.view-model";
 import { useClientCatalog } from "@/hooks/useClientCatalog";
-import { PortalHeader, BottomTabBar, Footer } from "../../../legacy/app-shell";
 import { ProductItemCard } from "../../../product-components/ecommerce";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./CortesView.module.css";
 
 export interface CortesViewProps {
-  isMember?: boolean;
-  onNavigate?: (path: string) => void;
-  showShell?: boolean;
 }
 
 const moneyFormatter = new Intl.NumberFormat("pt-BR", {
@@ -29,7 +25,7 @@ const moneyFormatter = new Intl.NumberFormat("pt-BR", {
   currency: "BRL"
 });
 
-export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavigate, showShell = true }) => {
+export const CortesView: React.FC<CortesViewProps> = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<CortesCatalogSortKey>("relevance");
@@ -96,24 +92,7 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
   const filteredCuts = catalogViewModel.filteredProducts;
 
   return (
-    <main
-      className={styles.root}
-      data-standalone={showShell || undefined}
-    >
-      {showShell ? (
-        <PortalHeader
-          activeTab="portal-cortes"
-          themeMode={themeMode}
-          onToggleTheme={() => {
-            const next = themeMode === "dark" ? "light" : "dark";
-            setThemeMode(next);
-            localStorage.setItem("royal_prime_theme", next);
-            window.dispatchEvent(new Event("royal_theme_changed"));
-          }}
-          onNavigate={onNavigate}
-        />
-      ) : null}
-
+    <main className={styles.root}>
       <Container className={styles.main} width="wide" gutter="page">
         <Stack gap="2xl">
           <header className={styles.hero}>
@@ -238,9 +217,6 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
           )}
         </Stack>
       </Container>
-
-      {showShell ? <BottomTabBar activeTab="portal-cortes" onNavigate={onNavigate} isDark={isDark} /> : null}
-      {showShell ? <Footer onNavigate={onNavigate} isDark={isDark} /> : null}
     </main>
   );
 };

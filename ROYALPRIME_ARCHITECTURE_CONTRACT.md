@@ -4,6 +4,77 @@ Status: contrato ativo. Escopo: ownership e regras de implementacao do RoyalPrim
 Precedencia: [AGENTS.md](AGENTS.md). Leitura especializada:
 [docs/CODEX_ENTRYPOINTS.md](docs/CODEX_ENTRYPOINTS.md).
 
+## TSX e CSS Modules
+
+Regra prioritaria para codigo web novo ou alterado: componente em .tsx e
+estilo local em arquivo .module.css ao lado, consumido por className.
+O nome correto e NomeDaTela.module.css, nao NomeDaTela.modules.css.
+Aplica-se a telas, screen types, secoes, componentes de produto e componentes
+visuais web da Foundation. Arquivos de config .jsx existentes nao sao telas
+e nao precisam ser renomeados como efeito colateral desta regra.
+
+```text
+MeusPedidosView.tsx         -> composicao, dados recebidos e eventos
+MeusPedidosView.module.css  -> composicao local usando contratos/tokens permitidos
+```
+
+- Primeiro use props de layout e receitas da Foundation. Se o componente nao
+  precisa de CSS proprio, nao criar arquivo vazio apenas para completar o par.
+- Nao adicionar style={{ ... }} em JSX/TSX web. Nao transferir o mesmo objeto
+  para style={stylesObject}, useMemo, hook, helper ou surfaceStyles.ts: continua
+  sendo estilo inline. Usar CSS Modules com classes/estados ou props semanticas.
+- Nao embutir CSS em strings, tags style ou injecao manual de DOM na tela para
+  contornar a separacao. CSS global fica restrito ao reset/bootstrap existente.
+- Proibido criar cores, sombras, bordas, tipografia ou espacamentos fisicos
+  locais fora dos tokens/receitas. Mover hardcode de TSX para CSS nao o corrige.
+- CSS de tela nao redefine a aparencia interna de Button/Card/Surface nem
+  substitui uma capacidade de AppShell, Layout ou SectionContainer.
+- Valor dinamico (progresso, dimensao, posicao, imagem ou grid vindo de config)
+  deve passar pela prop/contrato do componente dono. Nao justifica style inline
+  na screen. Se faltar capacidade, seguir a regra de ampliacao compartilhada;
+  nao inventar workaround visual local.
+- A materializacao tecnica de tokens/valores dinamicos pelo resolver ou adapter
+  dono da Foundation pode precisar de CSS custom properties ou binding de estilo.
+  Isso nao autoriza style={{ ... }} novo nem decisoes visuais locais: a origem
+  deve ser o contrato publico, com resolucao centralizada e verificavel. Nao
+  criar helper local ou chamar um componente de "resolver" para obter excecao.
+- React Native nao consome CSS Modules. Seu style/StyleSheet pertence ao adapter
+  da plataforma e continua obedecendo Theme -> Semi-composed -> UI. A regra web
+  nao autoriza quebrar o mecanismo nativo nem hardcodar sua aparencia.
+
+### Legado nao define o padrao
+
+O repositorio ainda contem hardcode, estilos inline e contratos transicionais.
+Isso e divida tecnica conhecida, nao um modelo aprovado para copiar.
+Codigo novo deve cumprir o contrato desde a criacao. Em codigo existente,
+corrija a estilizacao do trecho alterado; nao expandir o alcance da tarefa para
+reescrever todas as telas. Lacunas preservadas fora desse trecho ficam
+registradas com caminho e motivo, sem classificar a tela inteira como conforme.
+Exemplos, auditorias ou telas antigas nao dispensam esta regra, inclusive quando
+chamam estilos inline dinamicos de "excecoes aceitaveis".
+
+### Criterio obrigatorio de aceitacao
+
+Antes de editar UI web, identifique o componente TSX, o CSS Module necessario
+e a capacidade Foundation que fornece layout/aparencia. Leia este contrato
+antes de copiar uma tela existente.
+
+Antes de entregar, revise o diff da tarefa e confirme:
+- nenhum style inline visual novo, inclusive por variavel, helper ou spread;
+- nenhum valor fisico hardcoded novo fora de Theme/receitas;
+- nenhuma copy nova fora do catalogo ativo;
+- nenhum CSS local substituindo aparencia ou capacidade publica da Foundation.
+
+Se o proprio diff introduzir uma violacao, corrija antes de declarar a tarefa
+concluida. Nao transformar a violacao nova em backlog, TODO, excecao temporaria
+ou "padrao ja usado no projeto". Build aprovado nao dispensa esta revisao.
+Falta de primitive exige tratar a capacidade no dono correto e respeitar a
+aprovacao aplicavel, nunca improvisar estilo na screen.
+
+Na entrega, informe quais verificacoes foram executadas e qualquer limite real.
+Nao afirmar conformidade de todo o repositorio por verificar apenas o trecho
+alterado. Este criterio e obrigatorio mesmo em ajuste pequeno ou urgente.
+
 ## Produto e reuso
 
 RoyalPrime e o produto; Royal Carnes e sua primeira configuracao de negocio.

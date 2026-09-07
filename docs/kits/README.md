@@ -73,6 +73,57 @@ frontend web/native/admin-web
   -> telas, modais e componentes apenas apresentam e disparam acoes
 ```
 
+## Contrato Tela Por Tela
+
+Todo proximo corte deve escolher uma tela real e provar a vertical completa
+antes de polir outra area. A ordem padrao e:
+
+```text
+web ou native
+  -> render-only
+  -> consome hook/view-model do shared-core correto
+  -> nao calcula regra real, preco, disponibilidade, status ou permissao
+
+frontend/client/shared-core, frontend/admin/shared-core ou frontend/shared-core
+  -> contracts
+  -> api client
+  -> hooks/mappers/view-models
+  -> fallback apenas temporario e documentado
+
+backend
+  -> autoridade real de regra, dados, preco, estoque, status, permissao e seed
+```
+
+Regra pratica:
+
+```text
+se aparece na tela e e dado de negocio, deve vir do backend ou de fallback
+temporario dentro do shared-core
+
+se aparece na tela e e copy de interface, deve vir de locales/config
+
+se aparece na tela e e visual, deve vir de Foundation/AppShell/CSS module
+tokenizado
+```
+
+Exemplo Catalog:
+
+```text
+Card de produto:
+  Acem
+  Produto de melhor custo-beneficio para churrasco simples e preparos variados.
+  Cortes do dia a dia - 1 kg | Origem: Brasil
+  R$ 39,90
+
+Origem correta:
+  backend/catalog -> Product, Category, Variant, MeasurementUnit, ProductPrice, origin
+  client/shared-core -> catalog.api, mapper, view-model formatado para card
+  web/native -> ProductCard render-only, sem calcular preco ou montar regra
+```
+
+O render pode escolher layout, estado visual e acao de clique. Ele nao deve
+inventar o produto, a origem, a elegibilidade, a unidade vendavel ou o preco.
+
 Exemplo:
 
 ```text

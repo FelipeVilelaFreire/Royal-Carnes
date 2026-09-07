@@ -102,7 +102,8 @@
   color: var(--theme--color-text-muted);
 }
 
-.metricBar {
+.metricProgress {
+  appearance: none;
   background: color-mix(in srgb, var(--theme--color-surface-container) 76%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 24%);
   border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-border) 70%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 30%);
   border-radius: var(--theme--radius-full);
@@ -111,11 +112,19 @@
   width: 100%;
 }
 
-.metricFill {
+.metricProgress::-webkit-progress-bar {
+  background: transparent;
+}
+
+.metricProgress::-webkit-progress-value {
   background: var(--theme--color-accent);
   border-radius: inherit;
-  height: 100%;
   transition: width var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.metricProgress::-moz-progress-bar {
+  background: var(--theme--color-accent);
+  border-radius: inherit;
 }
 
 .orderImage {

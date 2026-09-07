@@ -2,55 +2,33 @@ import React from "react";
 import { Button } from "@foundation/ui/Button";
 import { Text } from "@foundation/ui/Text";
 import { Surface } from "@foundation/ui/Surface";
-import { clientPtBR } from "@/locales/pt-BR";
-import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
+import { SettingsIcon, TruckIcon } from "@foundation/ui/Icon/AppIcons";
+import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
+import styles from "./PortalScreenTypes.module.css";
 
 export const SettingsScreenType: React.FC = () => {
-  const { primary, text, textMuted, border } = themeColorsDefault.dark;
-  const strings = clientPtBR.portal.settingsScreen;
+  const strings = useClientStrings().portal.settingsScreen;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px", width: "100%", maxWidth: "800px" }}>
-      <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "32px", margin: 0 }}>
+    <div className={`${styles.root} ${styles.rootNarrow}`}>
+      <Text variant="h2" weight="bold">
         {strings.title}
       </Text>
 
-      {/* Endereço */}
-      <Surface
-        style={{
-          background: "rgba(21, 19, 18, 0.85)",
-          border: `1px solid ${border}`,
-          borderRadius: "20px",
-          padding: "28px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px"
-        }}
-      >
-        <Text variant="h3" style={{ color: primary, fontSize: "18px", margin: 0, fontWeight: "700" }}>
-          📍 {strings.addressTitle}
+      <Surface appearance="soft" className={`${styles.panel} ${styles.cardCompact}`}>
+        <Text className={styles.inlineTitle} tone="primary" variant="h3" weight="bold">
+          <TruckIcon size={18} color="currentColor" /> {strings.addressTitle}
         </Text>
-        <Text variant="body" style={{ color: text, fontSize: "15px" }}>
+        <Text variant="body">
           {strings.address}
         </Text>
       </Surface>
 
-      {/* Pagamento */}
-      <Surface
-        style={{
-          background: "rgba(21, 19, 18, 0.85)",
-          border: `1px solid ${border}`,
-          borderRadius: "20px",
-          padding: "28px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px"
-        }}
-      >
-        <Text variant="h3" style={{ color: primary, fontSize: "18px", margin: 0, fontWeight: "700" }}>
-          💳 {strings.paymentTitle}
+      <Surface appearance="soft" className={`${styles.panel} ${styles.cardCompact}`}>
+        <Text className={styles.inlineTitle} tone="primary" variant="h3" weight="bold">
+          <SettingsIcon size={18} color="currentColor" /> {strings.paymentTitle}
         </Text>
-        <Text variant="body" style={{ color: text, fontSize: "15px" }}>
+        <Text variant="body">
           {strings.paymentCard}
         </Text>
       </Surface>

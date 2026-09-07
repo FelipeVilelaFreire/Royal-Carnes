@@ -1,5 +1,5 @@
 import React from "react";
-import { AppearOnScrollRuntime } from "../legacy/app-shell/AppearOnScrollRuntime";
+import { AppearOnScrollRuntime } from "../runtime/AppearOnScrollRuntime";
 
 export const metadata = {
   title: "Royal Carnes | Assinaturas, Box e Delivery para churrasco",
@@ -30,39 +30,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 try {
                   var mode = localStorage.getItem('royal_prime_theme') || 'dark';
                   document.documentElement.setAttribute('data-theme', mode);
-                  var isDark = mode === 'dark';
-                  var bg = isDark ? '#0B0908' : '#FCFBF7';
-                  var color = isDark ? '#E8E1DE' : '#1A1A1A';
-                  document.documentElement.style.backgroundColor = bg;
-                  document.documentElement.style.color = color;
                 } catch (e) {}
               })();
             `
           }}
         />
         <style>{`
-          :root {
-            --theme-bg: #0B0908;
-            --theme-text: #E8E1DE;
-            --theme-surface: #151312;
-            --theme-surface-container: #1A1817;
-            --theme-border: #2A2624;
-            --theme-copper: #B87333;
-            --theme-text-muted: #D4C4B0;
-          }
-          html[data-theme="light"] {
-            --theme-bg: #FCFBF7;
-            --theme-text: #1A1A1A;
-            --theme-surface: #FCFBF7;
-            --theme-surface-container: #F2F1ED;
-            --theme-border: #D1D1D1;
-            --theme-copper: #B87333;
-            --theme-text-muted: #4A4A4A;
-          }
           html, body {
-            background-color: var(--theme-bg) !important;
-            color: var(--theme-text) !important;
-            transition: background-color 0.25s ease, color 0.25s ease;
+            background-color: var(--theme--color-background) !important;
+            color: var(--theme--color-text) !important;
+            transition:
+              background-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+              color var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+          }
+          body {
+            font-family: var(--theme--typography-bodyFamily);
+            margin: 0;
+            padding: 0;
           }
           .appear-on-scroll {
             opacity: 1;
@@ -70,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }
           body.appear-runtime-ready .appear-on-scroll {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(var(--theme--spacing-spaceXl));
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
           }
           body.appear-runtime-ready .appear-visible {
@@ -79,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }
         `}</style>
       </head>
-      <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
+      <body>
         <AppearOnScrollRuntime />
         {children}
       </body>

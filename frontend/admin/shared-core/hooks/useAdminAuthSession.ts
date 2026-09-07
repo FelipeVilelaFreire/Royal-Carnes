@@ -57,8 +57,18 @@ export function useAdminAuthSession(options: UseAdminAuthSessionOptions = {}) {
     setError(null);
     try {
       const nextSession = await api.me();
-      persist(nextSession);
-      return nextSession;
+      const hydratedSession =
+        session?.token.refreshToken && !nextSession.token.refreshToken
+          ? {
+              ...nextSession,
+              token: {
+                ...nextSession.token,
+                refreshToken: session.token.refreshToken,
+              },
+            }
+          : nextSession;
+      persist(hydratedSession);
+      return hydratedSession;
     } catch (err) {
       const normalized = normalizeApiError(err);
       setError(normalized);
@@ -66,7 +76,7 @@ export function useAdminAuthSession(options: UseAdminAuthSessionOptions = {}) {
     } finally {
       setIsLoading(false);
     }
-  }, [api, persist]);
+  }, [api, persist, session]);
 
   const refresh = useCallback(
     async (refreshToken = session?.token.refreshToken || "") => {

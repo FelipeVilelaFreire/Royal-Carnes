@@ -3,6 +3,15 @@
 Entrada obrigatoria para qualquer tarefa neste repositorio.
 Este arquivo define o protocolo; nao e um backlog.
 
+## Primeiro: preservar o padrao de UI
+
+Toda tarefa de frontend web deve cumprir o
+[contrato central TSX e CSS Modules](ROYALPRIME_ARCHITECTURE_CONTRACT.md#tsx-e-css-modules)
+antes de editar e antes de entregar. Ele e criterio de aceitacao, nao sugestao.
+Codigo novo nao pode repetir hardcode ou estilo inline do legado. Violacao
+introduzida pelo proprio diff deve ser corrigida antes de concluir a tarefa;
+build aprovado ou promessa de corrigir depois nao substitui conformidade.
+
 ## Leitura inicial unica
 
 1. Leia este arquivo e as instrucoes de workspace aplicaveis.

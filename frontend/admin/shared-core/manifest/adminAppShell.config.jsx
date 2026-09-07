@@ -12,13 +12,13 @@ export const adminAppShellConfig = {
       enabled: false
     },
     sidebar: {
-      routeKeys: ["dashboard", "produtos", "assinaturas", "pedidos", "deliveries", "usuarios", "configuracoes"]
+      routeKeys: ["dashboard", "pedidos", "deliveries", "estoque", "produtos", "categorias", "planos", "clientes", "assinaturas", "pagamentos", "usuarios", "configuracoes"]
     },
     drawer: {
       inheritFrom: "sidebar"
     },
     bottomTabBar: {
-      routeKeys: ["dashboard", "pedidos", "deliveries", "produtos", "configuracoes"]
+      routeKeys: ["dashboard", "pedidos", "deliveries", "estoque", "clientes"]
     },
     nativeTabBar: {
       inheritFrom: "bottomTabBar"

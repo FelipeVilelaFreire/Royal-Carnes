@@ -112,6 +112,8 @@ Regras reais:
 
 - frontend nao calcula preco final;
 - frontend nao decide disponibilidade real;
+- frontend nao inventa nome, origem, unidade, categoria, descricao ou preco de
+  produto quando a tela representa catalogo real;
 - imagem externa em seed e placeholder de demonstracao, nao contrato de producao;
 - `MeasurementUnit` resolve unidade vendavel como kg, g, unit, bag, service;
 - variant representa SKU/tamanho/peso/embalagem/unidade concreta;
@@ -169,6 +171,48 @@ Mappers:
 - API admin catalog DTO -> view model do admin;
 - error code -> chave de locale.
 
+View-model minimo para card de produto:
+
+```text
+ClientCatalogProductCardViewModel
+  id
+  name
+  description
+  categoryLabel
+  variantLabel
+  originLabel
+  formattedPrice
+  availabilityLabel
+  availabilityTone
+  image
+  actions
+```
+
+Exemplo de fluxo esperado:
+
+```text
+backend retorna:
+  Product.name = Acem
+  Product.description = Produto de melhor custo-beneficio...
+  Category.name = Cortes do dia a dia
+  ProductVariant.displaySize = 1 kg
+  Product.origin = Brasil
+  ProductPrice.amount = 39.90
+
+client/shared-core formata:
+  Acem
+  Produto de melhor custo-beneficio para churrasco simples e preparos variados.
+  Cortes do dia a dia - 1 kg | Origem: Brasil
+  R$ 39,90
+
+web/native renderiza:
+  <ProductCard product={viewModel} />
+```
+
+O componente visual nao deve concatenar regra de negocio fora do view-model. Se
+o texto composto for padrao reutilizavel do catalogo, ele pertence ao mapper ou
+view-model; se for copy de interface, pertence a locale.
+
 Limite atual:
 
 ```text
@@ -193,6 +237,9 @@ Proibido na tela:
 - calcular preco;
 - decidir estoque real;
 - decidir regra de colecao;
+- montar produto demonstrativo direto no JSX quando a tela ja e oficial;
+- concatenar origem/unidade/categoria como regra local se isso puder ser
+  view-model do catalogo;
 - hardcodar Royal Carnes como condicional de codigo;
 - buscar endpoint direto quando houver hook compartilhavel.
 

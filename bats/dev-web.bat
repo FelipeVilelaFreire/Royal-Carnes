@@ -1,24 +1,20 @@
 @echo off
-title Royal Carnes - Cliente (Web & Mobile)
-echo ===================================================
-echo   🥩 Royal Carnes - Iniciando Cliente App
-echo ===================================================
+setlocal EnableExtensions
+title RoyalPrime - Dev web
 
-cd /d "%~dp0\.."
+set "SCRIPT_DIR=%~dp0"
 
-if exist "frontend\client\web\.next" (
-    echo [INFO] Limpando cache do Next.js...
-    rmdir /s /q "frontend\client\web\.next"
-)
+echo.
+echo ============================================================
+echo RoyalPrime - iniciando client e admin
+echo ============================================================
+echo Client: http://localhost:3000
+echo Admin:  http://localhost:3001
+echo ============================================================
+echo.
 
-if not exist "node_modules" (
-    echo [INFO] Diretório node_modules não encontrado na raiz. Executando npm install...
-    call npm install
-)
+start "RoyalPrime Client 3000" "%SCRIPT_DIR%client.bat"
+start "RoyalPrime Admin 3001" "%SCRIPT_DIR%admin.bat"
 
-echo [INFO] Abrindo a aplicação no seu navegador (http://localhost:3000)...
-start http://localhost:3000
-
-echo [INFO] Iniciando o servidor Next.js em http://localhost:3000...
-call npm run dev:client
+echo Janelas iniciadas.
 pause

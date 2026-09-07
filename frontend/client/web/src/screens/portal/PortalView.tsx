@@ -8,7 +8,7 @@ import { MoonIcon, StoreIcon, SunIcon, UserIcon } from "@foundation/ui/Icon/AppI
 import { clientRoutes } from "@/manifest/routes";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import type { PortalScreenKey } from "@royalprime/client/manifest/portal/routes.config";
-import { AuthModal } from "../../legacy/app-shell";
+import { AuthModal } from "./AuthModal";
 import styles from "./PortalView.module.css";
 import { HomeVitrineView } from "./tabs/HomeVitrineView";
 import { CortesView } from "./tabs/CortesView";
@@ -69,9 +69,9 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
 
     switch (activeScreenKey) {
       case "cortes":
-        return <CortesView isMember={true} onNavigate={navigate} showShell={false} />;
+        return <CortesView />;
       case "produtos":
-        return <PedidoView onNavigate={navigate} showHeader={false} />;
+        return <PedidoView />;
       case "minhaCaixa":
         return <MinhaCaixaView onNavigate={navigate} showShell={false} />;
       case "royalDelivery":

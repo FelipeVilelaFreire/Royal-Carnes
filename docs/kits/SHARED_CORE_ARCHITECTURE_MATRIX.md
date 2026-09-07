@@ -84,6 +84,46 @@ se admin usa diferente, fica em frontend/admin/shared-core
 se todos usam igual sem if, pode subir para frontend/shared-core
 ```
 
+## Contrato Vertical Para Render Apps
+
+Toda tela oficial deve ser auditada por esta vertical:
+
+```text
+frontend/client/web ou frontend/client/mobile
+  -> render-only
+  -> CSS module/Foundation/AppShell para visual
+  -> sem regra real, sem fetch direto, sem mocks diretos
+
+frontend/client/shared-core
+  -> contracts/api/hooks/mappers/view-models/locales
+  -> dados temporarios apenas em data-sources/fallback documentado
+
+frontend/admin/web
+  -> render-only operacional
+  -> consome frontend/admin/shared-core
+
+frontend/admin/shared-core
+  -> contracts/api/hooks/mappers/view-models/locales/admin manifest
+
+frontend/shared-core
+  -> tipos/contratos puros usados igual por client e admin
+
+backend
+  -> dono de entidades, permissoes, preco, estoque, status, transicoes e seeds
+```
+
+Checklist antes de chamar uma tela de pronta:
+
+```text
+1. UI text vem de locale/config.
+2. Dado de negocio vem de backend ou fallback shared-core documentado.
+3. Web/native nao importam mocks diretos.
+4. Web/native nao calculam preco, disponibilidade, estoque, status ou permissao.
+5. Visual estatico nao esta em style={{ ... }}.
+6. Status/selos usam Badge/Foundation, nao span com cor local.
+7. Tipos estao no shared-core correto: global, client ou admin.
+```
+
 ## Matriz Global
 
 Local:

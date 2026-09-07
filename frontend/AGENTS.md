@@ -1,5 +1,11 @@
 # RoyalPrime Frontend
 
+Primeira leitura para UI web:
+[TSX e CSS Modules: regra e criterio de aceitacao](../ROYALPRIME_ARCHITECTURE_CONTRACT.md#tsx-e-css-modules).
+Aplicar antes de editar e revisar o proprio diff antes de concluir, inclusive
+em manutencao de tela legada. Este arquivo encaminha para a regra central;
+nao cria excecoes locais.
+
 Leia [../AGENTS.md](../AGENTS.md) e
 [../ROYALPRIME_ARCHITECTURE_CONTRACT.md](../ROYALPRIME_ARCHITECTURE_CONTRACT.md).
 Selecione a tarefa em [../docs/CODEX_ENTRYPOINTS.md](../docs/CODEX_ENTRYPOINTS.md).

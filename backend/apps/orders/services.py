@@ -125,6 +125,7 @@ def create_order(
     subscription_cycle=None,
     notes: str = "",
     actor=None,
+    create_delivery: bool | None = None,
 ) -> Order:
     if customer.organization_id != organization.id:
         raise OrderValidationError("customer_organization_mismatch", "Customer must belong to organization")
@@ -221,7 +222,8 @@ def create_order(
         actor=actor,
         note="Order created",
     )
-    if kind.creates_delivery:
+    should_create_delivery = kind.creates_delivery if create_delivery is None else create_delivery
+    if should_create_delivery:
         from apps.deliveries.services import create_delivery_for_order
 
         create_delivery_for_order(

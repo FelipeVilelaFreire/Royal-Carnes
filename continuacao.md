@@ -13,16 +13,240 @@ trabalho atual no RoyalPrime.
 Leia tambem, nesta ordem, os arquivos obrigatorios do projeto:
 
 ```text
-ROYALPRIME_CODEX_RULES.md
 ROYALPRIME_ARCHITECTURE_CONTRACT.md
 docs/CODEX_ENTRYPOINTS.md
+docs/README.md
+docs/AGENTS.md
+AGENTS.md
+frontend/AGENTS.md
+frontend/admin/AGENTS.md
+frontend/client/web/AGENTS.md
+frontend/client/mobile/AGENTS.md
+frontend/foundation/AGENTS.md
+backend/AGENTS.md
 backend/README.md
-backend/ROADMAP.md
 backend/ARCHITECTURE.md
+backend/API_CONTRACTS.md
+backend/seeds/README.md
+backend/seeds/royalprime/README.md
 docs/frontend/TREE.md
 docs/frontend/RENDER_ONLY_AUDIT.md
 docs/kits/README.md
 frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
+```
+
+## Prioridade Atual - Funcional Primeiro
+
+A partir deste ponto, o foco principal do RoyalPrime deve ser funcionalidade real
+ponta a ponta. O visual deve ficar limpo, utilizavel e dentro das regras, mas
+sem gastar ciclos com refinamento fino antes dos fluxos funcionarem.
+
+Regra de prioridade:
+
+```text
+1. funcionalidade real
+2. contrato correto
+3. validacao automatica
+4. visual apresentavel
+5. refinamento visual fino somente depois
+```
+
+Isto vale para admin e client, mas o proximo foco imediato e o admin.
+
+Fluxos admin prioritarios:
+
+```text
+Pedidos
+  -> lista real
+  -> detalhe real
+  -> itens do pedido
+  -> total
+  -> historico de status
+  -> transicao de status permitida pelo backend
+
+Entregas
+  -> lista real
+  -> detalhe real
+  -> status atual
+  -> transicao de entrega
+  -> confirmacao de entrega
+
+Produtos
+  -> lista real com imagem
+  -> detalhe real
+  -> criar/editar produto simples
+  -> preco e variantes
+
+Estoque
+  -> lista real
+  -> ajuste de quantidade
+  -> reserva/disponivel
+
+Planos/Assinaturas
+  -> lista real
+  -> detalhe real
+  -> criar/editar depois dos fluxos operacionais
+```
+
+Nao voltar a polir sidebar, cards, sombras, microespacamentos e outras partes
+de design enquanto pedido/entrega/produto/estoque ainda nao estiverem
+funcionais de verdade.
+
+## Regra Para Qualquer Frontend Novo
+
+Qualquer coisa nova no frontend precisa atender 100% o contrato atual:
+
+```text
+screen/page TSX
+  -> render-only
+  -> sem regra de negocio local
+  -> sem chamada fetch direta se ja existe shared-core API client
+  -> sem mock direto se ja existe hook/data-source
+  -> sem texto novo hardcoded
+  -> sem emoji Unicode solto
+  -> sem style={{ ... }}
+  -> Foundation UI/AppShell para primitives e casca
+
+shared-core
+  -> contracts
+  -> api client
+  -> mapper
+  -> hook/data-source
+  -> view-model
+  -> locales
+  -> manifest/navigation quando for tela/rota
+
+backend
+  -> regra real
+  -> validacao
+  -> permissao
+  -> persistencia
+  -> testes quando tocar regra/contrato
+```
+
+Regra curta para revisao:
+
+```text
+se a tela sabe demais, esta errado
+se a tela calcula regra, esta errado
+se a tela mocka silenciosamente backend real, esta errado
+se aparece style={{ em screenTypes/admin/client, corrigir antes de finalizar
+se aparece copy nova em JSX/TSX, mover para locale/config
+```
+
+## Leitura Obrigatoria Por Area
+
+Antes de continuar qualquer tarefa, ler primeiro:
+
+```text
+continuacao.md
+docs/CODEX_ENTRYPOINTS.md
+ROYALPRIME_ARCHITECTURE_CONTRACT.md
+docs/architecture/RENDER_APPS_RULES.md
+docs/architecture/SHARED_CORE_RULES.md
+docs/architecture/BACKEND_RULES.md
+docs/contracts/MOCK_AND_ENV_ARCHITECTURE.md
+docs/contracts/SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md
+backend/API_CONTRACTS.md
+docs/handoff/12-style-hardcode-audit.md
+```
+
+Para admin:
+
+```text
+frontend/admin/AGENTS.md
+frontend/admin/shared-core/README.md
+frontend/admin/shared-core/api/README.md
+frontend/admin/shared-core/contracts/README.md
+frontend/admin/shared-core/hooks/README.md
+frontend/admin/shared-core/view-models/README.md
+frontend/admin/shared-core/mappers/README.md
+frontend/admin/shared-core/kits/README.md
+frontend/admin/shared-core/kits/dashboard/README.md
+frontend/admin/shared-core/kits/orders/README.md
+frontend/admin/shared-core/kits/orders/contract.md
+frontend/admin/shared-core/kits/orders/flow.md
+frontend/admin/shared-core/kits/deliveries/README.md
+frontend/admin/shared-core/kits/deliveries/contract.md
+frontend/admin/shared-core/kits/deliveries/flow.md
+frontend/admin/shared-core/kits/catalog/README.md
+frontend/admin/shared-core/kits/catalog/contract.md
+frontend/admin/shared-core/kits/catalog/flow.md
+frontend/admin/shared-core/kits/inventory/README.md
+frontend/admin/shared-core/kits/inventory/contract.md
+frontend/admin/shared-core/kits/inventory/flow.md
+frontend/admin/shared-core/kits/subscriptions/README.md
+frontend/admin/shared-core/kits/subscriptions/contract.md
+frontend/admin/shared-core/kits/subscriptions/flow.md
+frontend/admin/shared-core/kits/users/README.md
+frontend/admin/shared-core/kits/users/contract.md
+frontend/admin/shared-core/kits/users/flow.md
+docs/kits/admin/README.md
+docs/kits/admin/admin-screen-types-kit.md
+docs/kits/admin/admin-operations-kit.md
+docs/kits/admin/orders-kit.md
+docs/kits/admin/fulfillment-delivery-kit.md
+docs/kits/admin/catalog-kit.md
+docs/kits/admin/inventory-kit.md
+docs/kits/admin/subscriptions-kit.md
+docs/kits/admin/auth-users-kit.md
+```
+
+Para client:
+
+```text
+frontend/client/web/AGENTS.md
+frontend/client/mobile/AGENTS.md
+frontend/client/shared-core/README.md
+frontend/client/shared-core/api/README.md
+frontend/client/shared-core/contracts/README.md
+frontend/client/shared-core/hooks/README.md
+frontend/client/shared-core/view-models/README.md
+frontend/client/shared-core/mappers/README.md
+frontend/client/shared-core/kits/README.md
+frontend/client/shared-core/kits/auth/README.md
+frontend/client/shared-core/kits/catalog/README.md
+frontend/client/shared-core/kits/checkout/README.md
+frontend/client/shared-core/kits/orders/README.md
+frontend/client/shared-core/kits/orders/contract.md
+frontend/client/shared-core/kits/orders/flow.md
+frontend/client/shared-core/kits/subscriptions/README.md
+frontend/client/shared-core/kits/subscriptions/contract.md
+frontend/client/shared-core/kits/subscriptions/flow.md
+frontend/client/shared-core/kits/deliveries/README.md
+frontend/client/shared-core/kits/deliveries/contract.md
+frontend/client/shared-core/kits/deliveries/flow.md
+frontend/client/web/docs/PRIME_CUT_CLUB_ARCHITECTURE.md
+frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
+```
+
+Para backend/seed:
+
+```text
+backend/AGENTS.md
+backend/README.md
+backend/ARCHITECTURE.md
+backend/API_CONTRACTS.md
+backend/seeds/README.md
+backend/seeds/royalprime/README.md
+backend/apps/accounts/README.md
+backend/apps/catalog/README.md
+backend/apps/customers/README.md
+backend/apps/organizations/README.md
+backend/apps/core/README.md
+```
+
+Para Foundation/AppShell:
+
+```text
+frontend/foundation/AGENTS.md
+docs/contracts/CLIENT_SURFACE_SERVICES_CONTRACT.md
+docs/contracts/CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md
+docs/contracts/PHASE_1_COMPATIBILITY_CONTRACT.md
+docs/kits/README.md
+docs/kits/KITS_RUNTIME_LEDGER.md
+docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
+docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 ```
 
 ## Estado Atual
@@ -135,15 +359,62 @@ style hardcode audit
      de config e tokens ainda usados como ponte em ProductItemCard/SummaryRow
   -> proximo foco recomendado: MeuClubeView, HomeView legado, screenTypes,
      ProductItemCard/SummaryRow sem tokens e landing antiga
+
+checkpoint git
+  -> `060ee55 feat: harden portal render-only styling`
+  -> pushed em `origin/feature/shared-core-kit-reset`
+
+legacy cleanup apos `060ee55`
+  -> client/web nao possui mais imports ativos para `legacy/app-shell` nem
+     `legacy/design-system`
+  -> `screens/portal/AuthModal.tsx` substitui o AuthModal legado com Foundation
+  -> `OrderDetailModal` foi migrado para Foundation e CSS module
+  -> `CortesView` e `PedidoView` nao renderizam mais shell standalone legado
+  -> `LandingView` e `HeroMarketplaceView` usam `screens/landing/public-shell`
+     e `screens/landing/landingPrimitives.tsx` como ponte local para Foundation
+  -> arquivos mortos removidos: HomeView antigo, HomeVitrineViewLegacy,
+     NovoPortalHomeView, LegacyPortalView, HeroCortesView e modulos mortos de
+     legacy app-shell/design-system
+  -> `frontend/client/web/src/legacy` foi removido apos migrar as importacoes
+     restantes de `/` e `/hero`
+  -> saldo: a landing publica ainda tem muita div/style/copy hardcoded; agora
+     isso e divida da propria landing, nao dependencia de pacote legacy
+
+i18n/shared-core types apos corte legacy
+  -> `MeuClubeView` deixou de importar `clientPtBR`, mocks de planos e mock de
+     cliente diretamente
+  -> `MeuClubeView` usa `useClientStrings().meuClube` e `useClientCustomer()`
+  -> `MeuClubeView.module.css` concentra a vestimenta estrutural da tela
+  -> `ClientCustomerTabKey` e `ClientCustomerProfileDraft` moram em
+     `client/shared-core/types/customer.types.ts`
+  -> `hooks/useClientCustomer.ts` reexporta esses tipos temporariamente para
+     compatibilidade dos consumidores antigos
+  -> `screenTypes/*` do portal usam `useClientStrings()`, nao `clientPtBR`
+     direto
+  -> `OrderDetailModal` usa `ClientOrderRowViewModel`, sem tipo vindo de mock
+  -> scans de mock direto/clientPtBR direto/emoji no recorte do portal e
+     product-components ficaram sem resultados
+  -> `screenTypes/*` do portal usam `PortalScreenTypes.module.css` e ficaram
+     sem `style={{...}}` visual no scan
+  -> `screens/landing/public-shell/*` usa `PublicShell.module.css` e
+     `useClientStrings().landing.publicShell`
+  -> Header/Footer/BottomTabBar publicos nao mantem mais copy local nem
+     importam `clientPtBR` direto
+  -> `screens/landing/sections/*` e `HeroMarketplaceView` usam
+     `useClientStrings()`, nao `clientPtBR` direto
+  -> checks visuais soltos da landing foram trocados por `CheckIcon`
+     Foundation
 ```
 
 Validado neste corte:
 
 ```text
 npm run build:client -> passou
+npm run verify:foundation -> passou, 93 checks
 node node_modules\typescript\bin\tsc -p frontend\client\mobile\tsconfig.json -> passou
 git diff --check -> passou, apenas warnings LF/CRLF do Windows
 curl.exe -I http://localhost:3000/meus-pedidos -> 200 OK
+curl.exe -I http://localhost:3000/perfil -> 200 OK
 ```
 
 Handoff especifico:
@@ -668,3 +939,228 @@ prioridade 1: funcional e arquitetura
 prioridade 2: webIsMobile == native behavior
 prioridade 3: visual apenas ate ficar apresentavel
 ```
+
+## Atualizacao - Corte de Style Inline na Landing
+
+Depois do checkpoint `060ee55`, foi feito mais um corte no client web:
+
+```text
+frontend/client/web/src/screens/landing/sections/HomePlansSection.tsx
+frontend/client/web/src/screens/landing/sections/HomePlansSection.module.css
+frontend/client/web/src/screens/landing/public-shell/PublicHeader.tsx
+frontend/client/web/src/screens/landing/public-shell/Footer.tsx
+frontend/client/web/src/screens/landing/public-shell/PublicShell.module.css
+frontend/client/shared-core/locales/pt-BR.ts
+```
+
+Resultado:
+
+```text
+HomePlansSection nao tem mais style={{ ... }} visual.
+PublicHeader/Footer continuam sem style inline e agora usam tokens Foundation reais.
+Badges/desconto/destaque usam Badge Foundation.
+Textos soltos de preco e banner anual foram movidos para landing.plans.
+```
+
+Validacao:
+
+```text
+npm run build:client passou
+npm run verify:foundation passou
+git diff --check passou, apenas avisos LF/CRLF
+curl / retornou 200
+```
+
+Pendente: browser interno indisponivel nesta sessao, entao falta uma checagem
+visual real do header/footer em desktop e mobile antes de dizer 10/10 visual.
+
+## Atualizacao - Landing AppShell
+
+A landing deixou de usar casca propria:
+
+```text
+frontend/client/web/src/screens/landing/public-shell/
+```
+
+foi removido. Agora `/` e `/hero` usam:
+
+```text
+frontend/client/web/src/app/page.tsx
+frontend/client/web/src/app/hero/page.tsx
+  -> @foundation/shells/app-shell
+  -> landing/appshell.config.jsx
+  -> landing.navigation.ts
+```
+
+Navegacao da landing:
+
+```text
+type: "scroll" + targetId
+```
+
+fica em `landing.navigation.ts`. O proprio AppShell Foundation trata `#anchor`
+como scroll e rotas reais como navegacao normal.
+
+Validacao:
+
+```text
+npm run build:client passou
+npm run verify:foundation passou
+rg public-shell/PublicHeader/BottomTabBar/PublicShell na landing sem resultados
+```
+
+## Atualizacao - Landing Header
+
+Landing AppShell foi ajustado para o desenho correto:
+
+```text
+inicio: brand/logo
+meio: navegacao scroll centralizada
+fim: Dark/Light + Entrar no Portal
+```
+
+Mudancas:
+
+```text
+bottom tab da landing desabilitado
+header attached em 100% da largura
+drawerTrigger: "mobile"
+navAlignment: "center"
+CTA Ver Produtos removido do fim do header
+```
+
+O suporte `drawerTrigger: "mobile"` e `navAlignment: "center"` foi implementado
+no AppShell Foundation, entao a landing apenas declara a intencao no config.
+
+## Atualizacao - Remocao do LandingAppShell
+
+`LandingAppShell.tsx` e `LandingAppShell.module.css` foram removidos.
+
+O AppShell Foundation agora e dono tambem de:
+
+```text
+scroll por #anchor
+theme toggle configurado por manifest
+header.actions declarativo
+```
+
+A landing apenas declara:
+
+```text
+landing/appshell.config.jsx
+landing.navigation.ts
+```
+
+## Atualizacao - Sections Da Landing Por Pasta
+
+As sections reutilizaveis em `frontend/client/web/src/screens/landing/sections`
+foram reorganizadas para uma pasta por section e renomeadas sem prefixo `Home`:
+
+```text
+HeroSection/
+  HeroSection.tsx
+  HeroSection.module.css
+  index.ts
+DifferentialsSection/
+  DifferentialsSection.tsx
+  DifferentialsSection.module.css
+  index.ts
+ShowcaseSection/
+  ShowcaseSection.tsx
+  ShowcaseSection.module.css
+  index.ts
+StepsSection/
+  StepsSection.tsx
+  StepsSection.module.css
+  index.ts
+PlansSection/
+  PlansSection.tsx
+  PlansSection.module.css
+  index.ts
+GiftSection/
+  GiftSection.tsx
+  GiftSection.module.css
+  index.ts
+FaqSection/
+  FaqSection.tsx
+  FaqSection.module.css
+  index.ts
+```
+
+Tambem existe `sections/index.ts` exportando todas.
+
+`LandingView` agora e somente orquestrador render-only:
+
+```text
+LandingView
+  -> SectionContainer
+  -> HeroSection/DifferentialsSection/ShowcaseSection/StepsSection/PlansSection/GiftSection/FaqSection
+```
+
+`HeroMarketplaceView` e `landingPrimitives` foram removidos como legacy. `/hero`
+usa o mesmo `LandingView` modular de `/`.
+
+Auditoria deste corte:
+
+```text
+rg -n "style=\\{\\{" frontend/client/web/src -g "*.tsx"
+# sem resultados
+
+rg -n "Home(Hero|Differentials|Showcase|Steps|Plans|Gift|Faq)Section|HeroMarketplaceView|landingPrimitives|transitional" frontend/client/web/src frontend/client/shared-core -g "*.tsx" -g "*.ts" -g "*.jsx" -g "*.js"
+# sem resultados
+
+npm run build:client
+# passou
+```
+
+## Atualizacao - Landing Real / Primeira Tela
+
+A landing publica deixou de ser apenas uma limpeza estrutural e ganhou primeira
+dobra real de produto:
+
+```text
+HeroSection
+  -> texto principal
+  -> CTAs
+  -> metricas de compra
+  -> painel visual com foto de produto, logo e fluxo do cliente
+```
+
+Assets da landing agora ficam declarados em:
+
+```text
+frontend/client/shared-core/manifest/assets.js
+```
+
+e nao mais espalhados nas sections. `ShowcaseSection` e `GiftSection` consomem
+esse catalogo de assets.
+
+Copy nova foi adicionada em:
+
+```text
+frontend/client/shared-core/locales/pt-BR.ts
+```
+
+Checks:
+
+```text
+npm run build:client
+# passou
+
+npm run verify:foundation
+# passou, 93 checks
+
+curl -I http://localhost:3000/
+# 200
+
+curl -I http://localhost:3000/hero
+# 200
+
+rg -n "style=\\{\\{" frontend/client/web/src -g "*.tsx"
+# sem resultados
+```
+
+Pendente: browser visual/CUA indisponivel nesta sessao (`iab` e `chrome`
+indisponiveis), e Playwright nao esta instalado no `node_modules` atual.
+Portanto, ainda falta screenshot real desktop/mobile antes de declarar nota
+visual maxima.

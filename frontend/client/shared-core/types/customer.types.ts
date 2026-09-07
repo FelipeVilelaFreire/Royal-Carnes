@@ -19,3 +19,21 @@ export interface ClientCustomerProfile {
   addresses: CustomerAddressSummary[];
 }
 
+export type ClientCustomerTabKey =
+  | "overview"
+  | "subscription"
+  | "orders"
+  | "data"
+  | "addresses"
+  | "payments"
+  | "notifications"
+  | "security";
+
+export interface ClientCustomerProfileDraft {
+  name: string;
+  email: string;
+  phone: string;
+  cpf: string;
+  birthdate: string;
+  preferredDoneness: string;
+}

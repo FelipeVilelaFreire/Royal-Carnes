@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Container } from "@foundation/ui";
-import { AuthModal, BottomTabBar, PortalHeader } from "../../../legacy/app-shell";
+import { AuthModal } from "../AuthModal";
 import { useClientCheckout } from "@/hooks/useClientCheckout";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { formatClientCheckoutMeasure, formatClientCheckoutMoney } from "@royalprime/client/utils/checkout.formatters";
@@ -20,14 +20,12 @@ import { StickyOrderSummary } from "./pedido/StickyOrderSummary";
 import { usePedidoRuntime } from "./pedido/usePedidoRuntime";
 
 export interface PedidoViewProps {
-  onNavigate?: (path: string) => void;
-  showHeader?: boolean;
 }
 
-export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader = true }) => {
+export const PedidoView: React.FC<PedidoViewProps> = () => {
   const strings = useClientStrings().pedido;
   const runtime = usePedidoRuntime();
-  const { isDark, isDemoAuthenticated, themeMode, tokens } = runtime;
+  const { isDark, isDemoAuthenticated, tokens } = runtime;
   const checkout = useClientCheckout({ isAuthenticated: isDemoAuthenticated });
   const {
     actions,
@@ -102,6 +100,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   const selectedPayment = paymentMethods.find((method) => method.key === selectedPaymentMethod) || paymentMethods[0];
   const newAddressFields = config.addressFields.map((field) => ({
     gridColumn: field.gridColumn,
+    gridSpan: field.gridColumn.replace(" ", "-"),
     key: field.key,
     label: strings.deliveryStep.common[field.labelKey],
     placeholder: strings.deliveryStep.common.addressPlaceholders[field.placeholderKey],
@@ -248,19 +247,10 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   };
 
   return (
-    <div className={styles.pageRoot} data-standalone={showHeader || undefined}>
-      {showHeader ? (
-        <PortalHeader
-          activeTab="produtos"
-          themeMode={themeMode}
-          onToggleTheme={runtime.toggleTheme}
-          onNavigate={onNavigate}
-        />
-      ) : null}
-
+    <div className={styles.pageRoot}>
       <main className="appear-on-scroll">
         <Container
-          className={`${styles.main} ${showHeader ? styles.mainWithHeader : styles.mainEmbedded}`}
+          className={`${styles.main} ${styles.mainEmbedded}`}
           width="wide"
           gutter="page"
         >
@@ -333,7 +323,6 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
         </Container>
       </main>
 
-      {showHeader ? <BottomTabBar activeTab="produtos" onNavigate={onNavigate} isDark={isDark} /> : null}
       <AuthModal
         open={runtime.isAuthModalOpen}
         onClose={runtime.closeAuthModal}

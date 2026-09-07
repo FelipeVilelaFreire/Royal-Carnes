@@ -77,6 +77,45 @@ explicitamente necessario.
 | Orders | local foundation | Operar pedidos e transicoes |
 | Fulfillment & Delivery | local foundation | Operar entregas, status e confirmacao |
 
+## Navigation Map V1
+
+Este e o mapa funcional inicial do SidebarMenu do Admin. As telas podem nascer
+vazias como `standard` ate cada kit ganhar contrato/API/hook/view-model real.
+
+```text
+Visao geral
+  Dashboard
+
+Operacao
+  Pedidos
+  Entregas
+  Estoque
+
+Catalogo
+  Produtos
+  Categorias
+  Planos
+
+Clientes
+  Clientes
+  Assinaturas
+  Pagamentos
+
+Sistema
+  Usuarios
+  Configuracoes
+```
+
+Regra deste mapa:
+
+```text
+Dashboard resume
+Operacao executa o dia
+Catalogo define o que vende
+Clientes acompanha relacao e receita
+Sistema configura acesso e parametros
+```
+
 ## Criterio Para Completar Um Kit Admin
 
 ```text
@@ -91,4 +130,3 @@ screen type sem regra de negocio local
 npm run build:admin passa
 git diff --check passa
 ```
-

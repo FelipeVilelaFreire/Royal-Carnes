@@ -16,6 +16,25 @@ render-app consome hook/view-model
 backend continua dono da regra real
 ```
 
+Regra tela por tela:
+
+```text
+web/native/admin-web
+  -> render-only
+
+shared-core do escopo correto
+  -> contracts
+  -> api client
+  -> hook
+  -> mapper/view-model
+
+backend
+  -> dados e regras reais
+```
+
+Ao migrar uma tela, registrar neste ledger qual kit ela consome, qual hook
+entrega o view-model e qual endpoint/fallback ainda sustenta o dado.
+
 ## Ledger Geral
 
 | Kit | Estado atual | Shared-core ativo | Render ja conectado | Gap principal |
@@ -71,6 +90,32 @@ Gap:
 auditar PedidoView para tirar calculo/regra de catalogo do TSX
 garantir produto elegivel por API/view-model
 manter produtos Royal Carnes em seed/config/fallback, nao na tela
+ProductCard e telas de catalogo nao podem montar nome, descricao, origem,
+unidade, preco ou categoria por hardcode local
+```
+
+Exemplo de dado que deve atravessar backend -> shared-core -> render:
+
+```text
+Produto:
+  nome: Acem
+  descricao: Produto de melhor custo-beneficio para churrasco simples e preparos variados.
+  categoria: Cortes do dia a dia
+  unidade/variante: 1 kg
+  origem: Brasil
+  preco: R$ 39,90
+
+backend:
+  Product + ProductVariant + MeasurementUnit + ProductPrice + origin/category
+
+client shared-core:
+  useClientCatalog()
+  catalog mapper
+  ClientCatalogProductCardViewModel
+
+render:
+  Card/Badge/Text/Button Foundation
+  nenhum calculo de preco/disponibilidade
 ```
 
 ## Kit 03 - Subscriptions
@@ -229,10 +274,54 @@ rgba/#hex em status de tela
 emoji em status/icone
 ```
 
+## Kit 07 - Landing Public Experience
+
+Ja existe:
+
+```text
+frontend/client/shared-core/manifest/landing/appshell.config.jsx
+frontend/client/shared-core/navigation/landing.navigation.ts
+frontend/client/web/src/screens/landing/LandingView.tsx
+frontend/client/web/src/screens/landing/sections/
+frontend/foundation/ui/SectionContainer/SectionContainer.tsx
+frontend/foundation/shells/app-shell/
+```
+
+Contrato:
+
+```text
+LandingView
+  -> SectionContainer
+  -> sections modulares render-only
+  -> AppShell Foundation por config
+```
+
+Estado atual:
+
+```text
+sections sem prefixo Home
+landing sem style={{ ... }} local
+/hero reaproveita a mesma LandingView
+legacy transitional removido
+assets da landing centralizados no sharedAssets
+hero com painel visual de produto e fluxo do cliente
+```
+
+Gap:
+
+```text
+assets da landing ainda precisam virar catalogo central no manifest
+conteudo comercial definitivo deve vir do backend/shared-core quando deixar de ser copy institucional
+validacao visual desktop/mobile ainda precisa browser real
+```
+
 ## Proximo Corte Recomendado
 
 ```text
-1. validar visual light/dark de Badge em MeusPedidos e MinhaCaixa
-2. continuar MeuClubeView render-only com Kit 01 + Kit 03
-3. depois iniciar Admin Dashboard/ListPage por kits admin
+1. escolher uma tela oficial de client
+2. mapear quais kits ela consome
+3. garantir backend/shared-core/render-only antes de polir visual
+4. validar visual light/dark de Badge em MeusPedidos e MinhaCaixa
+5. continuar MeuClubeView render-only com Kit 01 + Kit 03
+6. depois iniciar Admin Dashboard/ListPage por kits admin
 ```

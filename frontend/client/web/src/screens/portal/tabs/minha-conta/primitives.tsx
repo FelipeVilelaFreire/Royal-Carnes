@@ -25,14 +25,14 @@ export function AccountProgress({ value }: { value: number }) {
   const normalizedValue = Math.max(0, Math.min(100, value));
 
   return (
-    <div
+    <progress
       aria-valuemax={100}
       aria-valuemin={0}
       aria-valuenow={normalizedValue}
-      className={styles.metricBar}
+      className={styles.metricProgress}
+      max={100}
       role="progressbar"
-    >
-      <div className={styles.metricFill} style={{ width: `${normalizedValue}%` }} />
-    </div>
+      value={normalizedValue}
+    />
   );
 }

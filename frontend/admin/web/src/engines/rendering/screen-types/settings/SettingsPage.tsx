@@ -1,96 +1,96 @@
 import React from "react";
-import { Text } from "@foundation/ui/Text";
-import { Surface } from "@foundation/ui/Surface";
+import { Grid, Inline, Stack } from "@foundation/ui/Layout";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { adminThemeManifest } from "@/manifest/theme.manifest";
+import { Surface } from "@foundation/ui/Surface";
+import { Text } from "@foundation/ui/Text";
+import { CheckIcon, SettingsIcon, SnowflakeIcon, StoreIcon } from "@foundation/ui/Icon/AppIcons";
 import { adminPtBR } from "@/locales/pt-BR";
 import { settingsConfig } from "@/manifest/pages/settings.config";
-import { SettingsIcon, SnowflakeIcon, CheckIcon, StoreIcon } from "@foundation/ui/Icon/AppIcons";
+import styles from "./SettingsPage.module.css";
 
 export interface SettingsPageProps {
   config?: typeof settingsConfig;
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({ config = settingsConfig }) => {
-  const themeColors = adminThemeManifest.colors;
-  const { primary, text, textMuted, border, background, surface, surfaceContainer } = themeColors;
-
   const settingsData = config?.settings || {
     brandName: "ROYAL PRIME",
     recurrencyProvider: "Stripe Subscriptions",
     recurrencyStatus: "ativo",
-    coldChainSensor: "Sensor IoT -2°C",
+    coldChainSensor: "Sensor IoT -2Â°C",
     coldChainStatus: "monitorando",
-    fulfillmentWarehouse: "Central Gastronômica SP-01"
+    fulfillmentWarehouse: "Central GastronÃ´mica SP-01",
   };
 
   return (
-    <div style={{ width: "100%", background, minHeight: "100vh", paddingBottom: "60px" }}>
+    <div className={styles.page}>
       <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingTop: "20px", width: "100%" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <SettingsIcon size={32} color={primary} />
-              <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "40px", margin: 0, fontWeight: "800" }}>
+        <Stack className={styles.content} gap="lg">
+          <Stack gap="xs">
+            <Inline align="center" className={styles.titleLine} gap="sm" wrap={false}>
+              <SettingsIcon aria-hidden="true" size={32} />
+              <Text as="h1" variant="h1">
                 {adminPtBR.configuracoes.title}
               </Text>
-            </div>
-            <Text variant="body" style={{ color: textMuted, fontSize: "15px", marginTop: "4px" }}>
+            </Inline>
+            <Text tone="muted" variant="body">
               {adminPtBR.configuracoes.subtitle}
             </Text>
-          </div>
+          </Stack>
 
-          <Surface
-            style={{
-              background: surface,
-              border: `1px solid ${border}`,
-              borderRadius: "24px",
-              padding: "32px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px"
-            }}
-          >
-            <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "24px", margin: 0, fontWeight: "700" }}>
+          <Surface className={styles.surface}>
+            <Text as="h2" variant="h2">
               {adminPtBR.configuracoes.sectionOperation}
             </Text>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
-              <div style={{ background: surfaceContainer || surface, padding: "20px", borderRadius: "16px", border: `1px solid ${border}` }}>
-                <span style={{ fontSize: "14px", color: text, fontWeight: "700", display: "block", marginBottom: "4px" }}>
+
+            <Grid className={styles.settingsGrid} columns={4} gap="md">
+              <div className={styles.settingCard}>
+                <Text as="span" variant="body" weight="var(--theme--typography-bold)">
                   {adminPtBR.configuracoes.cards.brand}
-                </span>
-                <span style={{ fontSize: "13px", color: textMuted }}>{settingsData.brandName}</span>
+                </Text>
+                <Text as="span" tone="muted" variant="caption">
+                  {settingsData.brandName}
+                </Text>
               </div>
 
-              <div style={{ background: surfaceContainer || surface, padding: "20px", borderRadius: "16px", border: `1px solid ${border}` }}>
-                <span style={{ fontSize: "14px", color: text, fontWeight: "700", display: "block", marginBottom: "4px" }}>
+              <div className={styles.settingCard}>
+                <Text as="span" variant="body" weight="var(--theme--typography-bold)">
                   {adminPtBR.configuracoes.cards.recurrency}
-                </span>
-                <span style={{ fontSize: "13px", color: "#10B981", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <CheckIcon size={16} color="#10B981" /> {settingsData.recurrencyProvider} ({settingsData.recurrencyStatus})
-                </span>
+                </Text>
+                <Inline align="center" className={styles.successValue} gap="xs" wrap={false}>
+                  <CheckIcon aria-hidden="true" size={16} />
+                  <Text as="span" variant="caption" weight="var(--theme--typography-semibold)">
+                    {settingsData.recurrencyProvider} ({settingsData.recurrencyStatus})
+                  </Text>
+                </Inline>
               </div>
 
-              <div style={{ background: surfaceContainer || surface, padding: "20px", borderRadius: "16px", border: `1px solid ${border}` }}>
-                <span style={{ fontSize: "14px", color: text, fontWeight: "700", display: "block", marginBottom: "4px" }}>
+              <div className={styles.settingCard}>
+                <Text as="span" variant="body" weight="var(--theme--typography-bold)">
                   {adminPtBR.configuracoes.cards.coldChain}
-                </span>
-                <span style={{ fontSize: "13px", color: primary, fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <SnowflakeIcon size={16} color={primary} /> {settingsData.coldChainSensor} ({settingsData.coldChainStatus})
-                </span>
+                </Text>
+                <Inline align="center" className={styles.primaryValue} gap="xs" wrap={false}>
+                  <SnowflakeIcon aria-hidden="true" size={16} />
+                  <Text as="span" variant="caption" weight="var(--theme--typography-semibold)">
+                    {settingsData.coldChainSensor} ({settingsData.coldChainStatus})
+                  </Text>
+                </Inline>
               </div>
 
-              <div style={{ background: surfaceContainer || surface, padding: "20px", borderRadius: "16px", border: `1px solid ${border}` }}>
-                <span style={{ fontSize: "14px", color: text, fontWeight: "700", display: "block", marginBottom: "4px" }}>
+              <div className={styles.settingCard}>
+                <Text as="span" variant="body" weight="var(--theme--typography-bold)">
                   {adminPtBR.configuracoes.cards.warehouse}
-                </span>
-                <span style={{ fontSize: "13px", color: textMuted, display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <StoreIcon size={16} color={primary} /> {settingsData.fulfillmentWarehouse}
-                </span>
+                </Text>
+                <Inline align="center" className={styles.mutedValue} gap="xs" wrap={false}>
+                  <StoreIcon aria-hidden="true" size={16} />
+                  <Text as="span" tone="muted" variant="caption">
+                    {settingsData.fulfillmentWarehouse}
+                  </Text>
+                </Inline>
               </div>
-            </div>
+            </Grid>
           </Surface>
-        </div>
+        </Stack>
       </SectionContainer>
     </div>
   );

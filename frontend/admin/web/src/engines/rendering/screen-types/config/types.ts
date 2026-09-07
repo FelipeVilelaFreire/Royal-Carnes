@@ -75,8 +75,9 @@ export type DashboardStatWidgetConfig = {
   key: string;
   titleKey: string;
   descriptionKey?: string;
-  value: string;
-  helper: string;
+  value?: string;
+  helper?: string;
+  iconKey?: string;
   icon?: ReactNode;
   tone?: DashboardWidgetTone;
 };
@@ -85,6 +86,10 @@ export type DashboardWidgetConfig = DashboardStatWidgetConfig;
 
 export type DashboardConfig = {
   screenType: "dashboard";
+  dataSource?: {
+    fallbackOnError?: boolean;
+    key: string;
+  };
   titleKey: string;
   subtitleKey: string;
   widgets: DashboardWidgetConfig[];

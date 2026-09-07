@@ -34,10 +34,11 @@ class DeliveriesApiTests(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         return response.data
 
-    def test_seed_creates_delivery_status_config_without_deliveries(self):
+    def test_seed_creates_delivery_status_config_and_demo_deliveries(self):
         self.assertEqual(DeliveryStatusDefinition.objects.count(), 6)
-        self.assertEqual(Delivery.objects.count(), 0)
+        self.assertEqual(Delivery.objects.count(), 4)
         self.assertTrue(DeliveryStatusDefinition.objects.get(key="pending").is_initial)
+        self.assertTrue(Delivery.objects.filter(metadata__seedKey="entrega-felipe-churrasco-familia").exists())
 
     def test_admin_can_create_transition_and_confirm_delivery(self):
         order = self.create_order()
@@ -63,7 +64,7 @@ class DeliveriesApiTests(APITestCase):
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
 
-        self.assertEqual(delivery.code, "DEL-000001")
+        self.assertEqual(delivery.code, "DEL-000005")
         self.assertEqual(delivery.status_key, "pending")
         self.assertEqual(transition_response.status_code, 200, transition_response.data)
         self.assertEqual(transition_response.data["status_key"], "packing")
@@ -80,8 +81,8 @@ class DeliveriesApiTests(APITestCase):
         list_response = self.client.get("/api/v1/deliveries/me/", HTTP_X_ORGANIZATION_SLUG="royalprime")
 
         self.assertEqual(list_response.status_code, 200, list_response.data)
-        self.assertEqual(len(list_response.data), 1)
-        self.assertEqual(list_response.data[0]["order_code"], order["code"])
+        self.assertGreaterEqual(len(list_response.data), 1)
+        self.assertTrue(any(delivery["order_code"] == order["code"] for delivery in list_response.data))
 
     def test_admin_cannot_duplicate_delivery_for_order(self):
         order = self.create_order()

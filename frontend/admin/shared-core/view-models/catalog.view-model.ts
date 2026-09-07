@@ -6,6 +6,7 @@ import type {
 
 export interface AdminProductRowViewModel {
   id: string | number;
+  image: string | null;
   key: string;
   name: string;
   status: string;
@@ -44,6 +45,7 @@ export function createAdminProductRowViewModel(
 ): AdminProductRowViewModel {
   return {
     id: product.id,
+    image: product.primaryMediaUrl || product.media.find((media) => media.isPrimary)?.url || product.media[0]?.url || null,
     key: product.key,
     name: product.name,
     status: product.status,

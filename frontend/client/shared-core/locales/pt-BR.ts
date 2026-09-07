@@ -24,13 +24,23 @@ export const clientPtBR = {
     collapseSidebar: "Recolher menu",
     openDrawerAriaLabel: "Abrir navegacao",
     searchPlaceholder: "Buscar",
+    headerActions: {
+      themeLight: "Light",
+      themeDark: "Dark",
+      enterPortal: "Entrar no Portal"
+    },
     navigation: {
       home: "Home",
       cortes: "Cortes",
       catalogo: "Catálogo",
+      store: "A Loja",
+      selection: "Catálogos",
+      howItWorks: "Como Funciona",
+      products: "Produtos",
       produtos: "Montar Box",
       royalBox: "Royal Box",
       royalDelivery: "Royal Delivery",
+      faq: "FAQ",
       meusPedidos: "Meus Pedidos",
       meuClube: "Meu Clube",
       minhaCaixa: "Minha Caixa",
@@ -56,6 +66,7 @@ export const clientPtBR = {
     action: "Ver cortes"
   },
   authModal: {
+    close: "Fechar",
     tabs: {
       login: "Entrar",
       register: "Cadastrar"
@@ -705,6 +716,31 @@ export const clientPtBR = {
     }
   },
   meuClube: {
+    title: "Meu Clube",
+    memberSincePrefix: "Membro Royal Prime desde",
+    activeBadge: "Membro ativo",
+    currencyPrefix: "R$",
+    monthSuffix: "/ mes",
+    source: {
+      fallback: "Dados temporarios do shared-core",
+      api: "Dados sincronizados da conta",
+      anonymous: "Sessao anonima"
+    },
+    benefitsTitle: "Beneficios do seu plano",
+    actions: {
+      manageSubscription: "Gerenciar assinatura",
+      pauseSubscription: "Pausar assinatura",
+      cancelSubscription: "Cancelar assinatura",
+      logout: "Sair da conta"
+    },
+    accountTitle: "Minha conta",
+    accountMenuItems: [
+      { key: "personal-data", label: "Dados pessoais", icon: "person" },
+      { key: "delivery-address", label: "Endereco de entrega", icon: "truck" },
+      { key: "payment-method", label: "Forma de pagamento", icon: "card" },
+      { key: "preferences", label: "Preferencias", icon: "tune" },
+      { key: "notifications", label: "Notificacoes", icon: "bell" }
+    ],
     userName: "Felipe",
     memberSince: "Membro desde agosto de 2026",
     subscriptionTitle: "Minha assinatura",
@@ -728,12 +764,77 @@ export const clientPtBR = {
     ]
   },
   landing: {
+    publicShell: {
+      brand: "ROYAL CARNES",
+      themeLight: "Light",
+      themeDark: "Dark",
+      enterPortal: "Entrar no Portal",
+      productsCta: "Ver Produtos",
+      productsHref: "#assinaturas",
+      nav: [
+        { label: "A Loja", href: "#clube" },
+        { label: "Catalogos", href: "#selecao" },
+        { label: "Como Funciona", href: "#como-funciona" },
+        { label: "Produtos", href: "#assinaturas" },
+        { label: "Royal Box", href: "#royal-box" },
+        { label: "FAQ", href: "#faq" }
+      ],
+      bottomTabs: {
+        home: "Home",
+        catalog: "Catalogo",
+        products: "Montar Box",
+        orders: "Meus Pedidos",
+        account: "Conta"
+      },
+      footer: {
+        brand: "Royal Carnes",
+        description: "A boutique de carnes nobres definitiva para os amantes do churrasco gourmet. Cortes certificados com rastreabilidade completa e entrega refrigerada em embalagem a vacuo.",
+        badge: "Qualidade Prime Certificada",
+        cutsTitle: "Cortes Nobres",
+        cuts: [
+          { label: "Picanha & Ancho Angus Prime", path: "/cortes" },
+          { label: "Wagyu A5 BMS 10+ Japao", path: "/cortes" },
+          { label: "Tomahawk & Prime Rib Dry Aged", path: "/cortes" },
+          { label: "Suinos Duroc & Aves Selecionadas", path: "/cortes" },
+          { label: "Kits Master de Churrasco", path: "/cortes" }
+        ],
+        clubTitle: "Clube do Socio",
+        club: [
+          { label: "Como Funciona a Assinatura", path: "/home" },
+          { label: "Planos: Essencial & Wagyu", path: "/home" },
+          { label: "Minha Caixa Termica", path: "/minha-caixa" },
+          { label: "Portal do Assinante", path: "/minha-assinatura" },
+          { label: "Beneficios & Descontos", path: "/meu-clube" }
+        ],
+        supportTitle: "Atendimento Concierge",
+        whatsapp: "WhatsApp: (11) 99876-5432",
+        hours: "Atendimento VIP: Seg a Sab, 8h as 20h",
+        shipping: "Envios para todo o Brasil com selo termico de transporte seguro.",
+        copyright: "2026 Royal Carnes Prime. Todos os direitos reservados.",
+        terms: "Termos de Uso",
+        privacy: "Politica de Privacidade",
+        deliveryPolicy: "Politica de Entrega Refrigerada"
+      }
+    },
     hero: {
       badge: "ROYAL CARNES EM CASA",
       title: "Royal Carnes para o churrasco acontecer sem improviso",
       subtitle: "Escolha entre assinatura fechada, Royal Box mensal personalizada ou Royal Delivery avulso.",
       ctaPlans: "Entender como funciona",
-      ctaShowcase: "Ver catálogo"
+      ctaShowcase: "Ver catálogo",
+      mediaAlt: "Corte premium preparado para churrasco",
+      mediaBadge: "Seleção do mês",
+      mediaTitle: "Picanha, ancho e acompanhamentos no mesmo fluxo",
+      mediaDescription: "O cliente entende o catálogo, escolhe o formato de compra e entra no portal apenas quando precisa salvar a montagem.",
+      stats: [
+        { value: "3", label: "formas de compra" },
+        { value: "4", label: "catálogos editoriais" },
+        { value: "1", label: "portal do cliente" }
+      ],
+      journey: {
+        title: "Fluxo do cliente",
+        steps: ["Escolhe o caminho", "Monta a box", "Acompanha entrega"]
+      }
     },
     differentials: {
       badge: "PROVA & DIFERENCIAIS",
@@ -797,11 +898,16 @@ export const clientPtBR = {
       billingMonthly: "Cobrança Mensal",
       billingAnnual: "Cobrança Anual",
       annualDiscountBadge: "ANUAL",
+      currencyPrefix: "R$",
+      monthlySuffix: "/mês",
       annualBanner: {
+        savingsLabel: "Economia",
         savings: "Até R$ 1.680 de Economia",
         savingsDesc: "Desconto de 20% aplicado diretamente em todas as 12 caixas do ano.",
+        giftLabel: "Brinde",
         gift: "Royal Box personalizada",
         giftDesc: "Monte a composicao e receba todo mes no dia escolhido.",
+        priceLockLabel: "Garantia",
         priceLock: "Preço Congelado 12 Meses",
         priceLockDesc: "Garantia contra reajustes de inflação durante todo o período."
       },
@@ -856,7 +962,8 @@ export const clientPtBR = {
       badge: "ROYAL BOX",
       title: "Monte uma vez. Receba todo mês.",
       description: "A Royal Box e a assinatura personalizada da Royal Carnes. Escolha produtos, formatos, carvão, utensílios, endereço e dia do mês.",
-      cta: "Montar Royal Box"
+      cta: "Montar Royal Box",
+      imageAlt: "Faca artesanal de churrasco"
     },
     faq: {
       badge: "TRANSPARÊNCIA TOTAL",
@@ -1145,6 +1252,7 @@ export const clientPtBR = {
   },
   orderDetailModal: {
     title: "Detalhes do Pedido",
+    dateLabel: "Data",
     codeLabel: "Código",
     typeLabel: "Tipo de Pedido",
     statusLabel: "Status",
@@ -1159,6 +1267,16 @@ export const clientPtBR = {
     freightLabel: "Frete",
     discountLabel: "Desconto",
     totalLabel: "Total",
+    cycleUsagePrefix: "Uso do ciclo de",
+    trackingTitle: "Acompanhamento",
+    itemFallbackCategory: "item",
+    cycleMetrics: {
+      cuts: "Cortes",
+      protein: "Proteina",
+      charcoal: "Carvao",
+      complements: "Compl.",
+      utensils: "Utensilio"
+    },
     closeAction: "Fechar",
     supportAction: "Falar com Suporte"
   }

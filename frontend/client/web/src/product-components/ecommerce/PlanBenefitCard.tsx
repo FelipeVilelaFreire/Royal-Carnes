@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/legacy/design-system";
+import { Button } from "@foundation/ui/Button";
+import styles from "./PlanBenefitCard.module.css";
 
 export interface PlanBenefitCardProps {
-  style?: React.CSSProperties;
+  className?: string;
   name: string;
   description: string;
   monthlyPrice?: number;
@@ -52,12 +53,12 @@ export interface PlanBenefitCardProps {
 
 const formatMoney = (value: number) =>
   new Intl.NumberFormat("pt-BR", {
+    currency: "BRL",
     style: "currency",
-    currency: "BRL"
   }).format(value);
 
 export const PlanBenefitCard: React.FC<PlanBenefitCardProps> = ({
-  style,
+  className,
   name,
   description,
   monthlyPrice,
@@ -92,8 +93,8 @@ export const PlanBenefitCard: React.FC<PlanBenefitCardProps> = ({
   selectedActionLabel,
   disabledHint,
   onAction,
-  isDark,
-  tokens
+  isDark: _isDark,
+  tokens: _tokens,
 }) => {
   const isAnnual = priceMode === "annual";
   const price = isAnnual ? annualMonthlyPrice ?? monthlyPrice : monthlyPrice;
@@ -107,141 +108,51 @@ export const PlanBenefitCard: React.FC<PlanBenefitCardProps> = ({
 
   return (
     <article
-      className="royal-plan-benefit-card"
-      style={{
-        border: `1px solid ${selected ? tokens.copper : tokens.border}`,
-        borderRadius: "18px",
-        padding: layoutMode === "compact" ? "14px" : "18px",
-        background: selected ? (isDark ? "rgba(184, 115, 51, 0.1)" : "rgba(184, 115, 51, 0.08)") : tokens.surfaceContainer,
-        color: tokens.text,
-        minWidth: 0,
-        minHeight: layoutMode === "compact" ? "220px" : "320px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        gap: "18px",
-        opacity: disabled ? 0.68 : 1,
-        boxShadow: selected ? "0 18px 38px rgba(0, 0, 0, 0.2)" : "none",
-        transition: "all 0.2s ease",
-        ...style
-      }}
+      className={[styles.card, className].filter(Boolean).join(" ")}
+      data-disabled={disabled || undefined}
+      data-layout={layoutMode}
+      data-selected={selected || undefined}
     >
-      <div style={{ display: "grid", gap: layoutMode === "compact" ? "10px" : "14px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", alignItems: "start" }}>
-          <div style={{ minWidth: 0, display: "grid", gap: "6px" }}>
-            {shouldShowBadge ? (
-              <span
-                style={{
-                  width: "fit-content",
-                  maxWidth: "100%",
-                  borderRadius: "999px",
-                  padding: "5px 9px",
-                  background: tokens.copper,
-                  color: "#FCFBF7",
-                  fontSize: "10px",
-                  fontWeight: 900,
-                  textTransform: "uppercase",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap"
-                }}
-              >
-                {badge}
-              </span>
-            ) : null}
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <div className={styles.titleStack}>
+            {shouldShowBadge ? <span className={styles.badge}>{badge}</span> : null}
 
-            {showHighlight && highlightLabel ? (
-              <code style={{ color: tokens.copper, fontSize: "11px", fontWeight: 900 }}>
-                {highlightLabel}
-              </code>
-            ) : null}
+            {showHighlight && highlightLabel ? <code className={styles.highlight}>{highlightLabel}</code> : null}
 
-            {showName ? (
-              <h3
-                style={{
-                  margin: 0,
-                  color: tokens.text,
-                  fontFamily: "'Playfair Display', serif",
-                  fontSize: layoutMode === "compact" ? "22px" : "28px",
-                  lineHeight: 1.05,
-                  letterSpacing: 0
-                }}
-              >
-                {name}
-              </h3>
-            ) : null}
+            {showName ? <h3 className={styles.name}>{name}</h3> : null}
           </div>
 
           {showSelectedState && selected && selectedLabel ? (
-            <span
-              style={{
-                borderRadius: "999px",
-                border: `1px solid ${tokens.copper}`,
-                padding: "5px 9px",
-                color: tokens.copper,
-                fontSize: "10px",
-                fontWeight: 900,
-                whiteSpace: "nowrap"
-              }}
-            >
-              {selectedLabel}
-            </span>
+            <span className={styles.selectedLabel}>{selectedLabel}</span>
           ) : null}
         </div>
 
-        {showDescription ? (
-          <p style={{ margin: 0, color: tokens.textMuted, fontSize: "13px", lineHeight: 1.45 }}>
-            {description}
-          </p>
-        ) : null}
+        {showDescription ? <p className={styles.description}>{description}</p> : null}
 
         {hasPrice ? (
-          <div style={{ display: "grid", gap: "4px" }}>
-            {pricePrefixLabel ? (
-              <span style={{ color: tokens.textMuted, fontSize: "11px", fontWeight: 800, textTransform: "uppercase" }}>
-                {pricePrefixLabel}
-              </span>
-            ) : null}
-            <strong style={{ color: tokens.copper, fontSize: layoutMode === "compact" ? "22px" : "30px", lineHeight: 1 }}>
-              {formatMoney(price)}
-            </strong>
+          <div className={styles.priceBlock}>
+            {pricePrefixLabel ? <span className={styles.pricePrefix}>{pricePrefixLabel}</span> : null}
+            <strong className={styles.price}>{formatMoney(price)}</strong>
             {showBillingCycle ? (
-              <span style={{ color: tokens.textMuted, fontSize: "12px" }}>
+              <span className={styles.billingCycle}>
                 {isAnnual ? annualBillingCycleLabel || billingCycleLabel : billingCycleLabel}
               </span>
             ) : null}
           </div>
         ) : null}
 
-        {shouldShowSavings ? (
-          <span
-            style={{
-              border: `1px solid ${tokens.border}`,
-              borderRadius: "8px",
-              padding: "8px 10px",
-              color: tokens.copper,
-              background: isDark ? "rgba(184, 115, 51, 0.08)" : "rgba(184, 115, 51, 0.06)",
-              fontSize: "12px",
-              fontWeight: 800
-            }}
-          >
-            {savingsLabel}
-          </span>
-        ) : null}
+        {shouldShowSavings ? <span className={styles.savings}>{savingsLabel}</span> : null}
 
         {hasBenefits ? (
-          <div style={{ display: "grid", gap: "8px" }}>
+          <div className={styles.benefits}>
             {benefitsMode === "count" ? (
-              <span style={{ color: tokens.textMuted, fontSize: "13px" }}>
-                {benefitCountLabel || String(benefits.length)}
-              </span>
+              <span className={styles.benefit}>{benefitCountLabel || String(benefits.length)}</span>
             ) : benefitsMode === "summary" ? (
-              <span style={{ color: tokens.textMuted, fontSize: "13px", lineHeight: 1.45 }}>
-                {visibleBenefits.join(" - ")}
-              </span>
+              <span className={styles.benefit}>{visibleBenefits.join(" - ")}</span>
             ) : (
               visibleBenefits.map((benefit) => (
-                <span key={benefit} style={{ color: tokens.textMuted, fontSize: "13px", lineHeight: 1.35 }}>
+                <span className={styles.benefit} key={benefit}>
                   {benefit}
                 </span>
               ))
@@ -250,28 +161,20 @@ export const PlanBenefitCard: React.FC<PlanBenefitCardProps> = ({
         ) : null}
       </div>
 
-      <div style={{ display: "grid", gap: "8px" }}>
+      <div className={styles.footer}>
         {shouldShowAction ? (
           <Button
-            variant={selected ? "primary" : "outline"}
-            size="sm"
-            isDark={isDark}
-            fullWidth
+            appearance={selected ? "solid" : "outline"}
+            className={styles.action}
             disabled={disabled}
             onClick={onAction}
-            style={{
-              opacity: disabled ? 0.7 : 1,
-              cursor: disabled ? "not-allowed" : "pointer"
-            }}
+            size="sm"
+            tone={selected ? "primary" : "neutral"}
           >
             {actionText}
           </Button>
         ) : null}
-        {disabled && disabledHint ? (
-          <span style={{ color: tokens.textMuted, fontSize: "11px", lineHeight: 1.35 }}>
-            {disabledHint}
-          </span>
-        ) : null}
+        {disabled && disabledHint ? <span className={styles.disabledHint}>{disabledHint}</span> : null}
       </div>
     </article>
   );

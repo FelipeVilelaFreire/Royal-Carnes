@@ -1,208 +1,158 @@
 import React from "react";
-import { Text } from "@foundation/ui/Text";
-import { Surface } from "@foundation/ui/Surface";
+import { Badge } from "@foundation/ui/Badge";
+import { Button } from "@foundation/ui/Button";
+import { Card } from "@foundation/ui/Card";
+import { Grid, Inline, Stack } from "@foundation/ui/Layout";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { AvatarCell } from "@foundation/ui/Avatar";
-import { adminThemeManifest } from "@/manifest/theme.manifest";
-import { adminPtBR } from "@/locales/pt-BR";
-import { FlameIcon, BoxIcon, TruckIcon, UserIcon, ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
+import { Text } from "@foundation/ui/Text";
+import { BoxIcon, ChevronRightIcon, FlameIcon, StarIcon, TruckIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
+import type { AdminDashboardViewModel, AdminDashboardWidgetKey } from "@/view-models/dashboard.view-model";
+import type { AdminTranslate } from "@/locales/i18n";
 import type { DashboardConfig } from "../config/types";
+import styles from "./DashboardPage.module.css";
 
 export interface DashboardPageProps {
   config: DashboardConfig;
+  isFallback?: boolean;
+  isLoading?: boolean;
+  onViewOrders?: () => void;
+  t: AdminTranslate;
+  viewModel: AdminDashboardViewModel;
 }
 
-function t(key: string, fallback?: string): string {
-  if (!key) return fallback || "";
-  const parts = key.split(".");
-  let current: any = adminPtBR;
-  for (const part of parts) {
-    if (current && typeof current === "object" && part in current) {
-      current = current[part];
-    } else {
-      return fallback !== undefined ? fallback : key;
-    }
-  }
-  return typeof current === "string" ? current : (fallback || key);
+function renderWidgetIcon(key: string | undefined, widgetKey: string) {
+  const iconKey = key || widgetKey;
+  if (iconKey === "subscribers") return <UserIcon aria-hidden="true" />;
+  if (iconKey === "deliveries") return <TruckIcon aria-hidden="true" />;
+  if (iconKey === "retention") return <StarIcon aria-hidden="true" />;
+  return <FlameIcon aria-hidden="true" />;
 }
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({ config }) => {
-  const themeColors = (config as any)?.theme?.colors || adminThemeManifest.colors;
-  const { primary, text, textMuted, border, background, surface, surfaceContainer } = themeColors;
+function toBadgeTone(tone: string | undefined) {
+  if (tone === "success" || tone === "warning" || tone === "danger" || tone === "primary") return tone;
+  return "neutral";
+}
 
-  const titleText = t(config.titleKey, adminPtBR.dashboard.title);
-  const subtitleText = t(config.subtitleKey, adminPtBR.dashboard.subtitle);
-
-  const renderWidgetIcon = (index: number) => {
-    if (index === 0) return <FlameIcon size={20} color={primary} />;
-    if (index === 1) return <UserIcon size={20} color={primary} />;
-    if (index === 2) return <BoxIcon size={20} color={primary} />;
-    return <TruckIcon size={20} color={primary} />;
-  };
-
-  const renderStatusBadge = (orderOrStatus: any) => {
-    const orderObj = typeof orderOrStatus === "string" ? ({ status: orderOrStatus } as any) : orderOrStatus;
-    const statusConfig: Record<string, { label: string; bg: string; color: string; border: string }> = {
-      received: { label: "Recebido", bg: "rgba(245, 158, 11, 0.15)", color: "#F59E0B", border: "rgba(245, 158, 11, 0.3)" },
-      approved: { label: "Aprovado", bg: "rgba(16, 185, 129, 0.15)", color: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
-      separating: { label: "Em Separacao", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
-      preparing: { label: "Em Preparo", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
-      packing: { label: "Em Embalagem", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
-      ready: { label: "Pronto", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
-      outForDelivery: { label: "Em Transito", bg: "rgba(255, 198, 101, 0.15)", color: primary, border: "rgba(255, 198, 101, 0.3)" },
-      delivered: { label: "Entregue", bg: "rgba(16, 185, 129, 0.15)", color: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
-      completed: { label: "Concluido", bg: "rgba(16, 185, 129, 0.15)", color: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
-      pending: { label: "Pendente", bg: "rgba(245, 158, 11, 0.15)", color: "#F59E0B", border: "rgba(245, 158, 11, 0.3)" },
-      cancelled: { label: "Cancelado", bg: "rgba(239, 68, 68, 0.15)", color: "#EF4444", border: "rgba(239, 68, 68, 0.3)" }
-    };
-    const vm = statusConfig[orderObj.status] || {
-      label: orderObj.statusLabel || orderObj.status || "Status",
-      bg: "rgba(212, 196, 176, 0.12)",
-      color: primary,
-      border: "rgba(212, 196, 176, 0.3)"
-    };
-    return (
-      <span
-        style={{
-          background: vm.bg,
-          color: vm.color,
-          fontSize: "12px",
-          fontWeight: "700",
-          padding: "5px 12px",
-          borderRadius: "10px",
-          border: `1px solid ${vm.border}`,
-          letterSpacing: "0.5px"
-        }}
-      >
-        {vm.label}
-      </span>
-    );
-  };
+export const DashboardPage: React.FC<DashboardPageProps> = ({
+  config,
+  isLoading = false,
+  onViewOrders,
+  t,
+  viewModel,
+}) => {
+  const widgetsByKey = new Map(viewModel.widgets.map((widget) => [widget.key, widget]));
 
   return (
-    <div style={{ width: "100%", background, minHeight: "100vh", paddingBottom: "60px" }}>
+    <div className={styles.page}>
       <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
-        <div style={{ display: "flex", flexDirection: "column", gap: "36px", paddingTop: "20px", width: "100%" }}>
-          {/* Header Executivo do Dashboard */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
-            <div>
-              <Text variant="h1" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "40px", margin: 0, fontWeight: "800" }}>
-                {titleText}
+        <Stack className={styles.content} gap="lg">
+          <Inline align="start" justify="between" wrap>
+            <Stack className={styles.heading} gap="xs">
+              <Text as="h1" variant="h1">
+                {t(config.titleKey)}
               </Text>
-              <Text variant="body" style={{ color: textMuted, fontSize: "15px", marginTop: "6px" }}>
-                {subtitleText}
+              <Text tone="muted" variant="body">
+                {t(config.subtitleKey)}
               </Text>
-            </div>
-          </div>
+            </Stack>
 
-          {/* Grid de Cards de KPIs com Estética Gourmet Gold */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px", width: "100%" }}>
-            {config.widgets.map((widget, idx) => (
-              <Surface
-                key={widget.key}
-                style={{
-                  background: `linear-gradient(135deg, ${surface} 0%, ${surfaceContainer || surface} 100%)`,
-                  border: `1px solid ${border}`,
-                  borderRadius: "20px",
-                  padding: "24px 28px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "14px",
-                  boxSizing: "border-box",
-                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)"
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "12px", color: textMuted, fontWeight: "700", textTransform: "uppercase", letterSpacing: "1.2px" }}>
-                    {t(widget.titleKey)}
-                  </span>
-                  <div
-                    style={{
-                      width: "36px",
-                      height: "36px",
-                      borderRadius: "12px",
-                      background: "rgba(255, 198, 101, 0.12)",
-                      border: `1px solid ${border}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}
-                  >
-                    {renderWidgetIcon(idx)}
-                  </div>
-                </div>
+            <Inline className={styles.stateBar} gap="sm">
+              {isLoading ? (
+                <Badge appearance="soft" tone="neutral">
+                  {t("dashboard.loading")}
+                </Badge>
+              ) : null}
+            </Inline>
+          </Inline>
 
-                <Text variant="h2" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "32px", margin: 0, fontWeight: "800" }}>
-                  {widget.value}
-                </Text>
+          <Grid className={styles.kpiGrid} columns={4} gap="md">
+            {config.widgets.map((widget) => {
+              const widgetView = widgetsByKey.get(widget.key as AdminDashboardWidgetKey);
+              return (
+                <Card className={styles.kpiCard} key={widget.key} size="md">
+                  <Inline justify="between" wrap={false}>
+                    <Text as="span" className={styles.kpiLabel} tone="muted" variant="caption" weight="bold">
+                      {t(widget.titleKey)}
+                    </Text>
+                    <span className={styles.kpiIcon}>{renderWidgetIcon(widget.iconKey, widget.key)}</span>
+                  </Inline>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ fontSize: "12px", color: "#10B981", fontWeight: "700", background: "rgba(16, 185, 129, 0.12)", padding: "3px 8px", borderRadius: "6px" }}>
-                    {widget.helper}
-                  </span>
-                </div>
-              </Surface>
-            ))}
-          </div>
-
-          {/* Tabela de Pedidos em Esteira */}
-          {config.recentOrders && (
-            <Surface
-              style={{
-                background: surface,
-                border: `1px solid ${border}`,
-                borderRadius: "24px",
-                padding: "32px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "24px",
-                boxSizing: "border-box",
-                boxShadow: "0 12px 32px rgba(0, 0, 0, 0.25)"
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <BoxIcon size={22} color={primary} />
-                  <Text variant="h3" style={{ fontFamily: "'Playfair Display', serif", color: text, fontSize: "22px", margin: 0, fontWeight: "700" }}>
-                    {adminPtBR.dashboard.tableTitle}
+                  <Text as="strong" className={styles.kpiValue} variant="h2">
+                    {widgetView?.value || widget.value || "-"}
                   </Text>
-                </div>
-                <span style={{ fontSize: "13px", color: primary, fontWeight: "700", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                  {adminPtBR.dashboard.viewAllBoxes} <ChevronRightIcon size={16} color={primary} />
-                </span>
-              </div>
 
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-                  <thead>
-                    <tr style={{ borderBottom: `1px solid ${border}` }}>
-                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.order}</th>
-                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.member}</th>
-                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.plan}</th>
-                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.box}</th>
-                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.status}</th>
-                      <th style={{ padding: "14px 16px", color: textMuted, fontSize: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>{adminPtBR.dashboard.tableHeaders.date}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {config.recentOrders.map((order, idx) => (
-                      <tr key={idx} style={{ borderBottom: `1px solid ${border}`, transition: "background 0.2s ease" }}>
-                        <td style={{ padding: "18px 16px", color: primary, fontWeight: "700", fontSize: "14px" }}>{order.id}</td>
-                        <td style={{ padding: "18px 16px", color: text, fontWeight: "600", fontSize: "14px" }}>{order.member}</td>
-                        <td style={{ padding: "18px 16px", color: textMuted, fontSize: "14px" }}>{order.plan}</td>
-                        <td style={{ padding: "18px 16px", color: textMuted, fontSize: "14px" }}>{order.box}</td>
-                        <td style={{ padding: "18px 16px" }}>
-                          {renderStatusBadge(order.status)}
+                  <Badge appearance="soft" tone={toBadgeTone(widgetView?.tone)}>
+                    {widgetView
+                      ? t(widgetView.helperKey, widget.helper, widgetView.helperVariables)
+                      : widget.helper || "-"}
+                  </Badge>
+                </Card>
+              );
+            })}
+          </Grid>
+
+          <Card className={styles.tableCard} size="lg">
+            <Inline justify="between" wrap>
+              <Inline gap="sm" wrap={false}>
+                <span className={styles.tableIcon}>
+                  <BoxIcon aria-hidden="true" />
+                </span>
+                <Text as="h2" variant="h3">
+                  {t("dashboard.tableTitle")}
+                </Text>
+              </Inline>
+
+              <Button
+                appearance="transparent"
+                icon={<ChevronRightIcon aria-hidden="true" />}
+                iconPosition="end"
+                onClick={onViewOrders}
+                size="sm"
+              >
+                {t("dashboard.viewAllBoxes")}
+              </Button>
+            </Inline>
+
+            <div className={styles.tableScroller}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>{t("dashboard.tableHeaders.order")}</th>
+                    <th>{t("dashboard.tableHeaders.member")}</th>
+                    <th>{t("dashboard.tableHeaders.plan")}</th>
+                    <th>{t("dashboard.tableHeaders.box")}</th>
+                    <th>{t("dashboard.tableHeaders.status")}</th>
+                    <th>{t("dashboard.tableHeaders.date")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {viewModel.recentOrders.length ? (
+                    viewModel.recentOrders.map((order) => (
+                      <tr key={order.id}>
+                        <td className={styles.orderCode}>{order.id}</td>
+                        <td>{order.member}</td>
+                        <td>{order.plan}</td>
+                        <td>{order.box}</td>
+                        <td>
+                          <Badge appearance="soft" tone={toBadgeTone(order.statusTone)}>
+                            {order.statusLabel}
+                          </Badge>
                         </td>
-                        <td style={{ padding: "18px 16px", color: textMuted, fontSize: "13px" }}>{order.date}</td>
+                        <td>{order.date}</td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Surface>
-          )}
-        </div>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className={styles.emptyCell} colSpan={6}>
+                        {t("dashboard.emptyRecentOrders")}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </Stack>
       </SectionContainer>
     </div>
   );

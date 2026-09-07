@@ -1,5 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 import type {
+  ClientCustomerProfileDraft,
+  ClientCustomerTabKey,
+} from "../types/customer.types";
+import type {
   ClientCustomerNotificationPreferences,
   ClientCustomerSubscriptionTier,
 } from "../contracts/customer.contract";
@@ -9,24 +13,10 @@ import {
   updateClientCustomerNotifications,
 } from "../view-models/customer.view-model";
 
-export type ClientCustomerTabKey =
-  | "overview"
-  | "subscription"
-  | "orders"
-  | "data"
-  | "addresses"
-  | "payments"
-  | "notifications"
-  | "security";
-
-export interface ClientCustomerProfileDraft {
-  name: string;
-  email: string;
-  phone: string;
-  cpf: string;
-  birthdate: string;
-  preferredDoneness: string;
-}
+export type {
+  ClientCustomerProfileDraft,
+  ClientCustomerTabKey,
+} from "../types/customer.types";
 
 const createProfileDraft = (): ClientCustomerProfileDraft => ({
   name: customerFallbackDataSource.customer.name,

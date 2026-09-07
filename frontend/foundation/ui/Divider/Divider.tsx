@@ -6,12 +6,13 @@ import {
   resolveDividerRecipe,
   type DividerConfig,
   type DividerLevel,
+  type DividerOrientation,
 } from "../core";
 import { Surface } from "../Surface";
 import { useUiConfig } from "../UiProvider";
 import styles from "./Divider.module.css";
 
-export type DividerProps = HTMLAttributes<HTMLDivElement> & {
+export type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, "orientation"> & {
   orientation?: "horizontal" | "vertical";
   size?: DividerLevel;
 };
@@ -29,14 +30,15 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(function Divider
   const ui = useUiConfig();
   const theme = (ui.theme || {}) as any;
   const dividerConfig = resolveDividerConfig(resolveManifestDividerConfig(ui.divider));
-  const resolved = resolveDividerRecipe(theme, undefined, dividerConfig, { level: size as any, orientation });
+  const dividerOrientation: DividerOrientation = orientation === "vertical" ? "vertical" : "horizontal";
+  const resolved = resolveDividerRecipe(theme, undefined, dividerConfig, { level: size as any, orientation: dividerOrientation });
 
   return (
     <Surface
       {...props}
       ref={ref}
       className={[styles.divider, className].filter(Boolean).join(" ")}
-      data-orientation={orientation}
+      data-orientation={resolved.orientation}
       data-size={resolved.level}
       style={style}
     />

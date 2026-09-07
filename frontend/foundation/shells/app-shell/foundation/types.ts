@@ -49,6 +49,21 @@ export interface AppShellStrings {
   searchPlaceholder?: string;
 }
 
+export interface AppShellHeaderAction {
+  appearance?: "glass" | "outline" | "soft" | "solid" | "transparent" | string;
+  darkLabelKey?: string;
+  icon?: "theme" | string;
+  key: string;
+  label?: string;
+  labelKey?: string;
+  lightLabelKey?: string;
+  path?: string;
+  size?: "xs" | "sm" | "md" | "lg" | string;
+  targetId?: string;
+  tone?: "danger" | "neutral" | "primary" | "success" | "warning" | string;
+  type: "route" | "scroll" | "themeToggle";
+}
+
 export interface AppShellBrand {
   name?: string;
   logo?: string;

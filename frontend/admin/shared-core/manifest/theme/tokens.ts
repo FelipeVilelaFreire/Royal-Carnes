@@ -26,4 +26,4 @@ export const adminThemeTokens = {
     sidebarColsExpanded: 3,
     sidebarColsCollapsed: 1,
   },
-};
+} as const;

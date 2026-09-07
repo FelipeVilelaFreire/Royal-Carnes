@@ -19,7 +19,7 @@ export interface DeliveryStepProps {
   freightOptions: Array<{ key: ClientCheckoutFreightOptionKey; label: string; price: number; etaLabel: string }>;
   isAddingAddress: boolean;
   newAddressDraft: Record<ClientCheckoutAddressFieldKey, string>;
-  newAddressFields: Array<{ key: ClientCheckoutAddressFieldKey; label: string; placeholder: string; gridColumn: string }>;
+  newAddressFields: Array<{ key: ClientCheckoutAddressFieldKey; label: string; placeholder: string; gridColumn: string; gridSpan: string }>;
   onBack: () => void;
   onNext: () => void;
   onSetAddingAddress: (value: boolean) => void;
@@ -151,12 +151,12 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
               {newAddressFields.map((field) => (
                 <Input
                   className={styles.addressField}
+                  data-grid-column={field.gridSpan}
                   key={field.key}
                   label={field.label}
                   onChange={(event) => onUpdateNewAddressDraft(field.key, event.target.value)}
                   placeholder={field.placeholder}
                   value={newAddressDraft[field.key]}
-                  style={{ gridColumn: field.gridColumn, minWidth: 0 }}
                 />
               ))}
             </Grid>

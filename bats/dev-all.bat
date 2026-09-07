@@ -1,15 +1,22 @@
 @echo off
-echo ===================================================
-echo   👑 ROYAL CARNES — INICIANDO CLIENT & ADMIN OS
-echo ===================================================
+setlocal EnableExtensions
+title RoyalPrime - Dev all
 
-echo Starting Client App on http://localhost:3000 ...
-start "Royal Carnes Client (3000)" cmd /k "cd /d "%~dp0\.." && npm run dev:client"
+set "SCRIPT_DIR=%~dp0"
 
-echo Starting Admin OS on http://localhost:3001 ...
-start "Royal Carnes Admin (3001)" cmd /k "cd /d "%~dp0\.." && npm run dev:admin"
+echo.
+echo ============================================================
+echo RoyalPrime - iniciando ambiente local
+echo ============================================================
+echo Backend: http://127.0.0.1:8000
+echo Client:  http://localhost:3000
+echo Admin:   http://localhost:3001
+echo ============================================================
+echo.
 
-echo ===================================================
-echo   🔥 Client: http://localhost:3000
-echo   🛡️ Admin:  http://localhost:3001
-echo ===================================================
+start "RoyalPrime Backend 8000" "%SCRIPT_DIR%start-backend.bat"
+start "RoyalPrime Client 3000" "%SCRIPT_DIR%client.bat"
+start "RoyalPrime Admin 3001" "%SCRIPT_DIR%admin.bat"
+
+echo Janelas iniciadas. Aguarde os servidores compilarem.
+pause

@@ -1,0 +1,57 @@
+.sectionRoot {
+  width: 100%;
+}
+
+.header {
+  margin-bottom: var(--theme--spacing-space2xl);
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--theme--color-primary);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingSm);
+  text-transform: uppercase;
+}
+
+.title {
+  margin-top: var(--theme--spacing-spaceXs);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--theme--dimensions-minWidth-3xl)), 1fr));
+  gap: var(--theme--spacing-space2xl);
+  width: 100%;
+}
+
+.card {
+  --ui-surface-bg: var(--theme--color-surface);
+  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --ui-surface-radius: var(--theme--radius-2xl);
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--theme--spacing-spaceLg);
+  height: 100%;
+  padding: var(--theme--spacing-space2xl) var(--theme--spacing-spaceXl);
+  text-align: center;
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--theme--dimensions-height-2xl);
+  height: var(--theme--dimensions-height-2xl);
+  border: var(--theme--borders-medium) solid var(--theme--color-primary);
+  border-radius: var(--theme--radius-full);
+  background: color-mix(in srgb, var(--theme--color-primary) 12%, transparent);
+  color: var(--theme--color-primary);
+  font-family: var(--theme--typography-headingFamily);
+  font-size: var(--theme--typography-sizeXl);
+  font-weight: var(--theme--typography-bold);
+}

@@ -131,6 +131,7 @@ listar modos comerciais publicos
 listar produtos publicos
 detalhar produto publico
 preparar card/lista/detalhe para render
+formatar dados compostos do card quando forem regra reutilizavel do catalogo
 ```
 
 Nao deve conter:
@@ -141,6 +142,27 @@ editar preco
 permissao products.manage
 controle de estoque
 regra de assinatura
+JSX
+CSS
+copy de interface fora de locale
+```
+
+Contrato para telas client:
+
+```text
+client web/native
+  -> useClientCatalog()
+  -> recebe ClientCatalogProductCardViewModel[]
+  -> renderiza nome, descricao, categoria, unidade, origem, preco e status
+
+client shared-core
+  -> chama /api/v1/catalog/products/
+  -> aplica mapper
+  -> entrega formattedPrice, categoryLabel, variantLabel, originLabel
+
+backend
+  -> autoridade de Product, ProductVariant, MeasurementUnit, ProductPrice,
+     Category, Collection, CommercialMode e Availability
 ```
 
 ## O Que Vai Para Admin Shared-Core

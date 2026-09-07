@@ -4,6 +4,11 @@ dist
 build
 .env
 .env.local
+.env.*.local
+backend/.env
+frontend/**/.env.local
+!.env.example
+!**/.env.example
 *.log
 .ds_store
 *.sqlite3

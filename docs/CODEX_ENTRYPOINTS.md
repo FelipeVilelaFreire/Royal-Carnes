@@ -8,6 +8,11 @@ a uniao das linhas; uma pergunta ou revisao nao autoriza alteracoes.
 
 ## Contratos ativos
 
+Para qualquer tarefa de UI web, comece pelo
+[contrato TSX e CSS Modules e seu criterio de aceitacao](../ROYALPRIME_ARCHITECTURE_CONTRACT.md#tsx-e-css-modules).
+Essa leitura se aplica a todas as linhas frontend abaixo; nao e opcional por
+ser tarefa pequena, apenas visual ou realizada em codigo legado.
+
 Somente os documentos desta secao, o AGENTS aplicavel e o contrato arquitetural
 raiz fornecem regras normativas. Os demais documentos sao referencias, estado,
 planejamento ou historico, mesmo que seus titulos antigos digam "contrato".
@@ -20,7 +25,7 @@ Referencia detalha exemplos; nao amplia permissao nem muda ownership.
 | Admin, client, AppShell, rotas, navigation, screen types | [SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md](contracts/SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md) | manifest, navigation, locales da surface; frontend/foundation/shells/app-shell; bootstrap real |
 | Mocks, fallback, env, seed | [MOCK_AND_ENV_ARCHITECTURE.md](contracts/MOCK_AND_ENV_ARCHITECTURE.md) | hook, API client, data source, .env.example e backend/seeds |
 | Portal, autenticacao, acesso publico/protegido | [CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md](contracts/CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md) | client/shared-core auth, navigation, portal manifest, PortalView web/mobile |
-| UI, Theme, Semi-composed, tokens, CSS, icones | Secao Foundation do contrato raiz | frontend/shared-core/manifest e overrides; frontend/foundation/tokens, semi-composed, ui; consumidor |
+| UI, Theme, Semi-composed, tokens, CSS, icones | Secoes TSX e CSS Modules / Foundation do contrato raiz | par .tsx/.module.css; frontend/shared-core/manifest e overrides; frontend/foundation/tokens, semi-composed, ui; consumidor |
 | Builder, campos, draft, preview | Secao Builders do contrato raiz e contrato AppShell acima | config de campos, adapter, controle existente, persistencia e runtime do preview |
 | Mobile/native e webIsMobile | Secao Web mobile do contrato raiz | frontend/client/mobile, client/shared-core e Foundation/native; nao presumir runtime pronto |
 | Nova capacidade ou promocao para ServiceOS | Secoes Produto e reuso / Donos do contrato raiz | exports e consumidores RoyalPrime e ServiceOS; provar reuso antes de ampliar |
@@ -65,7 +70,8 @@ Caminhos sao pontos de inspecao, nao promessa de que todo fluxo esta concluido.
 2. Confira branch/status e leia o trecho real; preserve mudancas existentes.
 3. Use o contrato e a API publica existentes. Nao crie runtime para organizar imports.
 4. Implemente somente o necessario, respeitando as aprovacoes ja definidas.
-5. Confira copy/locale, imports, config versus runtime e fluxo de dados.
+5. Confira copy/locale, imports, config versus runtime e fluxo de dados. Em web,
+   confira TSX + CSS Modules e ausencia de novos estilos inline ou hardcode.
 6. Execute verificacao proporcional abaixo e registre limitacoes concretas.
 7. Atualize o contrato se a regra mudou; atualize o handoff se mudou apenas o estado.
 
@@ -89,5 +95,12 @@ nao instalar ferramentas implicitamente para executar uma verificacao.
 | Native visual | executar runtime nativo disponivel; se indisponivel, declarar que so contrato/typecheck foi verificado |
 
 Sempre executar git diff --check no diff da tarefa.
+Em UI web, procure style=, React.CSSProperties, objetos/helpers de estilo e
+valores fisicos hardcoded no TSX e no CSS alterados. Confira tambem spreads de
+props que possam ocultar style. O scan e triagem: revise o diff e a origem dos
+valores para distinguir bindings tecnicos da Foundation de violacoes na tela.
+Arquivo .module.css existente nao prova conformidade; CSS tambem deve usar os
+tokens/receitas do dono correto. Nao considerar ocorrencias legadas como
+autorizacao para adicionar outras.
 Se falhar por ambiente ou erro preexistente, registrar comando e limite observado,
 sem reportar como aprovado. Nao executar builds so para mudanca documental.

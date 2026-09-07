@@ -1,22 +1,35 @@
 @echo off
 setlocal EnableExtensions
-chcp 65001 >nul
-title PrimeCutClub Migrations
+title RoyalPrime - Migrate backend
 
-set "SCRIPT_DIR=%~dp0"
-set "BACKEND_DIR=%SCRIPT_DIR%..\backend"
+set "BACKEND_DIR=%~dp0..\backend"
+set "ROYALPRIME_CONDA_ENV=royalprime"
 
 echo.
 echo ============================================================
-echo Executando Makemigrations e Migrate
+echo RoyalPrime - migrations backend
 echo ============================================================
 echo.
 
 cd /d "%BACKEND_DIR%"
-py manage.py makemigrations core plans subscriptions billing deliveries
-py manage.py migrate
+call "%~dp0_conda-activate.bat"
+if errorlevel 1 (
+  echo.
+  echo ERRO: nao foi possivel ativar o Conda env %ROYALPRIME_CONDA_ENV%.
+  pause
+  exit /b 1
+)
+
+python manage.py migrate
+
+if errorlevel 1 (
+  echo.
+  echo ERRO: migrations falharam.
+  pause
+  exit /b 1
+)
 
 echo.
-echo Migracoes concluidas!
+echo Migrations concluidas.
 pause
-endlocal
+exit /b 0

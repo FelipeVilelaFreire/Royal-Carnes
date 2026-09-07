@@ -2,13 +2,13 @@
 
 import React from "react";
 import { Button } from "../../../ui/Button";
-import { MenuIcon } from "../../../ui/Icon/AppIcons";
+import { MenuIcon, MoonIcon, SunIcon } from "../../../ui/Icon/AppIcons";
 import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/Layout";
 import { Surface } from "../../../ui/Surface";
 import { AppShellBrand } from "./AppShellBrand";
 import { handleAppShellNavigation } from "./navigation";
 import styles from "../AppShell.module.css";
-import type { ResolvedAppShellModel } from "../foundation";
+import type { AppShellHeaderAction, ResolvedAppShellModel } from "../foundation";
 
 export interface AppShellHeaderProps {
   drawerEnabled?: boolean;
@@ -16,8 +16,10 @@ export interface AppShellHeaderProps {
   model: ResolvedAppShellModel;
   onNavigate?: (path: string) => void;
   onOpenDrawer: () => void;
+  onThemeModeToggle?: () => void;
   rightSlot?: React.ReactNode;
   surfaceStyle?: string;
+  themeMode?: string;
 }
 
 export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
@@ -26,10 +28,57 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
   model,
   onNavigate,
   onOpenDrawer,
+  onThemeModeToggle,
   rightSlot,
   surfaceStyle,
+  themeMode = "dark",
 }) => {
   if (!model.headerEnabled) return null;
+
+  const drawerTriggerMode = headerConfig?.drawerTrigger || true;
+  const showDrawerTrigger = drawerEnabled && drawerTriggerMode !== false && drawerTriggerMode !== "never";
+  const drawerTriggerMobileOnly = drawerTriggerMode === "mobile";
+  const navCentered = headerConfig?.navAlignment === "center";
+
+  const resolveStringPath = (source: Record<string, any> | undefined, path: string | undefined) => {
+    if (!source || !path) return undefined;
+    return path.split(".").reduce<any>((value, segment) => value?.[segment], source);
+  };
+
+  const resolveActionLabel = (action: AppShellHeaderAction) => {
+    if (action.type === "themeToggle") {
+      const labelKey = themeMode === "dark" ? action.darkLabelKey : action.lightLabelKey;
+      return resolveStringPath(model.strings, labelKey) || action.label || action.key;
+    }
+    return action.label || resolveStringPath(model.strings, action.labelKey) || action.key;
+  };
+
+  const renderHeaderAction = (action: AppShellHeaderAction) => {
+    const label = resolveActionLabel(action);
+    const isThemeAction = action.type === "themeToggle";
+    const actionPath = action.type === "scroll" && action.targetId ? `#${action.targetId}` : action.path;
+
+    return (
+      <Button
+        appearance={(action.appearance || (isThemeAction ? "outline" : "transparent")) as any}
+        className={styles.headerAction}
+        icon={isThemeAction ? (themeMode === "dark" ? <SunIcon color="currentColor" size={15} /> : <MoonIcon color="currentColor" size={15} />) : undefined}
+        key={action.key}
+        onClick={() => {
+          if (isThemeAction) {
+            onThemeModeToggle?.();
+            return;
+          }
+          if (actionPath) onNavigate?.(actionPath);
+        }}
+        size={(action.size || "sm") as any}
+        tone={(action.tone || "neutral") as any}
+        type="button"
+      >
+        <span className={isThemeAction ? styles.headerActionResponsiveLabel : undefined}>{label}</span>
+      </Button>
+    );
+  };
 
   const resolveHeaderNavButtonStyle = (isActive: boolean) => ({
     "--ui-surface-bg": isActive ? "var(--app-shell-surface-bg)" : "transparent",
@@ -66,12 +115,12 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
         width={model.currentLayout.header?.width as ContainerProps["width"]}
       >
       <Inline align="center" className={styles.headerInnerLayout} justify={(model.currentLayout.header?.align || "between") as InlineProps["justify"]} wrap={false}>
-        <div className={styles.headerLeft}>
-          {drawerEnabled ? (
+        <div className={[styles.headerLeft, navCentered ? styles.headerLeftCenteredNav : ""].filter(Boolean).join(" ")}>
+          {showDrawerTrigger ? (
             <Button
               aria-label={model.strings.openDrawerAriaLabel}
               appearance="transparent"
-              className={styles.iconButton}
+              className={[styles.iconButton, drawerTriggerMobileOnly ? styles.mobileDrawerTrigger : ""].filter(Boolean).join(" ")}
               icon={<MenuIcon color="currentColor" />}
               iconPosition="only"
               onClick={onOpenDrawer}
@@ -87,6 +136,7 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
               styles.headerNav,
               styles.headerDesktopNav,
               headerConfig?.navAppearance === "pill" ? styles.headerNavPill : "",
+              navCentered ? styles.headerNavCentered : "",
             ].filter(Boolean).join(" ")}
           >
             {model.headerItems.map((item) => {
@@ -107,7 +157,11 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
             })}
           </nav>
         </div>
-        {rightSlot}
+        {rightSlot || (
+          <div className={styles.headerActions}>
+            {(headerConfig?.actions || []).map((action: AppShellHeaderAction) => renderHeaderAction(action))}
+          </div>
+        )}
       </Inline>
       </Container>
     </Surface>

@@ -4,8 +4,9 @@ export const pedidosConfig = {
   screenKey: "pedidos",
   titleKey: "pedidos.title",
   subtitleKey: "pedidos.subtitle",
-  entityName: "Pedido Comercial",
+  entityNameKey: "entities.order",
   actionLabelKey: "pedidos.ctaAdd",
+  dataSource: { key: "pedidos", fallbackOnError: false },
   columns: [
     { key: "code", labelKey: "pedidos.tableHeaders.code" },
     { key: "customerName", labelKey: "pedidos.tableHeaders.customerName" },
@@ -13,27 +14,27 @@ export const pedidosConfig = {
     { key: "summary", labelKey: "pedidos.tableHeaders.summary" },
     { key: "totalFormatted", labelKey: "pedidos.tableHeaders.total" },
     { key: "statusLabel", labelKey: "pedidos.tableHeaders.status" },
-    { key: "createdAt", labelKey: "pedidos.tableHeaders.createdAt" }
+    { key: "createdAt", labelKey: "pedidos.tableHeaders.createdAt" },
   ],
   filters: [
     {
       key: "status",
-      labelKey: "Status",
+      labelKey: "common.status",
       options: [
-        { value: "outForDelivery", labelKey: "Saiu para Entrega" },
-        { value: "preparing", labelKey: "Em Preparação" },
-        { value: "approved", labelKey: "Aprovado" },
-        { value: "delivered", labelKey: "Entregue" }
-      ]
-    }
+        { value: "outForDelivery", labelKey: "common.statusOutForDelivery" },
+        { value: "preparing", labelKey: "common.statusPreparing" },
+        { value: "approved", labelKey: "common.statusApproved" },
+        { value: "delivered", labelKey: "common.statusDelivered" },
+      ],
+    },
   ],
   form: {
     fields: [
-      { key: "code", labelKey: "Código do Pedido", required: true },
-      { key: "customerName", labelKey: "Cliente", required: true },
-      { key: "summary", labelKey: "Resumo dos Itens", type: "textarea" },
-      { key: "totalFormatted", labelKey: "Total (R$)" }
-    ]
+      { key: "code", labelKey: "pedidos.form.code", required: true },
+      { key: "customerName", labelKey: "pedidos.form.customerName", required: true },
+      { key: "summary", labelKey: "pedidos.form.summary", type: "textarea" },
+      { key: "totalFormatted", labelKey: "pedidos.form.totalFormatted" },
+    ],
   },
-  rows: mockAdminOrders
+  rows: mockAdminOrders,
 };

@@ -20,7 +20,7 @@
 }
 
 .shellWithSidebar {
-  align-items: stretch;
+  align-items: flex-start;
   display: flex;
 }
 
@@ -96,6 +96,7 @@
 }
 
 .headerInnerLayout {
+  position: relative;
   width: 100%;
 }
 
@@ -214,6 +215,10 @@
   min-width: 0;
 }
 
+.headerLeftCenteredNav {
+  flex: 1;
+}
+
 .headerDivider {
   background: var(--app-shell-border);
   display: none;
@@ -231,6 +236,26 @@
   display: flex;
   gap: var(--app-shell-nav-gap);
   min-width: 0;
+}
+
+.headerNavCentered {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.headerActions {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: var(--theme--spacing-spaceSm);
+  justify-content: flex-end;
+  margin-inline-start: auto;
+}
+
+.headerAction {
+  white-space: nowrap;
 }
 
 .headerNavPill {
@@ -295,6 +320,10 @@
   color: inherit;
   display: inline-flex;
   justify-content: center;
+}
+
+.mobileDrawerTrigger {
+  display: none;
 }
 
 .drawerLayer {
@@ -562,12 +591,13 @@
   flex-shrink: 0;
   gap: var(--theme--spacing-spaceMd);
   justify-content: flex-start;
-  max-height: 100vh;
-  min-height: 100vh;
+  block-size: auto;
+  max-block-size: none;
+  min-block-size: auto;
   min-width: var(--theme--dimensions-minWidth-3xl);
   overscroll-behavior: contain;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: visible;
   padding: var(--theme--spacing-spaceLg) var(--theme--spacing-spaceMd);
   position: sticky;
   scrollbar-width: none;
@@ -882,11 +912,86 @@
     display: none;
   }
 
+  .mobileDrawerTrigger {
+    display: inline-flex;
+  }
+
+  .headerActions {
+    gap: var(--theme--spacing-spaceXs);
+  }
+
+  .headerActionResponsiveLabel {
+    display: none;
+  }
+
   .bottomTabBar {
     display: flex;
   }
 
   .sidebar {
     display: none;
+  }
+}
+
+@media (max-height: 52em) and (min-width: 48.01em) {
+  .sidebar {
+    gap: var(--theme--spacing-spaceXs);
+    padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceXs);
+  }
+
+  .sidebarBrand {
+    padding-block-end: var(--theme--spacing-spaceXs);
+  }
+
+  .sidebarBrand .brand {
+    --ui-button-height: var(--theme--dimensions-height-sm);
+    --ui-button-padding-x: var(--theme--spacing-space2xs);
+    --ui-button-padding-y: var(--app-shell-space-none);
+  }
+
+  .sidebarBrand .brandLogoFrame {
+    height: var(--theme--dimensions-height-md);
+    width: var(--theme--dimensions-height-md);
+  }
+
+  .sidebarBrand .brandLogo {
+    height: var(--theme--dimensions-icon-lg);
+    width: var(--theme--dimensions-icon-lg);
+  }
+
+  .navGroup + .navGroup,
+  .sidebarCompact .navGroup + .navGroup {
+    margin-block-start: var(--app-shell-space-none);
+    padding-block-start: var(--theme--spacing-space2xs);
+  }
+
+  .navGroupLabel {
+    padding-block-end: var(--app-shell-space-none);
+  }
+
+  .verticalLink,
+  .sidebarCompact .verticalLink {
+    --ui-button-height: var(--theme--dimensions-height-sm);
+    padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceXs);
+  }
+
+  .verticalLinkIcon {
+    height: var(--theme--dimensions-height-xs) !important;
+    width: var(--theme--dimensions-height-xs) !important;
+  }
+
+  .verticalLinkIcon > svg {
+    height: var(--theme--dimensions-icon-xs);
+    width: var(--theme--dimensions-icon-xs);
+  }
+
+  .sidebarFooter,
+  .sidebarCompact .sidebarFooter {
+    padding-block-start: var(--theme--spacing-space2xs);
+  }
+
+  .sidebarCollapseButton {
+    --ui-button-height: var(--theme--dimensions-height-sm);
+    --ui-button-padding-y: var(--app-shell-space-none);
   }
 }
