@@ -17,6 +17,7 @@ export * from "./api/customer.api";
 export * from "./data-sources/checkout.fallback";
 export * from "./data-sources/customer.fallback";
 export * from "./data-sources/orders.fallback";
+export * from "./data-sources/subscriptions.fallback";
 export * from "./mappers/auth.mapper";
 export * from "./mappers/catalog.mapper";
 export * from "./mappers/deliveries.mapper";

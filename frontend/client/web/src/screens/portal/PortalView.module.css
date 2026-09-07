@@ -20,15 +20,21 @@
 
 .portalPrimaryAction {
   --ui-surface-bg: var(--theme--color-accent);
-  --ui-surface-border: var(--theme--color-accentBorder, var(--theme--color-accent));
-  --ui-surface-color: var(--theme--color-accentContrast, var(--theme--color-accent-contrast));
+  --ui-surface-border: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  --ui-surface-color: var(--theme--color-accent-contrast, var(--theme--color-accentContrast, var(--theme--color-background)));
 }
 
 .portalEmptyState {
-  --ui-empty-state-bg: color-mix(in srgb, var(--theme--color-surface) 88%, var(--theme--color-accentSurface, var(--theme--color-accent)) 12%);
-  --ui-empty-state-border-color: color-mix(in srgb, var(--theme--color-border) 58%, var(--theme--color-accentBorder, var(--theme--color-accent)) 42%);
-  --ui-empty-state-icon-bg: var(--theme--color-accentSurface, var(--theme--color-surface-container));
+  --ui-empty-state-bg: color-mix(in srgb, var(--theme--color-surface) 88%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 12%);
+  --ui-empty-state-border-color: color-mix(in srgb, var(--theme--color-border) 58%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 42%);
+  --ui-empty-state-icon-bg: var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-surface-container)));
   --ui-empty-state-icon-color: var(--theme--color-accent);
+}
+
+.profileButtonActive {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 70%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 30%);
+  --ui-surface-border: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  --ui-surface-color: var(--theme--color-text);
 }
 
 .profileContent {

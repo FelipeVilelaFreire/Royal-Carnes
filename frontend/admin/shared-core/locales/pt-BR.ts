@@ -13,22 +13,22 @@ export const adminPtBR = {
     configuracoes: "Configurações"
   },
   appShell: {
-    closeDrawerAriaLabel: "Fechar navegacao",
+    closeDrawerAriaLabel: "Fechar navegação",
     collapseSidebar: "Recolher menu",
-    openDrawerAriaLabel: "Abrir navegacao",
+    openDrawerAriaLabel: "Abrir navegação",
     searchPlaceholder: "Buscar registros",
     navigation: {
       dashboard: "Dashboard",
       produtos: "Produtos",
-      usuarios: "UsuÃ¡rios",
+      usuarios: "Usuários",
       assinaturas: "Assinaturas",
       pedidos: "Pedidos",
       deliveries: "Deliveries",
-      configuracoes: "ConfiguraÃ§Ãµes"
+      configuracoes: "Configurações"
     },
     navigationGroups: {
-      overview: "Visao geral",
-      commerce: "Operacao comercial",
+      overview: "Visão geral",
+      commerce: "Operação comercial",
       people: "Pessoas",
       system: "Sistema"
     }

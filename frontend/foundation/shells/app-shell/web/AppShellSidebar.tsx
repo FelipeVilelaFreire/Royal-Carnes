@@ -29,12 +29,18 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
 }) => {
   if (!model.sidebarEnabled) return null;
   const profile = config?.sidebar?.userProfile;
+  const density = config?.sidebar?.density || "default";
 
   return (
     <Surface
       as="aside"
       appearance="solid"
-      className={[styles.sidebar, isCollapsed ? styles.sidebarCollapsed : ""].filter(Boolean).join(" ")}
+      className={[
+        styles.sidebar,
+        density === "compact" ? styles.sidebarCompact : "",
+        isCollapsed ? styles.sidebarCollapsed : ""
+      ].filter(Boolean).join(" ")}
+      data-sidebar-density={density}
       style={{
         "--ui-surface-bg": "var(--app-shell-panel-bg)",
         "--ui-surface-border": "var(--app-shell-border)",
@@ -50,27 +56,27 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
           <Stack className={styles.navGroups} gap="sm">
             {model.sidebarGroups.map((group) => (
               <Stack className={styles.navGroup} gap="xs" key={group.key}>
-              {group.label && !isCollapsed ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
-              <Stack className={styles.navGroupItems} gap="2xs">
-                {group.items.map((item) => {
-                  const isActive = model.activePath === item.routePath;
-                  return (
-                    <Button
-                      appearance={isActive ? "soft" : "transparent"}
-                      className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
-                      key={item.key}
-                      onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
-                      size="md"
-                      title={isCollapsed ? item.label : undefined}
-                      tone={isActive ? "primary" : "neutral"}
-                    >
-                      <Icon tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
-                      {!isCollapsed && <span>{item.label}</span>}
-                    </Button>
-                  );
-                })}
+                {group.label ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
+                <Stack className={styles.navGroupItems} gap="2xs">
+                  {group.items.map((item) => {
+                    const isActive = model.activePath === item.routePath;
+                    return (
+                      <Button
+                        appearance={isActive ? "soft" : "transparent"}
+                        className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
+                        key={item.key}
+                        onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
+                        size="md"
+                        title={isCollapsed ? item.label : undefined}
+                        tone={isActive ? "primary" : "neutral"}
+                      >
+                        <Icon className={styles.verticalLinkIcon} tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
+                        <span className={styles.verticalLinkLabel}>{item.label}</span>
+                      </Button>
+                    );
+                  })}
+                </Stack>
               </Stack>
-            </Stack>
             ))}
           </Stack>
         </nav>
@@ -88,13 +94,15 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
         {config?.sidebar?.collapsible !== false && (
           <Button
             appearance="outline"
-            icon={isCollapsed ? <ChevronRightIcon /> : undefined}
-            iconPosition={isCollapsed ? "only" : "start"}
+            className={styles.sidebarCollapseButton}
+            icon={<ChevronRightIcon className={isCollapsed ? styles.sidebarCollapseIcon : styles.sidebarCollapseIconExpanded} />}
+            iconPosition="start"
             onClick={onToggleCollapsed}
             size="sm"
+            title={isCollapsed ? model.strings.collapseSidebar : undefined}
             tone="neutral"
           >
-            {isCollapsed ? null : model.strings.collapseSidebar}
+            {model.strings.collapseSidebar}
           </Button>
         )}
       </Stack>

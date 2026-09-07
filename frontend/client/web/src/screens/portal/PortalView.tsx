@@ -10,7 +10,6 @@ import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import type { PortalScreenKey } from "@royalprime/client/manifest/portal/routes.config";
 import { AuthModal } from "../../legacy/app-shell";
 import styles from "./PortalView.module.css";
-import { portalSurfaceStyles } from "./portalSurfaceStyles";
 import { HomeVitrineView } from "./tabs/HomeVitrineView";
 import { CortesView } from "./tabs/CortesView";
 import { PedidoView } from "./tabs/PedidoView";
@@ -49,14 +48,12 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
       description={strings.authEmptyState.description}
       framed
       icon={<UserIcon size={28} />}
-      style={portalSurfaceStyles.emptyState}
       actions={
         <Button
           appearance="solid"
           className={styles.portalPrimaryAction}
           onClick={() => setIsAuthModalOpen(true)}
           size="md"
-          style={portalSurfaceStyles.primaryAction}
           tone="neutral"
         >
           {strings.navigation.entrar}
@@ -84,14 +81,12 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
             description={strings.royalDelivery.emptyDescription}
             framed
             icon={<StoreIcon size={28} />}
-            style={portalSurfaceStyles.emptyState}
             actions={
               <Button
                 appearance="solid"
                 className={styles.portalPrimaryAction}
                 onClick={() => navigate(clientRoutes.cortes)}
                 size="md"
-                style={portalSurfaceStyles.primaryAction}
                 tone="neutral"
               >
                 {strings.authEmptyState.action}
@@ -121,7 +116,6 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
         icon={themeMode === "dark" ? <SunIcon /> : <MoonIcon />}
         onClick={toggleTheme}
         size="sm"
-        style={portalSurfaceStyles.headerAction}
         tone="neutral"
       >
         {themeMode === "dark" ? strings.authSession.themeLight : strings.authSession.themeDark}
@@ -133,7 +127,6 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
           className={[styles.profileButton, isProfileActionActive ? styles.profileButtonActive : ""].filter(Boolean).join(" ")}
           onClick={() => navigate(clientRoutes.minhaConta)}
           size="sm"
-          style={isProfileActionActive ? portalSurfaceStyles.profileActiveAction : portalSurfaceStyles.headerAction}
           tone="neutral"
         >
           <span className={styles.profileContent}>
@@ -150,7 +143,6 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
           className={styles.portalPrimaryAction}
           onClick={() => setIsAuthModalOpen(true)}
           size="sm"
-          style={portalSurfaceStyles.primaryAction}
           tone="neutral"
         >
           {strings.navigation.entrar}

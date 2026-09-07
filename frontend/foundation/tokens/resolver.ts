@@ -14,6 +14,10 @@ const toKebab = (value: string) => value.replace(/[A-Z]/g, (match) => `-${match.
 
 const formatScaleValue = (prefix: string, value: unknown) => {
   if (prefix.startsWith("z-index")) return String(value);
+  if (prefix.startsWith("opacity")) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) && numericValue > 1 ? String(numericValue / 100) : String(value);
+  }
   return px(value);
 };
 
@@ -74,6 +78,7 @@ export function injectThemeTokens(target: "client" | "admin" = "client", customM
   setScaleVariables(root, "layout", tokens.layout);
   setScaleVariables(root, "motion", tokens.motion);
   setScaleVariables(root, "blur", tokens.blur);
+  setScaleVariables(root, "opacity", tokens.opacity);
   setScaleVariables(root, "z-index", tokens.zIndex);
 
   root.style.setProperty("--theme--radius-md", px(tokens.radius?.md ?? themeTokens.radius.md));

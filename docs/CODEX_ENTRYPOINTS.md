@@ -1,245 +1,93 @@
-# Codex Entrypoints
+# Codex: leitura por tarefa
 
-Este documento lista os arquivos principais que um agente deve ler antes de
-implementar no RoyalPrime.
+Status: registro ativo de contratos e verificacao.
+Leia primeiro [../AGENTS.md](../AGENTS.md) e
+[../ROYALPRIME_ARCHITECTURE_CONTRACT.md](../ROYALPRIME_ARCHITECTURE_CONTRACT.md).
+Depois escolha as linhas aplicaveis abaixo. Uma tarefa que cruza camadas usa
+a uniao das linhas; uma pergunta ou revisao nao autoriza alteracoes.
 
-## Ordem Global
+## Contratos ativos
 
-```text
-1. AGENTS.md
-2. ROYALPRIME_CODEX_RULES.md
-3. ROYALPRIME_ARCHITECTURE_CONTRACT.md
-4. docs/DOCS_ROADMAP.md
-5. docs/architecture/NEXT_STEPS.md
-6. docs/architecture/FRONTEND_TARGET_TREE_ROADMAP.md
-7. docs/architecture/SHARED_CORE_TREE_STANDARD.md
-8. docs/architecture/MANIFEST_DESIGN_SYSTEM_TREE.md
-9. docs/architecture/DESIGN_SYSTEM_V1_TREE.md
-10. docs/frontend/TREE.md
-11. docs/frontend/RENDER_ONLY_AUDIT.md
-12. docs/frontend/COPY_LOCALE_AUDIT.md
-13. docs/frontend/KIT_FUNCTIONALITY_STRATEGY.md
-14. docs/handoff/README.md
-15. backend/README.md
-16. backend/ROADMAP.md
-17. backend/ARCHITECTURE.md
-18. backend/API_CONTRACTS.md
-19. docs/kits/README.md
-20. docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
-21. docs/kits/REUSE_SOURCE_AUDIT.md
-22. docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-23. docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
-24. frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
-```
+Somente os documentos desta secao, o AGENTS aplicavel e o contrato arquitetural
+raiz fornecem regras normativas. Os demais documentos sao referencias, estado,
+planejamento ou historico, mesmo que seus titulos antigos digam "contrato".
+Referencia detalha exemplos; nao amplia permissao nem muda ownership.
 
-## Regra De Camadas
+| Tarefa | Contrato ativo complementar | Inspecao no codigo |
+| --- | --- | --- |
+| Backend, endpoint, models, permissao, workflow | [backend/ARCHITECTURE.md](../backend/ARCHITECTURE.md), [API_CONTRACTS.md](../backend/API_CONTRACTS.md) | backend/apps do dominio, urls, serializers, services, permissions, tests |
+| Payload, DTO, hook, mapper, view-model | [API_CONTRACTS.md](../backend/API_CONTRACTS.md) e contrato raiz | shared-core do escopo: contracts, api, hooks, mappers, view-models e tela consumidora |
+| Admin, client, AppShell, rotas, navigation, screen types | [SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md](contracts/SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md) | manifest, navigation, locales da surface; frontend/foundation/shells/app-shell; bootstrap real |
+| Mocks, fallback, env, seed | [MOCK_AND_ENV_ARCHITECTURE.md](contracts/MOCK_AND_ENV_ARCHITECTURE.md) | hook, API client, data source, .env.example e backend/seeds |
+| Portal, autenticacao, acesso publico/protegido | [CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md](contracts/CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md) | client/shared-core auth, navigation, portal manifest, PortalView web/mobile |
+| UI, Theme, Semi-composed, tokens, CSS, icones | Secao Foundation do contrato raiz | frontend/shared-core/manifest e overrides; frontend/foundation/tokens, semi-composed, ui; consumidor |
+| Builder, campos, draft, preview | Secao Builders do contrato raiz e contrato AppShell acima | config de campos, adapter, controle existente, persistencia e runtime do preview |
+| Mobile/native e webIsMobile | Secao Web mobile do contrato raiz | frontend/client/mobile, client/shared-core e Foundation/native; nao presumir runtime pronto |
+| Nova capacidade ou promocao para ServiceOS | Secoes Produto e reuso / Donos do contrato raiz | exports e consumidores RoyalPrime e ServiceOS; provar reuso antes de ampliar |
+| Documentacao, organizacao, remocao de docs | [docs/README.md](README.md) | referencias de entrada, links, status Git e contratos afetados |
 
-```text
-backend
-  -> regra real, persistencia, validacao, autorizacao, calculo e auditoria
+## Referencias por necessidade
 
-shared-core do escopo correto
-  -> contratos, DTOs, API clients, hooks, mappers, view-models, manifest e mocks temporarios
+Estas leituras sao condicionais; nao sao outra lista obrigatoria.
 
-web/mobile/admin-web
-  -> render-only
+- Backend local: [backend/README.md](../backend/README.md), backend/MER.md,
+  backend/TREE.md, backend/seeds/README.md e README do app afetado.
+- Kits e lacunas: [kits/README.md](kits/README.md),
+  [KITS_RUNTIME_LEDGER.md](kits/KITS_RUNTIME_LEDGER.md).
+- Retomada: [continuacao.md](../continuacao.md) e [handoff/README.md](handoff/README.md).
+  Datas e "proximo passo" sao contexto; a tarefa atual define o escopo.
+- Guias visuais: frontend/foundation/docs/; sao exemplos e podem refletir
+  origem ServiceOS. Confirme nomes de props, paths e implementacao no RoyalPrime.
+- Tree, auditorias e roadmaps: consulte somente para a area tocada. Nao mover
+  codigo para realizar uma tree alvo sem tarefa e verificacao dos consumidores.
 
-foundation
-  -> visual-only
-```
+## Caminhos de montagem atuais
 
-## Tres Camadas De Reuso
+| Area | Entrada |
+| --- | --- |
+| Admin bootstrap | frontend/admin/web/src/App.tsx |
+| Admin manifest | frontend/admin/shared-core/manifest/adminAppShell.config.jsx |
+| Admin navigation | frontend/admin/shared-core/navigation/admin.navigation.ts |
+| Admin routes | frontend/admin/shared-core/manifest/routes.ts |
+| Admin screens | frontend/admin/shared-core/manifest/pages |
+| Client portal AppShell | frontend/client/shared-core/manifest/portal/appshell.config.jsx |
+| Client landing AppShell | frontend/client/shared-core/manifest/landing/appshell.config.jsx |
+| Client routes | frontend/client/shared-core/manifest/routes.ts |
+| Idiomas | frontend/client/shared-core/locales e frontend/admin/shared-core/locales |
+| AppShell compartilhado | frontend/foundation/shells/app-shell |
+| Componentes ecommerce compartilhados | frontend/product-components/ecommerce |
 
-```text
-backend
-  -> reutilizavel por seed/config
+Caminhos sao pontos de inspecao, nao promessa de que todo fluxo esta concluido.
 
-frontend/*/shared-core
-  -> reutilizavel por funcao/kit
+## Protocolo de execucao
 
-frontend/*/web e frontend/*/mobile
-  -> render-only agora
-  -> manifest-driven aos poucos
-```
+1. Identifique o resultado pedido, o dono e as dependencias afetadas.
+2. Confira branch/status e leia o trecho real; preserve mudancas existentes.
+3. Use o contrato e a API publica existentes. Nao crie runtime para organizar imports.
+4. Implemente somente o necessario, respeitando as aprovacoes ja definidas.
+5. Confira copy/locale, imports, config versus runtime e fluxo de dados.
+6. Execute verificacao proporcional abaixo e registre limitacoes concretas.
+7. Atualize o contrato se a regra mudou; atualize o handoff se mudou apenas o estado.
 
-Regra curta:
+## Matriz de verificacao
 
-```text
-backend reutiliza por seed
-shared-core reutiliza por kit
-web/native reutiliza por manifest/render
-```
+Comandos de frontend abaixo partem da raiz RoyalPrime. Use dependencias locais;
+nao instalar ferramentas implicitamente para executar uma verificacao.
 
-Exemplo:
+| Mudanca | Verificacao exigida |
+| --- | --- |
+| Somente docs | git diff --check dos arquivos alterados; links/caminhos de entrada; ausencia de orientacoes conflitantes; leitura de cenarios por tarefa |
+| Client web | npm run build:client; fluxo alterado no navegador se houver comportamento/UI |
+| Admin web | npm run build:admin; fluxo alterado no navegador se houver comportamento/UI |
+| Foundation, tokens, recipes, AppShell | npm run verify:foundation; builds dos consumidores afetados; inspecao visual desktop/mobile quando visual |
+| Shared-core client / contrato native | build client; .\node_modules\.bin\tsc.cmd --noEmit -p frontend/client/mobile/tsconfig.json; testes focados do contrato |
+| Shared-core admin | build admin; testes focados de mapper/API/fluxo conforme risco |
+| Contrato global | builds client/admin e verificacao mobile dos consumidores atingidos |
+| Backend | em backend/: py manage.py check e py manage.py test com os modulos afetados; suite maior se contrato compartilhado exigir |
+| Models/migrations | verificacao backend, revisar migration e py manage.py makemigrations --check --dry-run; nao migrar ambiente externo implicitamente |
+| Persistencia/API | testar resposta, erro e efeito persistido no ambiente autorizado; mocks nao comprovam integracao |
+| Native visual | executar runtime nativo disponivel; se indisponivel, declarar que so contrato/typecheck foi verificado |
 
-```text
-assinatura de carne, peixe ou camisa
-  -> backend troca seed/config
-  -> shared-core reaproveita subscriptions/catalog/orders
-  -> web/native trocam manifest, locale, navigation, tema e assets
-```
-
-## Exemplo Que Todo Agente Deve Seguir
-
-Caso: botao "Adicionar item".
-
-```text
-screen
-  -> renderiza botao
-  -> onClick chama action do hook
-
-shared-core do escopo correto
-  -> hook/action addItem
-  -> api client
-  -> mapper
-  -> view-model
-
-backend
-  -> valida produto, estoque, limite, preco, organization e persistencia
-```
-
-Exemplo de tela:
-
-```tsx
-<Button onClick={() => orderActions.addItem(product.id)}>
-  {strings.add}
-</Button>
-```
-
-Nunca fazer:
-
-```text
-screen calcular regra de plano/estoque/preco
-screen chamar fetch direto para fluxo reutilizavel
-shared-core global receber logica antes de reuso real
-locale guardar regra de negocio
-```
-
-## Regra De Shared-Core
-
-```text
-frontend/shared-core
-  -> global pequeno: identity, organization, money, address, manifest
-
-frontend/client/shared-core
-  -> fluxo do cliente web/mobile
-
-frontend/admin/shared-core
-  -> fluxo operacional/admin
-```
-
-Nao promover para `frontend/shared-core` global por previsao abstrata.
-
-## Mentalidade De Kit
-
-```text
-kit descreve capacidade e fronteira de reuso
-contracts/api/hooks/mappers/view-models implementam o fluxo
-manifest guarda configuracao editavel
-surface renderiza
-backend decide regra real
-```
-
-Locais:
-
-```text
-docs/kits
-  -> mapas de reuso do produto inteiro
-
-frontend/shared-core/kits
-  -> kits globais pequenos
-
-frontend/client/shared-core/kits
-  -> kits do cliente
-
-frontend/admin/shared-core/kits
-  -> kits do admin
-```
-
-Para decidir quando criar funcionalidade no shared-core, leia:
-
-```text
-docs/frontend/KIT_FUNCTIONALITY_STRATEGY.md
-```
-
-Para reaproveitar ideias de HobbyMap, Syrax, ServiceOS ou outro projeto:
-
-```text
-docs/kits/REUSE_SOURCE_AUDIT.md
-docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
-docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
-```
-
-Regra:
-
-```text
-fonte externa vira documentacao de kit antes de virar codigo
-```
-
-## Manifest-First Gradual
-
-O RoyalPrime ainda tem hardcode historico. Isso e aceitavel enquanto o fluxo
-esta sendo provado.
-
-Ao tocar em uma tela:
-
-```text
-1. manter comportamento funcionando
-2. extrair contrato/DTO/hook quando houver fluxo reutilizavel
-3. mover copy/config repetida para locale ou manifest
-4. mover navegacao, titulos, labels e estados vazios para manifest quando fizer sentido
-5. trocar repeticao por screen type quando o padrao estiver claro
-```
-
-Exemplos:
-
-```text
-ListPage
-DetailPage
-FormPage
-DashboardPage
-colunas
-filtros
-acoes
-labels
-estados vazios
-navegacao
-AppShell config
-```
-
-## Regra Para Strings
-
-Nao criar novo texto de UI espalhado em JSX quando houver lugar claro em
-locale, config ou manifest.
-
-Se a tela ainda estiver hardcoded por motivo de transicao, documente a intencao
-e evite transformar copy comercial em regra tecnica.
-
-Para o audit atual de copy, leia:
-
-```text
-docs/frontend/COPY_LOCALE_AUDIT.md
-```
-
-## Ordem Para Orders/Deliveries Frontend
-
-```text
-1. ler backend/API_CONTRACTS.md
-2. ler backend/seeds/royalprime/kits/orders.seed.json
-3. ler backend/seeds/royalprime/kits/deliveries.seed.json
-4. alinhar client contracts/DTOs aos campos reais do backend
-5. criar mappers DTO -> view-model
-6. corrigir API clients para endpoints reais
-7. hooks decidem fallback dev e source=fallback quando usar mock
-8. telas cliente continuam render-only
-9. admin/shared-core usa endpoints /orders/admin/* e /deliveries/admin/*
-10. admin web continua render-only com screen types
-```
-
-## Handoff Atual
-
-Para continuar a migracao Orders/Deliveries, leia primeiro:
-
-```text
-docs/handoff/06-frontend-orders-deliveries-contract-alignment.md
-```
+Sempre executar git diff --check no diff da tarefa.
+Se falhar por ambiente ou erro preexistente, registrar comando e limite observado,
+sem reportar como aprovado. Nao executar builds so para mudanca documental.

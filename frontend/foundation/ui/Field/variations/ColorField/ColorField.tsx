@@ -48,7 +48,7 @@ export function ColorField({
   const ui = useUiConfig();
   const theme = ui.theme as NonNullable<typeof ui.theme>;
   const config = resolveColorFieldConfig(resolveManifestColorFieldConfig(ui.colorField));
-  const resolved = resolveColorFieldRecipe(theme, undefined, config, { level, preview, width });
+  const resolved = resolveColorFieldRecipe(theme as any, undefined, config, { level, preview, width });
   const pickerValue = /^#[0-9a-f]{6}$/i.test(value) ? value : undefined;
   const feedback = description ?? value;
 
@@ -71,7 +71,7 @@ export function ColorField({
         } as CSSProperties}
       >
         <Surface
-          appearance={resolved.preview.appearance}
+          appearance={resolved.preview.appearance as any}
           className={styles.swatch}
           data-preview={resolved.previewMode}
           recipe={resolved.previewSurfaceRecipe}

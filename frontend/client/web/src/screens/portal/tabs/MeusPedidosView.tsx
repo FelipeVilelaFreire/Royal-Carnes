@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { Badge, type BadgeTone } from "@foundation/ui/Badge";
 import { Button } from "@foundation/ui/Button";
 import { Card } from "@foundation/ui/Card";
 import { EmptyState } from "@foundation/ui/EmptyState";
@@ -12,21 +13,24 @@ import { useClientOrders } from "@royalprime/client/hooks/useClientOrders";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import type { ClientOrderRowViewModel } from "@royalprime/client/view-models/orders.view-model";
 import styles from "./meus-pedidos/styles.module.css";
-import { orderSurfaceStyles } from "./meus-pedidos/surfaceStyles";
 
 export interface MeusPedidosViewProps {
   onNavigate?: (path: string) => void;
   showShell?: boolean;
 }
 
-const statusToneLabel = (tone: ClientOrderRowViewModel["statusTone"]) => tone;
+const statusBadgeTone: Record<ClientOrderRowViewModel["statusTone"], BadgeTone> = {
+  active: "warning",
+  danger: "danger",
+  pending: "primary",
+  success: "success",
+};
 
 function StatusPill({ order }: { order: ClientOrderRowViewModel }) {
   return (
-    <span className={styles.statusPill} data-tone={statusToneLabel(order.statusTone)}>
-      <span className={styles.dot} aria-hidden="true" />
+    <Badge appearance="soft" level="xs" tone={statusBadgeTone[order.statusTone]}>
       {order.statusLabel}
-    </span>
+    </Badge>
   );
 }
 
@@ -87,7 +91,7 @@ function OrderDetailDialog({
               { key: "payment", label: strings.detail.payment, value: order.paymentMethodLabel },
               { key: "code", label: strings.detail.deliveryCode, value: order.deliveryCodeLabel },
             ].map((item) => (
-              <Card className={styles.modalMetric} key={item.key} size="sm" style={orderSurfaceStyles.modalMetric}>
+              <Card className={styles.modalMetric} key={item.key} size="sm">
                 <Stack gap="xs">
                   <Text variant="caption" tone="text-muted">{item.label}</Text>
                   <Text weight="var(--theme--typography-bold)">{item.value || "--"}</Text>
@@ -97,13 +101,13 @@ function OrderDetailDialog({
           </Grid>
 
           {order.cycleUsage ? (
-            <Card className={styles.cyclePanel} size="sm" style={orderSurfaceStyles.cycle}>
+            <Card className={styles.cyclePanel} size="sm">
               <Stack gap="md">
                 <Inline justify="between">
                   <Text weight="var(--theme--typography-bold)">{strings.cycle.title}</Text>
-                  <span className={styles.cycleBadge}>
+                  <Badge appearance="soft" level="xs" tone="primary">
                     {order.cycleUsage.cycleLabel}
-                  </span>
+                  </Badge>
                 </Inline>
                 <Grid className={styles.cycleGrid}>
                   {order.cycleUsage.metrics.map((metric) => (
@@ -121,7 +125,7 @@ function OrderDetailDialog({
             <Text as="h3" variant="h3">{strings.detail.items}</Text>
             <Grid className={styles.modalItemsGrid}>
               {order.items.map((item) => (
-                <Card className={styles.modalItem} key={item.id} size="sm" style={orderSurfaceStyles.modalItem}>
+                <Card className={styles.modalItem} key={item.id} size="sm">
                   <Inline justify="between">
                     <Stack gap="xs">
                       <Text weight="var(--theme--typography-bold)">{item.name}</Text>
@@ -189,27 +193,24 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
       <Container className={styles.content} gutter="page" width="wide">
         <section className={styles.hero}>
           <Stack gap="sm">
-            <span className={styles.sourceBadge}>
-              {orders.source === "api" ? strings.source.api : strings.source.fallback}
-            </span>
             <Text as="h1" variant="h1">{strings.title}</Text>
             <Text tone="text-muted">{strings.subtitle}</Text>
             {orders.error ? <Text tone="text-muted">{strings.states.error}</Text> : null}
           </Stack>
           <Grid className={styles.statsGrid}>
-            <Card className={styles.statCard} size="sm" style={orderSurfaceStyles.stat}>
+            <Card className={styles.statCard} size="sm">
               <Stack gap="xs">
                 <Text variant="caption" tone="text-muted">{strings.stats.activeOrders}</Text>
                 <Text variant="h2">{orders.viewModel.totals.activeOrders}</Text>
               </Stack>
             </Card>
-            <Card className={styles.statCard} size="sm" style={orderSurfaceStyles.stat}>
+            <Card className={styles.statCard} size="sm">
               <Stack gap="xs">
                 <Text variant="caption" tone="text-muted">{strings.stats.deliveredOrders}</Text>
                 <Text variant="h2">{orders.viewModel.totals.deliveredOrders}</Text>
               </Stack>
             </Card>
-            <Card className={styles.statCard} size="sm" style={orderSurfaceStyles.stat}>
+            <Card className={styles.statCard} size="sm">
               <Stack gap="xs">
                 <Text variant="caption" tone="text-muted">{strings.history.title}</Text>
                 <Text variant="h2">{orders.viewModel.totals.orders}</Text>
@@ -230,13 +231,16 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
         {currentOrder ? (
           <section>
           <Grid className={styles.currentGrid}>
-            <Card className={styles.orderPanel} size="lg" style={orderSurfaceStyles.order}>
+            <Card className={styles.orderPanel} size="lg">
               <Stack gap="lg">
                 <Inline className={styles.panelHeader} justify="between">
                   <Stack gap="xs">
-                    <span className={styles.sourceBadge}>{strings.currentOrder.badge}</span>
+                    <Badge appearance="soft" level="xs" tone="primary">{strings.currentOrder.badge}</Badge>
                     <Text as="h2" variant="h2">{currentOrder.code}</Text>
-                    <Text tone="text-muted">{currentOrder.kindLabel} - {currentOrder.statusLabel}</Text>
+                    <Inline gap="sm">
+                      <Text tone="text-muted">{currentOrder.kindLabel}</Text>
+                      <StatusPill order={currentOrder} />
+                    </Inline>
                   </Stack>
                   <Stack align="end" gap="xs">
                     <Text variant="caption" tone="text-muted">{strings.currentOrder.total}</Text>
@@ -277,13 +281,13 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
             </Card>
 
             {nextBox ? (
-              <Card className={styles.imagePanel} size="lg" style={orderSurfaceStyles.image}>
+              <Card className={styles.imagePanel} size="lg">
                 {nextBox.imageUrl ? (
                   <img alt={nextBox.title} className={styles.boxImage} src={nextBox.imageUrl} />
                 ) : null}
                 <div className={styles.imageOverlay}>
                   <Stack gap="sm">
-                    <span className={styles.sourceBadge}>{strings.nextBox.badge}</span>
+                    <Badge appearance="soft" level="xs" tone="primary">{strings.nextBox.badge}</Badge>
                     <Text as="h2" variant="h2">{strings.nextBox.title}</Text>
                     <Text weight="var(--theme--typography-bold)">{nextBox.deliveryEstimateLabel}</Text>
                     <Text tone="text-muted">{nextBox.summary}</Text>
@@ -295,7 +299,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
           </section>
         ) : null}
 
-        <Card className={styles.historyPanel} size="lg" style={orderSurfaceStyles.history}>
+        <Card className={styles.historyPanel} size="lg">
           <Stack gap="lg">
             <Inline justify="between">
               <Text as="h2" variant="h2">{strings.history.title}</Text>
@@ -303,7 +307,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
             </Inline>
             <div className={styles.historyList}>
               {orders.viewModel.orders.map((order) => (
-                <Card className={styles.historyRow} key={order.id} size="sm" style={orderSurfaceStyles.modalItem}>
+                <Card className={[styles.historyRow, styles.modalItem].join(" ")} key={order.id} size="sm">
                   <Stack gap="xs">
                     <Text weight="var(--theme--typography-bold)">{order.kindLabel}</Text>
                     <Text variant="caption" tone="text-muted">{order.code} - {order.title}</Text>

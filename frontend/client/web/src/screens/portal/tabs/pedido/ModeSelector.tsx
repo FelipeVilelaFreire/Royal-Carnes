@@ -21,21 +21,12 @@ export interface ModeSelectorProps {
   };
   activeSubscriptionLabel: string;
   activeSubscriptionPlan?: unknown;
-  cardSurface: React.CSSProperties;
   formatMeasure: (value: number, unit: string) => string;
   hasMode: boolean;
   modeOrder: ClientCheckoutProductExperience[];
   onSelectMode: (mode: ClientCheckoutProductExperience) => void;
   selectedMode: ClientCheckoutProductExperience | null;
   strings: any;
-  tokens: {
-    border: string;
-    copper: string;
-    ivory: string;
-    surfaceContainer: string;
-    text: string;
-    textMuted: string;
-  };
 }
 
 export const ModeSelector: React.FC<ModeSelectorProps> = ({
@@ -43,22 +34,16 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
   activeSubscription,
   activeSubscriptionLabel,
   activeSubscriptionPlan,
-  cardSurface,
   formatMeasure,
   hasMode,
   modeOrder,
   onSelectMode,
   selectedMode,
   strings,
-  tokens,
 }) => (
   <section
     className={styles.modeList}
-    style={{
-      "--pedido-mode-gap": hasMode ? "var(--theme--spacing-spaceXs)" : "var(--theme--spacing-spaceMd)",
-      marginBottom: hasMode ? "var(--theme--spacing-spaceLg)" : "0",
-      transition: "all 0.28s ease",
-    } as React.CSSProperties}
+    data-compact={hasMode || undefined}
   >
     {modeOrder.map((mode) => {
       const modeCopy = strings.modes[mode];
@@ -97,32 +82,6 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({
           tone="neutral"
           type="button"
           onClick={() => onSelectMode(mode)}
-          style={{
-            "--pedido-mode-accent": tokens.copper,
-            "--pedido-mode-bg": isActive
-              ? "color-mix(in srgb, var(--pedido-mode-accent) 7%, var(--pedido-mode-surface))"
-              : tokens.surfaceContainer,
-            "--pedido-mode-border": tokens.border,
-            "--pedido-mode-surface": tokens.surfaceContainer,
-            "--pedido-mode-text": tokens.text,
-            "--pedido-mode-muted": tokens.textMuted,
-            "--pedido-mode-title-size": hasMode ? "var(--theme--typography-size2xl)" : "var(--theme--typography-size3xl)",
-            "--pedido-mode-icon-bg": isActive
-              ? "color-mix(in srgb, var(--pedido-mode-accent) 14%, var(--pedido-mode-surface))"
-              : tokens.surfaceContainer,
-            "--pedido-mode-icon-border": isActive
-              ? "color-mix(in srgb, var(--pedido-mode-accent) 72%, var(--pedido-mode-border))"
-              : "color-mix(in srgb, var(--pedido-mode-text) 12%, var(--pedido-mode-border))",
-            "--pedido-mode-icon-color": tokens.copper,
-            "--pedido-mode-icon-size": hasMode ? "var(--theme--dimensions-height-lg)" : "var(--theme--dimensions-height-xl)",
-            "--ui-surface-bg": "var(--pedido-mode-bg)",
-            "--ui-surface-border": isActive
-              ? "color-mix(in srgb, var(--pedido-mode-accent) 76%, var(--pedido-mode-border))"
-              : "color-mix(in srgb, var(--pedido-mode-text) 14%, var(--pedido-mode-border))",
-            "--ui-surface-border-width": "var(--theme--borders-hairline)",
-            "--ui-surface-color": tokens.text,
-            "--ui-surface-shadow": cardSurface.boxShadow,
-          } as React.CSSProperties}
         >
           <span className={styles.modeCardContent}>
             <span className={styles.modeIcon}>

@@ -17,6 +17,7 @@ Objetivo da fase: deixar a tela em render-only, com dados vindos de `shared-core
 - Mock de fase 1 fica em `frontend/client/shared-core/data-sources/orders.fallback.ts`.
 - `orders.view-model.ts` entrega labels e estados prontos para render.
 - Modal web usa `Modal`/`BottomModal` da Foundation.
+- Status/badges web usam `Badge` da Foundation.
 - Native consome `useClientOrders` e `useClientStrings`.
 - Native ganhou primitive local `ui/Modal` bottom-first para detalhe de pedido.
 

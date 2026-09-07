@@ -49,13 +49,10 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
         padding: 20,
       }}
     >
-      <Stack style={{ gap: 16 }}>
-        <Stack style={{ gap: 8 }}>
-          <Text style={{ color: theme.accent, fontSize: 12, fontWeight: "800", textTransform: "uppercase" }}>
-            {orders.source === "api" ? strings.source.api : strings.source.fallback}
-          </Text>
-          <Text style={{ color: theme.text, fontSize: 28, fontWeight: "800" }}>{strings.title}</Text>
-          <Text style={{ color: theme.textMuted, fontSize: 15, lineHeight: 22 }}>{strings.subtitle}</Text>
+      <Stack gap="md">
+        <Stack gap="sm">
+          <Text variant="h1" weight="bold">{strings.title}</Text>
+          <Text tone="muted">{strings.subtitle}</Text>
         </Stack>
 
         <Surface
@@ -63,24 +60,24 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
           tone="neutral"
           style={cardStyle}
         >
-          <Inline style={{ alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-            <Stack style={{ gap: 4 }}>
-              <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "700", textTransform: "uppercase" }}>
+          <Inline gap="sm" style={{ alignItems: "center", justifyContent: "space-between" }}>
+            <Stack gap="xs">
+              <Text tone="muted" variant="caption" weight="bold">
                 {strings.stats.activeOrders}
               </Text>
-              <Text style={{ color: theme.text, fontSize: 24, fontWeight: "800" }}>{orders.viewModel.totals.activeOrders}</Text>
+              <Text variant="h2" weight="bold">{orders.viewModel.totals.activeOrders}</Text>
             </Stack>
-            <Stack style={{ gap: 4 }}>
-              <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "700", textTransform: "uppercase" }}>
+            <Stack gap="xs">
+              <Text tone="muted" variant="caption" weight="bold">
                 {strings.stats.deliveredOrders}
               </Text>
-              <Text style={{ color: theme.text, fontSize: 24, fontWeight: "800" }}>{orders.viewModel.totals.deliveredOrders}</Text>
+              <Text variant="h2" weight="bold">{orders.viewModel.totals.deliveredOrders}</Text>
             </Stack>
-            <Stack style={{ gap: 4 }}>
-              <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "700", textTransform: "uppercase" }}>
+            <Stack gap="xs">
+              <Text tone="muted" variant="caption" weight="bold">
                 {strings.history.title}
               </Text>
-              <Text style={{ color: theme.text, fontSize: 24, fontWeight: "800" }}>{orders.viewModel.totals.orders}</Text>
+              <Text variant="h2" weight="bold">{orders.viewModel.totals.orders}</Text>
             </Stack>
           </Inline>
         </Surface>
@@ -91,25 +88,25 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
             tone="neutral"
             style={cardStyle}
           >
-            <Stack style={{ gap: 12 }}>
-              <Inline style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-                <Stack style={{ gap: 4 }}>
-                  <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "700", textTransform: "uppercase" }}>
+            <Stack gap="sm">
+              <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+                <Stack gap="xs">
+                  <Text tone="muted" variant="caption" weight="bold">
                     {strings.currentOrder.badge}
                   </Text>
-                  <Text style={{ color: theme.text, fontSize: 20, fontWeight: "800" }}>{currentOrder.code}</Text>
-                  <Text style={{ color: theme.textMuted, fontSize: 13 }}>{currentOrder.kindLabel} - {currentOrder.statusLabel}</Text>
+                  <Text variant="h3" weight="bold">{currentOrder.code}</Text>
+                  <Text tone="muted" variant="caption">{currentOrder.kindLabel} - {currentOrder.statusLabel}</Text>
                 </Stack>
-                <Text style={{ color: theme.accent, fontSize: 15, fontWeight: "800" }}>
+                <Text tone="primary" weight="bold">
                   {currentOrder.totalLabel}
                 </Text>
               </Inline>
-              <Text style={{ color: theme.textMuted, fontSize: 14, lineHeight: 20 }}>{currentOrder.summary}</Text>
-              <Stack style={{ gap: 8 }}>
+              <Text tone="muted">{currentOrder.summary}</Text>
+              <Stack gap="sm">
                 {currentOrder.items.slice(0, 4).map((item) => (
-                  <Inline key={item.id} style={{ justifyContent: "space-between", gap: 12 }}>
-                    <Text style={{ color: theme.text, fontSize: 14, fontWeight: "700" }}>{item.name}</Text>
-                    <Text style={{ color: theme.textMuted, fontSize: 13 }}>{item.quantityLabel}</Text>
+                  <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
+                    <Text weight="bold">{item.name}</Text>
+                    <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
                   </Inline>
                 ))}
               </Stack>
@@ -122,19 +119,19 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
 
         {nextBox ? (
           <Surface appearance="outline" tone="neutral" style={cardStyle}>
-            <Stack style={{ gap: 8 }}>
-              <Text style={{ color: theme.accent, fontSize: 12, fontWeight: "800", textTransform: "uppercase" }}>
+            <Stack gap="sm">
+              <Text tone="primary" variant="caption" weight="bold">
                 {strings.nextBox.badge}
               </Text>
-              <Text style={{ color: theme.text, fontSize: 20, fontWeight: "800" }}>{strings.nextBox.title}</Text>
-              <Text style={{ color: theme.text, fontSize: 14, fontWeight: "800" }}>{nextBox.deliveryEstimateLabel}</Text>
-              <Text style={{ color: theme.textMuted, fontSize: 14, lineHeight: 20 }}>{nextBox.summary}</Text>
+              <Text variant="h3" weight="bold">{strings.nextBox.title}</Text>
+              <Text weight="bold">{nextBox.deliveryEstimateLabel}</Text>
+              <Text tone="muted">{nextBox.summary}</Text>
             </Stack>
           </Surface>
         ) : null}
 
-        <Stack style={{ gap: 10 }}>
-          <Text style={{ color: theme.text, fontSize: 18, fontWeight: "800" }}>{strings.history.title}</Text>
+        <Stack gap="sm">
+          <Text variant="h3" weight="bold">{strings.history.title}</Text>
           {rows.length ? (
             rows.map((order) => (
               <Surface
@@ -145,12 +142,12 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
                   ...nestedCardStyle,
                 }}
               >
-                <Stack style={{ gap: 8 }}>
-                  <Inline style={{ justifyContent: "space-between", gap: 12 }}>
-                    <Text style={{ color: theme.text, fontSize: 16, fontWeight: "800" }}>{order.code}</Text>
-                    <Text style={{ color: theme.accent, fontSize: 13, fontWeight: "800" }}>{order.totalLabel}</Text>
+                <Stack gap="sm">
+                  <Inline gap="sm" style={{ justifyContent: "space-between" }}>
+                    <Text weight="bold">{order.code}</Text>
+                    <Text tone="primary" variant="caption" weight="bold">{order.totalLabel}</Text>
                   </Inline>
-                  <Text style={{ color: theme.textMuted, fontSize: 13 }}>
+                  <Text tone="muted" variant="caption">
                     {order.statusLabel} - {order.itemCount} {strings.history.itemSuffix}
                   </Text>
                   <Button appearance="outline" tone="neutral" size="sm" onPress={() => setSelectedOrderId(order.id)}>
@@ -165,7 +162,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
               tone="neutral"
               style={nestedCardStyle}
             >
-              <Text style={{ color: theme.textMuted, fontSize: 14 }}>
+              <Text tone="muted">
                 {strings.states.empty}
               </Text>
             </Surface>
@@ -180,27 +177,27 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
         title={selectedOrder?.title || strings.detail.title}
       >
         {selectedOrder ? (
-          <Stack style={{ gap: 12 }}>
-            <Inline style={{ alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-              <Text style={{ color: theme.textMuted, fontSize: 13 }}>{selectedOrder.statusLabel}</Text>
-              <Text style={{ color: theme.accent, fontSize: 15, fontWeight: "800" }}>{selectedOrder.totalLabel}</Text>
+          <Stack gap="sm">
+            <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+              <Text tone="muted" variant="caption">{selectedOrder.statusLabel}</Text>
+              <Text tone="primary" weight="bold">{selectedOrder.totalLabel}</Text>
             </Inline>
-            <Text style={{ color: theme.textMuted, fontSize: 14, lineHeight: 20 }}>{selectedOrder.summary}</Text>
+            <Text tone="muted">{selectedOrder.summary}</Text>
             <Surface appearance="outline" tone="neutral" style={nestedCardStyle}>
-              <Stack style={{ gap: 6 }}>
-                <Text style={{ color: theme.textMuted, fontSize: 12, fontWeight: "700", textTransform: "uppercase" }}>
+              <Stack gap="xs">
+                <Text tone="muted" variant="caption" weight="bold">
                   {strings.detail.payment}
                 </Text>
-                <Text style={{ color: theme.text, fontSize: 14, fontWeight: "800" }}>
+                <Text weight="bold">
                   {selectedOrder.paymentMethodLabel}
                 </Text>
               </Stack>
             </Surface>
-            <Stack style={{ gap: 8 }}>
+            <Stack gap="sm">
               {selectedOrder.items.map((item) => (
-                <Inline key={item.id} style={{ justifyContent: "space-between", gap: 12 }}>
-                  <Text style={{ color: theme.text, fontSize: 14, fontWeight: "700" }}>{item.name}</Text>
-                  <Text style={{ color: theme.textMuted, fontSize: 13 }}>{item.quantityLabel}</Text>
+                <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
+                  <Text weight="bold">{item.name}</Text>
+                  <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
                 </Inline>
               ))}
             </Stack>

@@ -54,9 +54,9 @@ Tela nao hardcoda status como regra.
 | --- | --- | --- | --- | --- | --- |
 | 01 Auth & Users | real | minimo identity/auth | auth/session | auth/users/permissions | nao |
 | 02 Catalog | real | catalog puro | catalog publico | catalog admin create/list/detail | nao |
-| 03 Subscriptions | real | subscriptions puro | plans/me/current cycle | plans/subscriptions/cycles | nao |
+| 03 Subscriptions | real | subscriptions puro | plans/me/current cycle/fallback | plans/subscriptions/cycles | MinhaCaixaView web/mobile |
 | 04 Inventory | real | inventory puro | sem runtime | inventory admin | nao |
-| 05 Orders | real | orders puro | config/me/create/detail | admin list/create/detail/transition | nao |
+| 05 Orders | real | orders puro | config/me/create/detail/fallback | admin list/create/detail/transition | MeusPedidosView web/mobile |
 | 06 Delivery | real | deliveries puro | config/me/detail | admin list/create/detail/transition/confirm | nao |
 
 ## Documentos Principais
@@ -71,6 +71,7 @@ docs/architecture/RENDER_APPS_RULES.md
 docs/architecture/RENDER_APPS_TREE_ANALYSIS.md
 docs/kits/README.md
 docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
+docs/kits/KITS_RUNTIME_LEDGER.md
 docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 continuacao.md
 ```

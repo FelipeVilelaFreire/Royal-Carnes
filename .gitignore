@@ -9,3 +9,4 @@ build
 *.sqlite3
 __pycache__/
 *.py[cod]
+docs-private/

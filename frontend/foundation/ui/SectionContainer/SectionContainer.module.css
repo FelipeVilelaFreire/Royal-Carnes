@@ -1,0 +1,85 @@
+.section {
+  align-items: center;
+  background: transparent;
+  border-bottom: var(--theme--borders-hairline) solid var(--theme--color-border);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  min-height: auto;
+  overflow: hidden;
+  padding-block: var(--theme--spacing-space2xl);
+  position: relative;
+  width: 100%;
+}
+
+.section[data-header-safety="true"] {
+  padding-block-start: var(--theme--spacing-spaceLg);
+}
+
+.section[data-height="heroPeek"] {
+  min-height: calc(90vh - var(--app-shell-header-height, var(--theme--dimensions-height-2xl)));
+}
+
+.section[data-height="fullScreen"] {
+  min-height: 100vh;
+}
+
+.section[data-atmosphere="glass"] {
+  backdrop-filter: blur(var(--theme--blur-md));
+  background: color-mix(in srgb, var(--theme--color-surface) 18%, transparent);
+}
+
+.section[data-atmosphere="image"] {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--theme--color-background) 85%, transparent),
+      color-mix(in srgb, var(--theme--color-background) 95%, transparent)
+    ),
+    var(--ui-section-background-image);
+  background-position: center;
+  background-size: cover;
+}
+
+.grid {
+  align-items: center;
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+  grid-template-columns: repeat(var(--theme--layout-desktopCols), minmax(0, 1fr));
+  margin-inline: auto;
+  max-width: var(--theme--layout-container-xl);
+  padding-inline: var(--theme--spacing-spaceXl);
+  width: 100%;
+}
+
+.grid[data-useful-columns="20"] {
+  max-width: 100%;
+  padding-inline: var(--theme--spacing-space2xl);
+}
+
+.content {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.content[data-useful-columns="14"] {
+  grid-column: 2 / span 18;
+}
+
+@media (max-width: 56em) {
+  .section {
+    padding-block: var(--theme--spacing-spaceXl);
+  }
+
+  .grid,
+  .grid[data-useful-columns="20"] {
+    grid-template-columns: 1fr;
+    padding-inline: var(--theme--spacing-spaceMd);
+  }
+
+  .content,
+  .content[data-useful-columns="14"] {
+    grid-column: 1;
+  }
+}

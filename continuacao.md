@@ -1,5 +1,10 @@
 # Continuacao RoyalPrime
 
+> Status: referencia ou registro de estado; nao e contrato ativo.
+> Regras e leitura por tarefa: [CODEX_ENTRYPOINTS.md](docs/CODEX_ENTRYPOINTS.md).
+> Trees, exemplos, proximos passos e instrucoes antigas abaixo devem ser
+> confrontados com os contratos ativos e o codigo; nao autorizam excecoes.
+
 ## Contexto
 
 Este arquivo e o ponto de entrada rapido para o proximo chat continuar o
@@ -59,7 +64,8 @@ branch: feature/shared-core-kit-reset
 remote: origin/feature/shared-core-kit-reset
 ```
 
-Depois desse commit, foi feito o corte de `/meus-pedidos`:
+Depois desse commit, foram feitos os cortes de `/meus-pedidos` e
+`/minha-caixa`:
 
 ```text
 client/web MeusPedidosView
@@ -82,6 +88,53 @@ client/shared-core/orders
   -> useClientOrders tenta API/backend e cai em fallback explicito
   -> orders.view-model.ts prepara labels, totais, status, timeline, itens,
      ciclo, pagamento e pedido atual para render
+
+client/web MinhaCaixaView
+  -> saiu de legacy/design-system e legacy/app-shell
+  -> nao importa mocks diretamente
+  -> nao importa clientPtBR diretamente
+  -> usa useClientSubscription({ fallbackOnError: true })
+  -> usa useClientCurrentCycle({ fallbackOnError: true })
+  -> usa Container, Grid, Stack, Inline, Card, Button, Text e EmptyState da
+     Foundation
+
+client/mobile MinhaCaixaView
+  -> usa os mesmos hooks, strings e fallback do client shared-core
+  -> espelha o webIsMobile em comportamento: plano ativo, ciclo, uso,
+     selecionados e produtos liberados
+
+client/shared-core/subscriptions
+  -> subscriptions.fallback.ts centraliza dados mockados temporarios
+  -> hooks de assinatura/ciclo tentam API/backend e caem em fallback explicito
+  -> subscriptions.view-model.ts prepara preco do plano, numero/faixa do ciclo,
+     itens selecionados e metricas de uso para render
+
+foundation/ui Badge
+  -> agora e primitive formal exportada por @foundation/ui/Badge e
+     @foundation/ui
+  -> consome resolveBadgeRecipe(), Surface e tokens Theme/Semi-Composed
+  -> substitui status pills locais em MeusPedidosView
+  -> deve ser usado por render-apps para status/source/labels sem cor local
+
+mobile primitives
+  -> Text agora aplica variant/tone/weight via tokens nativos
+  -> Layout agora aplica gap por token
+  -> MeusPedidosView e MinhaCaixaView mobile nao repetem mais color/fontSize/fontWeight
+     inline para textos principais
+
+style hardcode audit
+  -> docs/handoff/12-style-hardcode-audit.md lista as maiores telas com
+     style inline, cores, fontes e sombras hardcoded
+  -> Field, SegmentedControl, AvatarCell, SectionContainer e ColorField resolver
+     ja foram limpos para usar CSS module/resolvers/tokens
+  -> recorte das rotas /home, /cortes, /montar-box, /meus-pedidos e /perfil
+     foi auditado; /home renderiza HomeVitrineView, nao HomeView
+  -> PortalView, HomeVitrineView, CortesView, ProductItemCard e partes centrais
+     do checkout de PedidoView tiveram vestimenta movida para CSS module
+  -> saldo controlado no recorte: width percentual de metrica, gridColumn vindo
+     de config e tokens ainda usados como ponte em ProductItemCard/SummaryRow
+  -> proximo foco recomendado: MeuClubeView, HomeView legado, screenTypes,
+     ProductItemCard/SummaryRow sem tokens e landing antiga
 ```
 
 Validado neste corte:
@@ -97,6 +150,9 @@ Handoff especifico:
 
 ```text
 docs/handoff/09-meus-pedidos-render-only-audit.md
+docs/handoff/10-minha-caixa-render-only-audit.md
+docs/handoff/12-style-hardcode-audit.md
+docs/kits/KITS_RUNTIME_LEDGER.md
 ```
 
 ## Foundation
@@ -528,12 +584,11 @@ Continuar pelas telas render-only usando a Foundation nova.
 Ordem sugerida:
 
 ```text
-1. client/web + client/mobile: revisar se MeusPedidosView precisa apenas de
-   ajuste visual pequeno; nao voltar para legacy
-2. client/web + client/mobile: MinhaCaixaView em Fase 1 funcional
-3. client/web + client/mobile: MeuClubeView em Fase 1 funcional
-4. admin/web: DashboardPage em Fase 1 funcional
-5. admin/web: ListPage/DetailPage/AddPage por screen type
+1. client/web + client/mobile: revisar se MeusPedidosView e MinhaCaixaView
+   precisam apenas de ajuste visual pequeno; nao voltar para legacy
+2. client/web + client/mobile: MeuClubeView em Fase 1 funcional
+3. admin/web: DashboardPage em Fase 1 funcional
+4. admin/web: ListPage/DetailPage/AddPage por screen type
 ```
 
 Regra para cada tela:
@@ -596,10 +651,12 @@ Se o proximo chat for continuar sem mudar de prioridade, fazer nesta ordem:
 ```text
 1. conferir git status e ultimo commit/push
 2. abrir docs/handoff/09-meus-pedidos-render-only-audit.md
-3. abrir frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
-4. abrir frontend/client/mobile/src/screens/portal/tabs/MeusPedidosView.tsx
-5. se `/meus-pedidos` estiver visualmente aceitavel, nao polir mais detalhes
-6. iniciar MinhaCaixaView com o mesmo roteiro:
+3. abrir docs/handoff/10-minha-caixa-render-only-audit.md
+4. abrir frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
+5. abrir frontend/client/web/src/screens/portal/tabs/MinhaCaixaView.tsx
+6. se `/meus-pedidos` e `/minha-caixa` estiverem visualmente aceitaveis, nao
+   polir mais detalhes
+7. iniciar MeuClubeView com o mesmo roteiro:
    Layout/config -> locales -> mapa de componentes -> shared-core hook/API
    -> render-only web -> webIsMobile -> native
 ```

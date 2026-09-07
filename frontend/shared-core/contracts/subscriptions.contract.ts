@@ -67,6 +67,7 @@ export interface SubscriptionCycleItemBase {
   quantity: string;
   measurementUnitKey?: MeasurementUnitKey | null;
   status: SubscriptionCycleItemStatus;
+  metadata?: Record<string, unknown>;
 }
 
 export interface SubscriptionCycleBase {
@@ -77,6 +78,7 @@ export interface SubscriptionCycleBase {
   endsAt: string;
   closedAt?: string | null;
   items: SubscriptionCycleItemBase[];
+  metadata?: Record<string, unknown>;
 }
 
 export interface SubscriptionBase {

@@ -1,92 +1,99 @@
-# Contrato de Montagem Declarativa por ScreenTypes, Manifestos & Rotas (Client & Admin)
+# Manifest, AppShell e screen types
 
-Este documento registra a **Regra Canônica de Montagem por ScreenTypes, Manifestos e o Registro Único de Rotas (`routes.ts`)** compartilhada entre o **Client (`frontend/client/`)** e o **Admin (`frontend/admin/`)** no **PrimeCutClub**.
+Status: contrato ativo para client e admin.
+Ownership: [contrato raiz](../../ROYALPRIME_ARCHITECTURE_CONTRACT.md).
+Roteamento de leitura: [CODEX_ENTRYPOINTS.md](../CODEX_ENTRYPOINTS.md).
 
----
+## Montagem simples
 
-## 💡 Princípio de Separação Estrita & Registro de Rotas (Zero Fricção)
+Admin nao implementa AppShell.
+Admin declara manifest e consome AppShell da Foundation.
 
-```text
-┌──────────────────────────────────────────────────────────────────────────┐
-│  1. `routes.ts` (O Registro Único e Central de Rotas)                   │
-│     • NENHUM botão, link, item de menu ou config hardcida URLs soltas.    │
-│     • Declara o mapa mestre: `routeKey` -> `path` (ex: `mySubscription`   │
-│       -> `/minha-assinatura`).                                           │
-│     • Permite trocar qualquer URL no sistema alterando 1 linha no         │
-│       `routes.ts` sem quebrar nenhum botão ou navegação.                  │
-└──────────────────────────────────────────────────────────────────────────┘
+Fluxo:
+shared-core/manifest + navigation + locales + routes + screen configs
+-> bootstrap web -> AppShell Foundation -> screen ativa.
 
-┌──────────────────────────────────────────────────────────────────────────┐
-│  2. `src/` (Peças de Renderização / Engines Visualmente Burras)          │
-│     • Apenas fornece as engines por ScreenType (HomeView, DashboardView,│
-│       TableView, DetailView) vestindo os componentes de `foundation/`. │
-└──────────────────────────────────────────────────────────────────────────┘
+O mesmo vale para client. Nao criar engine, provider ou runtime grande apenas
+para passar esses objetos ao AppShell.
 
-┌──────────────────────────────────────────────────────────────────────────┐
-│  3. `manifest/` (O Cérebro da Montagem Declarativa)                     │
-│     • Declara quais seções aparecem, títulos, textos, `routeKey` e      │
-│       qual `screenType` deve ser acionado para renderizar aquela chave.  │
-└──────────────────────────────────────────────────────────────────────────┘
+## Donos
+
+| Elemento | Dono |
+| --- | --- |
+| Header, Sidebar, Drawer, Footer, BottomTabBar, scroll, slots | frontend/foundation/shells/app-shell |
+| Ativacao de regioes e defaults da surface | shared-core/manifest da surface |
+| Itens, grupos, ordem, iconIntent, placements | shared-core/navigation da surface |
+| Paths e aliases de rotas | shared-core/manifest/routes.ts da surface |
+| Labels, grupos, aria e feedback | shared-core/locales da surface |
+| Colunas, filtros, campos, composicao de tela | shared-core/manifest/pages ou config existente |
+| Dados, carregamento e comandos | hooks/API/view-models do shared-core da surface |
+| Router web e escolha da tela | bootstrap/render-app |
+
+Use manifest no singular. Nunca recriar frontend/admin/manifest ou
+frontend/client/manifest fora de shared-core.
+
+## Exemplo de composicao
+
+Exemplo de ligacao usando a API atual, nao um pedido para criar outro runtime:
+
+```tsx
+<AppShell
+  mode="admin"
+  config={adminAppShellConfig}
+  navItems={adminNavigation}
+  routesMap={adminRoutes}
+  activePath={activeRoutePath}
+  onNavigate={handleNavigate}
+>
+  {renderActiveScreen()}
+</AppShell>
 ```
 
----
+Config deve receber as strings ativas pelo mecanismo de i18n usado na surface.
+O exemplo omite sua resolucao, nao autoriza importar pt-BR fixo na UI.
 
-## 🏛️ Estrutura do Client e Admin com `routes.ts`
+Admin desktop ativa sidebar; mobile ativa bottomTabBar.
+Client desktop ativa header e mobile ativa bottomTabBar conforme manifest.
+Native recebe a mesma intencao mobile e seu adapter equivalente.
+AppShell executa a capacidade; manifest nao substitui codigo ausente.
 
-### 🌐 1. Aplicação do Cliente (`frontend/client/`)
+## Navegacao e layout
 
-```text
-frontend/client/
-│
-├── manifest/                             <-- 📍 O CÉREBRO DA MONTAGEM DO CLIENTE
-│   ├── routes.ts                         (📌 Registro Único de Rotas: home, plans, checkout, mySubscription)
-│   ├── navigation.ts                     (Itens de menu declarando routeKey: "mySubscription")
-│   ├── screens.ts                        (Mapeia screenKey: "home" -> screenType: "home_page")
-│   ├── locales/pt-BR.ts                  (Strings de UI em PT-BR)
-│   ├── appshell.config.jsx               (Config do AppShell do cliente)
-│   └── pages/
-│       └── home.config.jsx               (Ficha técnica declarativa das seções da Home)
-│
-└── src/
-    ├── views/                            (Engine por ScreenType: HomeView.tsx, PlansView.tsx)
-    └── app/
-        ├── layout.tsx                    (Layout raiz Next.js)
-        └── page.tsx                      (Renderiza a HomeView envelopada no AppShell)
-```
+- Referencie routeKey; resolva o path em routes.ts. Nao repetir URLs em JSX.
+- Grupos/labels usam chaves do catalogo ativo; iconIntent usa Foundation.
+- Config pode filtrar/ordenar placements declarados; documente essa precedencia
+  no resolvedor existente e confira os itens efetivos, nao apenas o array fonte.
+- Nao manter listas independentes para a mesma decisao sem relacao explicita
+  de heranca, filtro ou override.
+- enabled, width, gutter, align e viewport seguem o contrato real do AppShell.
+- webIsMobile usa o mesmo comportamento de navegacao do mobile native.
+- Nao presumir Drawer acessivel so porque enabled=true: confira o acionador.
+- Nao criar header/sidebar/bottom bar artesanal nem no preview.
 
----
+## Screen types e config
 
-### 🛡️ 2. Aplicação da Empresa (`frontend/admin/`)
+Reutilize ListPage, AddPage, DetailPage, DashboardPage e SettingsPage existentes
+quando seu contrato servir a tarefa. Nao impor registro dinamico novo a uma
+montagem simples. Render recebe config, dados e callbacks.
+Config declara estrutura; hook fornece dados e comandos.
+Rotas de detalhe precisam resolver a entidade ao reabrir/recarregar a pagina,
+sem depender exclusivamente de uma linha selecionada em memoria.
 
-```text
-frontend/admin/
-│
-├── manifest/                             <-- 📍 O CÉREBRO DA MONTAGEM DO ADMIN
-│   ├── routes.ts                         (📌 Registro Único de Rotas: dashboard, subscribers, deliveries)
-│   ├── navigation.ts                     (Itens do painel declarando routeKey: "subscribers")
-│   ├── screens.ts                        (Mapeia screenKey: "dashboard" -> screenType: "dashboard_page")
-│   ├── locales/pt-BR.ts                  (Strings de UI do back-office em PT-BR)
-│   ├── appshell.config.jsx               (Config do AppShell do admin)
-│   └── pages/
-│       ├── dashboard.config.jsx          (Ficha técnica declarativa das métricas MRR)
-│       ├── subscribers.config.jsx        (Ficha técnica declarativa da tabela de assinantes)
-│       └── deliveries.config.jsx         (Ficha técnica declarativa da expedição de carnes)
-│
-└── src/
-    ├── views/                            (Engine por ScreenType: DashboardView.tsx, TablePageView.tsx)
-    └── app/
-        ├── layout.tsx                    (Layout do SPA)
-        └── page.tsx                      (Renderiza as telas do Admin envelopadas no AppShell)
-```
+Screen nao importa mock/API diretamente nem decide permissao/workflow.
+Copy configuravel referencia locale; dados operacionais nao viram copy de UI.
 
----
+## Builder e preview
 
-## 🔄 O Pipeline de Resolução de Tela sem Fricção
+A descricao editavel mora no config. O motor renderiza os controles existentes.
+Toda opcao configuravel do draft precisa de campo declarativo e visibilidade
+coerente. Adapter sem JSX normaliza e compoe persistencia.
+Preview monta o runtime real, com o mesmo draft e atualizacao imediata.
+Nova capacidade compartilhada respeita aprovacao do AGENTS/workspace.
 
-```text
-Etapa 1: `routes.ts` ─────> Mantém o dicionário mestre de rotas (`mySubscription` -> `/minha-assinatura`).
-Etapa 2: `navigation.ts` ──> Declara itens referenciando `routeKey: "mySubscription"`.
-Etapa 3: `screens.ts` ────> Resolve `screenKey: "home"` para o tipo de tela (`screenType: "home_page"`).
-Etapa 4: `pages/*.jsx` ───> Entrega o manifesto declarativo (título, subtítulo, seções, botões).
-Etapa 5: `src/views/` ────> A engine do ScreenType recebe o manifesto e renderiza usando os componentes de `foundation/`.
-```
+## Transicao e verificacao
+
+Shells antigos so podem ser retirados depois de rastrear imports/consumidores
+e verificar a substituicao. Nao restaurar legado para evitar corrigir config.
+Confira config -> resolver -> AppShell -> DOM e navegue pelos placements
+desktop/mobile. Build isolado nao prova BottomTabBar visivel ou acao funcional.
+Matriz de comandos em CODEX_ENTRYPOINTS.md.

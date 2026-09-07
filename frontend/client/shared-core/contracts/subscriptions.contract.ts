@@ -49,6 +49,7 @@ export interface ClientSubscriptionCycleItemDto {
   quantity: string;
   measurement_unit_key?: string | null;
   status: "pending" | "selected" | "reserved" | "fulfilled" | "cancelled";
+  metadata?: Record<string, unknown>;
 }
 
 export interface ClientSubscriptionCycleDto {
@@ -59,6 +60,7 @@ export interface ClientSubscriptionCycleDto {
   ends_at: string;
   closed_at?: string | null;
   items?: ClientSubscriptionCycleItemDto[];
+  metadata?: Record<string, unknown>;
 }
 
 export interface ClientSubscriptionDto {

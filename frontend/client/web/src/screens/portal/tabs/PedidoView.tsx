@@ -3,8 +3,8 @@
 import React from "react";
 import { Container } from "@foundation/ui";
 import { AuthModal, BottomTabBar, PortalHeader } from "../../../legacy/app-shell";
-import { clientPtBR } from "@/locales/pt-BR";
 import { useClientCheckout } from "@/hooks/useClientCheckout";
+import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { formatClientCheckoutMeasure, formatClientCheckoutMoney } from "@royalprime/client/utils/checkout.formatters";
 import styles from "./PedidoView.module.css";
 import { ActivePlanPanel } from "./pedido/ActivePlanPanel";
@@ -25,7 +25,7 @@ export interface PedidoViewProps {
 }
 
 export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader = true }) => {
-  const strings = clientPtBR.pedido;
+  const strings = useClientStrings().pedido;
   const runtime = usePedidoRuntime();
   const { isDark, isDemoAuthenticated, themeMode, tokens } = runtime;
   const checkout = useClientCheckout({ isAuthenticated: isDemoAuthenticated });
@@ -107,19 +107,12 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
     placeholder: strings.deliveryStep.common.addressPlaceholders[field.placeholderKey],
   }));
 
-  const cardSurface: React.CSSProperties = {
-    background: tokens.surfaceContainer,
-    boxShadow: "var(--theme--elevation-md-shadow, none)",
-  };
-
   const renderStepTracker = () => (
     <CheckoutStepTracker
-      cardSurface={cardSurface}
       completedLabel={strings.steps.completed}
       currentStep={currentStep}
       stepOrder={config.stepOrder}
       steps={strings.steps}
-      tokens={tokens}
     />
   );
 
@@ -143,7 +136,6 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
               subscriptionCycleCharcoalUsed={subscriptionCycleCharcoalUsed}
               subscriptionCycleCutsUsed={subscriptionCycleCutsUsed}
               subscriptionCycleWeightUsed={subscriptionCycleWeightUsed}
-              tokens={tokens}
             />
           ) : null}
           <ProductCatalogStep
@@ -197,7 +189,6 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
             selectedFreight={selectedFreight}
             selectedMode={selectedMode}
             strings={strings}
-            tokens={tokens}
           />
         </div>
       );
@@ -218,7 +209,6 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
             selectedInstallments={selectedInstallments}
             selectedMode={selectedMode}
             selectedPaymentMethod={selectedPaymentMethod}
-            tokens={tokens}
           />
         </div>
       );
@@ -258,14 +248,7 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
   };
 
   return (
-    <div
-      className={styles.pageRoot}
-      style={{
-        "--pedido-page-bg": tokens.background,
-        "--pedido-page-text": tokens.text,
-        "--pedido-page-min-height": showHeader ? "100vh" : "auto",
-      } as React.CSSProperties}
-    >
+    <div className={styles.pageRoot} data-standalone={showHeader || undefined}>
       {showHeader ? (
         <PortalHeader
           activeTab="produtos"
@@ -281,20 +264,18 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
           width="wide"
           gutter="page"
         >
-          <PedidoHero cardSurface={cardSurface} hasMode={hasMode} strings={strings.hero} tokens={tokens} />
+          <PedidoHero hasMode={hasMode} strings={strings.hero} />
           <ModeSelector
             activeCycleUsage={activeCycleUsage}
             activeSubscription={activeSubscription}
             activeSubscriptionLabel={activeSubscriptionLabel}
             activeSubscriptionPlan={activeSubscriptionPlan}
-            cardSurface={cardSurface}
             formatMeasure={formatClientCheckoutMeasure}
             hasMode={hasMode}
             modeOrder={config.modeOrder}
             onSelectMode={actions.selectMode}
             selectedMode={selectedMode}
             strings={strings}
-            tokens={tokens}
           />
 
           {hasMode && selectedMode ? (
@@ -369,7 +350,6 @@ export const PedidoView: React.FC<PedidoViewProps> = ({ onNavigate, showHeader =
           onSelectCategory={actions.setSelectedCategoryId}
           selectedCategoryId={selectedCategoryId}
           strings={strings.filters}
-          tokens={tokens}
         />
       ) : null}
     </div>

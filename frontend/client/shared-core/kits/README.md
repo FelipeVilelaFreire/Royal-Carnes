@@ -24,5 +24,13 @@ Primeiro corte recomendado:
 
 ```text
 orders
-deliveries
+subscriptions
+```
+
+Ledger atual:
+
+```text
+docs/kits/KITS_RUNTIME_LEDGER.md
+docs/handoff/09-meus-pedidos-render-only-audit.md
+docs/handoff/10-minha-caixa-render-only-audit.md
 ```

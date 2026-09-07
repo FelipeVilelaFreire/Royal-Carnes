@@ -67,18 +67,6 @@ export interface ProductItemCardProps {
 
 const joinClassName = (...values: Array<string | undefined>) => values.filter(Boolean).join(" ");
 
-const quantityButtonStyle = {
-  "--ui-button-font-size": "var(--theme--typography-sizeLg)",
-  "--ui-button-font-weight": "var(--theme--typography-bold)",
-  "--ui-button-height": "var(--theme--dimensions-height-md)",
-  "--ui-button-min-width": "var(--theme--dimensions-height-md)",
-  "--ui-button-padding-x": "var(--theme--spacing-space2xs)",
-  "--ui-button-padding-y": "var(--theme--spacing-space2xs)",
-  "--ui-surface-bg": "transparent",
-  "--ui-surface-border": "transparent",
-  "--ui-surface-color": "var(--product-card-accent)",
-} as React.CSSProperties;
-
 export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   style,
   name,
@@ -271,7 +259,6 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                   className={styles.quantityButton}
                   onClick={onDecrease}
                   size="sm"
-                  style={quantityButtonStyle}
                   tone="neutral"
                   type="button"
                 >
@@ -285,7 +272,6 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                   disabled={actionDisabled}
                   onClick={onAction}
                   size="sm"
-                  style={quantityButtonStyle}
                   tone="neutral"
                   type="button"
                 >

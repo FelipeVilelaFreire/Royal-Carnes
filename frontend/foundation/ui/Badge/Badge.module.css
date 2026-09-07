@@ -1,0 +1,21 @@
+.badge {
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--ui-badge-text-color, var(--ui-surface-color, var(--theme--color-text)));
+  display: inline-flex;
+  font-family: var(--ui-badge-font-family);
+  font-size: var(--ui-badge-font-size);
+  font-weight: var(--ui-badge-font-weight);
+  inline-size: var(--ui-badge-inline-size, auto);
+  justify-content: center;
+  letter-spacing: var(--ui-badge-letter-spacing);
+  line-height: var(--ui-badge-line-height);
+  min-block-size: var(--ui-badge-min-block-size, auto);
+  padding: var(--ui-badge-padding-y) var(--ui-badge-padding-x);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge[data-width="full"] {
+  inline-size: 100%;
+}

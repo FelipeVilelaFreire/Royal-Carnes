@@ -8,7 +8,6 @@ import type {
 } from "@/view-models/checkout.view-model";
 import type { ClientCheckoutAddressFieldKey } from "@/manifest/checkout.config";
 import { CheckoutPanel } from "./CheckoutPanel";
-import { getCheckoutPrimaryActionStyle, getCheckoutSubtleActionStyle } from "./actionStyles";
 import styles from "../PedidoView.module.css";
 
 export interface DeliveryStepProps {
@@ -34,15 +33,6 @@ export interface DeliveryStepProps {
   selectedFreight: ClientCheckoutFreightOptionKey | null;
   selectedMode: ClientCheckoutProductExperience;
   strings: any;
-  tokens: {
-    background?: string;
-    border: string;
-    copper: string;
-    ivory?: string;
-    surfaceContainer: string;
-    text: string;
-    textMuted: string;
-  };
 }
 
 export const DeliveryStep: React.FC<DeliveryStepProps> = ({
@@ -68,18 +58,18 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
   selectedFreight,
   selectedMode,
   strings,
-  tokens,
 }) => (
   <CheckoutPanel
     badge={strings.deliveryStep.badge}
     description={deliveryCopy?.description || strings.deliveryStep.description}
     title={strings.deliveryStep.title}
-    tokens={tokens}
   >
     <Grid className={styles.infoGrid}>
       {(deliveryCopy?.fields || []).map((field: string) => (
         <Surface appearance="soft" className={styles.infoTile} key={field}>
-          <CheckIcon size={16} color={tokens.copper} />
+          <span className={styles.infoIcon}>
+            <CheckIcon size={16} />
+          </span>
           <Text as="strong" tone="inherit" variant="body" weight="semibold">
             {field}
           </Text>
@@ -103,20 +93,6 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
                 className={styles.addressOption}
                 key={address.id}
                 onClick={() => onSelectAddress(address.id)}
-                style={{
-                  "--pedido-option-border": isSelectedAddress ? tokens.copper : tokens.border,
-                  "--pedido-option-bg": tokens.surfaceContainer,
-                  "--pedido-option-text": tokens.text,
-                  "--pedido-option-muted": tokens.textMuted,
-                  "--pedido-option-accent": tokens.copper,
-                  "--ui-surface-bg": isSelectedAddress
-                    ? "color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg))"
-                    : "var(--pedido-option-bg)",
-                  "--ui-surface-border": isSelectedAddress
-                    ? "color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border))"
-                    : "var(--pedido-option-border)",
-                  "--ui-surface-color": "var(--pedido-option-text)",
-                } as React.CSSProperties}
                 tone="neutral"
                 type="button"
               >
@@ -145,7 +121,7 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
                   </Text>
                   {isSelectedAddress ? (
                     <Text as="span" className={styles.selectedHint} tone="inherit" variant="caption">
-                      <CheckIcon size={14} color={tokens.copper} />
+                      <CheckIcon size={14} />
                       {strings.deliveryStep.common.addressHint}
                     </Text>
                   ) : null}
@@ -157,8 +133,8 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
 
         <Button
           appearance="outline"
+          className={styles.checkoutSubtleAction}
           size="sm"
-          style={getCheckoutSubtleActionStyle(tokens)}
           tone="neutral"
           type="button"
           onClick={() => onSetAddingAddress(true)}
@@ -188,7 +164,7 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
               <Button appearance="outline" onClick={() => onSetAddingAddress(false)}>
                 {strings.deliveryStep.common.cancelAddress}
               </Button>
-              <Button appearance="solid" tone="neutral" style={getCheckoutPrimaryActionStyle(tokens)} onClick={onSubmitNewAddress}>
+              <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onSubmitNewAddress}>
                 {strings.deliveryStep.common.saveAddress}
               </Button>
             </Inline>
@@ -201,7 +177,7 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
           <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
             {strings.deliveryStep.royalBox.deliveryDayLabel}
           </Text>
-          <Text tone="inherit" style={{ color: tokens.textMuted }}>
+          <Text className={styles.optionDescription} tone="inherit">
             {strings.deliveryStep.royalBox.deliveryDayHint}
           </Text>
           <Grid className={styles.compactOptionGrid}>
@@ -215,19 +191,6 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
                   className={styles.choiceButton}
                   key={day}
                   onClick={() => onSelectDeliveryDay(day)}
-                  style={{
-                    "--pedido-option-border": isActive ? tokens.copper : tokens.border,
-                    "--pedido-option-bg": tokens.surfaceContainer,
-                    "--pedido-option-accent": tokens.copper,
-                    "--pedido-option-text": isActive ? tokens.copper : tokens.text,
-                    "--ui-surface-bg": isActive
-                      ? "color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg))"
-                      : "var(--pedido-option-bg)",
-                    "--ui-surface-border": isActive
-                      ? "color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border))"
-                      : "var(--pedido-option-border)",
-                    "--ui-surface-color": "var(--pedido-option-text)",
-                  } as React.CSSProperties}
                   tone="neutral"
                   type="button"
                 >
@@ -256,20 +219,6 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
                   className={styles.freightButton}
                   key={freight.key}
                   onClick={() => onSelectFreight(freight.key)}
-                  style={{
-                    "--pedido-option-border": isActive ? tokens.copper : tokens.border,
-                    "--pedido-option-bg": tokens.surfaceContainer,
-                    "--pedido-option-accent": tokens.copper,
-                    "--pedido-option-text": isActive ? tokens.copper : tokens.text,
-                    "--pedido-option-muted": tokens.textMuted,
-                    "--ui-surface-bg": isActive
-                      ? "color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg))"
-                      : "var(--pedido-option-bg)",
-                    "--ui-surface-border": isActive
-                      ? "color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border))"
-                      : "var(--pedido-option-border)",
-                    "--ui-surface-color": "var(--pedido-option-text)",
-                  } as React.CSSProperties}
                   tone="neutral"
                   type="button"
                 >
@@ -289,7 +238,7 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
                 ? strings.deliveryStep.royalDelivery.calculatedFreight
                 : strings.deliveryStep.royalDelivery.includedFreight}
           </Text>
-          <Text as="strong" style={{ color: tokens.copper }} tone="inherit" variant="body">
+          <Text as="strong" className={styles.summaryValue} tone="inherit" variant="body">
             {selectedMode === "royalDelivery" && !selectedFreight
               ? strings.summary.freightNotSelected
               : formatMoney(currentFreightPrice)}
@@ -303,7 +252,7 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
         <Button appearance="outline" onClick={onBack}>
           {strings.deliveryStep.back}
         </Button>
-        <Button appearance="solid" tone="neutral" style={getCheckoutPrimaryActionStyle(tokens)} onClick={onNext}>
+        <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onNext}>
           {strings.deliveryStep.next}
         </Button>
       </Inline>

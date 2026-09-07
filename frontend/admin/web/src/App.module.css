@@ -1,0 +1,4 @@
+.adminContent {
+  background: var(--app-shell-background);
+  min-height: 100vh;
+}

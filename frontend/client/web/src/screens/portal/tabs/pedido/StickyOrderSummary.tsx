@@ -2,7 +2,6 @@ import React from "react";
 import { Button, Stack, Surface, Text } from "@foundation/ui";
 import type { ClientCheckoutStepKey } from "@/manifest/checkout.config";
 import type { ClientCheckoutProduct, ClientCheckoutProductExperience } from "@/view-models/checkout.view-model";
-import { getCheckoutPrimaryActionStyle, getCheckoutSubtleActionStyle } from "./actionStyles";
 import { SummaryRow } from "./SummaryRow";
 import styles from "../PedidoView.module.css";
 
@@ -106,20 +105,10 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
   subscriptionSummaryUsage,
   tokens,
 }) => {
-  const summaryStyle = {
-    "--pedido-summary-bg": tokens.surfaceContainer,
-    "--pedido-summary-border": tokens.border,
-    "--pedido-summary-text": tokens.text,
-    "--pedido-summary-muted": tokens.textMuted,
-    "--ui-surface-bg": tokens.surfaceContainer,
-    "--ui-surface-border": tokens.border,
-    "--ui-surface-color": tokens.text,
-  } as React.CSSProperties;
-
   return (
-    <Surface appearance="soft" as="aside" className={styles.summary} style={summaryStyle}>
+    <Surface appearance="soft" as="aside" className={styles.summary}>
       <Stack gap="md">
-        <Text as="h2" variant="h3" tone="inherit" style={{ color: tokens.text }}>
+        <Text as="h2" className={styles.summaryTitle} variant="h3" tone="inherit">
           {strings.summary.title}
         </Text>
 
@@ -228,14 +217,14 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
               <Stack gap="xs">
                 {selectedProductEntries.slice(0, 5).map(({ product, quantity }) => (
                   <div key={product.id} className={styles.summaryItem}>
-                    <Text as="span" variant="caption" tone="inherit" style={{ color: tokens.textMuted }}>
+                    <Text as="span" className={styles.summaryMutedText} variant="caption" tone="inherit">
                       {quantity}x {product.name}
                     </Text>
                     {selectedMode === "subscription" ? (
                       <Button
                         appearance="transparent"
+                        className={styles.checkoutSubtleAction}
                         size="sm"
-                        style={getCheckoutSubtleActionStyle(tokens)}
                         tone="neutral"
                         type="button"
                         onClick={() => onRemoveProduct(product.id)}
@@ -243,30 +232,30 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
                         {strings.summary.remove}
                       </Button>
                     ) : (
-                      <Text as="span" variant="caption" tone="inherit" style={{ color: tokens.textMuted }}>
-                        {formatMoney(product.price * quantity)}
-                      </Text>
+                    <Text as="span" className={styles.summaryMutedText} variant="caption" tone="inherit">
+                      {formatMoney(product.price * quantity)}
+                    </Text>
                     )}
                   </div>
                 ))}
               </Stack>
             ) : (
-              <Text tone="inherit" style={{ color: tokens.textMuted }}>
+              <Text className={styles.summaryMutedText} tone="inherit">
                 {strings.summary.placeholder}
               </Text>
             )}
 
             <div className={styles.summaryTotal}>
-              <Text as="span" variant="caption" tone="inherit" style={{ color: tokens.textMuted, fontWeight: 800, textTransform: "uppercase" }}>
+              <Text as="span" className={styles.summaryTotalLabel} variant="caption" tone="inherit">
                 {selectedMode === "subscription"
                   ? activeSubscription ? strings.summary.activeSubscriptionLabel : strings.summary.fixedPlanPrice
                   : strings.summary.variableEstimate}
               </Text>
-              <Text as="strong" variant="h3" tone="inherit" style={{ color: tokens.text }}>
+              <Text as="strong" className={styles.summaryTotalValue} variant="h3" tone="inherit">
                 {selectedMode === "subscription" ? activeSubscriptionLabel || formatMoney(currentSubscriptionPlan.monthlyPrice) : formatMoney(orderEstimateTotal)}
               </Text>
               {selectedMode === "subscription" ? (
-                <Text variant="caption" tone="inherit" style={{ color: tokens.textMuted }}>
+                <Text className={styles.summaryMutedText} variant="caption" tone="inherit">
                   {activeSubscription
                     ? `${strings.summary.subscriptionRenewPrefix} ${activeSubscription.nextBillingLabel}. ${strings.summary.activeSubscriptionHintSuffix}`
                     : strings.summary.noVariableEstimate}
@@ -274,7 +263,7 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
               ) : null}
             </div>
 
-            <Button appearance="solid" tone="neutral" style={getCheckoutPrimaryActionStyle(tokens, { width: "100%" })} onClick={onNextStep}>
+            <Button appearance="solid" className={styles.summaryPrimaryAction} tone="neutral" onClick={onNextStep}>
               {currentStep === "montagem"
                 ? strings.summary.nextStep
                 : currentStep === "entrega"
@@ -283,7 +272,7 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
             </Button>
           </>
         ) : (
-          <Text tone="inherit" style={{ color: tokens.textMuted }}>
+          <Text className={styles.summaryMutedText} tone="inherit">
             {strings.summary.empty}
           </Text>
         )}

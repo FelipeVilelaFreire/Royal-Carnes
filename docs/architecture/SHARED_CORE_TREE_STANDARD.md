@@ -1,5 +1,10 @@
 # Shared-Core Tree Standard
 
+> Status: referencia ou registro de estado; nao e contrato ativo.
+> Regras e leitura por tarefa: [CODEX_ENTRYPOINTS.md](../../docs/CODEX_ENTRYPOINTS.md).
+> Trees, exemplos, proximos passos e instrucoes antigas abaixo devem ser
+> confrontados com os contratos ativos e o codigo; nao autorizam excecoes.
+
 ## Objetivo
 
 Os tres shared-cores do frontend devem seguir a mesma gramatica de pastas para

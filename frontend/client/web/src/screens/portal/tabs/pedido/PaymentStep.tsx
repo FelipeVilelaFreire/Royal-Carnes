@@ -6,7 +6,6 @@ import type {
   ClientCheckoutProductExperience,
 } from "@/view-models/checkout.view-model";
 import { CheckoutPanel } from "./CheckoutPanel";
-import { getCheckoutPrimaryActionStyle } from "./actionStyles";
 import styles from "../PedidoView.module.css";
 
 export interface PaymentStepProps {
@@ -20,15 +19,6 @@ export interface PaymentStepProps {
   selectedInstallments: number;
   selectedMode: ClientCheckoutProductExperience;
   selectedPaymentMethod: ClientCheckoutPaymentMethodKey;
-  tokens: {
-    background?: string;
-    border: string;
-    copper: string;
-    ivory?: string;
-    surfaceContainer: string;
-    text: string;
-    textMuted: string;
-  };
 }
 
 export const PaymentStep: React.FC<PaymentStepProps> = ({
@@ -42,13 +32,11 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
   selectedInstallments,
   selectedMode,
   selectedPaymentMethod,
-  tokens,
 }) => (
   <CheckoutPanel
     badge={paymentCopy.badge}
     description={paymentCopy.description}
     title={paymentCopy.title}
-    tokens={tokens}
   >
     <Stack gap="lg">
       <Stack gap="sm">
@@ -66,21 +54,6 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
                 className={styles.paymentMethodButton}
                 key={method.key}
                 onClick={() => onSelectPaymentMethod(method.key)}
-                style={{
-                  "--pedido-option-border": isActive ? tokens.copper : tokens.border,
-                  "--pedido-option-bg": tokens.surfaceContainer,
-                  "--pedido-option-text": tokens.text,
-                  "--pedido-option-muted": tokens.textMuted,
-                  "--pedido-option-accent": tokens.copper,
-                  "--pedido-option-accent-contrast": tokens.ivory || tokens.surfaceContainer,
-                  "--ui-surface-bg": isActive
-                    ? "color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg))"
-                    : "var(--pedido-option-bg)",
-                  "--ui-surface-border": isActive
-                    ? "color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border))"
-                    : "var(--pedido-option-border)",
-                  "--ui-surface-color": "var(--pedido-option-text)",
-                } as React.CSSProperties}
                 tone="neutral"
                 type="button"
               >
@@ -91,7 +64,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
                   <Text as="strong" tone="inherit" variant="body" weight="semibold">
                     {method.label}
                   </Text>
-                  <Text tone="inherit" variant="caption" style={{ color: tokens.textMuted }}>
+                  <Text className={styles.optionDescription} tone="inherit" variant="caption">
                     {method.description}
                   </Text>
                 </span>
@@ -122,19 +95,6 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
                   className={styles.installmentButton}
                   key={installment}
                   onClick={() => onSelectInstallments(installment)}
-                  style={{
-                    "--pedido-option-border": isActive ? tokens.copper : tokens.border,
-                    "--pedido-option-bg": tokens.surfaceContainer,
-                    "--pedido-option-accent": tokens.copper,
-                    "--pedido-option-text": isActive ? tokens.copper : tokens.text,
-                    "--ui-surface-bg": isActive
-                      ? "color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg))"
-                      : "var(--pedido-option-bg)",
-                    "--ui-surface-border": isActive
-                      ? "color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border))"
-                      : "var(--pedido-option-border)",
-                    "--ui-surface-color": "var(--pedido-option-text)",
-                  } as React.CSSProperties}
                   tone="neutral"
                   type="button"
                 >
@@ -151,7 +111,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
           <Text as="strong" tone="inherit" variant="body" weight="semibold">
             {paymentCopy.recurrenceTitle}
           </Text>
-          <Text tone="inherit" style={{ color: tokens.textMuted }}>
+          <Text className={styles.optionDescription} tone="inherit">
             {paymentCopy.recurrenceDescription}
           </Text>
         </Surface>
@@ -161,7 +121,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
         <Button appearance="outline" onClick={onBack}>
           {paymentCopy.back}
         </Button>
-        <Button appearance="solid" tone="neutral" style={getCheckoutPrimaryActionStyle(tokens)} onClick={onNext}>
+        <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onNext}>
           {paymentCopy.next}
         </Button>
       </Inline>

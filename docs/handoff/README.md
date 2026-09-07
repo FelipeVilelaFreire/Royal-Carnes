@@ -1,5 +1,10 @@
 # Frontend Render-Only Handoff
 
+> Status: referencia ou registro de estado; nao e contrato ativo.
+> Regras e leitura por tarefa: [CODEX_ENTRYPOINTS.md](../../docs/CODEX_ENTRYPOINTS.md).
+> Trees, exemplos, proximos passos e instrucoes antigas abaixo devem ser
+> confrontados com os contratos ativos e o codigo; nao autorizam excecoes.
+
 Use este pacote para outra IA continuar a migracao do frontend sem perder a
 direcao arquitetural.
 
@@ -54,6 +59,10 @@ foundation
 05-checklists-and-validation.md
 06-frontend-orders-deliveries-contract-alignment.md
 07-montarbox-pedidoview-phase1-map.md
+08-perfil-minhaconta-phase1-audit.md
+09-meus-pedidos-render-only-audit.md
+10-minha-caixa-render-only-audit.md
+11-admin-extraction-strategy.md
 ```
 
 Audit complementar:
@@ -87,12 +96,11 @@ docs/handoff/06-frontend-orders-deliveries-contract-alignment.md
 ## Ordem Recomendada
 
 ```text
-1. Ler 07-montarbox-pedidoview-phase1-map.md.
-2. Continuar o proximo corte de MontarBox/PedidoView: CSS/layout e Foundation Button/Input.
-3. Extrair componentes locais em tabs/pedido/ somente quando reduzirem complexidade real.
+1. Client segue por cortes de tela: MeusPedidos, MinhaCaixa e MeuClube.
+2. Admin segue por 11-admin-extraction-strategy.md.
+3. Admin Dashboard/ListPage/DetailPage devem ficar render-only com
+   status/copy/columns/actions vindos de config/view-model/locales.
 4. Avaliar product-components/ecommerce depois de prova em outra tela.
-5. MeusPedidosView, MinhaContaView e OrderDetailModal seguem render-only.
-6. Admin Dashboard/ListPage/DetailPage com status/copy via config/view-model.
 ```
 
 ## Corte Copy-Only Recomendado

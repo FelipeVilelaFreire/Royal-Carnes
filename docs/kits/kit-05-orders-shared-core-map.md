@@ -36,6 +36,7 @@ frontend/shared-core/
 frontend/client/shared-core/
   contracts/orders.contract.ts
   api/orders.api.ts
+  data-sources/orders.fallback.ts
   mappers/orders.mapper.ts
   view-models/orders.view-model.ts
   hooks/useClientOrders.ts
@@ -87,6 +88,7 @@ listar meus pedidos
 criar pedido do cliente
 abrir detalhe do meu pedido
 form readiness minimo
+fallback demonstrativo explicito para fase 1
 ```
 
 O client nao muda status e nao chama endpoint admin.
@@ -138,4 +140,33 @@ docs do kit atualizadas
 build client OK
 build admin OK
 backend check OK
+```
+
+## Corte Render-Only Atual
+
+```text
+frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
+frontend/client/mobile/src/screens/portal/tabs/MeusPedidosView.tsx
+docs/handoff/09-meus-pedidos-render-only-audit.md
+```
+
+Contrato:
+
+```text
+MeusPedidosView
+  -> useClientOrders({ fallbackOnError: true })
+  -> createClientOrdersViewModel()
+  -> Foundation UI no web
+  -> mobile UI no native-ready inicial
+```
+
+Regras preservadas:
+
+```text
+tela nao importa mocks diretamente
+tela nao importa clientPtBR diretamente
+tela nao importa legacy/design-system
+tela nao importa legacy/app-shell
+tela nao calcula preco/status/workflow real
+status visual usa Badge Foundation por tone
 ```

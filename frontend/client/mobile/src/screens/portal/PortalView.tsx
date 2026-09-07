@@ -7,12 +7,13 @@ import { createMobileAppShellConfig, type AppThemeMode } from "../../shell/AppSh
 import { CortesView } from "./tabs/CortesView";
 import { HomeView } from "./tabs/HomeView";
 import { MinhaContaView } from "./tabs/MinhaContaView";
+import { MinhaCaixaView } from "./tabs/MinhaCaixaView";
 import { MeusPedidosView } from "./tabs/MeusPedidosView";
 import { PedidoView } from "./tabs/PedidoView";
 
 export interface PortalViewProps {
   hosts: NativeAppShellHostComponents;
-  initialTab?: "cortes" | "home" | "meusPedidos" | "minhaConta" | "produtos";
+  initialTab?: "cortes" | "home" | "meusPedidos" | "minhaCaixa" | "minhaConta" | "produtos";
   themeMode?: AppThemeMode;
 }
 
@@ -29,9 +30,11 @@ export const PortalView: React.FC<PortalViewProps> = ({
         ? clientRoutes.produtos
         : activeScreenKey === "meusPedidos"
           ? clientRoutes.meusPedidos
-          : activeScreenKey === "minhaConta"
-            ? clientRoutes.minhaConta
-            : clientRoutes.home;
+          : activeScreenKey === "minhaCaixa"
+            ? clientRoutes.minhaCaixa
+            : activeScreenKey === "minhaConta"
+              ? clientRoutes.minhaConta
+              : clientRoutes.home;
 
   return (
     <AppShell
@@ -48,9 +51,11 @@ export const PortalView: React.FC<PortalViewProps> = ({
               ? "produtos"
               : item.key === "meusPedidos"
                 ? "meusPedidos"
-                : item.key === "minhaConta"
-                  ? "minhaConta"
-                  : "home"
+                : item.key === "minhaCaixa"
+                  ? "minhaCaixa"
+                  : item.key === "minhaConta"
+                    ? "minhaConta"
+                    : "home"
         );
       }}
       routesMap={clientRoutes}
@@ -62,6 +67,8 @@ export const PortalView: React.FC<PortalViewProps> = ({
         <PedidoView activePath={activePath} themeMode={themeMode} />
       ) : activeScreenKey === "meusPedidos" ? (
         <MeusPedidosView activePath={activePath} themeMode={themeMode} />
+      ) : activeScreenKey === "minhaCaixa" ? (
+        <MinhaCaixaView activePath={activePath} themeMode={themeMode} />
       ) : activeScreenKey === "minhaConta" ? (
         <MinhaContaView activePath={activePath} themeMode={themeMode} />
       ) : (

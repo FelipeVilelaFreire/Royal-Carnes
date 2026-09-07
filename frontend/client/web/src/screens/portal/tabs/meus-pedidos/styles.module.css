@@ -22,60 +22,6 @@
   margin-bottom: var(--theme--spacing-spaceLg);
 }
 
-.sourceBadge,
-.statusPill,
-.cycleBadge {
-  align-items: center;
-  border: var(--theme--borders-hairline) solid var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
-  border-radius: var(--theme--radius-full);
-  display: inline-flex;
-  font-size: var(--theme--typography-sizeXs);
-  font-weight: var(--theme--typography-bold);
-  gap: var(--theme--spacing-space2xs);
-  line-height: var(--theme--typography-lineHeightXs);
-  padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceSm);
-  width: fit-content;
-}
-
-.sourceBadge,
-.cycleBadge {
-  background: color-mix(in srgb, var(--theme--color-surface) 62%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 38%);
-  color: var(--theme--color-text);
-}
-
-.statusPill {
-  background: var(--theme--color-surface-container);
-  color: var(--theme--color-text);
-  text-transform: uppercase;
-}
-
-.statusPill[data-tone="active"] {
-  border-color: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
-  color: var(--theme--color-accent-text, var(--theme--color-accentText, var(--theme--color-text)));
-}
-
-.statusPill[data-tone="success"] {
-  border-color: var(--theme--status-active);
-  color: var(--theme--status-active);
-}
-
-.statusPill[data-tone="danger"] {
-  border-color: var(--theme--status-canceled);
-  color: var(--theme--status-canceled);
-}
-
-.statusPill[data-tone="pending"] {
-  border-color: var(--theme--status-paused);
-  color: var(--theme--status-paused);
-}
-
-.dot {
-  background: currentColor;
-  border-radius: var(--theme--radius-full);
-  height: var(--theme--spacing-space2xs);
-  width: var(--theme--spacing-space2xs);
-}
-
 .statsGrid,
 .currentGrid,
 .historyRow,
@@ -92,6 +38,9 @@
 }
 
 .statCard {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface-container) 82%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 18%);
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 68%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 32%);
+
   min-height: var(--theme--dimensions-height-3xl);
   position: relative;
 }
@@ -148,6 +97,13 @@
 }
 
 .imagePanel {
+  --ui-card-padding-x: 0;
+  --ui-card-padding-y: 0;
+  --ui-surface-bg: var(--theme--color-surface);
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 64%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 36%);
+  --ui-surface-padding-x: 0;
+  --ui-surface-padding-y: 0;
+
   overflow: hidden;
   padding: 0;
 }
@@ -247,6 +203,31 @@
 .modalItem,
 .cyclePanel {
   min-width: 0;
+}
+
+.orderPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 88%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 12%);
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 58%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 42%);
+}
+
+.historyPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 92%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 8%);
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 76%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 24%);
+}
+
+.cyclePanel {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 84%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 16%);
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 58%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 42%);
+}
+
+.modalMetric {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface-container) 88%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 12%);
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 78%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 22%);
+}
+
+.modalItem {
+  --ui-surface-bg: var(--theme--color-surface-container);
+  --ui-surface-border: var(--theme--color-border);
 }
 
 @keyframes orders-enter {

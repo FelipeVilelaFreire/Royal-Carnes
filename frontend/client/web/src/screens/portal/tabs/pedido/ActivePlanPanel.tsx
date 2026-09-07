@@ -22,13 +22,6 @@ export interface ActivePlanPanelProps {
   subscriptionCycleCharcoalUsed: number;
   subscriptionCycleCutsUsed: number;
   subscriptionCycleWeightUsed: number;
-  tokens: {
-    border: string;
-    copper: string;
-    surfaceContainer: string;
-    text: string;
-    textMuted: string;
-  };
 }
 
 export const ActivePlanPanel: React.FC<ActivePlanPanelProps> = ({
@@ -44,7 +37,6 @@ export const ActivePlanPanel: React.FC<ActivePlanPanelProps> = ({
   subscriptionCycleCharcoalUsed,
   subscriptionCycleCutsUsed,
   subscriptionCycleWeightUsed,
-  tokens,
 }) => {
   const metrics = activeSubscription
     ? [
@@ -74,13 +66,6 @@ export const ActivePlanPanel: React.FC<ActivePlanPanelProps> = ({
     <Surface
       appearance="soft"
       className={styles.activePlanPanel}
-      style={{
-        "--pedido-panel-accent": tokens.copper,
-        "--pedido-panel-bg": tokens.surfaceContainer,
-        "--pedido-panel-border": tokens.border,
-        "--pedido-panel-muted": tokens.textMuted,
-        "--pedido-panel-text": tokens.text,
-      } as React.CSSProperties}
     >
       {activeSubscription ? (
         <Stack className={styles.activePlanContent}>
@@ -92,7 +77,7 @@ export const ActivePlanPanel: React.FC<ActivePlanPanelProps> = ({
             <Text as="h2" className={styles.activePlanTitle} tone="inherit" variant="h3">
               {strings.plans.activeTitle} {activeSubscriptionLabel}
             </Text>
-            <Text tone="inherit" style={{ color: tokens.textMuted }}>
+            <Text className={styles.activePlanDescription} tone="inherit">
               {strings.plans.activeSubtitle}
             </Text>
           </div>
@@ -116,7 +101,7 @@ export const ActivePlanPanel: React.FC<ActivePlanPanelProps> = ({
             <Text as="h2" className={styles.activePlanTitle} tone="inherit" variant="h3">
               {strings.plans.title}
             </Text>
-            <Text tone="inherit" style={{ color: tokens.textMuted }}>
+            <Text className={styles.activePlanDescription} tone="inherit">
               {strings.plans.subtitle}
             </Text>
           </div>
@@ -133,9 +118,6 @@ export const ActivePlanPanel: React.FC<ActivePlanPanelProps> = ({
                   key={plan.id}
                   onClick={() => onSelectPlan(plan.key)}
                   size="md"
-                  style={{
-                    "--pedido-plan-border": isPlanActive ? tokens.copper : tokens.border,
-                  } as React.CSSProperties}
                   tone="neutral"
                   type="button"
                 >

@@ -76,7 +76,11 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
 
   return (
     <UiProvider config={{ theme: config?.theme } as any}>
-      <div className={[styles.shell, model.sidebarEnabled ? styles.shellWithSidebar : ""].filter(Boolean).join(" ")} style={model.cssVars as React.CSSProperties}>
+      <div
+        className={[styles.shell, model.sidebarEnabled ? styles.shellWithSidebar : ""].filter(Boolean).join(" ")}
+        data-app-shell-mode={model.effectiveMode}
+        style={model.cssVars as React.CSSProperties}
+      >
       <AppShellSidebar
         config={config}
         isCollapsed={isSidebarCollapsed}

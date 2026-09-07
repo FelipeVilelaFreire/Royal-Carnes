@@ -16,14 +16,6 @@ export interface ProductFilterModalProps {
     close: string;
     modalTitle: string;
   };
-  tokens: {
-    background: string;
-    border: string;
-    copper: string;
-    surfaceContainer: string;
-    text: string;
-    textMuted: string;
-  };
 }
 
 export const ProductFilterModal: React.FC<ProductFilterModalProps> = ({
@@ -33,29 +25,14 @@ export const ProductFilterModal: React.FC<ProductFilterModalProps> = ({
   onSelectCategory,
   selectedCategoryId,
   strings,
-  tokens,
 }) => {
-  const primaryActionStyle = {
-    "--ui-surface-bg": tokens.text,
-    "--ui-surface-border": tokens.text,
-    "--ui-surface-color": tokens.background,
-  } as React.CSSProperties;
-
-  const categoryListStyle = {
-    "--pedido-filter-option-border": tokens.border,
-    "--pedido-filter-option-color": tokens.text,
-    "--pedido-filter-option-active-bg": tokens.surfaceContainer,
-    "--pedido-filter-option-active-border": tokens.text,
-    "--pedido-filter-option-active-color": tokens.text,
-  } as React.CSSProperties;
-
   return (
     <Modal closeLabel={strings.close} onClose={onClose} open title={strings.modalTitle} variant="auto">
       <Stack gap="md">
-        <Text tone="inherit" variant="body" style={{ color: tokens.textMuted, fontWeight: 800 }}>
+        <Text className={styles.categoryTitle} tone="inherit" variant="body">
           {strings.categoryTitle}
         </Text>
-        <Stack className={styles.categoryList} role="listbox" style={categoryListStyle}>
+        <Stack className={styles.categoryList} role="listbox">
           {[{ id: "all", name: strings.allCategories }, ...categories].map((category) => {
             const active = selectedCategoryId === category.id;
 
@@ -80,7 +57,7 @@ export const ProductFilterModal: React.FC<ProductFilterModalProps> = ({
         <Button appearance="outline" onClick={onClose}>
           {strings.close}
         </Button>
-        <Button appearance="solid" tone="neutral" style={primaryActionStyle} onClick={onApply}>
+        <Button appearance="solid" className={styles.primaryAction} tone="neutral" onClick={onApply}>
           {strings.apply}
         </Button>
       </Inline>

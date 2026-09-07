@@ -67,6 +67,7 @@ export function mapClientSubscriptionCycleItemDto(
     quantity: String(dto.quantity),
     measurementUnitKey: dto.measurement_unit_key ?? null,
     status: dto.status,
+    metadata: dto.metadata || {},
   };
 }
 
@@ -81,6 +82,7 @@ export function mapClientSubscriptionCycleDto(
     endsAt: dto.ends_at,
     closedAt: dto.closed_at ?? null,
     items: (dto.items || []).map(mapClientSubscriptionCycleItemDto),
+    metadata: dto.metadata || {},
   };
 }
 

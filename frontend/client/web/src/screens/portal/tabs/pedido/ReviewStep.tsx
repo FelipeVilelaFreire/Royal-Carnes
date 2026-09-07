@@ -9,7 +9,6 @@ import type {
 } from "@/view-models/checkout.view-model";
 import { CheckoutPanel } from "./CheckoutPanel";
 import { SummaryRow } from "./SummaryRow";
-import { getCheckoutPrimaryActionStyle } from "./actionStyles";
 import styles from "../PedidoView.module.css";
 
 export interface ReviewStepProps {
@@ -76,7 +75,6 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
     badge={reviewCopy.badge}
     description={reviewCopy.description}
     title={reviewCopy.title}
-    tokens={tokens}
   >
     <Stack gap="lg">
       <Grid className={styles.reviewSummaryGrid}>
@@ -148,20 +146,16 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
               ))}
             </Stack>
           ) : (
-            <Text tone="inherit" style={{ color: tokens.textMuted }}>{reviewCopy.emptyItems}</Text>
+            <Text className={styles.optionDescription} tone="inherit">{reviewCopy.emptyItems}</Text>
           )}
         </Surface>
 
-        <Surface
-          appearance="soft"
-          className={styles.reviewTotalCard}
-          style={{ "--pedido-panel-accent": tokens.copper } as React.CSSProperties}
-        >
+        <Surface appearance="soft" className={styles.reviewTotalCard}>
           <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
             {reviewCopy.totalTitle}
           </Text>
           <Text as="strong" tone="inherit" variant="h2">{formatMoney(finalTotal)}</Text>
-          <Text tone="inherit" style={{ color: tokens.textMuted }}>
+          <Text className={styles.optionDescription} tone="inherit">
             {selectedMode === "subscription" ? reviewCopy.fixedPlanHint : reviewCopy.variableOrderHint}
           </Text>
           {selectedMode === "subscription" ? (
@@ -181,7 +175,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
         <Button appearance="outline" onClick={onBack}>
           {reviewCopy.back}
         </Button>
-        <Button appearance="solid" tone="neutral" style={getCheckoutPrimaryActionStyle(tokens)} onClick={onFinish}>
+        <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onFinish}>
           {reviewCopy.finish}
         </Button>
       </Inline>

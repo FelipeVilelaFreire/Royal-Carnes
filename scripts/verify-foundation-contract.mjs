@@ -53,7 +53,9 @@ mustContain("frontend/foundation/shells/app-shell/index.ts", /export \* from "\.
 mustContain("frontend/foundation/shells/app-shell/index.ts", /export \* from "\.\/foundation";/, "AppShell exports foundation contract");
 mustContain("frontend/foundation/shells/app-shell/index.ts", /AppShellRuntime/, "AppShell exports web runtime");
 mustContain("frontend/foundation/tokens/resolver.ts", /prefix\.startsWith\("z-index"\).*String\(value\)/s, "Theme resolver keeps z-index tokens unitless");
+mustContain("frontend/foundation/tokens/resolver.ts", /prefix\.startsWith\("opacity"\)[\s\S]*numericValue \/ 100/, "Theme resolver emits opacity tokens as unitless ratios");
 mustContain("frontend/foundation/tokens/resolver.ts", /setScaleVariables\(root, "z-index", tokens\.zIndex\)/, "Theme resolver injects z-index tokens");
+mustContain("frontend/foundation/tokens/resolver.ts", /setScaleVariables\(root, "opacity", tokens\.opacity\)/, "Theme resolver injects opacity tokens");
 mustContain("frontend/foundation/ui/core/layout.ts", /resolveLayoutConfig/, "UI Layout core exposes ServiceOS-style config resolver");
 mustContain("frontend/foundation/ui/core/layout.ts", /gridTemplates/, "UI Layout core supports responsive grid template recipes");
 mustContain("frontend/foundation/ui/Layout/Layout.tsx", /useUiConfig/, "Web Layout consumes resolved UI config");
@@ -96,7 +98,9 @@ mustContain("frontend/foundation/shells/app-shell/native/resolver.ts", /resolveN
 mustContain("frontend/foundation/shells/app-shell/native/resolver.ts", /resolveAppShellViewportLayout\(input\.config, "native"\)/, "Native AppShell resolves native viewport layout");
 mustContain("frontend/foundation/shells/app-shell/native/types.ts", /designSystem/, "Native AppShell exposes design system descriptor");
 mustContain("frontend/client/shared-core/navigation/client.navigation.ts", /nativeTabBar\?: boolean/, "Client navigation accepts nativeTabBar placement");
-mustContain("frontend/admin/shared-core/navigation/admin.navigation.ts", /nativeTabBar: boolean/, "Admin navigation declares nativeTabBar placement");
+mustContain("frontend/admin/shared-core/navigation/admin.navigation.ts", /adminNavigationGroups/, "Admin navigation declares reusable groups");
+mustContain("frontend/admin/shared-core/manifest/adminAppShell.config.jsx", /navigationGroups:\s*adminNavigationGroups/, "Admin AppShell manifest consumes navigation groups");
+mustContain("frontend/admin/shared-core/manifest/adminAppShell.config.jsx", /navigationPlacements:\s*{[\s\S]*bottomTabBar:\s*{[\s\S]*routeKeys:/, "Admin AppShell manifest declares bottom tab routes centrally");
 mustContain("frontend/client/shared-core/manifest/portal/appshell.config.jsx", /nativeTabBar:\s*{\s*enabled: true/s, "Client portal manifest enables nativeTabBar");
 mustContain("frontend/client/shared-core/manifest/portal/appshell.config.jsx", /navigationPlacements:\s*{[\s\S]*bottomTabBar:\s*{[\s\S]*routeKeys:/, "Client portal manifest declares bottom tab routes centrally");
 mustContain("frontend/client/shared-core/manifest/portal/appshell.config.jsx", /viewports:\s*{[\s\S]*desktop:[\s\S]*mobile:[\s\S]*native:/, "Client portal AppShell declares layout by viewport");

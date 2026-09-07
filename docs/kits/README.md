@@ -1,5 +1,10 @@
 # RoyalPrime Reusable Kits
 
+> Status: referencia ou registro de estado; nao e contrato ativo.
+> Regras e leitura por tarefa: [CODEX_ENTRYPOINTS.md](../../docs/CODEX_ENTRYPOINTS.md).
+> Trees, exemplos, proximos passos e instrucoes antigas abaixo devem ser
+> confrontados com os contratos ativos e o codigo; nao autorizam excecoes.
+
 Esta pasta documenta capacidades que podem virar kits reutilizaveis em futuros produtos.
 
 O objetivo nao e criar uma biblioteca abstrata agora. O objetivo e deixar claro para uma IA ou desenvolvedor:
@@ -159,6 +164,24 @@ serviceos-candidate
 | Payments | planned | Fase 6/7 | Manual, Pix, gateway, conciliacao |
 | Wallet & Vouchers | planned | Fase 8 | Credito, voucher, saldo, estorno |
 
+## Kits Admin
+
+Os kits em `docs/kits/admin/` existem para permitir trabalho paralelo no Admin.
+Eles nao substituem os kits gerais; eles explicam o recorte operacional do
+Admin para cada capacidade.
+
+```text
+docs/kits/admin/README.md
+docs/kits/admin/admin-operations-kit.md
+docs/kits/admin/admin-screen-types-kit.md
+docs/kits/admin/auth-users-kit.md
+docs/kits/admin/catalog-kit.md
+docs/kits/admin/subscriptions-kit.md
+docs/kits/admin/inventory-kit.md
+docs/kits/admin/orders-kit.md
+docs/kits/admin/fulfillment-delivery-kit.md
+```
+
 Mapas detalhados:
 
 ```text
@@ -167,16 +190,24 @@ docs/architecture/BACKEND_RULES.md
 docs/architecture/SHARED_CORE_RULES.md
 docs/architecture/RENDER_APPS_RULES.md
 docs/kits/SHARED_CORE_ARCHITECTURE_MATRIX.md
+docs/kits/KITS_RUNTIME_LEDGER.md
 docs/kits/kit-01-auth-users-shared-core-map.md
 docs/kits/kit-02-catalog-shared-core-map.md
 docs/kits/kit-03-subscriptions-shared-core-map.md
 docs/kits/kit-04-inventory-shared-core-map.md
 docs/kits/kit-05-orders-shared-core-map.md
 docs/kits/kit-06-fulfillment-delivery-shared-core-map.md
+docs/kits/admin/README.md
 docs/kits/SHARED_CORE_KITS_01_06_HANDOFF.md
 docs/kits/PHASE_2_RENDER_ONLY_SCREEN_PLAN.md
 docs/kits/SHARED_CORE_KIT_RESET_PLAN.md
 docs/kits/SHARED_CORE_KIT_RESET_RESULT.md
+```
+
+Ledger de execucao recente:
+
+```text
+docs/kits/KITS_RUNTIME_LEDGER.md
 ```
 
 ## Fontes De Reuso Do Workspace

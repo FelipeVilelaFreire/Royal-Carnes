@@ -183,6 +183,66 @@ export const clientPtBR = {
       tracking: "Acompanhamento"
     }
   },
+  minhaCaixa: {
+    title: "Minha Caixa",
+    subtitle: "Acompanhe o ciclo atual da assinatura, os itens escolhidos e os produtos liberados para este plano.",
+    source: {
+      fallback: "Dados demonstrativos",
+      api: "Dados da conta"
+    },
+    stats: {
+      plan: "Plano ativo",
+      cycle: "Ciclo",
+      selected: "Itens escolhidos"
+    },
+    states: {
+      error: "Nao foi possivel sincronizar com o backend agora.",
+      noPlan: "Nenhuma assinatura ativa",
+      noPlanDescription: "Ative um plano para montar a caixa recorrente.",
+      noCycle: "Sem ciclo aberto"
+    },
+    cycle: {
+      badge: "Assinatura",
+      title: "Ciclo atual da caixa",
+      numberPrefix: "Ciclo",
+      rangeFallback: "Janela de edicao liberada",
+      open: "Aberto para edicao",
+      locked: "Fechado"
+    },
+    usage: {
+      cuts: "Cortes",
+      protein: "Proteina",
+      charcoal: "Carvao",
+      seasonings: "Temperos",
+      sides: "Acompanhamentos",
+      utensils: "Utensilios"
+    },
+    selected: {
+      title: "Itens selecionados",
+      subtitle: "Composicao atual que sera enviada neste ciclo.",
+      editAction: "Editar montagem",
+      emptyTitle: "Caixa vazia",
+      emptyDescription: "Escolha itens liberados pelo plano para montar este ciclo."
+    },
+    catalog: {
+      title: "Produtos liberados",
+      subtitle: "Lista de fase 1 preparada pelo shared-core para o plano ativo.",
+      select: "Selecionar",
+      selected: "Selecionado",
+      saving: "Salvando selecao..."
+    },
+    summary: {
+      badge: "Resumo",
+      title: "Caixa do ciclo",
+      description: "A tela apenas apresenta o estado vindo do shared-core. Limites e disponibilidade continuam no backend.",
+      plan: "Plano",
+      cycle: "Ciclo",
+      items: "Itens",
+      billing: "Mensalidade",
+      billingFallback: "Plano vigente",
+      primaryAction: "Ver meus pedidos"
+    }
+  },
   pedido: {
     hero: {
       badge: "Pedido Royal Carnes",
@@ -643,20 +703,6 @@ export const clientPtBR = {
       angus: "Linha nobre",
       limited: "Espetinhos"
     }
-  },
-  minhaCaixa: {
-    title: "Minha Caixa",
-    subtitle: "Caixa de Setembro",
-    deliveryDate: "Entrega prevista: 12/09",
-    itemsTitle: "O que vem na sua caixa",
-    statusTitle: "Status do Envio",
-    statusSteps: ["Preparando", "Embalada", "Enviada", "Entregue"],
-    historyTitle: "Histórico de Caixas",
-    historyItems: [
-      { month: "Agosto 2026", count: "3 cortes" },
-      { month: "Julho 2026", count: "4 cortes" },
-      { month: "Junho 2026", count: "3 cortes" }
-    ]
   },
   meuClube: {
     userName: "Felipe",

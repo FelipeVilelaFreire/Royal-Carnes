@@ -57,18 +57,13 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
     <Surface
       appearance="soft"
       className={styles.catalogPanel}
-      style={{
-        "--pedido-panel-bg": tokens.surfaceContainer,
-        "--pedido-panel-border": tokens.border,
-        "--pedido-panel-text": tokens.text,
-      } as React.CSSProperties}
     >
       <Stack gap="lg">
         <Stack className={styles.catalogHeader}>
           <Text as="h2" tone="inherit" variant="h3">
             {strings.catalog.title}
           </Text>
-          <Text tone="inherit" style={{ color: tokens.textMuted }}>
+          <Text className={styles.catalogSubtitle} tone="inherit">
             {strings.catalog.subtitle}
           </Text>
         </Stack>
@@ -87,12 +82,7 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
             type="button"
             onClick={onOpenFilters}
             aria-label={strings.hero.filterLabel}
-            style={{
-              "--ui-surface-bg": tokens.surfaceContainer,
-              "--ui-surface-border": tokens.border,
-              "--ui-surface-color": tokens.text,
-              width: "100%",
-            } as React.CSSProperties}
+            className={styles.filterButton}
           >
             {strings.hero.filterLabel}
           </Button>
@@ -149,11 +139,11 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
           </Grid>
         ) : (
           <Surface appearance="outline" className={styles.emptyCatalog}>
-            <CutMeatIcon size={28} color={tokens.copper} />
+            <CutMeatIcon className={styles.emptyCatalogIcon} size={28} />
             <Text as="h3" tone="inherit" variant="h3">
               {strings.catalog.emptyTitle}
             </Text>
-            <Text tone="inherit" style={{ color: tokens.textMuted }}>
+            <Text className={styles.emptyCatalogDescription} tone="inherit">
               {strings.catalog.emptyDescription}
             </Text>
           </Surface>

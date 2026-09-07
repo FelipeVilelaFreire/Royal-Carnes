@@ -1,82 +1,43 @@
-# Arquitetura de Mocks, .env e Seed - PrimeCutClub
+# Mocks, ambiente e seeds
 
-Este documento especifica a estratégia de **Mocks Isolados**, **Variáveis de Ambiente (.env)** e a **Dupla Utilidade dos Mocks como SEED do Banco de Dados** para o **PrimeCutClub**.
+Status: contrato ativo.
+Ownership: [contrato raiz](../../ROYALPRIME_ARCHITECTURE_CONTRACT.md).
 
----
+## Fonte de dados
 
-## 1. Estratégia de Mocks Isolados & Provider Pattern
+- Backend e fonte autoritativa de estado persistido e regra comercial.
+- Dados de demonstracao ficam em mocks/ ou data-sources/ do shared-core dono.
+  Use o padrao ja existente na capacidade, sem criar outra pasta por preferencia.
+- Screen consome hook/view-model, nunca importa mock para fluxo novo.
+- API client nao converte erro em sucesso mockado silencioso.
+- Fallback e decisao explicita na camada de fluxo/data source. Resultado deve
+  identificar sua origem, preservando a capacidade de distinguir API de fallback.
+- Falhas de autenticacao, permissao ou gravacao nao podem aparecer como sucesso
+  por fallback. Nao usar dados demonstrativos como prova de integracao real.
+- Nova ativacao de fallback em producao exige decisao explicita de produto;
+  existencia de fallbackOnError legado nao autoriza ampliar esse comportamento.
+- Se backend faltar, exponha estado indisponivel/erro ou modo demonstracao
+  explicitamente configurado. Nao inventar gravacao com fechamento de modal.
 
-Toda a massa de dados fictícios para o MVP é mantida estritamente isolada no diretório `manifest/` de cada surface (`client/` e `admin/`), sem poluir componentes de UI ou telas.
+## Ambiente
 
-### Estrutura de Pastas de Mocks & Manifestos
-```text
-frontend/
-├── client/
-│   ├── manifest/                     <-- Dados fictícios do cliente (Planos, Ofertas, Assinantes)
-│   │   ├── locales/pt-BR.ts
-│   │   ├── routes.ts
-│   │   ├── screens.ts
-│   │   └── pages/                    (home.config.jsx, plans.config.jsx)
-│   └── src/
-│       └── views/                    <-- Renderizadores por ScreenType
-│
-└── admin/
-    ├── manifest/                     <-- Dados fictícios operacionais (Métricas MRR, Assinantes, Entregas)
-    │   ├── locales/pt-BR.ts
-    │   ├── routes.ts
-    │   ├── screens.ts
-    │   └── pages/                    (dashboard.config.jsx, subscribers.config.jsx)
-    └── src/
-        └── engines/                  <-- Renderizadores operacionais por ScreenType
-```
+Confira .env.example, settings e consumidores reais antes de citar uma variavel.
+Nao inventar USE_MOCKS/API_URL que o codigo nao le.
+Segredos nao entram em manifest publico, locale, commit ou saida de ferramenta.
+Variaveis publicas do frontend nao podem conter credenciais privadas.
+Documente nomes e valores de exemplo nao sensiveis em .env.example.
+Nao mudar ambiente externo nem renovar credenciais como efeito colateral de docs.
 
----
+## Seeds
 
-## 2. Padrão de Variáveis de Ambiente (.env) por Surface
+backend/seeds e dono dos dados de seed, com validacoes e comandos existentes.
+Mocks de frontend e seeds nao sao automaticamente o mesmo schema.
+Mapeamento, ids/FKs, organization e compatibilidade com models precisam ser
+verificados. Nao presumir paridade por nomes iguais nem executar seed destrutivo.
+Leia backend/seeds/README.md e a implementacao do comando antes de executar.
 
-Cada surface/projeto gerencia seu próprio arquivo `.env` alimentado por um `.env.example`:
+## Verificacao
 
-### A. Surface Client / Next.js (`frontend/client/.env.example`)
-```env
-NEXT_PUBLIC_USE_MOCKS=true
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api/v1
-```
-
-### B. Surface Admin / Vite (`frontend/admin/.env.example`)
-```env
-VITE_USE_MOCKS=true
-VITE_API_URL=http://127.0.0.1:8000/api/v1
-```
-
-### C. Backend Django / Python (`backend/.env.example`)
-```env
-SECRET_KEY=primecut-super-secret-key
-DEBUG=True
-ALLOWED_HOSTS=*
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
-DEFAULT_ORGANIZATION_ID=primecut-club
-```
-
----
-
-## 3. Dupla Utilidade dos Mocks: Mocks de Frontend + SEED do Backend
-
-Os dados mantidos em `manifest/` possuem **dupla função estratégica**:
-
-1. **No Frontend**: Servem de fallback estático e massa de testes para telas do Client e Admin.
-2. **No Backend (Django SEED)**: A mesma estrutura de dados em JSON/TS é utilizada pelo comando de seed do Django (`python manage.py seed_data`) para popular a base SQLite/PostgreSQL com registros reais idênticos!
-
-```text
-               ┌─────────────────────────────────────────┐
-               │     MASSA DE DADOS ÚNICA DA MARCA       │
-               │  (Planos: Essencial, Master, Wagyu)     │
-               └────────────────────┬────────────────────┘
-                                    │
-           ┌────────────────────────┴────────────────────────┐
-           ▼                                                 ▼
-[ FRONTEND MOCK MODE ]                           [ BACKEND DJANGO SEED ]
-(Alimenta UIs sem precisar                        (Comando `python manage.py seed_data`
- de servidor ativo no MVP)                         popula o banco real com os mesmos dados)
-```
-
-Isso garante 100% de paridade entre a demonstração em Mock e o banco de dados rodando em produção.
+Teste API disponivel, API indisponivel, origem do fallback e falhas de gravacao
+conforme o comportamento alterado. Confira isolamento por organization.
+Relate ambiente e fonte realmente usados. Exibir mock nao prova persistencia.

@@ -16,9 +16,9 @@ import {
   UserIcon,
 } from "@foundation/ui/Icon/AppIcons";
 import { useClientCatalog } from "@/hooks/useClientCatalog";
+import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { homeVitrineConfig } from "@/manifest/portal/homeVitrine.config";
 import { clientRoutes } from "@/manifest/routes";
-import { clientPtBR } from "@/locales/pt-BR";
 import styles from "./HomeVitrineView.module.css";
 
 export interface HomeVitrineViewProps {
@@ -34,8 +34,8 @@ const iconByIntent = {
   orders: CartIcon,
 };
 
-const resolveStringPath = (path: string) =>
-  path.split(".").reduce<any>((value, segment) => value?.[segment], clientPtBR) || path;
+const resolveStringPath = (catalog: Record<string, any>, path: string) =>
+  path.split(".").reduce<any>((value, segment) => value?.[segment], catalog) || path;
 
 const resolveRoute = (routeKey: string) =>
   clientRoutes[routeKey as keyof typeof clientRoutes] || clientRoutes.home;
@@ -44,7 +44,8 @@ export const HomeVitrineView: React.FC<HomeVitrineViewProps> = ({
   isAuthenticated = false,
   onNavigate,
 }) => {
-  const strings = clientPtBR.home.vitrine;
+  const stringsCatalog = useClientStrings();
+  const strings = stringsCatalog.home.vitrine;
   const catalog = useClientCatalog();
 
   useEffect(() => {
@@ -68,15 +69,15 @@ export const HomeVitrineView: React.FC<HomeVitrineViewProps> = ({
     ? liveProducts.map((product, index) => ({
         key: product.key,
         title: product.name,
-        description: product.description || resolveStringPath(configuredProducts[index]?.descriptionKey || configuredProducts[0].descriptionKey),
+        description: product.description || resolveStringPath(stringsCatalog, configuredProducts[index]?.descriptionKey || configuredProducts[0].descriptionKey),
         imageUrl: product.imageUrl || configuredProducts[index]?.imageUrl || configuredProducts[0].imageUrl,
         routeKey: "cortes",
         meta: product.priceLabel || strings.products.defaultMeta,
       }))
     : configuredProducts.map((product) => ({
         key: product.key,
-        title: resolveStringPath(product.titleKey),
-        description: resolveStringPath(product.descriptionKey),
+        title: resolveStringPath(stringsCatalog, product.titleKey),
+        description: resolveStringPath(stringsCatalog, product.descriptionKey),
         imageUrl: product.imageUrl,
         routeKey: product.routeKey,
         meta: strings.products.defaultMeta,
@@ -125,8 +126,8 @@ export const HomeVitrineView: React.FC<HomeVitrineViewProps> = ({
       <section className={styles.noticeGrid} aria-label={strings.noticesSectionLabel}>
         {notices.map((notice) => (
           <Card className={styles.notice} key={notice.key} size="md">
-            <span className={styles.eyebrow}>{resolveStringPath(notice.titleKey)}</span>
-            <Text tone="textMuted">{resolveStringPath(notice.descriptionKey)}</Text>
+            <span className={styles.eyebrow}>{resolveStringPath(stringsCatalog, notice.titleKey)}</span>
+            <Text tone="textMuted">{resolveStringPath(stringsCatalog, notice.descriptionKey)}</Text>
             <Box>
               <Button appearance="soft" tone={notice.tone} size="sm" onClick={() => navigateTo(notice.routeKey)}>
                 {isAuthenticated ? strings.customerNoticeAction : strings.guestNoticeAction}
@@ -157,8 +158,8 @@ export const HomeVitrineView: React.FC<HomeVitrineViewProps> = ({
                     <span className={styles.actionIcon}>
                       <Icon tone="inherit" size="md"><ActionIcon /></Icon>
                     </span>
-                    <Text as="h3" variant="h3">{resolveStringPath(action.labelKey)}</Text>
-                    <Text tone="textMuted">{resolveStringPath(action.descriptionKey)}</Text>
+                    <Text as="h3" variant="h3">{resolveStringPath(stringsCatalog, action.labelKey)}</Text>
+                    <Text tone="textMuted">{resolveStringPath(stringsCatalog, action.descriptionKey)}</Text>
                   </Stack>
                   <Button appearance="transparent" tone="primary" size="sm" onClick={() => navigateTo(action.routeKey)}>
                     {strings.actions.openAction}

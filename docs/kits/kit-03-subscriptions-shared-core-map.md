@@ -54,8 +54,11 @@ frontend/client/shared-core
 frontend/admin/shared-core
   -> planos admin, criacao de plano, assinaturas, criacao de assinatura e ciclos
 
-frontend/client/web e frontend/admin/web
-  -> render-only no proximo marco
+frontend/client/web e frontend/client/mobile
+  -> MinhaCaixaView render-only em fase 1 funcional
+
+frontend/admin/web
+  -> render-only no proximo marco admin
 ```
 
 ## O Que Vai Para Global Shared-Core
@@ -115,6 +118,7 @@ Local:
 ```text
 frontend/client/shared-core/contracts/subscriptions.contract.ts
 frontend/client/shared-core/api/subscriptions.api.ts
+frontend/client/shared-core/data-sources/subscriptions.fallback.ts
 frontend/client/shared-core/hooks/useClientPlans.ts
 frontend/client/shared-core/hooks/useClientSubscription.ts
 frontend/client/shared-core/hooks/useClientCurrentCycle.ts
@@ -132,6 +136,7 @@ carregar assinatura ativa do cliente
 carregar ciclo aberto atual
 selecionar item no ciclo atual
 preparar view-models para plano, assinatura e ciclo
+manter fallback explicito de fase 1 enquanto backend real nao autentica cliente
 ```
 
 Nao deve conter:
@@ -228,6 +233,8 @@ frontend/client/shared-core/
     subscriptions.contract.ts
   api/
     subscriptions.api.ts
+  data-sources/
+    subscriptions.fallback.ts
   hooks/
     useClientPlans.ts
     useClientSubscription.ts
@@ -280,4 +287,35 @@ view-models entregam formato pronto para render
 sem if por nome de empresa, plano, produto ou collection
 client/admin builds passam
 backend check passa
+```
+
+## Corte Render-Only Atual
+
+```text
+frontend/client/web/src/screens/portal/tabs/MinhaCaixaView.tsx
+frontend/client/mobile/src/screens/portal/tabs/MinhaCaixaView.tsx
+docs/handoff/10-minha-caixa-render-only-audit.md
+```
+
+Contrato:
+
+```text
+MinhaCaixaView
+  -> useClientSubscription({ fallbackOnError: true })
+  -> useClientCurrentCycle({ fallbackOnError: true })
+  -> createClientSubscriptionViewModel()
+  -> createClientCycleViewModel()
+  -> Foundation UI no web
+  -> mobile UI no native-ready inicial
+```
+
+Regras preservadas:
+
+```text
+tela nao importa mocks diretamente
+tela nao importa clientPtBR diretamente
+tela nao importa legacy/design-system
+tela nao importa legacy/app-shell
+tela nao calcula entitlement real
+tela nao decide disponibilidade real
 ```

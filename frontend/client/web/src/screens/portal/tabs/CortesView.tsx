@@ -14,9 +14,8 @@ import {
 } from "@/view-models/cortes-catalog.view-model";
 import { useClientCatalog } from "@/hooks/useClientCatalog";
 import { PortalHeader, BottomTabBar, Footer } from "../../../legacy/app-shell";
-import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
 import { ProductItemCard } from "../../../product-components/ecommerce";
-import { clientPtBR } from "@/locales/pt-BR";
+import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./CortesView.module.css";
 
 export interface CortesViewProps {
@@ -29,30 +28,6 @@ const moneyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL"
 });
-
-const categoryButtonStyle = (tokens: typeof themeColorsDefault.dark, isDark: boolean, isActive: boolean) => ({
-  "--ui-surface-bg": isActive
-    ? isDark
-      ? tokens.ivory
-      : tokens.charcoal
-    : isDark
-      ? `color-mix(in srgb, ${tokens.surfaceContainer} 82%, ${tokens.copper})`
-      : tokens.surfaceContainer,
-  "--ui-surface-border": isActive
-    ? isDark
-      ? tokens.ivory
-      : tokens.charcoal
-    : isDark
-      ? `color-mix(in srgb, ${tokens.border} 68%, ${tokens.copper})`
-      : tokens.border,
-  "--ui-surface-color": isActive ? (isDark ? tokens.charcoal : tokens.ivory) : tokens.text,
-  "--ui-button-font-weight": isActive ? "var(--theme--typography-bold)" : "var(--theme--typography-semibold)",
-  "--ui-button-height": "var(--theme--dimensions-height-md)",
-  "--ui-button-min-width": "var(--theme--dimensions-minWidth-sm)",
-  "--ui-button-padding-x": "var(--theme--spacing-spaceMd)",
-  "--ui-button-padding-y": "var(--theme--spacing-space2xs)",
-  "--ui-surface-radius": "var(--theme--radius-full)"
-}) as React.CSSProperties;
 
 export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavigate, showShell = true }) => {
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -79,9 +54,9 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
   }, []);
 
   const isDark = themeMode === "dark";
-  const tokens = isDark ? themeColorsDefault.dark : themeColorsDefault.light;
-  const strings = clientPtBR.cortes.catalogPage;
-  const productCardStrings = clientPtBR.pedido.productCard;
+  const clientStrings = useClientStrings();
+  const strings = clientStrings.cortes.catalogPage;
+  const productCardStrings = clientStrings.pedido.productCard;
   const catalog = useClientCatalog();
 
   React.useEffect(() => {
@@ -123,14 +98,6 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
   return (
     <main
       className={styles.root}
-      style={{
-        "--cortes-bg": tokens.background,
-        "--cortes-surface": tokens.surfaceContainer,
-        "--cortes-border": tokens.border,
-        "--cortes-text": tokens.text,
-        "--cortes-muted": tokens.textMuted,
-        "--cortes-accent": tokens.copper
-      } as React.CSSProperties}
       data-standalone={showShell || undefined}
     >
       {showShell ? (
@@ -172,9 +139,9 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
                     <Button
                       appearance={isActive ? "solid" : "outline"}
                       className={styles.categoryButton}
+                      data-active={isActive || undefined}
                       onClick={() => setActiveTab(cat.id)}
                       size="sm"
-                      style={categoryButtonStyle(tokens, isDark, isActive)}
                       tone={isActive ? "primary" : "neutral"}
                       type="button"
                     >
@@ -245,7 +212,6 @@ export const CortesView: React.FC<CortesViewProps> = ({ isMember = true, onNavig
                     favoriteAriaLabel={productCardStrings.addFavorite}
                     removeFavoriteAriaLabel={productCardStrings.removeFavorite}
                     isDark={isDark}
-                    tokens={tokens}
                   />
                 );
               })}

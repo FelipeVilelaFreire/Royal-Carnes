@@ -7,13 +7,6 @@ export interface CheckoutPanelProps {
   children: React.ReactNode;
   description: string;
   title: string;
-  tokens: {
-    border: string;
-    copper: string;
-    surfaceContainer: string;
-    text: string;
-    textMuted: string;
-  };
 }
 
 export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({
@@ -21,18 +14,10 @@ export const CheckoutPanel: React.FC<CheckoutPanelProps> = ({
   children,
   description,
   title,
-  tokens,
 }) => (
   <Surface
     appearance="soft"
     className={styles.checkoutPanel}
-    style={{
-      "--pedido-panel-accent": tokens.copper,
-      "--pedido-panel-bg": tokens.surfaceContainer,
-      "--pedido-panel-border": tokens.border,
-      "--pedido-panel-muted": tokens.textMuted,
-      "--pedido-panel-text": tokens.text,
-    } as React.CSSProperties}
   >
     <Text as="span" className={styles.sectionKicker} tone="inherit" variant="caption">
       {badge}

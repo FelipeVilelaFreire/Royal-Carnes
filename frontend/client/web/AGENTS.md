@@ -1,46 +1,15 @@
-# RoyalPrime Client Web Agent Instructions
+# RoyalPrime Client Web
 
-Antes de implementar em `frontend/client/web`, leia nesta ordem:
+Leia [../../AGENTS.md](../../AGENTS.md) e use
+[../../../docs/CODEX_ENTRYPOINTS.md](../../../docs/CODEX_ENTRYPOINTS.md)
+nas linhas client, AppShell, shared-core e visual conforme a tarefa.
 
-1. `../../AGENTS.md`
-2. `../../../AGENTS.md`
-3. `../../../ROYALPRIME_CODEX_RULES.md`
-4. `../../../ROYALPRIME_ARCHITECTURE_CONTRACT.md`
-5. `../../../docs/CODEX_ENTRYPOINTS.md`
-6. `../../../docs/frontend/TREE.md`
-7. `../../../docs/frontend/RENDER_ONLY_AUDIT.md`
-8. `docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md`
+Screen consome hooks/view-models de client/shared-core, strings ativas e
+Foundation. Nao importar mock ou API diretamente para fluxo novo.
+Ao alterar comportamento mobile web, confira o consumidor client/mobile.
 
-## Regra de Surface
-
-```text
-frontend/client/web
-  -> render-only
-
-frontend/client/shared-core
-  -> contratos, API clients, hooks, mappers, view-models, manifest e mocks do cliente
-
-frontend/foundation
-  -> visual-only
-
-backend
-  -> regra real
-```
-
-Telas web nao devem chamar endpoint direto, calcular regra real ou decidir
-workflow de pedido/entrega/assinatura. Elas devem consumir hooks/view-models do
-`frontend/client/shared-core`.
-
-## Manifest-First Gradual
-
-Quando mexer em uma tela hardcoded, preserve o fluxo e extraia aos poucos:
-
-```text
-copy repetida -> locales/manifest
-navegacao/titulos/labels -> shared-core/manifest
-fluxo reutilizavel -> shared-core hooks/api/contracts
-componentes repetidos de ecommerce -> product-components/ecommerce
-```
+Antes de escrever codigo dependente de Next.js, siga tambem a orientacao
+gerada abaixo. Ela descreve a ferramenta, nao altera ownership de produto.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

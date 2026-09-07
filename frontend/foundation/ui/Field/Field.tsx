@@ -1,7 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { type CSSProperties } from "react";
+import { resolveFieldConfig, resolveFieldRecipe, type FieldLevel, type FieldWidth } from "../core";
 import { Text } from "../Text";
+import { useUiConfig } from "../UiProvider";
+import styles from "./Field.module.css";
 
 export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   label?: React.ReactNode;
@@ -9,12 +12,15 @@ export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   error?: React.ReactNode;
   children?: React.ReactNode;
   htmlFor?: string;
-  level?: any;
+  level?: FieldLevel;
   required?: boolean;
-  width?: any;
+  width?: FieldWidth;
 }
 
+type FieldCssProperties = CSSProperties & Record<`--${string}`, string | number | undefined>;
+
 export const Field: React.FC<FieldProps> = ({
+  className,
   label,
   description,
   error,
@@ -26,12 +32,40 @@ export const Field: React.FC<FieldProps> = ({
   style,
   ...props
 }) => {
+  const ui = useUiConfig();
+  const theme = (ui.theme || {}) as any;
+  const fieldConfig = resolveFieldConfig(ui.field as any);
+  const resolved = resolveFieldRecipe(theme, undefined, fieldConfig, { level, width });
+  const fieldStyle = {
+    "--ui-field-control-gap": `${resolved.controlGap}px`,
+    "--ui-field-text-gap": `${resolved.textGap}px`,
+    ...style,
+  } as FieldCssProperties;
+  const LabelComponent = htmlFor ? "label" : "span";
+
   return (
-    <div {...props} style={{ display: "flex", flexDirection: "column", gap: "6px", ...style }}>
-      {label && <Text variant="caption" style={{ fontWeight: "600" }}>{label}</Text>}
-      {children}
-      {description && <Text variant="caption" style={{ opacity: 0.7 }}>{description}</Text>}
-      {error && <Text variant="caption" style={{ color: "#EF4444" }}>{error}</Text>}
+    <div
+      {...props}
+      className={[styles.field, className].filter(Boolean).join(" ")}
+      data-level={resolved.level}
+      data-width={resolved.width}
+      style={fieldStyle}
+    >
+      {label ? (
+        <div className={styles.header}>
+          <Text as={LabelComponent} htmlFor={htmlFor} tone={String(resolved.label.toneToken)} variant="caption" weight="var(--theme--typography-semibold)">
+            {label}
+            {required ? " *" : null}
+          </Text>
+        </div>
+      ) : null}
+      <div className={styles.controlSlot}>{children}</div>
+      {description || error ? (
+        <div className={styles.feedback}>
+          {description ? <Text tone={String(resolved.description.toneToken)} variant="caption">{description}</Text> : null}
+          {error ? <Text tone={String(resolved.error.toneToken)} variant="caption">{error}</Text> : null}
+        </div>
+      ) : null}
     </div>
   );
 };

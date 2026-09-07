@@ -9,6 +9,7 @@ export interface TextProps extends React.HTMLAttributes<HTMLElement> {
   as?: React.ElementType;
   variant?: UiTextVariant;
   font?: string;
+  htmlFor?: string;
   size?: string;
   weight?: string;
   tone?: string;

@@ -103,17 +103,12 @@ export function usePortalRuntime(initialTab: PortalScreenKey = "home") {
   }), [activeThemeColors, themeMode]);
 
   const navigate = (routePath: string) => {
-    const found = portalNavigation.find(
-      (item) => item.routeKey && clientRoutes[item.routeKey] === routePath,
-    );
-    const nextScreenKey = found?.key
-      ? (found.key as PortalScreenKey)
-      : resolvePortalScreenKeyFromPath(routePath, activeScreenKey);
-
-    setActiveScreenKey(nextScreenKey);
     if (typeof window !== "undefined" && window.location.pathname !== routePath) {
       router.push(routePath);
+      return;
     }
+
+    setActiveScreenKey(resolvePortalScreenKeyFromPath(routePath, activeScreenKey));
   };
 
   const toggleTheme = () => {
