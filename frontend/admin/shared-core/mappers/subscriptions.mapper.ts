@@ -12,6 +12,8 @@ import type {
   AdminSubscriptionCycleItemDto,
   AdminSubscriptionDto,
   AdminSubscriptionFormInput,
+  AdminSubscriptionUpdateDto,
+  AdminSubscriptionUpdateInput,
 } from "../contracts/subscriptions.contract";
 import type {
   PlanEntitlementBase,
@@ -117,6 +119,11 @@ export function mapAdminSubscriptionDto(dto: AdminSubscriptionDto): Subscription
     currentCycleEndsAt: dto.current_cycle_ends_at ?? null,
     cancelledAt: dto.cancelled_at ?? null,
     cancelReason: dto.cancel_reason ?? null,
+    defaultDeliveryAddressId: dto.default_delivery_address_id ?? null,
+    preferredDeliveryDay: dto.preferred_delivery_day || "",
+    deliveryWindow: dto.delivery_window || "",
+    deliveryPreferences: dto.delivery_preferences || "",
+    internalNotes: dto.internal_notes || "",
     cycles: (dto.cycles || []).map(mapAdminSubscriptionCycleDto),
   };
 }
@@ -151,5 +158,30 @@ export function mapAdminSubscriptionFormInput(
     plan_key: input.planKey,
     status: input.status,
     started_at: input.startedAt,
+    default_delivery_address_id: input.defaultDeliveryAddressId,
+    preferred_delivery_day: input.preferredDeliveryDay,
+    delivery_window: input.deliveryWindow,
+    delivery_preferences: input.deliveryPreferences,
+    internal_notes: input.internalNotes,
+  };
+}
+
+export function mapAdminSubscriptionUpdateInput(
+  input: AdminSubscriptionUpdateInput,
+): AdminSubscriptionUpdateDto {
+  return {
+    plan_key: input.planKey,
+    status: input.status,
+    started_at: input.startedAt,
+    ended_at: input.endedAt,
+    current_cycle_starts_at: input.currentCycleStartsAt,
+    current_cycle_ends_at: input.currentCycleEndsAt,
+    cancelled_at: input.cancelledAt,
+    cancel_reason: input.cancelReason,
+    default_delivery_address_id: input.defaultDeliveryAddressId,
+    preferred_delivery_day: input.preferredDeliveryDay,
+    delivery_window: input.deliveryWindow,
+    delivery_preferences: input.deliveryPreferences,
+    internal_notes: input.internalNotes,
   };
 }

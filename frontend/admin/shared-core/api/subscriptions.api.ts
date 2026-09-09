@@ -11,6 +11,7 @@ import type {
   AdminSubscriptionCycleView,
   AdminSubscriptionDto,
   AdminSubscriptionFormInput,
+  AdminSubscriptionUpdateInput,
   AdminSubscriptionView,
 } from "../contracts/subscriptions.contract";
 import {
@@ -19,6 +20,7 @@ import {
   mapAdminSubscriptionCycleDto,
   mapAdminSubscriptionDto,
   mapAdminSubscriptionFormInput,
+  mapAdminSubscriptionUpdateInput,
 } from "../mappers/subscriptions.mapper";
 
 function resolveUrl(baseUrl: string | undefined, path: string): string {
@@ -85,6 +87,25 @@ export function createAdminSubscriptionsApi(config: ApiClientConfig = {}) {
             organizationSlug: config.organizationSlug,
           }),
           body: JSON.stringify(mapAdminSubscriptionFormInput(input)),
+        },
+      );
+
+      await throwIfApiError(response);
+      return mapAdminSubscriptionDto((await response.json()) as AdminSubscriptionDto);
+    },
+    async updateSubscription(
+      id: string | number,
+      input: AdminSubscriptionUpdateInput,
+    ): Promise<AdminSubscriptionView> {
+      const response = await fetcher(
+        resolveUrl(config.baseUrl, `/api/v1/subscriptions/admin/subscriptions/${id}/`),
+        {
+          method: "PATCH",
+          headers: buildApiHeaders({
+            token: config.getAccessToken?.(),
+            organizationSlug: config.organizationSlug,
+          }),
+          body: JSON.stringify(mapAdminSubscriptionUpdateInput(input)),
         },
       );
 

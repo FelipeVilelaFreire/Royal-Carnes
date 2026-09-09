@@ -40,6 +40,7 @@ export const clientPtBR = {
       produtos: "Montar Box",
       royalBox: "Royal Box",
       royalDelivery: "Royal Delivery",
+      productOptions: "Formas",
       faq: "FAQ",
       meusPedidos: "Meus Pedidos",
       meuClube: "Meu Clube",
@@ -51,6 +52,28 @@ export const clientPtBR = {
       shop: "Comprar",
       account: "Conta",
       support: "Acompanhamento"
+    },
+    footer: {
+      brand: {
+        eyebrow: "Clube RoyalPrime",
+        description: "Uma experiencia premium para escolher cortes, montar sua Royal Box, assinar planos e acompanhar cada pedido no portal do cliente."
+      },
+      columns: {
+        experience: "Experiencia",
+        products: "Produtos",
+        portal: "Portal"
+      },
+      highlights: {
+        delivery: {
+          value: "48h",
+          label: "Entrega programada"
+        },
+        box: {
+          value: "3 formas",
+          label: "Assinar, montar ou pedir"
+        }
+      },
+      legal: "RoyalPrime organiza a experiencia digital da Royal Carnes. Dados, pedidos e pagamentos seguem os contratos ativos do portal."
     }
   },
   authSession: {
@@ -817,23 +840,98 @@ export const clientPtBR = {
       }
     },
     hero: {
-      badge: "ROYAL CARNES EM CASA",
-      title: "Royal Carnes para o churrasco acontecer sem improviso",
-      subtitle: "Escolha entre assinatura fechada, Royal Box mensal personalizada ou Royal Delivery avulso.",
-      ctaPlans: "Entender como funciona",
-      ctaShowcase: "Ver catálogo",
-      mediaAlt: "Corte premium preparado para churrasco",
-      mediaBadge: "Seleção do mês",
-      mediaTitle: "Picanha, ancho e acompanhamentos no mesmo fluxo",
-      mediaDescription: "O cliente entende o catálogo, escolhe o formato de compra e entra no portal apenas quando precisa salvar a montagem.",
+      badge: "Clube de Carnes & Butcher Curadoria",
+      title: "Carnes premium selecionadas para sua rotina",
+      titleLead: "Carnes premium selecionadas para sua",
+      titleAccent: "rotina",
+      subtitle: "Assinatura mensal de cortes nobres, embalados a vacuo com atmosfera controlada e entregues na sua porta com o frescor, marmoreio e padrao de boutique de carnes.",
+      ctaPlans: "Ver assinaturas",
+      ctaShowcase: "Conhecer cortes",
+      mediaAlt: "Cortes nobres RoyalPrime preparados para assinatura",
+      mediaBadge: "Selecao Royal",
+      mediaTitle: "Box da semana",
+      mediaDescription: "Cortes nobres, acompanhamentos e curadoria",
       stats: [
-        { value: "3", label: "formas de compra" },
-        { value: "4", label: "catálogos editoriais" },
-        { value: "1", label: "portal do cliente" }
+        { value: "48h", label: "entrega programada" },
+        { value: "12+", label: "cortes selecionados" },
+        { value: "4.9", label: "avaliacao media" }
       ],
       journey: {
-        title: "Fluxo do cliente",
-        steps: ["Escolhe o caminho", "Monta a box", "Acompanha entrega"]
+        title: "Frescor garantido",
+        steps: ["Escolha", "Monte", "Receba"]
+      }
+    },
+    productOptions: {
+      badge: "FORMAS DE COMPRAR",
+      titleLead: "Escolha como quer",
+      titleAccent: "receber",
+      titleTail: "sua selecao RoyalPrime",
+      subtitle: "Tres formas de comprar com a mesma curadoria premium: assinatura pronta, box mensal personalizada ou pedido avulso para hoje.",
+      options: [
+        {
+          key: "subscription",
+          badge: "Recorrente",
+          title: "Royal Assinatura",
+          description: "Para quem quer receber uma selecao pronta todo mes, com plano definido e beneficios conforme a categoria escolhida.",
+          bullets: ["Planos Basic, Premium ou Pro", "Curadoria fechada por categoria", "Cobranca mensal ou anual"],
+          cta: "Ver planos"
+        },
+        {
+          key: "box",
+          badge: "Personalizada",
+          featuredBadge: "Mais flexivel",
+          title: "Royal Box",
+          description: "Para montar sua propria caixa mensal com cortes, acompanhamentos e complementos do jeito que prefere receber.",
+          bullets: ["Voce define a composicao", "Entrega mensal no dia escolhido", "Cortes, carvao e utensilios"],
+          cta: "Montar box"
+        },
+        {
+          key: "delivery",
+          badge: "Avulso",
+          title: "Royal Delivery",
+          description: "Para comprar quando precisar, sem recorrencia, escolhendo endereco, frete e pagamento direto no pedido.",
+          bullets: ["Sem taxa fixa ou compromisso", "Entrega sob demanda", "Ideal para churrascos pontuais"],
+          cta: "Pedir agora"
+        }
+      ]
+    },
+    howItWorks: {
+      badge: "COMO FUNCIONA",
+      titleLead: "Da escolha a entrega, tudo em um",
+      titleAccent: "fluxo claro",
+      subtitle: "A landing apresenta as opcoes; o portal do cliente guarda montagem, pedidos, endereco, pagamento e acompanhamento.",
+      steps: [
+        {
+          number: "01",
+          title: "Escolha o caminho",
+          description: "Assinatura, Royal Box ou Delivery.",
+          label: "Passo inicial"
+        },
+        {
+          number: "02",
+          title: "Monte sua selecao",
+          description: "Escolha cortes, acompanhamentos, carvao, temperos e utensilios conforme a modalidade.",
+          label: "Curadoria sob medida"
+        },
+        {
+          number: "03",
+          title: "Confirme entrega e pagamento",
+          description: "Defina endereco, recorrencia, frete e metodo de pagamento com seguranca.",
+          label: "Agendamento seguro"
+        },
+        {
+          number: "04",
+          title: "Acompanhe no portal",
+          description: "Veja pedidos, caixa atual, historico e status de entrega em tempo real.",
+          label: "Painel do cliente"
+        }
+      ],
+      portal: {
+        eyebrow: "Area Exclusiva do Assinante",
+        title: "Portal Royal",
+        description: "Pedidos, caixa, entregas e preferencias em um so lugar. Tenha controle total para pausar, alterar cortes ou adicionar complementos com um clique.",
+        chips: ["Minha Caixa", "Meus Pedidos", "Perfil"],
+        cta: "Acessar Portal"
       }
     },
     differentials: {

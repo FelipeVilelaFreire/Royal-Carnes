@@ -1,0 +1,66 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-md);
+  width: 100%;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-sm);
+  width: 100%;
+}
+
+.row {
+  align-items: start;
+  border: var(--theme--border-width-sm) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-md);
+  display: grid;
+  gap: var(--theme--spacing-sm);
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: var(--theme--spacing-md);
+  width: 100%;
+}
+
+.rowFields {
+  display: grid;
+  gap: var(--theme--spacing-sm);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  width: 100%;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-xs);
+  min-width: 0;
+}
+
+.value {
+  min-block-size: var(--theme--sizing-10);
+  overflow-wrap: anywhere;
+}
+
+.inputWithSuffix {
+  align-items: center;
+  display: grid;
+  gap: var(--theme--spacing-xs);
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+}
+
+.suffix {
+  min-inline-size: var(--theme--sizing-8);
+  text-align: end;
+}
+
+.removeButton {
+  min-inline-size: var(--theme--sizing-10);
+}
+
+.empty {
+  border: var(--theme--border-width-sm) dashed var(--theme--color-border);
+  border-radius: var(--theme--radius-md);
+  padding: var(--theme--spacing-md);
+}

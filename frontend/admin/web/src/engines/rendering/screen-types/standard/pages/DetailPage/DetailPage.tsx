@@ -11,9 +11,16 @@ import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { SegmentedControl } from "@foundation/ui/SegmentedControl";
 import { Select } from "@foundation/ui/Select";
 import { Text } from "@foundation/ui/Text";
+import { TextArea } from "@foundation/ui/TextArea";
 import { ArrowBackIcon, CheckIcon, CloseIcon, EditIcon } from "@foundation/ui/Icon/AppIcons";
 import type { AdminTranslate } from "@/locales/i18n";
-import type { AdminStandardDetailViewModel } from "@/view-models/standard.view-model";
+import type {
+  AdminStandardDetailViewModel,
+  AdminStandardLineItemColumnViewModel,
+  AdminStandardRelatedListColumnViewModel,
+} from "@/view-models/standard.view-model";
+import { LineItemsEditor } from "../../components/LineItemsEditor";
+import { RelatedList } from "../../components/RelatedList";
 import styles from "./DetailPage.module.css";
 
 function resolveDisplayValue(
@@ -21,8 +28,8 @@ function resolveDisplayValue(
   t: AdminTranslate,
 ): string {
   if (entry.valueType === "optionLabel") {
-    return entry.options?.find((option) => option.value === entry.rawValue)?.label ||
-      t(entry.options?.find((option) => option.value === entry.rawValue)?.labelKey || "", entry.value);
+    const option = entry.options?.find((candidate) => String(candidate.value) === String(entry.rawValue));
+    return option?.label || t(option?.labelKey || "", entry.value);
   }
   if (entry.valueType === "translationKey") return t(entry.value, "");
   return entry.value;
@@ -144,7 +151,13 @@ export const DetailPage: React.FC<DetailPageProps> = ({
                     ) : null}
                     <Grid className={styles.detailGrid} columns={3} gap="md">
                       {section.entries.map((entry) => (
-                        <div className={styles.detailEntry} key={entry.key}>
+                        <div
+                          className={[
+                            styles.detailEntry,
+                            entry.layout === "full" ? styles.detailEntryFull : "",
+                          ].filter(Boolean).join(" ")}
+                          key={entry.key}
+                        >
                           <Text as="span" className={styles.detailKey} tone="muted" variant="caption" weight="bold">
                             {t(entry.labelKey, entry.key)}
                           </Text>
@@ -163,6 +176,16 @@ export const DetailPage: React.FC<DetailPageProps> = ({
                                 removeLabel={t("forms.assetRemove")}
                                 urlPlaceholder={t("forms.assetUrlPlaceholder")}
                                 value={formValues[entry.key] ?? entry.rawValue ?? ""}
+                              />
+                            ) : entry.type === "lineItems" ? (
+                              <LineItemsEditor
+                                addLabel={t(entry.addLabelKey || "forms.addLineItem")}
+                                columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]}
+                                emptyLabel={t("forms.emptyLineItems")}
+                                onChange={(value) => onFieldChange?.(entry.key, value)}
+                                removeLabel={t("forms.removeLineItem")}
+                                t={t}
+                                value={Array.isArray(formValues[entry.key]) ? formValues[entry.key] : []}
                               />
                             ) : entry.type === "multiSelect" ? (
                               <MultiSelect
@@ -201,13 +224,37 @@ export const DetailPage: React.FC<DetailPageProps> = ({
                                     : Number(formValues[entry.key] ?? entry.rawValue)
                                 }
                               />
+                            ) : entry.type === "textarea" ? (
+                              <TextArea
+                                onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
+                                rows={4}
+                                value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
+                              />
                             ) : (
                               <Input
                                 onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
-                                type={entry.type === "number" ? "number" : "text"}
+                                type={entry.type === "number" ? "number" : entry.type === "datetime" ? "datetime-local" : "text"}
                                 value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
                               />
                             )
+                          ) : entry.type === "lineItems" ? (
+                            <LineItemsEditor
+                              addLabel={t(entry.addLabelKey || "forms.addLineItem")}
+                              columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]}
+                              emptyLabel={t(viewModel.emptyKey || "forms.emptyLineItems")}
+                              onChange={(value) => onFieldChange?.(entry.key, value)}
+                              readOnly
+                              removeLabel={t("forms.removeLineItem")}
+                              t={t}
+                              value={Array.isArray(entry.rawValue) ? entry.rawValue : []}
+                            />
+                          ) : entry.type === "relatedList" ? (
+                            <RelatedList
+                              columns={(entry.columns || []) as AdminStandardRelatedListColumnViewModel[]}
+                              emptyLabel={t(viewModel.emptyKey || "details.emptySummary")}
+                              rows={Array.isArray(entry.rawValue) ? entry.rawValue : []}
+                              t={t}
+                            />
                           ) : entry.type === "asset" && entry.value ? (
                             <img
                               alt={viewModel.displayName}

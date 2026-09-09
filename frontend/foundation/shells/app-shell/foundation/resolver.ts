@@ -320,6 +320,7 @@ export const resolveAppShellModel = ({
     drawerItems,
     drawerGroups: resolveAppShellNavigationGroups(drawerItems, config?.navigationGroups, "drawer", strings),
     effectiveMode,
+    footerConfig: config?.footer || {},
     footerEnabled,
     footerItems: resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "footer", config)),
     headerEnabled,

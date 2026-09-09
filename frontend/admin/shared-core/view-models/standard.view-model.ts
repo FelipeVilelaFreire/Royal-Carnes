@@ -32,6 +32,8 @@ export interface AdminStandardListViewModel {
 }
 
 export interface AdminStandardFormFieldViewModel {
+  addLabelKey?: string;
+  columns?: Array<AdminStandardLineItemColumnViewModel | AdminStandardRelatedListColumnViewModel>;
   currency?: string;
   defaultValue?: any;
   displayKey?: string;
@@ -39,11 +41,12 @@ export interface AdminStandardFormFieldViewModel {
   key: string;
   labelKey: string;
   locale?: string;
+  layout?: "full";
   options?: AdminStandardFieldOption[];
   placeholderKey?: string;
   required?: boolean;
   source?: string;
-  type: "asset" | "currency" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  type: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "relatedList" | "select" | "textarea" | "text";
   value: any;
 }
 
@@ -64,15 +67,18 @@ export interface AdminStandardFormViewModel {
 }
 
 export interface AdminStandardDetailEntryViewModel {
+  addLabelKey?: string;
+  columns?: Array<AdminStandardLineItemColumnViewModel | AdminStandardRelatedListColumnViewModel>;
   currency?: string;
   displayKey?: string;
   editable?: boolean;
   key: string;
   labelKey: string;
   locale?: string;
+  layout?: "full";
   options?: AdminStandardFieldOption[];
   source?: string;
-  type?: "asset" | "currency" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  type?: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "relatedList" | "select" | "textarea" | "text";
   value: string;
   rawValue: any;
   valueType?: "optionLabel" | "text" | "translationKey";
@@ -116,10 +122,77 @@ const excludedSummaryKeys = new Set([
 export interface AdminStandardFieldOption {
   label?: string;
   labelKey?: string;
+  meta?: Record<string, unknown>;
   value: string;
 }
 
 export type AdminStandardOptionSources = Record<string, AdminStandardFieldOption[]>;
+
+export interface AdminStandardLineItemColumnViewModel {
+  key: string;
+  labelKey: string;
+  options?: AdminStandardFieldOption[];
+  required?: boolean;
+  source?: string;
+  sourceBy?: string;
+  sourceOptions?: Record<string, AdminStandardFieldOption[]>;
+  sources?: Record<string, string>;
+  suffixKey?: string;
+  type: "number" | "select" | "text";
+  writeOptionMeta?: Record<string, string>;
+  writeValues?: Record<string, unknown>;
+}
+
+export interface AdminStandardRelatedListColumnViewModel {
+  displayKey?: string;
+  key: string;
+  labelKey: string;
+  showAvatar?: boolean;
+  valueType?: "text" | "translationKey";
+}
+
+function resolveLineItemColumns(
+  columns: any[] = [],
+  optionSources: AdminStandardOptionSources,
+): AdminStandardLineItemColumnViewModel[] {
+  return columns.map((column: any) => ({
+    key: column.key,
+    labelKey: column.labelKey,
+    options: resolveOptions(column, optionSources),
+    required: column.required,
+    source: column.source,
+    sourceBy: column.sourceBy,
+    sourceOptions: Object.fromEntries(
+      Object.entries(column.sources || {}).map(([value, source]) => [
+        value,
+        optionSources[String(source)] || [],
+      ]),
+    ),
+    sources: column.sources,
+    suffixKey: column.suffixKey,
+    type: column.type || "text",
+    writeOptionMeta: column.writeOptionMeta,
+    writeValues: column.writeValues,
+  }));
+}
+
+function resolveRelatedListColumns(columns: any[] = []): AdminStandardRelatedListColumnViewModel[] {
+  return columns.map((column: any) => ({
+    displayKey: column.displayKey,
+    key: column.key,
+    labelKey: column.labelKey,
+    showAvatar: column.showAvatar,
+    valueType: column.valueType,
+  }));
+}
+
+function resolveEntryColumns(
+  field: any,
+  optionSources: AdminStandardOptionSources,
+): Array<AdminStandardLineItemColumnViewModel | AdminStandardRelatedListColumnViewModel> {
+  if (field.type === "relatedList") return resolveRelatedListColumns(field.columns);
+  return resolveLineItemColumns(field.columns, optionSources);
+}
 
 function resolveOptions(field: any, optionSources: AdminStandardOptionSources): AdminStandardFieldOption[] {
   return field.source ? optionSources[field.source] || [] : field.options || [];
@@ -151,12 +224,15 @@ function createDetailEntry(
   optionSources: AdminStandardOptionSources,
 ): AdminStandardDetailEntryViewModel {
   return {
+    addLabelKey: field.addLabelKey,
+    columns: resolveEntryColumns(field, optionSources),
     currency: field.currency,
     displayKey: field.displayKey,
     editable: field.editable,
     key: field.key,
     labelKey: field.labelKey,
     locale: field.locale,
+    layout: field.layout || (field.type === "lineItems" ? "full" : undefined),
     options: resolveOptions(field, optionSources),
     rawValue: row[field.key],
     source: field.source,
@@ -229,6 +305,8 @@ export function createAdminStandardFormViewModel(
   return {
     canSubmit: missingFieldKeys.length === 0,
     fields: flatFields.map((field: any) => ({
+      addLabelKey: field.addLabelKey,
+      columns: resolveEntryColumns(field, optionSources),
       defaultValue: field.defaultValue,
       currency: field.currency,
       displayKey: field.displayKey,
@@ -236,6 +314,7 @@ export function createAdminStandardFormViewModel(
       key: field.key,
       labelKey: field.labelKey,
       locale: field.locale,
+      layout: field.layout || (field.type === "lineItems" ? "full" : undefined),
       options: resolveOptions(field, optionSources),
       placeholderKey: field.placeholderKey,
       required: field.required,
@@ -246,6 +325,8 @@ export function createAdminStandardFormViewModel(
     missingFieldKeys,
     sections: sections.map((section: any) => ({
       fields: (section.fields || []).map((field: any) => ({
+        addLabelKey: field.addLabelKey,
+        columns: resolveEntryColumns(field, optionSources),
         defaultValue: field.defaultValue,
         currency: field.currency,
         displayKey: field.displayKey,
@@ -253,6 +334,7 @@ export function createAdminStandardFormViewModel(
         key: field.key,
         labelKey: field.labelKey,
         locale: field.locale,
+        layout: field.layout || (field.type === "lineItems" ? "full" : undefined),
         options: resolveOptions(field, optionSources),
         placeholderKey: field.placeholderKey,
         required: field.required,
@@ -287,7 +369,7 @@ export function createAdminStandardDetailViewModel(
     .map((section: any) => ({
       entries: (section.fields || [])
         .map((field: any) => createDetailEntry(field, row, optionSources))
-        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== ""),
+        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable),
       key: section.key,
       titleKey: section.titleKey,
     }))
@@ -296,9 +378,9 @@ export function createAdminStandardDetailViewModel(
   const entries = sections.length
     ? sections.flatMap((section: AdminStandardDetailSectionViewModel) => section.entries)
     : fields.length
-      ? fields
+    ? fields
         .map((field: any) => createDetailEntry(field, row, optionSources))
-        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "")
+        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable)
     : Object.entries(row)
         .filter(([key, value]) => !excludedSummaryKeys.has(key) && value !== undefined && value !== null && typeof value !== "object")
         .map(([key, value]) => ({

@@ -30,6 +30,11 @@
   width: 100%;
 }
 
+.errorCard {
+  border-color: var(--theme--color-danger, var(--theme--color-border));
+  width: 100%;
+}
+
 .tableScroller {
   overflow-x: auto;
   width: 100%;

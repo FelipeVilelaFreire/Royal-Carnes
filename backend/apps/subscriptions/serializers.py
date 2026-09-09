@@ -171,6 +171,7 @@ class SubscriptionCycleSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     customer_id = serializers.IntegerField(source="customer.id", read_only=True)
     customer_name = serializers.CharField(source="customer.name", read_only=True)
+    default_delivery_address_id = serializers.IntegerField(source="default_delivery_address.id", read_only=True, allow_null=True)
     plan = PlanSerializer(read_only=True)
     cycles = SubscriptionCycleSerializer(many=True, read_only=True)
 
@@ -188,6 +189,11 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             "current_cycle_ends_at",
             "cancelled_at",
             "cancel_reason",
+            "default_delivery_address_id",
+            "preferred_delivery_day",
+            "delivery_window",
+            "delivery_preferences",
+            "internal_notes",
             "cycles",
         )
 
@@ -201,6 +207,27 @@ class SubscriptionCreateSerializer(serializers.Serializer):
         default=Subscription.Status.ACTIVE,
     )
     started_at = serializers.DateTimeField(required=False, allow_null=True)
+    default_delivery_address_id = serializers.IntegerField(required=False, allow_null=True)
+    preferred_delivery_day = serializers.CharField(required=False, allow_blank=True, max_length=24)
+    delivery_window = serializers.CharField(required=False, allow_blank=True, max_length=40)
+    delivery_preferences = serializers.CharField(required=False, allow_blank=True)
+    internal_notes = serializers.CharField(required=False, allow_blank=True)
+
+
+class SubscriptionUpdateSerializer(serializers.Serializer):
+    plan_key = serializers.SlugField(max_length=100, required=False)
+    status = serializers.ChoiceField(choices=Subscription.Status.choices, required=False)
+    started_at = serializers.DateTimeField(required=False, allow_null=True)
+    ended_at = serializers.DateTimeField(required=False, allow_null=True)
+    current_cycle_starts_at = serializers.DateTimeField(required=False, allow_null=True)
+    current_cycle_ends_at = serializers.DateTimeField(required=False, allow_null=True)
+    cancelled_at = serializers.DateTimeField(required=False, allow_null=True)
+    cancel_reason = serializers.CharField(required=False, allow_blank=True)
+    default_delivery_address_id = serializers.IntegerField(required=False, allow_null=True)
+    preferred_delivery_day = serializers.CharField(required=False, allow_blank=True, max_length=24)
+    delivery_window = serializers.CharField(required=False, allow_blank=True, max_length=40)
+    delivery_preferences = serializers.CharField(required=False, allow_blank=True)
+    internal_notes = serializers.CharField(required=False, allow_blank=True)
 
 
 class SubscriptionCycleItemCreateSerializer(serializers.Serializer):

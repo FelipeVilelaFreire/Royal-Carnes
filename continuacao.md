@@ -35,6 +35,181 @@ docs/kits/README.md
 frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
+## Checkpoint Atual - 2026-09-09
+
+O corte mais recente fechou a base funcional de Assinaturas e Pagamentos no
+admin, com backend real, shared-core e screen-types mantendo a regra:
+
+```text
+screen -> shared-core hook/data-source -> api client -> backend
+```
+
+O foco continua sendo funcional primeiro. Nao gastar tempo refinando visual fino
+antes de confirmar dados reais, salvar edicoes e navegar os fluxos principais.
+
+### O que acabou de ser terminado
+
+```text
+Assinaturas
+  -> ListPage simplificada para Cliente, Plano, Status e Fim do ciclo
+  -> DetailPage com Dados, Operacao, Ciclo atual, Pedidos e Pagamentos
+  -> modo de edicao cobrindo cliente/plano/status/datas/cancelamento
+  -> campos operacionais editaveis: endereco padrao, dia preferido, janela,
+     preferencias de entrega e notas internas
+  -> ciclo atual exibindo consumo por item/beneficio, nao apenas um total
+  -> aba Pagamentos usando pagamentos reais vinculados a assinatura
+  -> AddPage com campos basicos e operacionais
+
+Backend de Assinaturas
+  -> Subscription ganhou default_delivery_address, preferred_delivery_day,
+     delivery_window, delivery_preferences e internal_notes
+  -> PATCH administrativo de assinatura criado
+  -> selectors com prefetch/select_related para plano, entitlements, ciclos e
+     itens do ciclo
+  -> migration local 0002 aplicada
+
+Pagamentos
+  -> novo app backend apps.payments
+  -> modelo Payment com cliente, assinatura opcional, pedido opcional,
+     referencia, status, moeda, valor, vencimento, pagamento e notas
+  -> endpoints admin GET/POST/list/detail/PATCH
+  -> testes basicos de criar/listar e marcar como pago
+  -> nova tela admin Pagamentos em standard config
+  -> contracts/api/mapper/view-model no shared-core
+  -> data-source standard carrega, cria e atualiza pagamentos reais
+
+Screen-types standard
+  -> DetailPage passou a aceitar field type datetime
+  -> TextArea foi usado para campos longos
+  -> campos editaveis vazios continuam visiveis em modo de detalhe/edicao
+```
+
+### Arquivos que devem ser lidos antes de continuar
+
+```text
+Regras ativas
+  AGENTS.md
+  ROYALPRIME_ARCHITECTURE_CONTRACT.md
+  docs/CODEX_ENTRYPOINTS.md
+
+Admin standard / shared-core
+  frontend/admin/shared-core/manifest/pages/assinaturas.config.jsx
+  frontend/admin/shared-core/manifest/pages/pagamentos.config.jsx
+  frontend/admin/shared-core/data-sources/standard.data-source.ts
+  frontend/admin/shared-core/view-models/subscriptions.view-model.ts
+  frontend/admin/shared-core/view-models/payments.view-model.ts
+  frontend/admin/shared-core/view-models/standard.view-model.ts
+  frontend/admin/shared-core/contracts/payments.contract.ts
+  frontend/admin/shared-core/api/payments.api.ts
+  frontend/admin/shared-core/mappers/payments.mapper.ts
+  frontend/admin/shared-core/locales/pt-BR.ts
+  frontend/admin/shared-core/index.ts
+
+Screen-types
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/ListPage/ListPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/DetailPage/DetailPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/AddPage/AddPage.tsx
+
+Backend assinaturas
+  backend/apps/subscriptions/models.py
+  backend/apps/subscriptions/selectors.py
+  backend/apps/subscriptions/serializers.py
+  backend/apps/subscriptions/views.py
+  backend/apps/subscriptions/urls.py
+  backend/apps/subscriptions/tests.py
+  backend/apps/subscriptions/migrations/0002_subscription_default_delivery_address_and_more.py
+
+Backend pagamentos
+  backend/apps/payments/models.py
+  backend/apps/payments/selectors.py
+  backend/apps/payments/serializers.py
+  backend/apps/payments/views.py
+  backend/apps/payments/urls.py
+  backend/apps/payments/tests.py
+  backend/apps/payments/migrations/0001_initial.py
+  backend/config/settings/base.py
+  backend/api/v1/urls.py
+```
+
+### Validacoes executadas neste corte
+
+```text
+cd backend
+py manage.py check
+  -> passou
+
+py manage.py test apps.payments apps.subscriptions
+  -> passou, 17 testes
+
+py manage.py makemigrations --check --dry-run
+  -> passou
+
+py manage.py migrate
+  -> aplicou subscriptions 0002 e payments 0001 no banco local
+
+npm --prefix frontend/admin/web run build --ignore-scripts
+  -> passou
+
+git diff --check
+  -> passou, apenas avisos CRLF
+```
+
+`npm run verify:rules` ainda falha por dividas ja existentes/dirty em Foundation:
+
+```text
+frontend/foundation/ui/Layout/Layout.tsx
+  -> inline-style existente
+
+frontend/foundation/ui/SectionContainer/SectionContainer.module.css
+  -> violacoes antigas de ui-theme
+```
+
+Nao usar essa falha como prova de quebra nova em Assinaturas/Pagamentos sem
+auditar o diff. Tambem nao houve verificacao visual/click real em browser nesse
+corte.
+
+### Limites conhecidos
+
+```text
+Pagamentos
+  -> V1 funcional/manual; ainda nao tem gateway, webhook, invoice, recibo,
+     conciliacao ou alocacao automatica por ciclo
+  -> permissao inicial usa payments.markPaid para leitura/gestao
+  -> seed de pagamentos ainda nao foi adicionado, entao a tela pode iniciar
+     vazia ate criar um pagamento real
+
+Assinaturas
+  -> aba Pedidos ainda e basica/vazia quando nao houver pedidos vinculados
+  -> pausar/cancelar/inativar ainda deve virar acao bem definida pelo backend
+  -> historico/auditoria ainda nao foi fechado
+
+Locales
+  -> existem trechos antigos com encoding ruim; nao fazer refactor global agora
+     sem pedido explicito
+```
+
+### Proximo passo recomendado
+
+Antes de ir para outra classe grande, validar o fluxo real no admin:
+
+```text
+1. abrir Admin
+2. criar um pagamento em Pagamentos
+3. editar status do pagamento para pago
+4. abrir detalhe de uma assinatura
+5. confirmar que a aba Pagamentos mostra o pagamento vinculado
+6. editar campos operacionais da assinatura
+7. dar refresh e confirmar persistencia
+```
+
+Depois disso, o proximo nivel funcional recomendado e `Pedidos`, porque agora
+Clientes, Catalogo, Planos de Assinatura, Assinaturas e Pagamentos ja tem base
+para se conectar a ele.
+
+Se a tela de Pagamentos ou Assinaturas estiver vazia demais para testar rapido,
+o proximo micro-passo pode ser adicionar seed de pagamentos demo em
+`backend/seeds/royalprime`.
+
 ## Proximo Passo Imediato
 
 Antes de continuar novas telas ou fluxos, rodar/aplicar o seed local para nao

@@ -213,7 +213,7 @@ export function Grid({ className, columns, gap, style, ...props }: GridProps) {
     <div
       {...props}
       className={classNames(styles.grid, className)}
-      style={{ "--ui-layout-columns": String(resolvedColumns), ...toCssStyle(resolvedGap, style) } as CSSProperties}
+      style={{ "--ui-layout-resolved-columns": String(resolvedColumns), ...toCssStyle(resolvedGap, style) } as CSSProperties}
     />
   );
 }
@@ -222,8 +222,9 @@ export type GridItemProps = LayoutBaseProps & { align?: "center" | "end" | "star
 export function GridItem({ align = "start", className, span = 1, style, ...props }: GridItemProps) {
   const tokens = useLayoutTokens();
   const viewportWidth = useViewportWidth();
-  const resolvedSpan = span === "full" ? "var(--ui-layout-columns)" : String(resolveLayoutGridItemSpan(tokens, span, viewportWidth));
-  const start = span === "full" || align === "start" ? "auto" : align === "center" ? `calc((var(--ui-layout-columns) - ${resolvedSpan}) / 2 + 1)` : `calc(var(--ui-layout-columns) - ${resolvedSpan} + 1)`;
+  const gridColumns = "var(--ui-layout-columns, var(--ui-layout-resolved-columns))";
+  const resolvedSpan = span === "full" ? gridColumns : String(resolveLayoutGridItemSpan(tokens, span, viewportWidth));
+  const start = span === "full" || align === "start" ? "auto" : align === "center" ? `calc((${gridColumns} - ${resolvedSpan}) / 2 + 1)` : `calc(${gridColumns} - ${resolvedSpan} + 1)`;
 
   return (
     <div
@@ -244,9 +245,12 @@ export function Container({ className, gutter, size, style, width, ...props }: C
   const tokens = useLayoutTokens();
   const viewportWidth = useViewportWidth();
   const legacyWidth = size === "sm" ? "compact" : size === "lg" || size === "xl" ? "wide" : size === "full" ? "full" : undefined;
-  const resolvedWidth = resolveLayoutContainerWidth(tokens, width || legacyWidth || ui.layout.containerWidth, viewportWidth, ui.layout);
   const resolvedGutter = gutter || ui.layout.containerGutter;
   const pageGutter = resolvedGutter === "page" ? resolveLayoutPageGutter(tokens, viewportWidth) : 0;
+  const selectedWidth = width || legacyWidth || ui.layout.containerWidth;
+  const resolvedWidth = selectedWidth === "full" && resolvedGutter === "none" && viewportWidth !== undefined
+    ? viewportWidth
+    : resolveLayoutContainerWidth(tokens, selectedWidth, viewportWidth, ui.layout);
 
   return (
     <div

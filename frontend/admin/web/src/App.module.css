@@ -2,3 +2,9 @@
   background: var(--app-shell-background);
   min-height: 100vh;
 }
+
+.loadingState {
+  color: var(--theme--color-muted);
+  font-family: var(--theme--typography-bodyFamily);
+  padding: var(--theme--spacing-xl);
+}

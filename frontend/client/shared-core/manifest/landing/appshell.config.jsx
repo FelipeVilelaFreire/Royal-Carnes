@@ -25,13 +25,13 @@ export const landingAppShellConfig = {
       desktop: {
         content: { width: "full", gutter: "none" },
         header: { width: "full", gutter: "page", align: "between" },
-        footer: { width: "wide", gutter: "page", align: "center" },
+        footer: { width: "full", gutter: "page", align: "center" },
         bottomTabBar: { enabled: false, width: "full", gutter: "none" }
       },
       mobile: {
         content: { width: "full", gutter: "none" },
         header: { enabled: true, width: "full", gutter: "none", align: "between" },
-        footer: { enabled: false, width: "full", gutter: "page" },
+        footer: { enabled: true, width: "full", gutter: "page" },
         bottomTabBar: { enabled: false, width: "full", gutter: "page" }
       },
       native: {
@@ -113,7 +113,45 @@ export const landingAppShellConfig = {
     position: "right"
   },
   footer: {
-    enabled: true
+    enabled: true,
+    eyebrowKey: "footer.brand.eyebrow",
+    descriptionKey: "footer.brand.description",
+    legalKey: "footer.legal",
+    columns: [
+      {
+        key: "experience",
+        titleKey: "footer.columns.experience",
+        links: [
+          { key: "footer-home", labelKey: "navigation.home", targetId: "top", type: "scroll" },
+          { key: "footer-forms", labelKey: "navigation.productOptions", targetId: "product-options", type: "scroll" },
+          { key: "footer-how", labelKey: "navigation.howItWorks", targetId: "how-it-works", type: "scroll" }
+        ]
+      },
+      {
+        key: "products",
+        titleKey: "footer.columns.products",
+        links: [
+          { key: "footer-plans", labelKey: "navigation.products", targetId: "assinaturas", type: "scroll" },
+          { key: "footer-catalogs", labelKey: "navigation.cortes", path: "/cortes", type: "route" },
+          { key: "footer-box", labelKey: "navigation.royalBox", path: "/montar-box", type: "route" },
+          { key: "footer-delivery", labelKey: "navigation.royalDelivery", path: "/royal-delivery", type: "route" }
+        ]
+      },
+      {
+        key: "portal",
+        titleKey: "footer.columns.portal",
+        links: [
+          { key: "footer-portal", labelKey: "headerActions.enterPortal", path: "/home", type: "route" },
+          { key: "footer-orders", labelKey: "navigation.meusPedidos", path: "/meus-pedidos", type: "route" },
+          { key: "footer-account", labelKey: "navigation.perfil", path: "/perfil", type: "route" },
+          { key: "footer-faq", labelKey: "navigation.faq", targetId: "faq", type: "scroll" }
+        ]
+      }
+    ],
+    highlights: [
+      { key: "delivery", valueKey: "footer.highlights.delivery.value", labelKey: "footer.highlights.delivery.label" },
+      { key: "box", valueKey: "footer.highlights.box.value", labelKey: "footer.highlights.box.label" }
+    ]
   }
 };
 

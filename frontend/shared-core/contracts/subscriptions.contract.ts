@@ -93,6 +93,11 @@ export interface SubscriptionBase {
   currentCycleEndsAt?: string | null;
   cancelledAt?: string | null;
   cancelReason?: string | null;
+  defaultDeliveryAddressId?: string | number | null;
+  preferredDeliveryDay?: string;
+  deliveryWindow?: string;
+  deliveryPreferences?: string;
+  internalNotes?: string;
   cycles: SubscriptionCycleBase[];
 }
 

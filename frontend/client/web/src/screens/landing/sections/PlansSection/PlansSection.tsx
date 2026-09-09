@@ -64,7 +64,7 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onRouteClick }) => {
               type="button"
             >
               <span>{strings.billingAnnual}</span>
-              <Badge appearance="solid" tone="danger">
+              <Badge appearance="solid" className={styles.billingBadge} tone="danger">
                 {strings.annualDiscountBadge}
               </Badge>
             </button>

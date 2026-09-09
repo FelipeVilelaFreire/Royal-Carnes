@@ -9,6 +9,7 @@ import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { Select } from "@foundation/ui/Select";
 import { Text } from "@foundation/ui/Text";
 import { EditIcon, SearchIcon } from "@foundation/ui/Icon/AppIcons";
+import type { ApiErrorEnvelope } from "@shared-core";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { AdminStandardListViewModel } from "@/view-models/standard.view-model";
 import styles from "./ListPage.module.css";
@@ -25,6 +26,7 @@ function formatCurrencyCents(value: unknown, currency = "BRL", locale = "pt-BR")
 
 export interface ListPageProps {
   entityName: string;
+  error?: ApiErrorEnvelope | null;
   isLoading?: boolean;
   onCreateRow?: () => void;
   onSearchChange: (value: string) => void;
@@ -37,6 +39,7 @@ export interface ListPageProps {
 
 export const ListPage: React.FC<ListPageProps> = ({
   entityName,
+  error,
   isLoading = false,
   onCreateRow,
   onSearchChange,
@@ -101,6 +104,20 @@ export const ListPage: React.FC<ListPageProps> = ({
               />
             ))}
           </Inline>
+
+          {error ? (
+            <Card className={styles.errorCard} size="md">
+              <Stack gap="xs">
+                <Text as="strong" variant="body">
+                  {t("standard.apiErrorTitle")}
+                </Text>
+                <Text tone="muted" variant="caption">
+                  {error.status ? `${t("standard.apiErrorStatus")} ${error.status}` : t("standard.apiErrorUnknown")}
+                  {error.message ? ` - ${error.message}` : ""}
+                </Text>
+              </Stack>
+            </Card>
+          ) : null}
 
           <Card className={styles.tableCard} size="lg">
             <div className={styles.tableScroller}>

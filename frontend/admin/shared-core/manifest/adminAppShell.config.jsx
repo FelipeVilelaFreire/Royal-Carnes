@@ -12,7 +12,7 @@ export const adminAppShellConfig = {
       enabled: false
     },
     sidebar: {
-      routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries", "planos", "pagamentos", "categorias", "colecoes", "estoque", "configuracoes", "usuarios"]
+      routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes", "usuarios"]
     },
     drawer: {
       inheritFrom: "sidebar"

@@ -39,6 +39,10 @@
   padding: var(--theme--spacing-md);
 }
 
+.detailEntryFull {
+  grid-column: 1 / -1;
+}
+
 .assetPreview {
   border: var(--theme--border-width-sm) solid var(--theme--color-border);
   border-radius: var(--theme--radius-md);

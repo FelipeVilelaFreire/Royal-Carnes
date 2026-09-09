@@ -83,13 +83,22 @@ export const adminPtBR = {
     statusDelivered: "Entregue",
     statusOutForDelivery: "Saiu para entrega",
     statusPending: "Pendente",
+    statusPaid: "Pago",
+    statusFailed: "Falhou",
+    statusRefunded: "Reembolsado",
     statusInactive: "Inativo",
     statusPacking: "Embalagem",
     statusPaused: "Pausado",
     statusPreparing: "Em preparação",
     statusDraft: "Rascunho",
     statusBlocked: "Bloqueado",
-    statusArchived: "Arquivado"
+    statusArchived: "Arquivado",
+    statusCancelled: "Cancelado",
+    statusPastDue: "Pagamento pendente",
+    statusReserved: "Reservado",
+    statusSelected: "Selecionado",
+    statusFulfilled: "Concluído",
+    emptyValue: "-"
   },
   entities: {
     box: "Caixa térmica",
@@ -104,6 +113,7 @@ export const adminPtBR = {
     payment: "Pagamento",
     plan: "Plano",
     product: "Produto",
+    subscription: "Assinatura",
     subscriptionPlan: "Plano de assinatura",
     userCustomer: "Usuário / Cliente"
   },
@@ -137,6 +147,9 @@ export const adminPtBR = {
     }
   },
   standard: {
+    apiErrorStatus: "Status",
+    apiErrorTitle: "Nao foi possivel carregar os dados reais do backend.",
+    apiErrorUnknown: "Erro sem status HTTP.",
     loading: "Atualizando",
     loadingRows: "Atualizando registros...",
     saving: "Salvando"
@@ -326,7 +339,7 @@ export const adminPtBR = {
   },
   planos: {
     title: "Planos de assinatura",
-    subtitle: "Configuração dos planos vendidos: preço, limites, benefícios e disponibilidade.",
+    subtitle: "Configuração dos planos vendidos: preço, limites de produtos e disponibilidade.",
     ctaAdd: "Novo plano",
     searchPlaceholder: "Buscar planos...",
     tableHeaders: {
@@ -356,8 +369,17 @@ export const adminPtBR = {
       description: "Descricao",
       entitlementCount: "Itens inclusos",
       entitlementSummary: "Produtos, quantidades e unidades",
+      includedItems: "Itens inclusos",
       includedItemCount: "Itens inclusos",
       includedItemSummary: "Produtos, quantidades e unidades",
+      addIncludedItem: "Adicionar item incluso",
+      includedItemType: "Tipo",
+      includedItemTarget: "Item",
+      limit: "Limite",
+      product: "Produto",
+      quantity: "Quantidade",
+      unit: "Unidade",
+      variant: "Variante",
       subscriberCount: "Assinantes",
       activeSubscriberCount: "Assinantes ativos",
       subscriberSummary: "Clientes vinculados",
@@ -398,12 +420,21 @@ export const adminPtBR = {
       emptySubscribers: "Nenhum assinante vinculado a este plano.",
       emptyPrices: "Nenhum preço cadastrado para este plano."
     },
+    subscribers: {
+      customer: "Cliente",
+      status: "Status",
+      startedAt: "Início",
+      currentCycleEndsAt: "Fecha em",
+      currentCycleOrders: "Pedidos do ciclo",
+      currentCycleUsage: "Consumo do ciclo"
+    },
     add: {
       title: "Cadastrar plano",
       submit: "Cadastrar",
       sections: {
         identity: "Identificacao",
-        commercial: "Comercial"
+        commercial: "Comercial",
+        includedItems: "Itens inclusos"
       }
     },
     billingIntervals: {
@@ -462,27 +493,105 @@ export const adminPtBR = {
   },
   assinaturas: {
     title: "Assinaturas",
-    subtitle: "Assinaturas ativas, ciclos, pausas, cancelamentos e vínculo com planos.",
+    subtitle: "Vínculo operacional entre clientes, planos, ciclos, boxes e pedidos.",
     ctaAdd: "Nova assinatura",
+    searchPlaceholder: "Buscar assinaturas...",
     tableHeaders: {
-      name: "Plano",
-      subtitle: "Descrição",
-      protein: "Proteínas",
-      charcoal: "Carvão",
-      monthlyPrice: "Preço mensal",
-      annualPrice: "Preço anual"
+      customer: "Cliente",
+      plan: "Plano",
+      status: "Status",
+      currentCycle: "Ciclo",
+      startedAt: "Início",
+      currentCycleEndsAt: "Fecha em",
+      currentCycleOrders: "Pedidos do ciclo",
+      currentCycleUsage: "Consumo do ciclo"
     },
-    filters: {},
-    filterOptions: {
-      basic: "Basic",
-      premium: "Premium",
-      pro: "Pro"
+    filters: {
+      status: "Status"
     },
-    form: {
-      annualMonthlyPrice: "Preço anual",
-      monthlyPrice: "Preço mensal",
-      name: "Nome do plano",
-      subtitle: "Descrição"
+    fields: {
+      cancelReason: "Motivo do cancelamento",
+      cancelledAt: "Cancelada em",
+      currentCycleConsumed: "Consumido",
+      currentCycleEndsAt: "Fechamento do ciclo",
+      currentCycleItems: "Produtos escolhidos",
+      currentCycleUsageItems: "Uso por item",
+      currentCycleLimit: "Limite contratado",
+      currentCycleOrders: "Pedidos/boxes",
+      currentCycleRemaining: "Saldo restante",
+      currentCycleStartsAt: "Início do ciclo atual",
+      customer: "Cliente",
+      defaultDeliveryAddress: "Endereço padrão",
+      deliveryPreferences: "Preferências e restrições",
+      deliveryWindow: "Janela de entrega",
+      endedAt: "Encerrada em",
+      internalNotes: "Observações internas",
+      orders: "Pedidos do ciclo",
+      payments: "Pagamentos",
+      plan: "Plano",
+      preferredDeliveryDay: "Dia preferido de entrega",
+      startedAt: "Início da assinatura",
+      status: "Status"
+    },
+    detail: {
+      title: "Detalhe da assinatura",
+      tabs: {
+        data: "Dados",
+        delivery: "Entrega",
+        operation: "Operação",
+        currentCycle: "Ciclo atual",
+        orders: "Pedidos do ciclo",
+        payments: "Pagamentos"
+      },
+      emptyData: "Nenhum dado cadastrado para esta assinatura.",
+      emptyDelivery: "Nenhum dado de entrega cadastrado para esta assinatura.",
+      emptyOperation: "Nenhum dado operacional cadastrado para esta assinatura.",
+      emptyCurrentCycle: "Nenhum produto selecionado neste ciclo.",
+      emptyOrders: "Nenhum pedido vinculado ao ciclo desta assinatura.",
+      emptyPayments: "Nenhum pagamento vinculado a esta assinatura."
+    },
+    currentCycle: {
+      item: "Item",
+      product: "Produto",
+      quantity: "Quantidade",
+      remaining: "Saldo",
+      selectedItems: "Escolhidos",
+      usedWithLimit: "Usado / limite",
+      status: "Status"
+    },
+    orders: {
+      code: "Pedido",
+      createdAt: "Data",
+      status: "Status",
+      total: "Total"
+    },
+    payments: {
+      amount: "Valor",
+      dueAt: "Vencimento",
+      reference: "Referência",
+      status: "Status"
+    },
+    deliveryDays: {
+      monday: "Segunda-feira",
+      tuesday: "Terça-feira",
+      wednesday: "Quarta-feira",
+      thursday: "Quinta-feira",
+      friday: "Sexta-feira",
+      saturday: "Sábado"
+    },
+    deliveryWindows: {
+      morning: "Manhã",
+      afternoon: "Tarde",
+      evening: "Noite",
+      businessHours: "Horário comercial"
+    },
+    add: {
+      title: "Cadastrar assinatura",
+      submit: "Cadastrar",
+      sections: {
+        data: "Dados",
+        delivery: "Entrega"
+      }
     }
   },
   caixas: {
@@ -512,7 +621,44 @@ export const adminPtBR = {
   pagamentos: {
     title: "Pagamentos",
     subtitle: "Status de cobranças, falhas, reembolsos e recorrência financeira.",
-    ctaAdd: "Novo pagamento"
+    ctaAdd: "Novo pagamento",
+    searchPlaceholder: "Buscar pagamentos...",
+    tableHeaders: {
+      amount: "Valor",
+      customer: "Cliente",
+      dueAt: "Vencimento",
+      reference: "Referência",
+      status: "Status"
+    },
+    filters: {
+      status: "Status"
+    },
+    fields: {
+      amount: "Valor",
+      customer: "Cliente",
+      dueAt: "Vencimento",
+      notes: "Observações",
+      order: "Pedido",
+      paidAt: "Pago em",
+      reference: "Referência",
+      status: "Status",
+      subscription: "Assinatura",
+      subscriptionPlan: "Plano da assinatura"
+    },
+    detail: {
+      title: "Detalhe do pagamento",
+      tabs: {
+        data: "Dados"
+      },
+      emptyData: "Nenhum dado cadastrado para este pagamento."
+    },
+    add: {
+      title: "Cadastrar pagamento",
+      submit: "Cadastrar",
+      sections: {
+        data: "Dados"
+      }
+    }
   },
   usuarios: {
     title: "Usuários",
@@ -605,6 +751,7 @@ export const adminPtBR = {
     assetDropzone: "Arraste uma imagem ou selecione um arquivo.",
     assetRemove: "Remover imagem",
     assetUrlPlaceholder: "Cole a URL da imagem",
+    addLineItem: "Adicionar item",
     closeConfirmation: "Fechar confirmação",
     confirmRemoveAction: "Remover",
     confirmRemoveImageDescription: "Esta imagem sairá do cadastro quando você salvar.",
@@ -612,6 +759,8 @@ export const adminPtBR = {
     confirmRemoveSelectedOptionDescription: "Tem certeza que deseja remover {option}?",
     confirmRemoveSelectedOptionTitle: "Remover item?",
     removeSelectedOption: "Remover {option}",
+    emptyLineItems: "Nenhum item adicionado.",
+    removeLineItem: "Remover item",
     selectOption: "Selecione uma opção...",
     typePlaceholder: "Digite",
     typePlaceholderFor: "Digite {field}"

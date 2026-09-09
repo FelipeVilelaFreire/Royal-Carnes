@@ -87,6 +87,271 @@ docs/kits atualizados
 Preservar a worktree. Nao fazer reset, checkout destrutivo ou limpeza de
 arquivos sem confirmar o estado real.
 
+## Atualizacao Mais Recente - Landing Client
+
+Ultimo foco deste chat: landing page do Client, principalmente responsivo,
+largura real das sections, fluidez visual, bordas e a section de formas de
+compra.
+
+Arquivos centrais alterados/avaliados:
+
+```text
+frontend/foundation/ui/Layout/Layout.tsx
+frontend/foundation/ui/Layout/Layout.module.css
+frontend/foundation/ui/SectionContainer/SectionContainer.module.css
+frontend/client/web/src/screens/landing/LandingView.tsx
+frontend/client/web/src/screens/landing/sections/HomeSection/
+frontend/client/web/src/screens/landing/sections/ProductOptionsSection/
+frontend/client/web/src/screens/landing/sections/HowItWorksSection/
+frontend/client/web/src/screens/landing/sections/PlansSection/
+frontend/client/web/src/screens/landing/sections/ShowcaseSection/
+frontend/client/web/src/screens/landing/sections/DifferentialsSection/
+frontend/client/web/src/screens/landing/sections/GiftSection/
+frontend/client/web/src/screens/landing/sections/FaqSection/
+frontend/client/shared-core/locales/pt-BR.ts
+```
+
+### Fix estrutural de largura/grid
+
+Problema encontrado:
+
+```text
+Layout Grid injetava --ui-layout-columns via inline style
+CSS module mobile tentava sobrescrever --ui-layout-columns
+inline style vencia o CSS
+sections mobile ficavam espremidas/cortadas
+```
+
+Correcao aplicada:
+
+```text
+frontend/foundation/ui/Layout/Layout.tsx
+  -> Grid agora injeta --ui-layout-resolved-columns
+  -> CSS de sections pode sobrescrever --ui-layout-columns
+
+frontend/foundation/ui/Layout/Layout.module.css
+  -> grid-template-columns usa:
+     var(--ui-layout-columns, var(--ui-layout-resolved-columns))
+```
+
+Isso desbloqueia todas as sections que ja tinham regras mobile como:
+
+```text
+--ui-layout-columns: 1
+--ui-layout-columns: 2
+--ui-layout-columns: 3
+```
+
+Nao reverter esse fix: ele e o motivo de o mobile ter parado de parecer
+cortado.
+
+### Fix estrutural de Container full
+
+Problema encontrado:
+
+```text
+Container width="full" com gutter="none" ainda calculava largura como se
+houvesse gutter virtual de pagina.
+```
+
+Correcao aplicada:
+
+```text
+frontend/foundation/ui/Layout/Layout.tsx
+  -> quando selectedWidth="full" e gutter="none", usa viewportWidth direto
+```
+
+Isso preserva containers com `gutter="page"` e melhora surfaces full-width,
+incluindo landing.
+
+### SectionContainer
+
+`SectionContainer` agora faz mais da fisica correta da landing:
+
+```text
+overflow: visible
+scroll-margin-top respeitando header
+background explicitamente diferente para solid/glass
+separador de section com linha sutil tokenizada
+transicao de background/border via tokens
+gutter externo mobile equivalente a 20px via tokens
+```
+
+O gutter externo pedido foi implementado sem `20px` hardcoded:
+
+```text
+--ui-section-external-gutter:
+  calc((var(--theme--spacing-spaceMd) + var(--theme--spacing-spaceLg)) / 2);
+```
+
+### HomeSection
+
+Estado atual:
+
+```text
+frontend/client/web/src/screens/landing/sections/HomeSection/
+```
+
+Observacoes:
+
+```text
+desktop voltou para composicao anterior: 10/10, max-width antigo e proporcao antiga
+mobile agora usa grid-column: 1 / -1 nos blocos principais
+hero card mobile fica centralizado, com max-width tokenizado
+mediaOverlay/mediaBadge/experienceCard ficam ocultos no mobile para simplificar
+stats mobile ficaram menores e em cards compactos
+```
+
+Nao mexer em desktop da HomeSection sem pedido explicito. O usuario pediu para
+voltar o web desktop como estava e melhorar aos poucos.
+
+### ProductOptionsSection
+
+Section trabalhada por ultimo. Objetivo: deixar menos "lista administrativa" e
+mais landing/comercial, com a ideia:
+
+```text
+Escolha como quer receber sua selecao RoyalPrime
+```
+
+Copy atualizada em:
+
+```text
+frontend/client/shared-core/locales/pt-BR.ts
+landing.productOptions
+```
+
+Resumo da copy nova:
+
+```text
+Royal Assinatura
+  -> plano pronto, recorrencia, curadoria por categoria
+
+Royal Box
+  -> caixa mensal personalizada, composicao definida pelo cliente
+
+Royal Delivery
+  -> pedido avulso, sem recorrencia, sob demanda
+```
+
+Visual atualizado em:
+
+```text
+frontend/client/web/src/screens/landing/sections/ProductOptionsSection/ProductOptionsSection.module.css
+```
+
+Mudancas:
+
+```text
+cards com linha superior sutil
+featured badge menor e mais direto: "Mais flexivel"
+descricao com min-height tokenizado em desktop
+card destacado com borda mais clara
+hover com border/box-shadow/transform tokenizados
+mobile preserva 1 coluna agora que Grid foi corrigido
+```
+
+### Fluidez, hover e bordas
+
+Passada geral feita nas sections:
+
+```text
+DifferentialsSection.module.css
+GiftSection.module.css
+FaqSection.module.css
+ShowcaseSection.module.css
+PlansSection.module.css
+ProductOptionsSection.module.css
+SectionContainer.module.css
+```
+
+Padrao aplicado:
+
+```text
+sem transition: all
+sem ease solto
+motion usando --theme--motion-duration* e --theme--motion-easingStandard
+hover desktop com deslocamento leve
+hover removido/neutralizado no mobile quando faria a tela pular
+borders de hover/open/featured mais claras e tokenizadas
+```
+
+### LandingView atual
+
+Ordem atual das sections:
+
+```text
+top              -> HomeSection
+product-options  -> ProductOptionsSection
+how-it-works     -> HowItWorksSection
+assinaturas      -> PlansSection
+catalogos        -> ShowcaseSection
+diferenciais     -> DifferentialsSection
+royal-box        -> GiftSection
+faq              -> FaqSection
+```
+
+Atencao: `ProductOptionsSection` esta com `atmosphere="glass"` para criar
+transicao visual logo depois da hero.
+
+### Validacoes executadas neste ciclo
+
+Passaram:
+
+```text
+npm run verify:foundation
+git diff --check
+frontend/client/web: ..\..\..\node_modules\.bin\next.cmd build --webpack
+```
+
+Scans pontuais tambem passaram no escopo alterado:
+
+```text
+rg -n "style=\{\{|#[0-9a-fA-F]{3,8}|rgba\(|\b[0-9]+px\b|\b[0-9]+rem\b|transition: all|\bease\b" frontend/client/web/src/screens/landing frontend/foundation/ui/SectionContainer
+```
+
+Observacao importante:
+
+```text
+npm run build:client pode falhar se disparar verificacao global por dividas/admin
+na worktree. Para validar client isolado, foi usado next build --webpack direto
+em frontend/client/web.
+```
+
+### Gap ainda aberto
+
+Ainda nao houve screenshot real neste ciclo porque o conector de browser estava
+indisponivel:
+
+```text
+Browser is not available: chrome
+Browser is not available: iab
+```
+
+Nao declarar visual final como "10/10" ate alguem abrir `http://localhost:3000/`
+ou `http://localhost:3000/home` e revisar desktop/mobile.
+
+### Proximo foco recomendado
+
+Continuar section por section:
+
+```text
+1. Abrir a landing no browser real e confirmar HomeSection + ProductOptions.
+2. Se ProductOptions estiver boa, seguir para HowItWorksSection.
+3. Depois PlansSection, porque ela e comercialmente critica.
+4. Depois Showcase/Gift/Differentials/Faq.
+5. Em cada section: primeiro largura/grid/mobile, depois copy, depois borda/motion.
+```
+
+Regra pratica:
+
+```text
+nao redesenhar tudo junto
+resolver uma section
+validar no navegador
+so entao ir para a proxima
+```
+
 ## Entrypoints Principais
 
 Rotas publicas:
@@ -135,11 +400,12 @@ frontend/client/shared-core/types/
 `LandingView` virou orquestrador render-only. As sections moram por pasta:
 
 ```text
-frontend/client/web/src/screens/landing/sections/HeroSection/
-frontend/client/web/src/screens/landing/sections/DifferentialsSection/
-frontend/client/web/src/screens/landing/sections/ShowcaseSection/
-frontend/client/web/src/screens/landing/sections/StepsSection/
+frontend/client/web/src/screens/landing/sections/HomeSection/
+frontend/client/web/src/screens/landing/sections/ProductOptionsSection/
+frontend/client/web/src/screens/landing/sections/HowItWorksSection/
 frontend/client/web/src/screens/landing/sections/PlansSection/
+frontend/client/web/src/screens/landing/sections/ShowcaseSection/
+frontend/client/web/src/screens/landing/sections/DifferentialsSection/
 frontend/client/web/src/screens/landing/sections/GiftSection/
 frontend/client/web/src/screens/landing/sections/FaqSection/
 frontend/client/web/src/screens/landing/sections/index.ts
@@ -160,10 +426,11 @@ Ordem/ids atuais da landing:
 
 ```text
 top
-clube
-selecao
-como-funciona
+product-options
+how-it-works
 assinaturas
+catalogos
+diferenciais
 royal-box
 faq
 ```
@@ -197,7 +464,7 @@ navegacao
 A primeira tela da landing ja foi puxada para uma experiencia mais real:
 
 ```text
-HeroSection
+HomeSection
   -> duas colunas
   -> texto institucional por locale
   -> CTAs
@@ -362,7 +629,7 @@ npm run build:client
 npm run verify:foundation
 git diff --check
 curl.exe -I http://localhost:3000/
-curl.exe -I http://localhost:3000/hero
+curl.exe -I http://localhost:3000/home
 ```
 
 Resultados registrados:
@@ -371,7 +638,7 @@ Resultados registrados:
 build client passou
 verify:foundation passou
 / retornou HTTP 200
-/hero retornou HTTP 200
+/home retornou HTTP 200
 git diff --check passou com avisos LF/CRLF
 ```
 
@@ -393,11 +660,11 @@ npm run build:client
 npm run verify:foundation
 git diff --check
 rg -n "style=\\{\\{" frontend/client/web/src -g "*.tsx"
-rg -n "Home(Hero|Differentials|Showcase|Steps|Plans|Gift|Faq)Section|HeroMarketplaceView|landingPrimitives|transitional" frontend/client/web/src frontend/client/shared-core -g "*.tsx" -g "*.ts" -g "*.jsx" -g "*.js"
+rg -n "HeroMarketplaceView|landingPrimitives|transitional|LandingAppShell" frontend/client/web/src frontend/client/shared-core -g "*.tsx" -g "*.ts" -g "*.jsx" -g "*.js"
 rg -n "clientPtBR|@/mocks|../mocks|../../mocks" frontend/client/web/src/screens frontend/client/web/src/product-components -g "*.tsx" -g "*.ts"
 rg -n "🥩|📦|🔥|🚚|⭐|🔍|✏️|🚪|💰|🎯|🗑️|⚙️" frontend/client frontend/foundation -g "*.tsx" -g "*.ts" -g "*.jsx" -g "*.js"
 curl.exe -I http://localhost:3000/
-curl.exe -I http://localhost:3000/hero
+curl.exe -I http://localhost:3000/home
 ```
 
 ## Proximos Passos Client
@@ -406,7 +673,7 @@ Prioridade recomendada:
 
 ```text
 1. Fazer QA visual real da landing em desktop/mobile.
-2. Ajustar HeroSection/Showcase/Plans/Gift com screenshot aberto, sem voltar a inline style.
+2. Ajustar HomeSection/ProductOptions/HowItWorks com screenshot aberto, sem voltar a inline style.
 3. Auditar i18n completo em client web/mobile, incluindo en-US/de-DE.
 4. Revisar /home e /cortes para garantir que produto/preco/origem venham do backend via shared-core.
 5. Revisar /montar-box e fluxo de pedido para extrair regra de dominio para shared-core/backend.
@@ -424,4 +691,3 @@ depois validacao automatica
 depois screenshot
 depois refinamento visual fino
 ```
-

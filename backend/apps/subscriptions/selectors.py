@@ -61,8 +61,19 @@ def subscriptions_for_organization(organization):
     return (
         Subscription.objects.filter(organization=organization)
         .select_related("customer", "plan")
-        .prefetch_related("cycles")
+        .prefetch_related(
+            "plan__prices",
+            Prefetch(
+                "plan__entitlements",
+                queryset=PlanEntitlement.objects.select_related(*ENTITLEMENT_SELECT_RELATED),
+            ),
+            Prefetch("cycles", queryset=cycles_for_organization(organization)),
+        )
     )
+
+
+def subscription_for_organization(organization, subscription_id):
+    return subscriptions_for_organization(organization).get(id=subscription_id)
 
 
 def cycles_for_organization(organization):

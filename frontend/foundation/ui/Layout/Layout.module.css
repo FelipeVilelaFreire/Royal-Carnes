@@ -13,6 +13,6 @@
 .inline[data-justify="between"] { justify-content:space-between; }
 .inline[data-justify="around"] { justify-content:space-around; }
 .inline[data-justify="evenly"] { justify-content:space-evenly; }
-.grid { display:grid; gap:var(--ui-layout-gap); grid-template-columns:repeat(var(--ui-layout-columns), minmax(0, 1fr)); }
+.grid { display:grid; gap:var(--ui-layout-gap); grid-template-columns:repeat(var(--ui-layout-columns, var(--ui-layout-resolved-columns)), minmax(0, 1fr)); }
 .gridItem { grid-column-end:span var(--ui-layout-span); grid-column-start:var(--ui-layout-start, auto); min-width:0; }
 .container { margin-inline:auto; max-width:var(--ui-layout-container-width); padding-inline:var(--ui-layout-page-gutter,0); width:100%; }

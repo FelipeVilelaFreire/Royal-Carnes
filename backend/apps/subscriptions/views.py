@@ -8,15 +8,16 @@ from rest_framework.response import Response
 from apps.accounts.permissions import require_organization_permission
 from apps.catalog.models import MeasurementUnit, Product, ProductVariant
 from apps.core.tenant import get_request_organization
-from apps.customers.models import Customer
+from apps.customers.models import Address, Customer
 
-from .models import Plan, SubscriptionCycleItem
+from .models import Plan, Subscription, SubscriptionCycleItem
 from .selectors import (
     active_subscription_for_customer,
     admin_plans_for_organization,
     current_cycle_for_subscription,
     cycles_for_organization,
     public_plans_for_organization,
+    subscription_for_organization,
     subscriptions_for_organization,
 )
 from .serializers import (
@@ -28,6 +29,7 @@ from .serializers import (
     SubscriptionCycleItemCreateSerializer,
     SubscriptionCycleItemSerializer,
     SubscriptionSerializer,
+    SubscriptionUpdateSerializer,
 )
 from .services import (
     EntitlementValidationError,
@@ -233,6 +235,13 @@ def admin_subscriptions(request):
     try:
         customer = Customer.objects.get(organization=organization, id=data["customer_id"])
         plan = Plan.objects.get(organization=organization, key=data["plan_key"])
+        default_delivery_address = None
+        if data.get("default_delivery_address_id"):
+            default_delivery_address = Address.objects.get(
+                organization=organization,
+                customer=customer,
+                id=data["default_delivery_address_id"],
+            )
     except ObjectDoesNotExist:
         return Response({"code": "subscription_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
     subscription = upsert_subscription(
@@ -242,7 +251,74 @@ def admin_subscriptions(request):
         status=data["status"],
         started_at=data.get("started_at") or timezone.now(),
     )
+    subscription.default_delivery_address = default_delivery_address
+    subscription.preferred_delivery_day = data.get("preferred_delivery_day", "")
+    subscription.delivery_window = data.get("delivery_window", "")
+    subscription.delivery_preferences = data.get("delivery_preferences", "")
+    subscription.internal_notes = data.get("internal_notes", "")
+    subscription.save()
     return Response(SubscriptionSerializer(subscription).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def admin_subscription_detail(request, subscription_id):
+    organization = get_request_organization(request)
+    if request.method == "GET":
+        require_organization_permission(request.user, organization, "subscriptions.read")
+        try:
+            subscription = subscription_for_organization(organization, subscription_id)
+        except Subscription.DoesNotExist:
+            return Response({"code": "subscription_not_found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(SubscriptionSerializer(subscription).data)
+
+    require_organization_permission(request.user, organization, "subscriptions.manage")
+    serializer = SubscriptionUpdateSerializer(data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    try:
+        subscription = subscription_for_organization(organization, subscription_id)
+        if "plan_key" in data:
+            subscription.plan = Plan.objects.get(organization=organization, key=data["plan_key"])
+        if "default_delivery_address_id" in data:
+            address_id = data["default_delivery_address_id"]
+            subscription.default_delivery_address = (
+                None
+                if address_id is None
+                else Address.objects.get(
+                    organization=organization,
+                    customer=subscription.customer,
+                    id=address_id,
+                )
+            )
+    except ObjectDoesNotExist:
+        return Response({"code": "subscription_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
+
+    for field in (
+        "status",
+        "started_at",
+        "ended_at",
+        "current_cycle_starts_at",
+        "current_cycle_ends_at",
+        "cancelled_at",
+        "cancel_reason",
+        "preferred_delivery_day",
+        "delivery_window",
+        "delivery_preferences",
+        "internal_notes",
+    ):
+        if field in data:
+            setattr(subscription, field, data[field])
+
+    if data.get("status") == Subscription.Status.CANCELLED and subscription.cancelled_at is None:
+        subscription.cancelled_at = timezone.now()
+    if data.get("status") and data["status"] != Subscription.Status.CANCELLED:
+        subscription.cancelled_at = None
+        subscription.cancel_reason = data.get("cancel_reason", "")
+
+    subscription.save()
+    subscription = subscription_for_organization(organization, subscription.id)
+    return Response(SubscriptionSerializer(subscription).data)
 
 
 @api_view(["GET"])

@@ -1033,21 +1033,167 @@
 }
 
 .footer {
-  --ui-surface-bg: var(--app-shell-panel-bg);
-  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-bg: linear-gradient(180deg, color-mix(in srgb, var(--app-shell-panel-bg) 92%, var(--app-shell-background)), var(--app-shell-background));
+  --ui-surface-border: color-mix(in srgb, var(--app-shell-accent) 26%, var(--app-shell-border));
   --ui-surface-color: var(--app-shell-color);
   --ui-surface-shadow: none;
-  background: var(--app-shell-panel-bg);
+  background: var(--ui-surface-bg);
   border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
   margin-block-start: var(--theme--spacing-space3xl);
-  padding: var(--theme--spacing-spaceXl);
+  overflow: hidden;
+  padding-block: var(--theme--spacing-space3xl) var(--theme--spacing-spaceXl);
+  position: relative;
+}
+
+.footer::before {
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--app-shell-accent) 16%, transparent), transparent 70%);
+  content: "";
+  height: var(--theme--dimensions-minWidth-4xl);
+  pointer-events: none;
+  position: absolute;
+  right: calc(var(--theme--spacing-space3xl) * -1);
+  top: calc(var(--theme--spacing-space3xl) * -1);
+  width: var(--theme--dimensions-minWidth-4xl);
+}
+
+.footer::after {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--app-shell-accent) 38%, transparent), transparent);
+  content: "";
+  height: var(--app-shell-border-width);
+  inset-inline: var(--theme--spacing-space2xl);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
 }
 
 .footerInner {
+  position: relative;
+  width: 100%;
+  z-index: var(--theme--z-index-base);
+}
+
+.footerGrid {
+  align-items: start;
+  min-height: var(--theme--dimensions-minHeight-sm);
   width: 100%;
 }
 
-.footerItems {
+.footerBrand {
+  grid-column: span 5;
+  min-width: 0;
+}
+
+.footerBrandHeader {
+  min-width: 0;
+}
+
+.footerLogoFrame {
+  align-items: center;
+  border: var(--app-shell-border-width) solid color-mix(in srgb, var(--app-shell-accent) 32%, var(--app-shell-border));
+  border-radius: var(--theme--radius-xl);
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: var(--theme--dimensions-height-xl);
+  justify-content: center;
+  overflow: hidden;
+  width: var(--theme--dimensions-height-xl);
+}
+
+.footerLogo {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.footerEyebrow,
+.footerColumnTitle {
+  color: var(--app-shell-accent) !important;
+  letter-spacing: var(--theme--typography-letterSpacingMd) !important;
+  text-transform: uppercase;
+}
+
+.footerBrandName {
+  color: var(--app-shell-color) !important;
+  font-family: var(--theme--typography-headingFamily) !important;
+  letter-spacing: var(--theme--typography-letterSpacingSm) !important;
+  text-transform: uppercase;
+}
+
+.footerDescription {
+  max-width: var(--theme--layout-container-md);
+}
+
+.footerHighlights {
+  padding-top: var(--theme--spacing-spaceSm);
+}
+
+.footerHighlight {
+  background: color-mix(in srgb, var(--app-shell-panel-bg) 72%, transparent);
+  border: var(--app-shell-border-width) solid color-mix(in srgb, var(--app-shell-accent) 24%, var(--app-shell-border));
+  border-radius: var(--theme--radius-lg);
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-space2xs);
+  min-width: var(--theme--dimensions-minWidth-xs);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
+}
+
+.footerHighlightValue {
+  color: var(--app-shell-accent) !important;
+  font-family: var(--theme--typography-headingFamily) !important;
+}
+
+.footerHighlightLabel {
+  text-transform: uppercase;
+}
+
+.footerColumn {
+  grid-column: span 5;
+  min-width: 0;
+}
+
+.footerColumnLinks {
+  min-width: 0;
+}
+
+.footerLink {
+  --ui-button-gap: var(--theme--spacing-spaceXs);
+  --ui-button-height: var(--theme--dimensions-height-sm);
+  --ui-button-min-width: var(--app-shell-space-none);
+  --ui-button-padding-x: var(--theme--spacing-spaceXs);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  border-radius: var(--theme--radius-md);
+  color: var(--app-shell-muted) !important;
+  justify-content: flex-start;
+  text-align: start;
+  transition:
+    background var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
+    color var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationXs) var(--theme--motion-easingStandard);
+  width: 100%;
+}
+
+.footerLink:hover {
+  background: color-mix(in srgb, var(--app-shell-accent) 8%, transparent) !important;
+  color: var(--app-shell-accent) !important;
+  transform: translateX(var(--theme--spacing-space2xs));
+}
+
+.footerLinkActive {
+  background: color-mix(in srgb, var(--app-shell-accent) 12%, transparent) !important;
+  color: var(--app-shell-accent) !important;
+}
+
+.footerBottom {
+  border-top: var(--app-shell-border-width) solid color-mix(in srgb, var(--app-shell-color) 8%, transparent);
+  margin-top: var(--theme--spacing-space2xl);
+  padding-top: var(--theme--spacing-spaceLg);
+  width: 100%;
+}
+
+.footerLegal {
   width: 100%;
 }
 
@@ -1096,6 +1242,80 @@
 
   .sidebar {
     display: none;
+  }
+
+  .footer {
+    margin-block-start: var(--theme--spacing-space2xl);
+    padding-block: var(--theme--spacing-space2xl) var(--theme--spacing-spaceLg);
+  }
+
+  .footer::after {
+    inset-inline: var(--theme--spacing-spaceMd);
+  }
+
+  .footerGrid {
+    --ui-layout-columns: 1;
+    gap: var(--theme--spacing-spaceLg);
+  }
+
+  .footerBrand,
+  .footerColumn {
+    grid-column: span 1;
+  }
+
+  .footerBrand,
+  .footerBrandHeader {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footerDescription {
+    max-width: none;
+    text-align: center;
+  }
+
+  .footerHighlights {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .footerHighlight {
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .footerColumn {
+    border-top: var(--app-shell-border-width) solid color-mix(in srgb, var(--app-shell-color) 8%, transparent);
+    align-items: center;
+    padding-top: var(--theme--spacing-spaceMd);
+  }
+
+  .footerColumnTitle {
+    text-align: center;
+  }
+
+  .footerLink {
+    --ui-button-height: var(--theme--dimensions-height-md);
+    --ui-button-padding-x: var(--theme--spacing-spaceMd);
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footerLink svg {
+    display: none;
+  }
+
+  .footerLink:hover {
+    transform: none;
+  }
+
+  .footerBottom {
+    justify-content: flex-start;
+    margin-top: var(--theme--spacing-spaceXl);
+    text-align: center;
   }
 }
 

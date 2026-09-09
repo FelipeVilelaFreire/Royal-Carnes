@@ -37,6 +37,17 @@
   gap: var(--theme--spacing-spaceLg);
   height: 100%;
   padding: var(--theme--spacing-space2xl) var(--theme--spacing-spaceXl);
+  transition:
+    border-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.card:hover {
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 48%, var(--theme--color-border));
+
+  box-shadow: var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-primary) 12%, transparent);
+  transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
 }
 
 .cardIcon {
@@ -48,6 +59,14 @@
   border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 45%, var(--theme--color-border));
   border-radius: var(--theme--radius-xl);
   background: color-mix(in srgb, var(--theme--color-primary) 12%, transparent);
+  transition:
+    background var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    border-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.card:hover .cardIcon {
+  background: color-mix(in srgb, var(--theme--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--theme--color-primary) 58%, var(--theme--color-border));
 }
 
 .cardIconSvg {
@@ -57,5 +76,36 @@
 }
 
 .cardDescription {
-  max-width: 42rem;
+  max-width: var(--theme--layout-container-sm);
+}
+
+@media (max-width: 64em) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48em) {
+  .sectionRoot {
+    padding-block: var(--theme--borders-none);
+  }
+
+  .header {
+    margin-bottom: var(--theme--spacing-spaceXl);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--theme--spacing-spaceLg);
+  }
+
+  .card {
+    align-items: center;
+    padding: var(--theme--spacing-spaceXl);
+    text-align: center;
+  }
+
+  .card:hover {
+    transform: none;
+  }
 }

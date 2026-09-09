@@ -76,6 +76,7 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
   return (
     <ListPage
       entityName={entityName}
+      error={standard.error}
       isLoading={standard.isLoading}
       onCreateRow={onCreateRow}
       onSearchChange={standard.setSearch}

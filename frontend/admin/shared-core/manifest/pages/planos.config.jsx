@@ -1,3 +1,26 @@
+const planEntitlementColumns = [
+  {
+    key: "targetKey",
+    labelKey: "planos.fields.product",
+    type: "select",
+    required: true,
+    source: "produtos",
+    writeValues: {
+      targetType: "product"
+    },
+    writeOptionMeta: {
+      measurementUnitKey: "measurementUnitKey"
+    }
+  },
+  {
+    key: "quantity",
+    labelKey: "planos.fields.limit",
+    type: "number",
+    required: true,
+    suffixKey: "measurementUnitKey"
+  }
+];
+
 export const planosConfig = {
   screenKey: "planos",
   screenType: "standard",
@@ -89,8 +112,14 @@ export const planosConfig = {
         labelKey: "planos.detail.tabs.includedItems",
         emptyKey: "planos.detail.emptyIncludedItems",
         fields: [
-          { key: "entitlementCount", labelKey: "planos.fields.includedItemCount" },
-          { key: "entitlementSummary", labelKey: "planos.fields.includedItemSummary" }
+          {
+            key: "entitlements",
+            labelKey: "planos.fields.includedItems",
+            type: "lineItems",
+            editable: true,
+            addLabelKey: "planos.fields.addIncludedItem",
+            columns: planEntitlementColumns
+          }
         ]
       },
       {
@@ -98,9 +127,18 @@ export const planosConfig = {
         labelKey: "planos.detail.tabs.subscribers",
         emptyKey: "planos.detail.emptySubscribers",
         fields: [
-          { key: "activeSubscriberCount", labelKey: "planos.fields.activeSubscriberCount" },
-          { key: "subscriberCount", labelKey: "planos.fields.subscriberCount" },
-          { key: "subscriberSummary", labelKey: "planos.fields.subscriberSummary" }
+          {
+            key: "subscribers",
+            labelKey: "planos.fields.subscribers",
+            type: "relatedList",
+            layout: "full",
+            columns: [
+              { key: "customerName", labelKey: "planos.subscribers.customer", showAvatar: true },
+              { key: "statusLabelKey", labelKey: "planos.subscribers.status", valueType: "translationKey" },
+              { key: "startedAt", labelKey: "planos.subscribers.startedAt" },
+              { key: "currentCycleEndsAt", labelKey: "planos.subscribers.currentCycleEndsAt" }
+            ]
+          }
         ]
       }
     ]
@@ -150,6 +188,19 @@ export const planosConfig = {
           { key: "priceCents", labelKey: "planos.fields.price", type: "currency", currency: "BRL", locale: "pt-BR", required: true },
           { key: "trialDays", labelKey: "planos.fields.trialDays", type: "number", defaultValue: 0 },
           { key: "sortOrder", labelKey: "planos.fields.sortOrder", type: "number", defaultValue: 0 }
+        ]
+      },
+      {
+        key: "includedItems",
+        titleKey: "planos.add.sections.includedItems",
+        fields: [
+          {
+            key: "entitlements",
+            labelKey: "planos.fields.includedItems",
+            type: "lineItems",
+            addLabelKey: "planos.fields.addIncludedItem",
+            columns: planEntitlementColumns
+          }
         ]
       }
     ]

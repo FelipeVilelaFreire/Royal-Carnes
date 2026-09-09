@@ -8,6 +8,17 @@
   --ui-surface-radius: var(--theme--radius-2xl);
   box-sizing: border-box;
   padding: var(--theme--spacing-space2xl);
+  transition:
+    border-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.card:hover {
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 62%, var(--theme--color-border));
+
+  box-shadow: var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-primary) 14%, transparent);
+  transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
 }
 
 .grid {
@@ -51,19 +62,69 @@
 .mediaFrame {
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 28%, var(--theme--color-border));
   border-radius: var(--theme--radius-2xl);
+  transition: border-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.card:hover .mediaFrame {
+  border-color: color-mix(in srgb, var(--theme--color-primary) 48%, var(--theme--color-border));
 }
 
 .mediaImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1);
+  transition: transform var(--theme--motion-durationXl) var(--theme--motion-easingStandard);
+}
+
+.card:hover .mediaImage {
+  transform: scale(1.035);
 }
 
 @media (max-width: 56em) {
+  .card {
+    padding: var(--theme--spacing-spaceXl);
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
   .content,
   .mediaColumn {
     grid-column: 1 / -1;
+  }
+
+  .content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .badge {
+    align-self: center;
+  }
+
+  .description {
+    max-width: none;
+  }
+
+  .action {
+    width: 100%;
+  }
+
+  .action button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 48em) {
+  .grid {
+    gap: var(--theme--spacing-spaceXl);
+  }
+
+  .mediaFrame {
+    aspect-ratio: 16 / 12;
   }
 }

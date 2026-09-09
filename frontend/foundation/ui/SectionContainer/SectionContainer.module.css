@@ -1,15 +1,38 @@
 .section {
+  --ui-section-external-gutter: calc((var(--theme--spacing-spaceMd) + var(--theme--spacing-spaceLg)) / 2);
+
   align-items: center;
   background: transparent;
-  border-bottom: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border-bottom: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 12%, transparent);
   box-sizing: border-box;
   display: flex;
+  isolation: isolate;
   justify-content: center;
   min-height: auto;
-  overflow: hidden;
+  overflow: visible;
   padding-block: var(--theme--spacing-space2xl);
   position: relative;
+  scroll-margin-top: var(--app-shell-header-height, var(--theme--dimensions-height-2xl));
+  transition:
+    background var(--theme--motion-durationLg) var(--theme--motion-easingStandard),
+    border-color var(--theme--motion-durationLg) var(--theme--motion-easingStandard);
   width: 100%;
+}
+
+.section::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--theme--color-primary) 18%, transparent),
+    transparent
+  );
+  bottom: 0;
+  content: "";
+  height: var(--theme--borders-hairline);
+  inset-inline: var(--theme--spacing-space2xl);
+  opacity: var(--theme--opacity-75);
+  pointer-events: none;
+  position: absolute;
 }
 
 .section[data-header-safety="true"] {
@@ -24,9 +47,21 @@
   min-height: 100vh;
 }
 
+.section[data-atmosphere="solid"] {
+  background: linear-gradient(
+    180deg,
+    var(--theme--color-background),
+    color-mix(in srgb, var(--theme--color-surface) 8%, var(--theme--color-background))
+  );
+}
+
 .section[data-atmosphere="glass"] {
   backdrop-filter: blur(var(--theme--blur-md));
-  background: color-mix(in srgb, var(--theme--color-surface) 18%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme--color-surface) 22%, transparent),
+    color-mix(in srgb, var(--theme--color-background) 78%, transparent)
+  );
 }
 
 .section[data-atmosphere="image"] {
@@ -69,13 +104,17 @@
 
 @media (max-width: 56em) {
   .section {
-    padding-block: var(--theme--spacing-spaceXl);
+    padding-block: var(--theme--spacing-space2xl);
   }
 
   .grid,
   .grid[data-useful-columns="20"] {
     grid-template-columns: 1fr;
-    padding-inline: var(--theme--spacing-spaceMd);
+    padding-inline: var(--ui-section-external-gutter);
+  }
+
+  .section::after {
+    inset-inline: var(--ui-section-external-gutter);
   }
 
   .content,

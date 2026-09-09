@@ -140,6 +140,7 @@ export interface ResolvedAppShellModel {
   currentLayout: AppShellViewportLayout;
   drawerItems: ResolvedAppShellNavigationItem[];
   effectiveMode: AppShellMode;
+  footerConfig: any;
   footerEnabled: boolean;
   footerItems: ResolvedAppShellNavigationItem[];
   headerEnabled: boolean;

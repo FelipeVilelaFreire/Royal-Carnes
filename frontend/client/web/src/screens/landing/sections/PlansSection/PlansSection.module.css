@@ -35,7 +35,7 @@
 
 .billingControl {
   padding: var(--theme--spacing-space2xs);
-  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 24%, var(--theme--color-border));
   border-radius: var(--theme--radius-full);
   background: color-mix(in srgb, var(--theme--color-surface) 76%, var(--theme--color-background));
 }
@@ -59,15 +59,22 @@
   letter-spacing: var(--theme--typography-letterSpacingSm);
   text-transform: uppercase;
   transition:
-    background var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
-    color var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
-    transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+    background var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
 }
 
 .billingButton[data-active="true"] {
   background: var(--theme--color-surface-container);
   color: var(--theme--color-text);
+  outline: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 22%, transparent);
   box-shadow: var(--theme--elevation-sm-x) var(--theme--elevation-sm-y) var(--theme--elevation-sm-blur) var(--theme--elevation-sm-spread) color-mix(in srgb, var(--theme--color-background) 40%, transparent);
+}
+
+.billingBadge,
+.featuredBadge {
+  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 54%, var(--theme--color-background))) !important;
+  color: var(--theme--color-accent-contrast) !important;
 }
 
 .currency,
@@ -94,28 +101,28 @@
   padding: var(--theme--spacing-space2xl) var(--theme--spacing-spaceXl);
   box-shadow: var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-background) 74%, transparent);
   transition:
-    border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
-    box-shadow var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
-    transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+    border-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
 }
 
 .planCard:hover {
-  transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
-  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  transform: translateY(calc(var(--theme--spacing-space2xs) / -2));
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 42%, var(--theme--color-border));
 }
 
 .planCard[data-featured="true"] {
   --ui-surface-bg: linear-gradient(180deg, color-mix(in srgb, var(--theme--color-surface-container) 88%, var(--theme--color-primary)), color-mix(in srgb, var(--theme--color-background) 90%, var(--theme--color-surface)));
-  --ui-surface-border: var(--theme--borders-medium) solid var(--theme--color-primary);
+  --ui-surface-border: var(--theme--borders-medium) solid color-mix(in srgb, var(--theme--color-primary) 78%, var(--theme--color-border));
   box-shadow:
     var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-primary) 20%, transparent),
     var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-background) 70%, transparent);
-  transform: scale(1.02);
+  transform: scale(1.01);
   z-index: var(--theme--z-index-docked);
 }
 
 .planCard[data-featured="true"]:hover {
-  transform: scale(1.02) translateY(calc(var(--theme--spacing-space2xs) * -1));
+  transform: scale(1.01) translateY(calc(var(--theme--spacing-space2xs) / -2));
 }
 
 .planCard[data-variant="wagyu"] {
@@ -209,22 +216,41 @@
 }
 
 .planAction {
-  background: var(--theme--color-surface-container);
-  border-color: var(--theme--color-border);
+  background: var(--theme--color-surface-container) !important;
+  border-color: var(--theme--color-border) !important;
+  color: var(--theme--color-text) !important;
 }
 
 .planAction:hover {
-  border-color: color-mix(in srgb, var(--theme--color-primary) 42%, var(--theme--color-border));
+  background: color-mix(in srgb, var(--theme--color-surface-container) 92%, var(--theme--color-primary)) !important;
+  border-color: color-mix(in srgb, var(--theme--color-primary) 42%, var(--theme--color-border)) !important;
   color: var(--theme--color-primary) !important;
 }
 
 .planActionPrimary {
-  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 54%, var(--theme--color-background)));
+  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 54%, var(--theme--color-background))) !important;
   box-shadow: var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-primary) 22%, transparent);
   color: var(--theme--color-accent-contrast) !important;
 }
 
+@media (max-width: 64em) {
+  .planGrid {
+    --ui-layout-columns: 1;
+    max-width: var(--theme--layout-container-sm);
+    margin-inline: auto;
+  }
+
+  .planCard[data-featured="true"],
+  .planCard[data-featured="true"]:hover {
+    transform: none;
+  }
+}
+
 @media (max-width: 48em) {
+  .header {
+    text-align: center;
+  }
+
   .title {
     font-size: var(--theme--typography-size3xl);
   }
@@ -241,14 +267,26 @@
 
   .planGrid {
     --ui-layout-columns: 1;
+    max-width: none;
   }
 
   .planCard {
+    align-items: center;
     padding: var(--theme--spacing-spaceXl);
+    text-align: center;
   }
 
-  .planCard[data-featured="true"],
-  .planCard[data-featured="true"]:hover {
+  .featuredBadge {
+    position: static;
+    align-self: center;
     transform: none;
+  }
+
+  .planBadge {
+    align-self: center;
+  }
+
+  .featureItem {
+    text-align: left;
   }
 }

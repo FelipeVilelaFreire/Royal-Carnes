@@ -14,6 +14,7 @@ import { TextArea } from "@foundation/ui/TextArea";
 import { ArrowBackIcon } from "@foundation/ui/Icon/AppIcons";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { AdminStandardFormViewModel } from "@/view-models/standard.view-model";
+import { LineItemsEditor } from "../../components/LineItemsEditor";
 import styles from "./AddPage.module.css";
 
 export interface AddPageProps {
@@ -94,6 +95,16 @@ export const AddPage: React.FC<AddPageProps> = ({
                         urlPlaceholder={t("forms.assetUrlPlaceholder")}
                         value={field.value}
                       />
+                    ) : field.type === "lineItems" ? (
+                      <LineItemsEditor
+                        addLabel={t(field.addLabelKey || "forms.addLineItem")}
+                        columns={field.columns || []}
+                        emptyLabel={t("forms.emptyLineItems")}
+                        onChange={(value) => onFieldChange(field.key, value)}
+                        removeLabel={t("forms.removeLineItem")}
+                        t={t}
+                        value={Array.isArray(field.value) ? field.value : []}
+                      />
                     ) : field.type === "multiSelect" ? (
                       <MultiSelect
                         cancelRemoveLabel={t("common.cancel")}
@@ -141,7 +152,7 @@ export const AddPage: React.FC<AddPageProps> = ({
                       <Input
                         onChange={(event) => onFieldChange(field.key, event.target.value)}
                         placeholder={placeholder}
-                        type={field.type === "number" ? "number" : "text"}
+                        type={field.type === "number" ? "number" : field.type === "datetime" ? "datetime-local" : "text"}
                         value={field.value || ""}
                       />
                     )}

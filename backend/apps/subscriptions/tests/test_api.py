@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase
 
 from apps.catalog.models import MeasurementUnit, Product, ProductVariant
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
+from apps.customers.models import Address
 from apps.subscriptions.models import Plan, PlanEntitlement, PlanPrice, Subscription, SubscriptionCycle
 from apps.subscriptions.selectors import current_cycle_for_subscription
 from apps.subscriptions.services import EntitlementValidationError, validate_cycle_item_selection
@@ -201,6 +202,54 @@ class SubscriptionsApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 400, response.data)
         self.assertEqual(response.data["code"], "subscription_reference_not_found")
+
+    def test_admin_can_update_subscription_status_and_plan(self):
+        self.authenticate()
+        subscription = Subscription.objects.select_related("plan").get()
+        address = Address.objects.filter(customer=subscription.customer).first()
+
+        response = self.client.patch(
+            f"/api/v1/subscriptions/admin/subscriptions/{subscription.id}/",
+            {
+                "plan_key": "premium",
+                "status": "paused",
+                "cancel_reason": "",
+                "default_delivery_address_id": address.id if address else None,
+                "preferred_delivery_day": "friday",
+                "delivery_window": "afternoon",
+                "delivery_preferences": "Evitar entregas apos 18h",
+                "internal_notes": "Cliente sensivel a atraso",
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["plan"]["key"], "premium")
+        self.assertEqual(response.data["status"], "paused")
+        self.assertEqual(response.data["preferred_delivery_day"], "friday")
+        self.assertEqual(response.data["delivery_window"], "afternoon")
+        self.assertEqual(response.data["delivery_preferences"], "Evitar entregas apos 18h")
+        self.assertEqual(response.data["internal_notes"], "Cliente sensivel a atraso")
+
+    def test_admin_cancel_subscription_sets_cancelled_at_when_missing(self):
+        self.authenticate()
+        subscription = Subscription.objects.get()
+
+        response = self.client.patch(
+            f"/api/v1/subscriptions/admin/subscriptions/{subscription.id}/",
+            {
+                "status": "cancelled",
+                "cancel_reason": "Solicitado pelo cliente",
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["status"], "cancelled")
+        self.assertEqual(response.data["cancel_reason"], "Solicitado pelo cliente")
+        self.assertIsNotNone(response.data["cancelled_at"])
 
     def test_operator_without_manage_permission_cannot_create_plan(self):
         self.authenticate("operador@royalprime.local", "RoyalPrime123!")

@@ -8,51 +8,35 @@ export const landingNavigation = [
     placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   },
   {
-    key: "store",
-    labelKey: "navigation.store",
+    key: "productOptions",
+    labelKey: "navigation.productOptions",
     order: 1,
-    targetId: "clube",
-    type: "scroll",
-    placements: { header: true, sidebar: false, drawer: true, bottomBar: false, footer: true }
-  },
-  {
-    key: "selection",
-    labelKey: "navigation.selection",
-    order: 2,
-    targetId: "selecao",
+    targetId: "product-options",
     type: "scroll",
     placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   },
   {
     key: "howItWorks",
     labelKey: "navigation.howItWorks",
-    order: 3,
-    targetId: "como-funciona",
+    order: 2,
+    targetId: "how-it-works",
     type: "scroll",
-    placements: { header: true, sidebar: false, drawer: true, bottomBar: false, footer: true }
+    placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   },
   {
     key: "plans",
     labelKey: "navigation.products",
-    order: 4,
+    order: 3,
     targetId: "assinaturas",
     type: "scroll",
     placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   },
   {
-    key: "royalBox",
-    labelKey: "navigation.royalBox",
-    order: 5,
-    targetId: "royal-box",
-    type: "scroll",
-    placements: { header: true, sidebar: false, drawer: true, bottomBar: false, footer: true }
-  },
-  {
-    key: "faq",
-    labelKey: "navigation.faq",
-    order: 6,
-    targetId: "faq",
-    type: "scroll",
+    key: "cortes",
+    labelKey: "navigation.cortes",
+    order: 4,
+    path: "/cortes",
+    type: "route",
     placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   }
 ];

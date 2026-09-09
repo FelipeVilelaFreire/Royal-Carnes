@@ -39,6 +39,11 @@ export const adminScreens = {
     type: "standard",
     configPath: "pages/planos.config.jsx"
   },
+  assinaturas: {
+    key: "assinaturas",
+    type: "standard",
+    configPath: "pages/assinaturas.config.jsx"
+  },
   clientes: {
     key: "clientes",
     type: "standard",

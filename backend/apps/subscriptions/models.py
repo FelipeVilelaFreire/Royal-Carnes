@@ -195,6 +195,17 @@ class Subscription(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
     current_cycle_ends_at = models.DateTimeField(null=True, blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)
     cancel_reason = models.TextField(blank=True)
+    default_delivery_address = models.ForeignKey(
+        "customers.Address",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="subscriptions",
+    )
+    preferred_delivery_day = models.CharField(max_length=24, blank=True)
+    delivery_window = models.CharField(max_length=40, blank=True)
+    delivery_preferences = models.TextField(blank=True)
+    internal_notes = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-started_at"]

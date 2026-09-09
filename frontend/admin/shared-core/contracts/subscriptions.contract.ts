@@ -84,6 +84,11 @@ export interface AdminSubscriptionDto {
   current_cycle_ends_at?: string | null;
   cancelled_at?: string | null;
   cancel_reason?: string | null;
+  default_delivery_address_id?: string | number | null;
+  preferred_delivery_day?: string;
+  delivery_window?: string;
+  delivery_preferences?: string;
+  internal_notes?: string;
   cycles?: AdminSubscriptionCycleDto[];
 }
 
@@ -134,6 +139,16 @@ export interface AdminSubscriptionFormInput {
   planKey: string;
   status?: "active" | "paused" | "cancelled" | "past_due";
   startedAt?: string | null;
+  endedAt?: string | null;
+  currentCycleStartsAt?: string | null;
+  currentCycleEndsAt?: string | null;
+  cancelledAt?: string | null;
+  cancelReason?: string;
+  defaultDeliveryAddressId?: string | number | null;
+  preferredDeliveryDay?: string;
+  deliveryWindow?: string;
+  deliveryPreferences?: string;
+  internalNotes?: string;
 }
 
 export interface AdminSubscriptionCreateDto {
@@ -141,6 +156,38 @@ export interface AdminSubscriptionCreateDto {
   plan_key: string;
   status?: "active" | "paused" | "cancelled" | "past_due";
   started_at?: string | null;
+  default_delivery_address_id?: string | number | null;
+  preferred_delivery_day?: string;
+  delivery_window?: string;
+  delivery_preferences?: string;
+  internal_notes?: string;
+}
+
+export interface AdminSubscriptionUpdateInput {
+  planKey?: string;
+  status?: "active" | "paused" | "cancelled" | "past_due";
+  startedAt?: string | null;
+  endedAt?: string | null;
+  currentCycleStartsAt?: string | null;
+  currentCycleEndsAt?: string | null;
+  cancelledAt?: string | null;
+  cancelReason?: string;
+}
+
+export interface AdminSubscriptionUpdateDto {
+  plan_key?: string;
+  status?: "active" | "paused" | "cancelled" | "past_due";
+  started_at?: string | null;
+  ended_at?: string | null;
+  current_cycle_starts_at?: string | null;
+  current_cycle_ends_at?: string | null;
+  cancelled_at?: string | null;
+  cancel_reason?: string;
+  default_delivery_address_id?: string | number | null;
+  preferred_delivery_day?: string;
+  delivery_window?: string;
+  delivery_preferences?: string;
+  internal_notes?: string;
 }
 
 export type AdminCycleItemSelectionInput = CycleItemSelectionInputBase;

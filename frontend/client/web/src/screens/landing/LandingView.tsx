@@ -7,27 +7,33 @@ import {
   DifferentialsSection,
   FaqSection,
   GiftSection,
-  HeroSection,
+  HomeSection,
+  HowItWorksSection,
   PlansSection,
+  ProductOptionsSection,
   ShowcaseSection,
-  StepsSection,
 } from "./sections";
 
 export interface LandingViewProps {
   onNavigate?: (path: string) => void;
 }
 
-const LANDING_SECTION_IDS = new Set(["top", "clube", "selecao", "como-funciona", "assinaturas", "royal-box", "faq"]);
+const LANDING_SECTION_IDS_BY_ROUTE_KEY: Record<string, string> = {
+  faq: "faq",
+  home: "top",
+  howItWorks: "how-it-works",
+  plans: "assinaturas",
+  productOptions: "product-options",
+  showcase: "catalogos",
+  top: "top",
+};
 
 export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
   const handleRouteClick = (routeKey: string) => {
-    if (routeKey === "plans") {
-      onNavigate?.("/home");
-      return;
-    }
+    const landingSectionId = LANDING_SECTION_IDS_BY_ROUTE_KEY[routeKey] ?? routeKey;
 
-    if (LANDING_SECTION_IDS.has(routeKey)) {
-      document.getElementById(routeKey)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (LANDING_SECTION_IDS_BY_ROUTE_KEY[routeKey] || document.getElementById(landingSectionId)) {
+      document.getElementById(landingSectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
@@ -37,37 +43,45 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
   return (
     <>
       <SectionContainer
-        atmosphere="image"
-        backgroundImage={sharedAssets.client.landing.heroBackground}
+        atmosphere="solid"
         headerSafety
         heightRecipe="heroPeek"
         id="top"
-        usefulColumns={17}
+        usefulColumns={20}
       >
-        <HeroSection onRouteClick={handleRouteClick} />
+        <HomeSection onRouteClick={handleRouteClick} />
       </SectionContainer>
 
-      <SectionContainer atmosphere="solid" id="clube" usefulColumns={17}>
-        <DifferentialsSection />
+      <SectionContainer atmosphere="glass" id="product-options" usefulColumns={20}>
+        <ProductOptionsSection onRouteClick={handleRouteClick} />
       </SectionContainer>
 
-      <SectionContainer atmosphere="glass" id="selecao" usefulColumns={17}>
-        <ShowcaseSection />
+      <SectionContainer atmosphere="solid" id="how-it-works" usefulColumns={20}>
+        <HowItWorksSection onRouteClick={handleRouteClick} />
       </SectionContainer>
 
-      <SectionContainer atmosphere="solid" id="como-funciona" usefulColumns={17}>
-        <StepsSection />
-      </SectionContainer>
-
-      <SectionContainer atmosphere="glass" id="assinaturas" usefulColumns={17}>
+      <SectionContainer atmosphere="glass" id="assinaturas" usefulColumns={20}>
         <PlansSection onRouteClick={handleRouteClick} />
       </SectionContainer>
 
-      <SectionContainer atmosphere="solid" id="royal-box" usefulColumns={17}>
+      <SectionContainer
+        atmosphere="image"
+        backgroundImage={sharedAssets.client.landing.heroBackground}
+        id="catalogos"
+        usefulColumns={20}
+      >
+        <ShowcaseSection />
+      </SectionContainer>
+
+      <SectionContainer atmosphere="glass" id="diferenciais" usefulColumns={20}>
+        <DifferentialsSection />
+      </SectionContainer>
+
+      <SectionContainer atmosphere="solid" id="royal-box" usefulColumns={20}>
         <GiftSection onRouteClick={handleRouteClick} />
       </SectionContainer>
 
-      <SectionContainer atmosphere="solid" id="faq" usefulColumns={14}>
+      <SectionContainer atmosphere="glass" id="faq" usefulColumns={14}>
         <FaqSection />
       </SectionContainer>
     </>

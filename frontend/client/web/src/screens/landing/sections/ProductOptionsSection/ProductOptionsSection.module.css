@@ -1,0 +1,282 @@
+.section {
+  width: 100%;
+}
+
+.header {
+  max-width: var(--theme--layout-container-lg);
+  margin-inline: auto;
+  margin-bottom: var(--theme--spacing-spaceLg);
+  text-align: center;
+}
+
+.sectionBadge {
+  background: color-mix(in srgb, var(--theme--color-primary) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--theme--color-primary) 30%, var(--theme--color-border)) !important;
+  color: var(--theme--color-primary) !important;
+}
+
+.title {
+  max-width: var(--theme--layout-container-lg);
+  margin: 0;
+  font-family: var(--theme--typography-headingFamily);
+  font-size: var(--theme--typography-size5xl);
+  letter-spacing: 0;
+}
+
+.titleAccent {
+  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 64%, var(--theme--color-text)));
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  max-width: var(--theme--layout-container-md);
+  margin: 0;
+  font-size: var(--theme--typography-sizeXl);
+}
+
+.optionsGrid {
+  width: 100%;
+  align-items: stretch;
+}
+
+.optionCard {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 90%, var(--theme--color-background));
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-text) 8%, transparent);
+  --ui-surface-radius: var(--theme--radius-2xl);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: var(--theme--dimensions-minHeight-3xl);
+  padding: var(--theme--spacing-space2xl);
+  overflow: hidden;
+  transition:
+    border-color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+}
+
+.optionCard::before {
+  position: absolute;
+  top: 0;
+  left: var(--theme--spacing-space2xl);
+  right: var(--theme--spacing-space2xl);
+  height: var(--theme--borders-medium);
+  border-radius: var(--theme--radius-full);
+  background: color-mix(in srgb, var(--theme--color-primary) 24%, transparent);
+  content: "";
+  opacity: var(--theme--opacity-60);
+}
+
+.optionCard:hover {
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 46%, var(--theme--color-border));
+
+  box-shadow: var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-background) 72%, transparent);
+  transform: translateY(calc(var(--theme--spacing-space2xs) / -2));
+}
+
+.optionCard[data-featured="true"] {
+  --ui-surface-bg: linear-gradient(180deg, color-mix(in srgb, var(--theme--color-surface-container) 88%, var(--theme--color-primary)), color-mix(in srgb, var(--theme--color-surface) 96%, var(--theme--color-background)));
+  --ui-surface-border: var(--theme--borders-medium) solid color-mix(in srgb, var(--theme--color-primary) 70%, var(--theme--color-border));
+
+  box-shadow:
+    var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-background) 72%, transparent),
+    var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-primary) 18%, transparent);
+  transform: translateY(calc(var(--theme--spacing-spaceXs) * -1));
+}
+
+.optionCard[data-featured="true"]::before {
+  background: var(--theme--color-primary);
+  opacity: var(--theme--opacity-100);
+}
+
+.optionCard[data-featured="true"]:hover {
+  transform: translateY(calc(var(--theme--spacing-spaceSm) * -1));
+}
+
+.featuredBadge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  gap: var(--theme--spacing-space2xs);
+  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 54%, var(--theme--color-background))) !important;
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-text) 18%, transparent);
+  color: var(--theme--color-accent-contrast) !important;
+  transform: translate(-50%, -50%);
+}
+
+.featuredIcon {
+  height: var(--theme--dimensions-icon-xs);
+  width: var(--theme--dimensions-icon-xs);
+}
+
+.optionBody {
+  flex: 1 1 auto;
+  position: relative;
+  z-index: var(--theme--z-index-base);
+}
+
+.optionHeader {
+  width: 100%;
+}
+
+.optionBadge {
+  background: color-mix(in srgb, var(--theme--color-text) 5%, transparent) !important;
+  border-color: color-mix(in srgb, var(--theme--color-text) 10%, transparent) !important;
+  color: var(--theme--color-text-muted) !important;
+}
+
+.optionCard[data-featured="true"] .optionBadge {
+  background: color-mix(in srgb, var(--theme--color-primary) 12%, transparent) !important;
+  border-color: color-mix(in srgb, var(--theme--color-primary) 34%, var(--theme--color-border)) !important;
+  color: var(--theme--color-primary) !important;
+}
+
+.optionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--theme--dimensions-height-xl);
+  height: var(--theme--dimensions-height-xl);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 28%, var(--theme--color-border));
+  border-radius: var(--theme--radius-xl);
+  background: color-mix(in srgb, var(--theme--color-primary) 10%, transparent);
+  color: var(--theme--color-primary);
+}
+
+.optionIconSvg,
+.actionIcon,
+.checkIcon {
+  height: var(--theme--dimensions-icon-sm);
+  width: var(--theme--dimensions-icon-sm);
+}
+
+.optionTitle {
+  margin: 0;
+  color: var(--theme--color-text);
+  font-family: var(--theme--typography-headingFamily);
+  font-size: var(--theme--typography-size2xl);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: 0;
+}
+
+.optionDescription {
+  margin: 0;
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeSm);
+  min-height: var(--theme--dimensions-height-xl);
+}
+
+.bulletList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-spaceSm);
+  margin: 0;
+  padding: var(--theme--spacing-spaceLg) 0 0;
+  border-top: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-text) 8%, transparent);
+  list-style: none;
+}
+
+.bulletItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--theme--spacing-spaceSm);
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeSm);
+  line-height: var(--theme--typography-lineHeightMd);
+}
+
+.bulletItem:first-child {
+  color: var(--theme--color-text);
+  font-weight: var(--theme--typography-semibold);
+}
+
+.checkIcon {
+  flex: 0 0 auto;
+  color: var(--theme--color-primary);
+}
+
+.primaryAction,
+.secondaryAction {
+  position: relative;
+  z-index: var(--theme--z-index-base);
+  width: 100%;
+  border-radius: var(--theme--radius-lg);
+}
+
+.primaryAction {
+  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 54%, var(--theme--color-background))) !important;
+  color: var(--theme--color-accent-contrast) !important;
+  box-shadow: var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-primary) 22%, transparent);
+}
+
+.secondaryAction {
+  background: color-mix(in srgb, var(--theme--color-surface-container) 76%, transparent) !important;
+  border-color: color-mix(in srgb, var(--theme--color-text) 12%, var(--theme--color-border)) !important;
+  color: var(--theme--color-text) !important;
+}
+
+.secondaryAction:hover {
+  background: color-mix(in srgb, var(--theme--color-surface-container) 92%, var(--theme--color-primary)) !important;
+  border-color: color-mix(in srgb, var(--theme--color-primary) 38%, var(--theme--color-border)) !important;
+  color: var(--theme--color-primary) !important;
+}
+
+@media (max-width: 48em) {
+  .header {
+    margin-bottom: var(--theme--spacing-spaceXl);
+  }
+
+  .title {
+    font-size: var(--theme--typography-size3xl);
+  }
+
+  .subtitle {
+    font-size: var(--theme--typography-sizeMd);
+  }
+
+  .optionsGrid {
+    --ui-layout-columns: 1;
+  }
+
+  .optionCard {
+    align-items: center;
+    min-height: auto;
+    padding: var(--theme--spacing-spaceXl);
+    text-align: center;
+  }
+
+  .optionCard::before {
+    left: var(--theme--spacing-spaceXl);
+    right: var(--theme--spacing-spaceXl);
+  }
+
+  .optionHeader {
+    align-items: center;
+    flex-direction: column-reverse;
+    gap: var(--theme--spacing-spaceMd);
+    justify-content: center;
+  }
+
+  .featuredBadge {
+    position: static;
+    align-self: center;
+    transform: none;
+  }
+
+  .bulletItem {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .optionDescription {
+    min-height: auto;
+  }
+
+  .optionCard[data-featured="true"],
+  .optionCard[data-featured="true"]:hover {
+    transform: none;
+  }
+}
