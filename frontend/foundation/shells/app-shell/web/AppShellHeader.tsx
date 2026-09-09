@@ -13,6 +13,7 @@ import type { AppShellHeaderAction, ResolvedAppShellModel } from "../foundation"
 export interface AppShellHeaderProps {
   drawerEnabled?: boolean;
   headerConfig?: Record<string, any>;
+  isScrolled?: boolean;
   model: ResolvedAppShellModel;
   onNavigate?: (path: string) => void;
   onOpenDrawer: () => void;
@@ -25,6 +26,7 @@ export interface AppShellHeaderProps {
 export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
   drawerEnabled = true,
   headerConfig,
+  isScrolled = false,
   model,
   onNavigate,
   onOpenDrawer,
@@ -39,6 +41,7 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
   const showDrawerTrigger = drawerEnabled && drawerTriggerMode !== false && drawerTriggerMode !== "never";
   const drawerTriggerMobileOnly = drawerTriggerMode === "mobile";
   const navCentered = headerConfig?.navAlignment === "center";
+  const mobileDrawerAtEnd = headerConfig?.mobileDrawerPlacement === "end";
 
   const resolveStringPath = (source: Record<string, any> | undefined, path: string | undefined) => {
     if (!source || !path) return undefined;
@@ -62,7 +65,7 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
       <Button
         appearance={(action.appearance || (isThemeAction ? "outline" : "transparent")) as any}
         className={styles.headerAction}
-        icon={isThemeAction ? (themeMode === "dark" ? <SunIcon color="currentColor" size={15} /> : <MoonIcon color="currentColor" size={15} />) : undefined}
+        icon={isThemeAction ? (themeMode === "dark" ? <SunIcon color="currentColor" /> : <MoonIcon color="currentColor" />) : undefined}
         key={action.key}
         onClick={() => {
           if (isThemeAction) {
@@ -80,18 +83,6 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
     );
   };
 
-  const resolveHeaderNavButtonStyle = (isActive: boolean) => ({
-    "--ui-surface-bg": isActive ? "var(--app-shell-surface-bg)" : "transparent",
-    "--ui-surface-border": isActive ? "var(--app-shell-accent)" : "transparent",
-    "--ui-surface-border-width": "var(--app-shell-border-width)",
-    "--ui-surface-color": isActive ? "var(--app-shell-color)" : "var(--app-shell-muted)",
-    "--ui-surface-radius": "var(--theme--radius-full)",
-    "--ui-surface-shadow": "none",
-    "--ui-button-height": "var(--theme--dimensions-height-md)",
-    "--ui-button-padding-x": "var(--theme--spacing-spaceMd)",
-    "--ui-button-padding-y": "var(--app-shell-space-none)"
-  } as React.CSSProperties);
-
   return (
     <Surface
       as="header"
@@ -99,15 +90,12 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
       className={[
         styles.header,
         headerConfig?.visualStyle === "portalClassic" ? styles.headerPortalClassic : "",
+        mobileDrawerAtEnd ? styles.headerMobileDrawerEnd : "",
         model.isFloatingHeader ? styles.headerFloating : "",
       ].filter(Boolean).join(" ")}
-      style={{
-        "--ui-surface-bg": "var(--app-shell-header-bg, var(--theme--color-surface))",
-        "--ui-surface-border": "var(--app-shell-border)",
-        "--ui-surface-color": "var(--app-shell-color)",
-        "--ui-surface-shadow": "none",
-        backdropFilter: surfaceStyle === "glassBlur" ? "blur(var(--theme--blur-md))" : undefined
-      } as React.CSSProperties}
+      data-mobile-actions={headerConfig?.mobileActions || "visible"}
+      data-scrolled={isScrolled || undefined}
+      data-surface-style={surfaceStyle || "solid"}
     >
       <Container
         className={styles.headerInner}
@@ -148,7 +136,6 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
                   key={item.key}
                   onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
                   size="sm"
-                  style={headerConfig?.navAppearance === "pill" ? resolveHeaderNavButtonStyle(isActive) : undefined}
                   tone={isActive ? "primary" : "neutral"}
                 >
                   {item.label}

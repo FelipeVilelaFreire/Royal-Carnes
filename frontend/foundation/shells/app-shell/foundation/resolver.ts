@@ -45,6 +45,7 @@ const normalizeToken = (scale: string, token: string) => {
 
 const tokenVar = (scale: string, token: string | undefined, fallbackToken: string) => {
   const resolvedToken = token || fallbackToken;
+  if (resolvedToken === "none") return "0";
   return `var(--theme--${scale}-${normalizeToken(scale, resolvedToken)})`;
 };
 
@@ -239,11 +240,15 @@ export const resolveAppShellModel = ({
   const strings = config?.strings || {};
   const resolvedNavigation = resolveAppShellNavigation(navigation || navItems || [], routesMap, strings);
   const currentLayout = resolveAppShellViewportLayout(config, isMobileScreen ? "mobile" : "desktop");
+  const headerConfig = {
+    ...(config?.header || {}),
+    ...(isMobileScreen ? config?.header?.mobile || {} : {}),
+  };
   const sidebarEnabled = Boolean(config?.sidebar?.enabled) || effectiveMode === "admin";
   const headerEnabled = config?.header?.enabled !== false && currentLayout.header?.enabled !== false && !(isMobileScreen && config?.header?.mobile?.enabled === false);
   const footerEnabled = Boolean(config?.footer?.enabled) && currentLayout.footer?.enabled !== false;
   const bottomTabEnabled = config?.bottomTabBar?.enabled !== false && currentLayout.bottomTabBar?.enabled !== false;
-  const headerLayout = config?.header?.layoutMode || "attached";
+  const headerLayout = headerConfig.layoutMode || "attached";
   const sidebarCols = (isSidebarCollapsed ? config?.sidebar?.collapsedCols : config?.sidebar?.expandedCols) || (isSidebarCollapsed ? 1 : 3);
   const sidebarWidth = `${(sidebarCols / 20) * 100}%`;
   const drawerItems = resolvedNavigation.filter((item) => resolveAppShellPlacement(item, "drawer", config));
@@ -267,37 +272,46 @@ export const resolveAppShellModel = ({
       name:
         brand?.name ||
         brandName ||
-        resolveStringPath(strings, config?.header?.brandNameKey) ||
-        config?.header?.brandName ||
+        resolveStringPath(strings, headerConfig.brandNameKey) ||
+        headerConfig.brandName ||
         resolveStringPath(strings, config?.sidebar?.brandNameKey) ||
         config?.sidebar?.brandName ||
         "App",
-      logo: brand?.logo || brandLogo || config?.header?.brandLogo || config?.sidebar?.brandLogo || "",
+      logo: brand?.logo || brandLogo || headerConfig.brandLogo || config?.sidebar?.brandLogo || "",
       kicker:
         brand?.kicker ||
-        resolveStringPath(strings, config?.header?.brandKickerKey) ||
-        config?.header?.brandKicker ||
+        resolveStringPath(strings, headerConfig.brandKickerKey) ||
+        headerConfig.brandKicker ||
         "",
-      routePath: brand?.routePath || config?.header?.brandRoutePath || "/",
+      routePath: brand?.routePath || headerConfig.brandRoutePath || "/",
     },
     contentOffsetBottom: bottomTabEnabled ? config?.bottomTabBar?.contentOffsetBottom || "var(--theme--dimensions-height-3xl)" : "0",
-    contentOffsetTop: headerEnabled ? config?.header?.contentOffsetTop || "var(--theme--dimensions-height-3xl)" : "0",
+    contentOffsetTop: headerEnabled ? headerConfig.contentOffsetTop || "var(--theme--dimensions-height-3xl)" : "0",
     cssVars: {
       "--app-shell-accent": themeColors.accent || themeColors.primary || "var(--theme--color-accent)",
       "--app-shell-accent-contrast": themeColors.accentContrast || themeColors.background || "var(--theme--color-accent-contrast)",
       "--app-shell-active-bg": themeColors.activeBg || "color-mix(in srgb, var(--app-shell-accent) 15%, transparent)",
+      "--app-shell-bottom-count": String(Math.max(bottomItems.length, 1)),
       "--app-shell-background": themeColors.background || themeColors.bg || "var(--theme--color-background)",
       "--app-shell-border": themeColors.border || "var(--theme--color-border)",
-      "--app-shell-brand-bg": config?.header?.brandSurface === "none" ? "transparent" : themeColors.surfaceContainer || themeColors.surface || "transparent",
-      "--app-shell-brand-border": config?.header?.brandSurface === "none" ? "transparent" : themeColors.border || "transparent",
+      "--app-shell-brand-bg": headerConfig.brandSurface === "none" ? "transparent" : themeColors.surfaceContainer || themeColors.surface || "transparent",
+      "--app-shell-brand-border": headerConfig.brandSurface === "none" ? "transparent" : themeColors.border || "transparent",
       "--app-shell-color": themeColors.text || "var(--theme--color-text)",
-      "--app-shell-gap": tokenVar("spacing", config?.header?.gapLateralToken, "spaceSm"),
-      "--app-shell-header-bg": config?.header?.surfaceStyle === "glassBlur" ? themeColors.headerBg || "color-mix(in srgb, var(--theme--color-background) 90%, transparent)" : themeColors.surface || "transparent",
-      "--app-shell-header-max-width": tokenVar("layout", config?.header?.maxWidthToken, "containerXl"),
-      "--app-shell-header-padding-x": tokenVar("spacing", config?.header?.paddingXToken, "spaceLg"),
-      "--app-shell-header-padding-y": tokenVar("spacing", config?.header?.paddingYToken, "spaceSm"),
+      "--app-shell-content-offset-bottom": bottomTabEnabled ? config?.bottomTabBar?.contentOffsetBottom || "var(--theme--dimensions-height-3xl)" : "0",
+      "--app-shell-content-offset-top": headerEnabled ? headerConfig.contentOffsetTop || "var(--theme--dimensions-height-3xl)" : "0",
+      "--app-shell-gap": tokenVar("spacing", headerConfig.gapLateralToken, "spaceSm"),
+      "--app-shell-header-bg": headerConfig.surfaceStyle === "glassBlur" ? themeColors.headerBg || "color-mix(in srgb, var(--theme--color-background) 90%, transparent)" : themeColors.surface || "transparent",
+      "--app-shell-header-compact-height": tokenVar("dimensions-height", headerConfig.compactHeightToken, "2xl"),
+      "--app-shell-header-compact-padding-y": tokenVar("spacing", headerConfig.compactPaddingYToken, "spaceXs"),
+      "--app-shell-header-compact-brand-size": tokenVar("typography", headerConfig.compactBrandSizeToken, "sizeLg"),
+      "--app-shell-header-compact-nav-height": tokenVar("dimensions-height", headerConfig.compactNavHeightToken, "sm"),
+      "--app-shell-header-compact-nav-padding-x": tokenVar("spacing", headerConfig.compactNavPaddingXToken, "spaceSm"),
+      "--app-shell-header-height": tokenVar("dimensions-height", headerConfig.heightToken, "3xl"),
+      "--app-shell-header-max-width": tokenVar("layout", headerConfig.maxWidthToken, "containerXl"),
+      "--app-shell-header-padding-x": tokenVar("spacing", headerConfig.paddingXToken, "spaceLg"),
+      "--app-shell-header-padding-y": tokenVar("spacing", headerConfig.paddingYToken, "spaceSm"),
       "--app-shell-muted": themeColors.textMuted || "var(--theme--color-text-muted)",
-      "--app-shell-nav-gap": tokenVar("spacing", config?.header?.navGapToken, "spaceLg"),
+      "--app-shell-nav-gap": tokenVar("spacing", headerConfig.navGapToken, "spaceLg"),
       "--app-shell-panel-bg": themeColors.surfaceContainer || themeColors.surface || "var(--theme--color-surface-container)",
       "--app-shell-sidebar-width": sidebarWidth,
       "--app-shell-surface-bg": themeColors.surface || "var(--theme--color-surface)",

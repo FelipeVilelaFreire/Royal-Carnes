@@ -21,12 +21,6 @@ export const AppShellFooter: React.FC<AppShellFooterProps> = ({ model, onNavigat
       as="footer"
       appearance="solid"
       className={styles.footer}
-      style={{
-        "--ui-surface-bg": "var(--app-shell-panel-bg)",
-        "--ui-surface-border": "var(--app-shell-border)",
-        "--ui-surface-color": "var(--app-shell-color)",
-        "--ui-surface-shadow": "none"
-      } as React.CSSProperties}
     >
       <Container
         className={styles.footerInner}

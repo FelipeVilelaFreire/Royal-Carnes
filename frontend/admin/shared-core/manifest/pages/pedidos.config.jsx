@@ -33,7 +33,7 @@ export const pedidosConfig = {
       { key: "code", labelKey: "pedidos.form.code", required: true },
       { key: "customerName", labelKey: "pedidos.form.customerName", required: true },
       { key: "summary", labelKey: "pedidos.form.summary", type: "textarea" },
-      { key: "totalFormatted", labelKey: "pedidos.form.totalFormatted" },
+      { key: "totalCents", labelKey: "pedidos.form.totalFormatted", type: "currency", currency: "BRL", locale: "pt-BR" },
     ],
   },
   rows: mockAdminOrders,

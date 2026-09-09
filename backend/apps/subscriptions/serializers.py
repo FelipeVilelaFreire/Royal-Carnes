@@ -74,15 +74,61 @@ class PlanSerializer(serializers.ModelSerializer):
         )
 
 
+class PlanSubscriberSerializer(serializers.ModelSerializer):
+    customer_id = serializers.IntegerField(source="customer.id", read_only=True)
+    customer_name = serializers.CharField(source="customer.name", read_only=True)
+
+    class Meta:
+        model = Subscription
+        fields = (
+            "id",
+            "customer_id",
+            "customer_name",
+            "status",
+            "started_at",
+            "current_cycle_ends_at",
+        )
+
+
+class AdminPlanSerializer(PlanSerializer):
+    subscriber_count = serializers.SerializerMethodField()
+    active_subscriber_count = serializers.SerializerMethodField()
+    subscribers = serializers.SerializerMethodField()
+
+    class Meta(PlanSerializer.Meta):
+        fields = PlanSerializer.Meta.fields + (
+            "subscriber_count",
+            "active_subscriber_count",
+            "subscribers",
+        )
+
+    def get_subscriber_count(self, plan):
+        return plan.subscriptions.count()
+
+    def get_active_subscriber_count(self, plan):
+        return plan.subscriptions.filter(status=Subscription.Status.ACTIVE).count()
+
+    def get_subscribers(self, plan):
+        queryset = plan.subscriptions.select_related("customer").order_by("customer__name", "id")[:20]
+        return PlanSubscriberSerializer(queryset, many=True).data
+
+
 class PlanCreateSerializer(serializers.Serializer):
     key = serializers.SlugField(max_length=100)
     name = serializers.CharField(max_length=160)
     description = serializers.CharField(required=False, allow_blank=True, default="")
+    status = serializers.ChoiceField(
+        choices=Plan.Status.choices,
+        required=False,
+        default=Plan.Status.ACTIVE,
+    )
     billing_interval = serializers.ChoiceField(
         choices=Plan.BillingInterval.choices,
         required=False,
         default=Plan.BillingInterval.MONTH,
     )
+    trial_days = serializers.IntegerField(min_value=0, required=False, default=0)
+    sort_order = serializers.IntegerField(min_value=0, required=False, default=0)
     price_cents = serializers.IntegerField(min_value=0, required=False)
     entitlements = serializers.ListField(child=serializers.DictField(), required=False, default=list)
 

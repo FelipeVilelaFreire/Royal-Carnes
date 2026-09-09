@@ -12,6 +12,12 @@ Codigo novo nao pode repetir hardcode ou estilo inline do legado. Violacao
 introduzida pelo proprio diff deve ser corrigida antes de concluir a tarefa;
 build aprovado ou promessa de corrigir depois nao substitui conformidade.
 
+Execute npm run verify:rules antes de entregar codigo. Se houve commit durante
+a tarefa, use -- --base com o commit inicial; nao ocultar violacoes usando HEAD
+ja alterado. Client/admin tambem executam o check no prebuild. Cobertura e limites
+em [scripts/README.md](scripts/README.md); analise automatica nao substitui a
+revisao manual exigida pelo contrato.
+
 ## Leitura inicial unica
 
 1. Leia este arquivo e as instrucoes de workspace aplicaveis.

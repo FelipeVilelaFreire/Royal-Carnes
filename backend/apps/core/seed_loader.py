@@ -254,6 +254,8 @@ class BackendSeedApplier:
                 key=collection_data["key"],
                 name=collection_data["name"],
                 description=collection_data.get("description", ""),
+                image_url=collection_data.get("imageUrl", ""),
+                image_alt=collection_data.get("imageAlt", collection_data["name"]),
             )
 
         for category_data in data.get("categories", []):
@@ -261,6 +263,8 @@ class BackendSeedApplier:
                 organization=organization,
                 key=category_data["key"],
                 name=category_data["name"],
+                parent=self.categories_by_key.get(category_data.get("parentKey", "")),
+                sort_order=category_data.get("sortOrder", 0),
             )
 
         for commercial_mode_data in data.get("commercialModes", []):

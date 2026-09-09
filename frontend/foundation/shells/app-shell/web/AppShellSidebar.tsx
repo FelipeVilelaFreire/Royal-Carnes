@@ -41,12 +41,6 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
         isCollapsed ? styles.sidebarCollapsed : ""
       ].filter(Boolean).join(" ")}
       data-sidebar-density={density}
-      style={{
-        "--ui-surface-bg": "var(--app-shell-panel-bg)",
-        "--ui-surface-border": "var(--app-shell-border)",
-        "--ui-surface-color": "var(--app-shell-color)",
-        "--ui-surface-shadow": "none"
-      } as React.CSSProperties}
     >
       <Stack className={styles.sidebarMain} gap="md">
         <div className={styles.sidebarBrand}>

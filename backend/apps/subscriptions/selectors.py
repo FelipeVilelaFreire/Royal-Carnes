@@ -40,6 +40,7 @@ def admin_plans_for_organization(organization):
     return Plan.objects.filter(organization=organization).prefetch_related(
         "prices",
         PLAN_PREFETCH,
+        "subscriptions__customer",
     )
 
 

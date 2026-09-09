@@ -13,6 +13,8 @@ class Collection(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
     key = models.SlugField(max_length=100)
     name = models.CharField(max_length=160)
     description = models.TextField(blank=True)
+    image_url = models.URLField(blank=True)
+    image_alt = models.CharField(max_length=180, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
     sort_order = models.PositiveIntegerField(default=0)
     starts_at = models.DateTimeField(null=True, blank=True)

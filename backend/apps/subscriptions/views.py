@@ -20,6 +20,7 @@ from .selectors import (
     subscriptions_for_organization,
 )
 from .serializers import (
+    AdminPlanSerializer,
     PlanCreateSerializer,
     PlanSerializer,
     SubscriptionCreateSerializer,
@@ -172,7 +173,7 @@ def admin_plans(request):
     if request.method == "GET":
         require_organization_permission(request.user, organization, "plans.read")
         queryset = admin_plans_for_organization(organization)
-        return Response(PlanSerializer(queryset, many=True).data)
+        return Response(AdminPlanSerializer(queryset, many=True).data)
 
     require_organization_permission(request.user, organization, "plans.manage")
     serializer = PlanCreateSerializer(data=request.data)
@@ -183,7 +184,10 @@ def admin_plans(request):
         key=data["key"],
         name=data["name"],
         description=data.get("description", ""),
+        status=data.get("status", Plan.Status.ACTIVE),
         billing_interval=data.get("billing_interval", Plan.BillingInterval.MONTH),
+        trial_days=data.get("trial_days", 0),
+        sort_order=data.get("sort_order", 0),
     )
     if "price_cents" in data:
         set_plan_price(
@@ -210,7 +214,7 @@ def admin_plans(request):
         return Response({"code": "plan_entitlement_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
     except EntitlementValidationError as error:
         return Response({"code": error.code, "detail": error.detail}, status=status.HTTP_400_BAD_REQUEST)
-    return Response(PlanSerializer(plan).data, status=status.HTTP_201_CREATED)
+    return Response(AdminPlanSerializer(plan).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["GET", "POST"])

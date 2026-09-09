@@ -3,10 +3,7 @@
 }
 
 .header {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--theme--spacing-spaceSm);
   margin-bottom: var(--theme--spacing-space2xl);
   text-align: center;
 }
@@ -29,22 +26,18 @@
   max-width: var(--theme--layout-container-sm);
   margin: 0;
   color: var(--theme--color-text-muted);
+  line-height: var(--theme--typography-lineHeightLg);
 }
 
 .billingWrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--theme--spacing-space2xl);
+  margin-bottom: var(--theme--spacing-space3xl);
 }
 
 .billingControl {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--theme--spacing-spaceXs);
   padding: var(--theme--spacing-space2xs);
   border: var(--theme--borders-hairline) solid var(--theme--color-border);
   border-radius: var(--theme--radius-full);
-  background: var(--theme--color-surface-container);
+  background: color-mix(in srgb, var(--theme--color-surface) 76%, var(--theme--color-background));
 }
 
 .billingButton {
@@ -53,8 +46,9 @@
   justify-content: center;
   gap: var(--theme--spacing-spaceXs);
   min-height: var(--theme--dimensions-height-lg);
-  padding: 0 var(--theme--spacing-spaceLg);
-  border: 0;
+  padding-block: var(--theme--borders-none);
+  padding-inline: var(--theme--spacing-spaceLg);
+  border: none;
   border-radius: var(--theme--radius-full);
   background: transparent;
   color: var(--theme--color-text-muted);
@@ -64,83 +58,31 @@
   font-weight: var(--theme--typography-bold);
   letter-spacing: var(--theme--typography-letterSpacingSm);
   text-transform: uppercase;
-  transition: background var(--theme--motion-durationMd) ease, color var(--theme--motion-durationMd) ease;
+  transition:
+    background var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
+    color var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
 }
 
 .billingButton[data-active="true"] {
-  background: var(--theme--color-primary);
-  color: var(--theme--color-accent-contrast);
+  background: var(--theme--color-surface-container);
+  color: var(--theme--color-text);
+  box-shadow: var(--theme--elevation-sm-x) var(--theme--elevation-sm-y) var(--theme--elevation-sm-blur) var(--theme--elevation-sm-spread) color-mix(in srgb, var(--theme--color-background) 40%, transparent);
 }
 
-.annualBanner {
-  --ui-surface-bg: var(--theme--color-surface);
-  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-primary);
-  --ui-surface-radius: var(--theme--radius-2xl);
-  max-width: var(--theme--layout-container-md);
-  margin: 0 auto var(--theme--spacing-space3xl);
-  padding: var(--theme--spacing-spaceXl) var(--theme--spacing-space2xl);
-}
-
-.annualBannerGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--theme--spacing-spaceLg);
-  text-align: center;
-}
-
-.annualBannerItem {
-  display: flex;
-  flex-direction: column;
-  gap: var(--theme--spacing-space2xs);
-}
-
-.annualBannerItem + .annualBannerItem {
-  border-left: var(--theme--borders-hairline) solid var(--theme--color-border);
-  padding-left: var(--theme--spacing-spaceLg);
-}
-
-.annualBannerLabel,
-.savingsText,
 .currency,
-.featureIcon,
-.featureItem[data-emphasis="true"] {
+.featureIcon {
   color: var(--theme--color-primary);
 }
 
-.annualBannerLabel {
-  font-size: var(--theme--typography-sizeSm);
-  font-weight: var(--theme--typography-bold);
-  text-transform: uppercase;
-}
-
-.annualBannerTitle,
-.annualBannerDescription,
-.planSubtitle {
-  margin: 0;
-}
-
-.annualBannerTitle {
-  color: var(--theme--color-text);
-  font-size: var(--theme--typography-sizeMd);
-  font-weight: var(--theme--typography-bold);
-}
-
-.annualBannerDescription {
-  color: var(--theme--color-text-muted);
-  font-size: var(--theme--typography-sizeSm);
-}
-
 .planGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--theme--dimensions-minWidth-3xl)), 1fr));
   align-items: stretch;
-  gap: var(--theme--spacing-space2xl);
   width: 100%;
 }
 
 .planCard {
-  --ui-surface-bg: var(--theme--color-surface);
-  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 82%, var(--theme--color-background));
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-text) 8%, transparent);
   --ui-surface-radius: var(--theme--radius-2xl);
 
   position: relative;
@@ -150,10 +92,35 @@
   justify-content: space-between;
   height: 100%;
   padding: var(--theme--spacing-space2xl) var(--theme--spacing-spaceXl);
+  box-shadow: var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-background) 74%, transparent);
+  transition:
+    border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
+    transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+}
+
+.planCard:hover {
+  transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
+  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
 }
 
 .planCard[data-featured="true"] {
+  --ui-surface-bg: linear-gradient(180deg, color-mix(in srgb, var(--theme--color-surface-container) 88%, var(--theme--color-primary)), color-mix(in srgb, var(--theme--color-background) 90%, var(--theme--color-surface)));
   --ui-surface-border: var(--theme--borders-medium) solid var(--theme--color-primary);
+  box-shadow:
+    var(--theme--elevation-lg-x) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--theme--color-primary) 20%, transparent),
+    var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-background) 70%, transparent);
+  transform: scale(1.02);
+  z-index: var(--theme--z-index-docked);
+}
+
+.planCard[data-featured="true"]:hover {
+  transform: scale(1.02) translateY(calc(var(--theme--spacing-space2xs) * -1));
+}
+
+.planCard[data-variant="wagyu"] {
+  --ui-surface-bg: linear-gradient(180deg, color-mix(in srgb, var(--theme--color-surface) 90%, var(--theme--color-primary)), color-mix(in srgb, var(--theme--color-background) 88%, var(--theme--color-surface)));
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 35%, var(--theme--color-border));
 }
 
 .featuredBadge {
@@ -164,42 +131,33 @@
 }
 
 .planBody {
-  display: flex;
-  flex-direction: column;
+  flex: 1 1 auto;
 }
 
-.planMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--theme--spacing-spaceSm);
-  min-height: var(--theme--dimensions-height-md);
-  margin-bottom: var(--theme--spacing-spaceMd);
-}
-
-.savingsText {
-  font-size: var(--theme--typography-sizeXs);
-  font-weight: var(--theme--typography-bold);
+.planBadge {
+  align-self: flex-start;
+  margin-bottom: var(--theme--spacing-spaceLg);
 }
 
 .planTitle {
   margin: 0 0 var(--theme--spacing-spaceXs);
-  font-size: var(--theme--typography-size3xl);
+  font-size: var(--theme--typography-size2xl);
   font-weight: var(--theme--typography-bold);
 }
 
-.planSubtitle {
-  min-height: 3.2em;
+.planDescription {
+  min-height: var(--theme--dimensions-height-2xl);
+  margin: 0 0 var(--theme--spacing-spaceLg);
   color: var(--theme--color-text-muted);
   font-size: var(--theme--typography-sizeSm);
   line-height: var(--theme--typography-lineHeightMd);
 }
 
 .priceLine {
-  display: flex;
   align-items: baseline;
-  gap: var(--theme--spacing-space2xs);
-  margin: var(--theme--spacing-spaceXl) 0;
+  margin: 0 0 var(--theme--spacing-spaceXl);
+  padding-bottom: var(--theme--spacing-spaceLg);
+  border-bottom: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-text) 7%, transparent);
 }
 
 .currency {
@@ -208,7 +166,7 @@
 }
 
 .priceValue {
-  font-size: var(--theme--typography-size4xl);
+  font-size: var(--theme--typography-size3xl);
   font-weight: var(--theme--typography-bold);
   line-height: var(--theme--typography-lineHeight2xs);
 }
@@ -229,19 +187,41 @@
 
 .featureItem {
   display: flex;
-  align-items: center;
-  gap: var(--theme--spacing-spaceXs);
-  color: var(--theme--color-text);
+  align-items: flex-start;
+  gap: var(--theme--spacing-spaceSm);
+  color: var(--theme--color-text-muted);
   font-size: var(--theme--typography-sizeSm);
   font-weight: var(--theme--typography-regular);
-}
-
-.featureItem[data-emphasis="true"] {
-  font-weight: var(--theme--typography-bold);
+  line-height: var(--theme--typography-lineHeightMd);
 }
 
 .featureIcon {
   flex: 0 0 auto;
+  height: var(--theme--dimensions-icon-xs);
+  margin-top: var(--theme--spacing-space2xs);
+  width: var(--theme--dimensions-icon-xs);
+}
+
+.planAction,
+.planActionPrimary {
+  width: 100%;
+  border-radius: var(--theme--radius-lg);
+}
+
+.planAction {
+  background: var(--theme--color-surface-container);
+  border-color: var(--theme--color-border);
+}
+
+.planAction:hover {
+  border-color: color-mix(in srgb, var(--theme--color-primary) 42%, var(--theme--color-border));
+  color: var(--theme--color-primary) !important;
+}
+
+.planActionPrimary {
+  background: linear-gradient(135deg, var(--theme--color-primary), color-mix(in srgb, var(--theme--color-primary) 54%, var(--theme--color-background)));
+  box-shadow: var(--theme--elevation-md-x) var(--theme--elevation-md-y) var(--theme--elevation-md-blur) var(--theme--elevation-md-spread) color-mix(in srgb, var(--theme--color-primary) 22%, transparent);
+  color: var(--theme--color-accent-contrast) !important;
 }
 
 @media (max-width: 48em) {
@@ -255,23 +235,20 @@
   }
 
   .billingControl {
+    --ui-layout-columns: 1;
     display: grid;
-    grid-template-columns: 1fr;
   }
 
-  .annualBannerGrid {
-    grid-template-columns: 1fr;
-    text-align: left;
-  }
-
-  .annualBannerItem + .annualBannerItem {
-    border-left: 0;
-    border-top: var(--theme--borders-hairline) solid var(--theme--color-border);
-    padding-top: var(--theme--spacing-spaceMd);
-    padding-left: 0;
+  .planGrid {
+    --ui-layout-columns: 1;
   }
 
   .planCard {
     padding: var(--theme--spacing-spaceXl);
+  }
+
+  .planCard[data-featured="true"],
+  .planCard[data-featured="true"]:hover {
+    transform: none;
   }
 }

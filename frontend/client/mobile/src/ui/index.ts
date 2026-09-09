@@ -1,4 +1,5 @@
 export * from "./Button";
+export * from "./CurrencyInput";
 export * from "./DropdownPicker";
 export * from "./Icon";
 export * from "./Input";

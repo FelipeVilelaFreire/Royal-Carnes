@@ -2,6 +2,7 @@ import type {
   CategoryBase,
   CollectionBase,
   CommercialModeBase,
+  MeasurementUnitBase,
   ProductBase,
 } from "../../../shared-core";
 
@@ -14,11 +15,37 @@ export interface AdminCategoryDto {
   is_active?: boolean;
 }
 
+export interface AdminCategoryUpdateInput {
+  key?: string;
+  name?: string;
+  parentKey?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+export interface AdminCategoryUpdateDto {
+  key?: string;
+  name?: string;
+  parent_key?: string;
+  sort_order?: number;
+  is_active?: boolean;
+}
+
+export interface AdminCategoryFormInput {
+  key: string;
+  name: string;
+  parentKey?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 export interface AdminCollectionDto {
   id: string | number;
   key: string;
   name: string;
   description?: string | null;
+  image_url?: string | null;
+  image_alt?: string | null;
   status: "active" | "draft" | "archived";
   sort_order?: number;
   product_ids?: Array<string | number>;
@@ -28,6 +55,17 @@ export interface AdminCommercialModeDto {
   id: string | number;
   key: string;
   name: string;
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export interface AdminMeasurementUnitDto {
+  id: string | number;
+  key: string;
+  name: string;
+  symbol?: string | null;
+  kind: "weight" | "count" | "package" | "volume" | "service";
+  decimal_places?: number | null;
   is_active?: boolean;
   sort_order?: number;
 }
@@ -101,10 +139,21 @@ export interface AdminProductVariantFormInput {
   isActive?: boolean;
 }
 
+export interface AdminProductMediaInput {
+  alt?: string;
+  isPrimary?: boolean;
+  sortOrder?: number;
+  url: string;
+}
+
 export interface AdminProductFormInput {
   key: string;
   name: string;
   categoryKeys: string[];
+  description?: string;
+  image?: File | string | null;
+  mediaItems?: AdminProductMediaInput[];
+  status?: "active" | "draft" | "archived";
   unit?: string;
   priceCents?: number;
   priceType?: "base" | "promotional" | "subscription" | "campaign" | "manual";
@@ -119,11 +168,14 @@ export interface AdminProductCreateDto {
   key: string;
   name: string;
   category_keys: string[];
+  description?: string;
+  status?: "active" | "draft" | "archived";
   unit?: string;
   price_cents?: number;
   price_type?: "base" | "promotional" | "subscription" | "campaign" | "manual";
   commercial_mode_keys?: string[];
   collection_keys?: string[];
+  media_items?: AdminProductMediaInput[];
   variants?: Array<{
     sku?: string;
     name: string;
@@ -148,4 +200,5 @@ export interface AdminCatalogSnapshot {
 export type AdminCategoryView = CategoryBase;
 export type AdminCollectionView = CollectionBase;
 export type AdminCommercialModeView = CommercialModeBase;
+export type AdminMeasurementUnitView = MeasurementUnitBase;
 export type AdminProductView = ProductBase;

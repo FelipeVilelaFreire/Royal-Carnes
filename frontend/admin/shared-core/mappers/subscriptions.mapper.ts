@@ -4,6 +4,9 @@ import type {
   AdminPlanEntitlementDto,
   AdminPlanFormInput,
   AdminPlanPriceDto,
+  AdminPlanSubscriberDto,
+  AdminPlanSubscriberView,
+  AdminPlanView,
   AdminSubscriptionCreateDto,
   AdminSubscriptionCycleDto,
   AdminSubscriptionCycleItemDto,
@@ -11,7 +14,6 @@ import type {
   AdminSubscriptionFormInput,
 } from "../contracts/subscriptions.contract";
 import type {
-  PlanBase,
   PlanEntitlementBase,
   PlanPriceBase,
   SubscriptionBase,
@@ -45,7 +47,18 @@ function mapAdminPlanEntitlementDto(dto: AdminPlanEntitlementDto): PlanEntitleme
   };
 }
 
-export function mapAdminPlanDto(dto: AdminPlanDto): PlanBase {
+function mapAdminPlanSubscriberDto(dto: AdminPlanSubscriberDto): AdminPlanSubscriberView {
+  return {
+    id: dto.id,
+    customerId: dto.customer_id,
+    customerName: dto.customer_name,
+    status: dto.status,
+    startedAt: dto.started_at,
+    currentCycleEndsAt: dto.current_cycle_ends_at ?? null,
+  };
+}
+
+export function mapAdminPlanDto(dto: AdminPlanDto): AdminPlanView {
   return {
     id: dto.id,
     key: dto.key,
@@ -57,6 +70,9 @@ export function mapAdminPlanDto(dto: AdminPlanDto): PlanBase {
     sortOrder: dto.sort_order ?? 0,
     prices: (dto.prices || []).map(mapAdminPlanPriceDto),
     entitlements: (dto.entitlements || []).map(mapAdminPlanEntitlementDto),
+    subscriberCount: dto.subscriber_count ?? 0,
+    activeSubscriberCount: dto.active_subscriber_count ?? 0,
+    subscribers: (dto.subscribers || []).map(mapAdminPlanSubscriberDto),
   };
 }
 
@@ -110,7 +126,10 @@ export function mapAdminPlanFormInput(input: AdminPlanFormInput): AdminPlanCreat
     key: input.key,
     name: input.name,
     description: input.description,
+    status: input.status,
     billing_interval: input.billingInterval,
+    trial_days: input.trialDays,
+    sort_order: input.sortOrder,
     price_cents: input.priceCents,
     entitlements: input.entitlements?.map((entitlement) => ({
       key: entitlement.key,

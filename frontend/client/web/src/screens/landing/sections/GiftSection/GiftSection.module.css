@@ -3,7 +3,7 @@
 }
 
 .card {
-  --ui-surface-bg: var(--theme--color-surface);
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 92%, var(--theme--color-background));
   --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-primary);
   --ui-surface-radius: var(--theme--radius-2xl);
   box-sizing: border-box;

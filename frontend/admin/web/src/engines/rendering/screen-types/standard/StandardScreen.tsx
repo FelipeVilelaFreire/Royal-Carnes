@@ -43,6 +43,7 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
     return (
       <AddPage
         entityName={entityName}
+        isSubmitting={standard.isSubmitting}
         onBack={onBackToList}
         onFieldChange={standard.setFormValue}
         onSubmit={standard.submitForm}
@@ -56,9 +57,15 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
     return (
       <DetailPage
         entityName={entityName}
+        formValues={standard.formValues}
         image={selectedRow.image}
+        isEditing={standard.isEditingDetail}
+        isSubmitting={standard.isSubmitting}
         onBack={onBackToList}
-        onEdit={onEditRow}
+        onCancelEdit={standard.cancelDetailEdit}
+        onEdit={standard.beginDetailEdit || onEditRow}
+        onFieldChange={standard.setFormValue}
+        onSaveEdit={standard.submitDetailEdit}
         onTabChange={standard.setActiveTab}
         t={t}
         viewModel={standard.detailViewModel}

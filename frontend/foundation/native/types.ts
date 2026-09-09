@@ -13,10 +13,13 @@ export type NativeDescriptorSource = {
 };
 
 export type NativeFoundationPrimitive =
+  | "AssetPicker"
   | "Avatar"
   | "Badge"
   | "Button"
   | "Card"
+  | "ConfirmationModal"
+  | "CurrencyInput"
   | "Divider"
   | "DropdownPicker"
   | "EmptyState"
@@ -24,6 +27,7 @@ export type NativeFoundationPrimitive =
   | "Icon"
   | "Input"
   | "Layout"
+  | "MultiSelect"
   | "SegmentedControl"
   | "Select"
   | "Surface"

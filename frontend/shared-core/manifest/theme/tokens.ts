@@ -64,7 +64,7 @@ export const royalPrimeThemeTokens = {
     },
     dimensions: {
       height: { "2xs": 24, xs: 28, sm: 32, md: 40, lg: 48, xl: 56, "2xl": 64, "3xl": 72 },
-      minWidth: { "2xs": 48, xs: 64, sm: 80, md: 96, lg: 120, xl: 140, "2xl": 160, "3xl": 200 },
+      minWidth: { "2xs": 48, xs: 64, sm: 80, md: 96, lg: 120, xl: 140, "2xl": 160, "3xl": 200, "4xl": 360 },
       icon: { "2xs": 12, xs: 14, sm: 16, md: 20, lg: 24, xl: 28, "2xl": 32, "3xl": 40 },
     },
     radius: {
@@ -162,8 +162,8 @@ export const royalPrimeThemeTokens = {
       modal: 100,
       toast: 120,
       appShellBottomBar: 980,
-      appShellDrawer: 1200,
       appShellHeader: 1300,
+      appShellDrawer: 1400,
     },
   },
 };

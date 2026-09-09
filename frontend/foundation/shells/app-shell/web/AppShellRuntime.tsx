@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   resolveAppShellModel,
   type AppShellBrand,
@@ -46,8 +46,10 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
   rightSlot,
   routesMap,
 }) => {
+  const shellRef = useRef<HTMLDivElement>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(Boolean(config?.sidebar?.defaultCollapsed));
   const [themeMode, setThemeMode] = useState<string>(() => config?.theme?.defaultMode || "dark");
 
@@ -61,11 +63,45 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
   }, [config?.theme]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobileScreen(window.innerWidth <= 768);
+    const mediaQuery = window.matchMedia("(max-width: 48em)");
+    const handleResize = () => setIsMobileScreen(mediaQuery.matches);
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    mediaQuery.addEventListener("change", handleResize);
+    return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
+
+  useEffect(() => {
+    let frameId = 0;
+    const activationRatio = Number(config?.header?.scrollActivationViewportRatio ?? 1 / 12);
+    const resetRatio = Number(config?.header?.scrollResetViewportRatio ?? 1 / 48);
+    const transitionRatio = Number(config?.header?.scrollTransitionViewportRatio ?? 1 / 6);
+
+    const updateScrolledState = () => {
+      frameId = 0;
+      const scrollDistance = Math.max(window.innerHeight * transitionRatio, 1);
+      const progress = Math.max(0, Math.min(1, window.scrollY / scrollDistance));
+      shellRef.current?.style.setProperty("--app-shell-header-scroll-progress", progress.toFixed(3));
+
+      setIsScrolled((current) => {
+        const next = current ? window.scrollY > window.innerHeight * resetRatio : window.scrollY > window.innerHeight * activationRatio;
+        return next === current ? current : next;
+      });
+    };
+
+    const handleScroll = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateScrolledState);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [config?.header?.scrollActivationViewportRatio, config?.header?.scrollResetViewportRatio, config?.header?.scrollTransitionViewportRatio]);
 
   const resolvedConfig = useMemo(() => {
     if (!config?.theme?.modes?.[themeMode]) return config;
@@ -128,12 +164,21 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
     [activePath, brand, brandLogo, brandName, resolvedConfig, isMobileScreen, isSidebarCollapsed, mode, navItems, navigation, routesMap]
   );
 
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    Object.entries(model.cssVars).forEach(([key, value]) => {
+      shell.style.setProperty(key, value);
+    });
+  }, [model.cssVars]);
+
   return (
     <UiProvider config={{ theme: resolvedConfig?.theme } as any}>
       <div
         className={[styles.shell, model.sidebarEnabled ? styles.shellWithSidebar : ""].filter(Boolean).join(" ")}
         data-app-shell-mode={model.effectiveMode}
-        style={model.cssVars as React.CSSProperties}
+        ref={shellRef}
       >
       <AppShellSidebar
         config={resolvedConfig}
@@ -146,6 +191,7 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
         <AppShellHeader
           drawerEnabled={resolvedConfig?.drawer?.enabled !== false && resolvedConfig?.header?.drawerTrigger !== false}
           headerConfig={resolvedConfig?.header}
+          isScrolled={isScrolled}
           model={model}
           onNavigate={handleNavigate}
           onOpenDrawer={() => setIsDrawerOpen(true)}
@@ -154,7 +200,7 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
           surfaceStyle={resolvedConfig?.header?.surfaceStyle}
           themeMode={themeMode}
         />
-        <ScreenContent layout={model.currentLayout.content} offsetBottom={model.contentOffsetBottom} offsetTop={model.contentOffsetTop}>
+        <ScreenContent layout={model.currentLayout.content}>
           {children}
         </ScreenContent>
         <AppShellFooter model={model} onNavigate={handleNavigate} />

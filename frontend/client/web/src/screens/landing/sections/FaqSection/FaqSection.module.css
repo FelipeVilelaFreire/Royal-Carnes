@@ -28,8 +28,8 @@
 }
 
 .item {
-  --ui-surface-bg: var(--theme--color-surface);
-  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 92%, var(--theme--color-background));
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 28%, var(--theme--color-border));
   --ui-surface-radius: var(--theme--radius-2xl);
   overflow: hidden;
   transition: border-color var(--theme--motion-durationMd) ease;
@@ -59,7 +59,9 @@
   flex: 0 0 auto;
   margin-left: var(--theme--spacing-spaceMd);
   color: var(--theme--color-primary);
+  height: var(--theme--dimensions-icon-md);
   transition: transform var(--theme--motion-durationMd) ease;
+  width: var(--theme--dimensions-icon-md);
 }
 
 .item[data-open="true"] .chevron {

@@ -10,10 +10,10 @@ import { adminPtBR } from "@/locales/pt-BR";
 import { dashboardConfig } from "@/manifest/pages/dashboard.config";
 import { produtosConfig } from "@/manifest/pages/produtos.config";
 import { categoriasConfig } from "@/manifest/pages/categorias.config";
+import { colecoesConfig } from "@/manifest/pages/colecoes.config";
 import { planosConfig } from "@/manifest/pages/planos.config";
 import { clientesConfig } from "@/manifest/pages/clientes.config";
 import { usuariosConfig } from "@/manifest/pages/usuarios.config";
-import { assinaturasConfig } from "@/manifest/pages/assinaturas.config";
 import { pedidosConfig } from "@/manifest/pages/pedidos.config";
 import { deliveriesConfig } from "@/manifest/pages/deliveries.config";
 import { estoqueConfig } from "@/manifest/pages/estoque.config";
@@ -99,9 +99,9 @@ export const App: React.FC = () => {
     if (activeScreenKey === "estoque") activeConfig = estoqueConfig;
     if (activeScreenKey === "produtos") activeConfig = produtosConfig;
     if (activeScreenKey === "categorias") activeConfig = categoriasConfig;
+    if (activeScreenKey === "colecoes") activeConfig = colecoesConfig;
     if (activeScreenKey === "planos") activeConfig = planosConfig;
     if (activeScreenKey === "clientes") activeConfig = clientesConfig;
-    if (activeScreenKey === "assinaturas") activeConfig = assinaturasConfig;
     if (activeScreenKey === "pagamentos") activeConfig = pagamentosConfig;
     if (activeScreenKey === "usuarios") activeConfig = usuariosConfig;
 

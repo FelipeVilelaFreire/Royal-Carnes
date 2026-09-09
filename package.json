@@ -8,12 +8,19 @@
     "dev:admin": "npm --prefix frontend/admin/web run dev",
     "build:client": "npm --prefix frontend/client/web run build",
     "build:admin": "npm --prefix frontend/admin/web run build",
-    "verify:foundation": "node scripts/verify-foundation-contract.mjs"
+    "verify:foundation": "node scripts/verify-foundation-contract.mjs",
+    "verify:rules": "node scripts/verify-code-rules.mjs",
+    "test:rules": "node --test scripts/code-rules.test.mjs",
+    "verify": "npm run test:rules && npm run verify:rules && npm run verify:foundation"
   },
   "workspaces": [
     "frontend/foundation",
     "frontend/shared-core",
     "frontend/client/web",
     "frontend/admin/web"
-  ]
+  ],
+  "devDependencies": {
+    "postcss": "8.5.23",
+    "typescript": "5.9.3"
+  }
 }

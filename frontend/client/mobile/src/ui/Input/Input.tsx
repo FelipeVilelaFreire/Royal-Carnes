@@ -7,6 +7,7 @@ import { mergeStyles, useUi } from "../context";
 export interface InputProps {
   accessibilityLabel?: string;
   iconIntent?: string;
+  keyboardType?: string;
   onChangeText?: (value: string) => void;
   placeholder?: string;
   style?: any;
@@ -16,6 +17,7 @@ export interface InputProps {
 export const Input: React.FC<InputProps> = ({
   accessibilityLabel,
   iconIntent,
+  keyboardType,
   onChangeText,
   placeholder,
   style,
@@ -32,6 +34,7 @@ export const Input: React.FC<InputProps> = ({
     return (
       <TextInput
         accessibilityLabel={accessibilityLabel}
+        keyboardType={keyboardType}
         onChangeText={onChangeText}
         placeholder={placeholder}
         style={inputStyle}

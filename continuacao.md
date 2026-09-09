@@ -35,6 +35,34 @@ docs/kits/README.md
 frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
+## Proximo Passo Imediato
+
+Antes de continuar novas telas ou fluxos, rodar/aplicar o seed local para nao
+se perder no estado do banco.
+
+Comando direto:
+
+```text
+cd backend
+py manage.py seed_backend --seed royalprime
+```
+
+Ou pelo bat:
+
+```text
+bats\seed.bat
+```
+
+Depois conferir que o seed reporta pelo menos:
+
+```text
+applied orders: orders=4
+applied deliveries: deliveries=4
+```
+
+Isso garante que o admin tera dados reais em Clientes, Catalogo, Assinaturas,
+Pedidos, Entregas e Estoque antes de continuar o trabalho funcional.
+
 ## Prioridade Atual - Funcional Primeiro
 
 A partir deste ponto, o foco principal do RoyalPrime deve ser funcionalidade real
@@ -51,46 +79,155 @@ Regra de prioridade:
 5. refinamento visual fino somente depois
 ```
 
-Isto vale para admin e client, mas o proximo foco imediato e o admin.
+Isto vale para admin e client, mas o proximo foco imediato e o admin. O admin
+deve ser construido na mesma ordem de dependencia que o backend nasceu: primeiro
+a fundacao do negocio, depois os fluxos derivados.
 
-Fluxos admin prioritarios:
+Ordem obrigatoria por dependencia de negocio:
 
 ```text
-Pedidos
-  -> lista real
-  -> detalhe real
-  -> itens do pedido
-  -> total
-  -> historico de status
-  -> transicao de status permitida pelo backend
+1. Usuarios / Clientes
+2. Catalogo base
+3. Assinaturas
+4. Pedidos
+5. Pagamentos
+6. Entregas
+7. Estoque
+8. Dashboard
+```
 
-Entregas
-  -> lista real
-  -> detalhe real
-  -> status atual
-  -> transicao de entrega
+Justificativa da ordem:
+
+```text
+Pagamento nao existe sem cliente.
+Pedido nao existe bem sem cliente e sem produto/catalogo.
+Assinatura nao existe sem cliente e sem plano/catalogo.
+Produto nao existe bem sem categoria.
+Entrega nao existe sem pedido.
+Estoque depende de produto/variante e deve entrar depois da fundacao comercial.
+Dashboard depende dos dados reais das areas anteriores.
+```
+
+Sequencia funcional do admin:
+
+```text
+Fase 1 - Usuarios / Clientes
+  -> listar clientes reais
+  -> detalhe do cliente
+  -> contato
+  -> endereco
+  -> status
+  -> vinculo com usuario quando existir
+  -> usuarios internos, roles e permissoes
+
+Fase 2 - Catalogo Base
+  2.1 Categorias
+    -> listar categorias reais
+    -> criar categoria
+    -> editar nome/status
+    -> usar categoria como base obrigatoria do produto
+
+  2.2 Colecoes / linhas comerciais
+    -> listar colecoes reais
+    -> criar colecao
+    -> editar nome/descricao/status
+    -> relacionar colecao com produtos
+
+  2.3 Unidades de medida
+    -> listar unidades reais
+    -> kg, g, unidade, saco, servico
+    -> usar unidade em produto, variante, estoque e entitlement
+
+  2.4 Modos comerciais
+    -> Assinatura
+    -> Royal Delivery
+    -> Royal Box
+    -> usar modo comercial para preco, disponibilidade e tipo de pedido
+
+  2.5 Produtos
+    -> listar produtos reais
+    -> imagem real do produto
+    -> nome/descricao/status
+    -> categoria obrigatoria
+    -> colecoes
+    -> modos comerciais
+    -> disponibilidade
+
+  2.6 Variantes
+    -> sku
+    -> nome
+    -> unidade
+    -> quantidade da unidade
+    -> peso
+    -> status ativo/inativo
+
+  2.7 Precos
+    -> preco base do produto
+    -> preco por variante quando existir
+    -> preco por modo comercial
+    -> moeda
+    -> tipo de preco
+
+  2.8 Planos
+    -> listar planos reais
+    -> criar/editar plano
+    -> preco recorrente
+    -> status
+    -> intervalo de cobranca
+    -> beneficios/entitlements ligados a colecao, categoria, produto ou variante
+
+Fase 3 - Assinaturas
+  -> cliente
+  -> plano
+  -> status
+  -> ciclo atual
+  -> beneficios/entitlements
+  -> itens do ciclo quando existir
+
+Fase 4 - Pedidos
+  -> cliente
+  -> itens/produtos
+  -> assinatura opcional
+  -> total
+  -> status
+  -> historico
+  -> transicao permitida pelo backend
+
+Fase 5 - Pagamentos
+  -> cliente
+  -> pedido ou assinatura
+  -> valor
+  -> status
+  -> vencimento
+  -> metodo
+  -> registro de falha/reembolso depois
+
+Fase 6 - Entregas
+  -> pedido
+  -> cliente
+  -> endereco/snapshot
+  -> status de envio
+  -> historico
   -> confirmacao de entrega
 
-Produtos
-  -> lista real com imagem
-  -> detalhe real
-  -> criar/editar produto simples
-  -> preco e variantes
+Fase 7 - Estoque
+  -> produto/variante
+  -> disponivel
+  -> reservado
+  -> limite baixo
+  -> ajuste com motivo
+  -> relacao com pedidos depois
 
-Estoque
-  -> lista real
-  -> ajuste de quantidade
-  -> reserva/disponivel
-
-Planos/Assinaturas
-  -> lista real
-  -> detalhe real
-  -> criar/editar depois dos fluxos operacionais
+Fase 8 - Dashboard
+  -> resumo real das areas anteriores
+  -> KPIs so depois de dados e fluxos reais
 ```
 
 Nao voltar a polir sidebar, cards, sombras, microespacamentos e outras partes
-de design enquanto pedido/entrega/produto/estoque ainda nao estiverem
-funcionais de verdade.
+de design enquanto a fundacao funcional do admin ainda nao estiver fechada.
+Tambem nao pular para Estoque, Entregas ou Dashboard antes de Clientes,
+Catalogo e Assinaturas estarem minimamente bem feitos, porque isso inverte a
+dependencia real do sistema.
 
 ## Regra Para Qualquer Frontend Novo
 

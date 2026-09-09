@@ -24,17 +24,6 @@ export const AppShellBrand: React.FC<AppShellBrandProps> = ({ brand, collapsed =
     ].filter(Boolean).join(" ")}
     onClick={() => onNavigate?.(brand.routePath)}
     size="md"
-    style={{
-      "--ui-surface-bg": "var(--app-shell-brand-bg)",
-      "--ui-surface-border": "var(--app-shell-brand-border)",
-      "--ui-surface-border-width": "var(--theme--borders-hairline)",
-      "--ui-surface-color": "var(--app-shell-color)",
-      "--ui-surface-radius": "var(--theme--radius-xl)",
-      "--ui-button-gap": "var(--theme--spacing-spaceSm)",
-      "--ui-button-height": "var(--theme--dimensions-height-lg)",
-      "--ui-button-padding-x": "var(--theme--spacing-spaceSm)",
-      "--ui-button-padding-y": "var(--theme--spacing-space2xs)"
-    } as React.CSSProperties}
     type="button"
   >
     {display !== "text" ? <span className={styles.brandLogoFrame}>

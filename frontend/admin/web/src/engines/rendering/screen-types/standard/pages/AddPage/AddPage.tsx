@@ -1,9 +1,12 @@
 import React from "react";
+import { AssetPicker } from "@foundation/ui/AssetPicker";
 import { Button } from "@foundation/ui/Button";
 import { Card } from "@foundation/ui/Card";
+import { CurrencyInput } from "@foundation/ui/CurrencyInput";
 import { Field } from "@foundation/ui/Field";
 import { Input } from "@foundation/ui/Input";
 import { Inline, Stack } from "@foundation/ui/Layout";
+import { MultiSelect } from "@foundation/ui/MultiSelect";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
 import { Select } from "@foundation/ui/Select";
 import { Text } from "@foundation/ui/Text";
@@ -15,6 +18,7 @@ import styles from "./AddPage.module.css";
 
 export interface AddPageProps {
   entityName: string;
+  isSubmitting?: boolean;
   onBack: () => void;
   onFieldChange: (key: string, value: any) => void;
   onSubmit: (event: React.FormEvent) => void;
@@ -24,6 +28,7 @@ export interface AddPageProps {
 
 export const AddPage: React.FC<AddPageProps> = ({
   entityName,
+  isSubmitting = false,
   onBack,
   onFieldChange,
   onSubmit,
@@ -45,30 +50,85 @@ export const AddPage: React.FC<AddPageProps> = ({
               {t("common.back")}
             </Button>
             <Text as="h1" variant="h1">
-              {t("forms.addTitle")} {entityName}
+              {viewModel.titleKey ? t(viewModel.titleKey) : `${t("forms.addTitle")} ${entityName}`}
             </Text>
           </Inline>
 
           <Card className={styles.formCard} size="lg">
             <form className={styles.form} onSubmit={onSubmit}>
-              {viewModel.fields.map((field) => {
+              <Stack gap="lg">
+                {(viewModel.sections.length ? viewModel.sections : [{ key: "default", fields: viewModel.fields }]).map((section) => (
+                  <Stack className={styles.formSection} gap="md" key={section.key}>
+                    {section.titleKey ? (
+                      <Text as="h2" variant="h3">
+                        {t(section.titleKey)}
+                      </Text>
+                    ) : null}
+
+                    {section.fields.map((field) => {
                 const label = t(field.labelKey, field.key);
-                const placeholder = t("forms.typePlaceholderFor", "", { field: label.toLowerCase() }) ||
+                const placeholder = field.placeholderKey
+                  ? t(field.placeholderKey)
+                  : t("forms.typePlaceholderFor", "", { field: label.toLowerCase() }) ||
                   `${t("forms.typePlaceholder")} ${label.toLowerCase()}`;
 
                 return (
-                  <Field key={field.key} label={label} required={field.required}>
-                    {field.type === "select" ? (
+                  <Field
+                    description={field.helperKey ? t(field.helperKey) : undefined}
+                    key={field.key}
+                    label={label}
+                    required={field.required}
+                  >
+                    {field.type === "asset" ? (
+                      <AssetPicker
+                        cancelRemoveLabel={t("common.cancel")}
+                        chooseFileLabel={t("forms.assetChooseFile")}
+                        confirmRemoveDescription={t("forms.confirmRemoveImageDescription")}
+                        confirmRemoveLabel={t("forms.confirmRemoveAction")}
+                        confirmRemoveTitle={t("forms.confirmRemoveImageTitle")}
+                        dropzoneLabel={t("forms.assetDropzone")}
+                        onChange={(value) => onFieldChange(field.key, value)}
+                        previewAlt={label}
+                        removeModalCloseLabel={t("forms.closeConfirmation")}
+                        removeLabel={t("forms.assetRemove")}
+                        urlPlaceholder={t("forms.assetUrlPlaceholder")}
+                        value={field.value}
+                      />
+                    ) : field.type === "multiSelect" ? (
+                      <MultiSelect
+                        cancelRemoveLabel={t("common.cancel")}
+                        confirmRemoveDescription={(option) => t("forms.confirmRemoveSelectedOptionDescription", "", { option })}
+                        confirmRemoveLabel={t("forms.confirmRemoveAction")}
+                        confirmRemoveTitle={t("forms.confirmRemoveSelectedOptionTitle")}
+                        emptyOptionLabel={t("forms.selectOption")}
+                        onChange={(value) => onFieldChange(field.key, value)}
+                        options={(field.options || []).map((option) => ({
+                          label: option.label || t(option.labelKey || "", option.value),
+                          value: option.value,
+                        }))}
+                        removeModalCloseLabel={t("forms.closeConfirmation")}
+                        removeLabel={(option) => t("forms.removeSelectedOption", "", { option })}
+                        value={Array.isArray(field.value) ? field.value.map(String) : []}
+                      />
+                    ) : field.type === "select" ? (
                       <Select
                         onChange={(event) => onFieldChange(field.key, event.target.value)}
                         options={[
                           { label: t("forms.selectOption"), value: "" },
                           ...(field.options || []).map((option) => ({
-                            label: t(option.labelKey, option.value),
+                            label: option.label || t(option.labelKey || "", option.value),
                             value: option.value,
                           })),
                         ]}
                         value={field.value || ""}
+                      />
+                    ) : field.type === "currency" ? (
+                      <CurrencyInput
+                        currency={field.currency}
+                        locale={field.locale}
+                        onChange={(value) => onFieldChange(field.key, value)}
+                        placeholder={placeholder}
+                        value={field.value === "" || field.value === null || field.value === undefined ? null : Number(field.value)}
                       />
                     ) : field.type === "textarea" ? (
                       <TextArea
@@ -81,20 +141,23 @@ export const AddPage: React.FC<AddPageProps> = ({
                       <Input
                         onChange={(event) => onFieldChange(field.key, event.target.value)}
                         placeholder={placeholder}
-                        type="text"
+                        type={field.type === "number" ? "number" : "text"}
                         value={field.value || ""}
                       />
                     )}
                   </Field>
                 );
-              })}
+                    })}
+                  </Stack>
+                ))}
+              </Stack>
 
               <Inline className={styles.formActions} gap="md" wrap>
                 <Button appearance="outline" onClick={onBack} size="md" tone="neutral" type="button">
                   {t("common.cancel")}
                 </Button>
-                <Button appearance="solid" size="md" tone="neutral" type="submit">
-                  {t("common.save")} {entityName}
+                <Button appearance="solid" disabled={isSubmitting || !viewModel.canSubmit} size="md" tone="neutral" type="submit">
+                  {isSubmitting ? t("standard.saving") : t(viewModel.submitLabelKey || "common.save")} {entityName}
                 </Button>
               </Inline>
             </form>

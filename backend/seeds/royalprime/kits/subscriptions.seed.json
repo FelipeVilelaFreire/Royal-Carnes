@@ -63,7 +63,7 @@
     {
       "key": "pro",
       "name": "Pro",
-      "description": "Plano completo com maior limite mensal e beneficios extras.",
+      "description": "Plano completo com maior limite mensal e itens extras.",
       "billingInterval": "month",
       "prices": [
         { "amountCents": 44900, "billingInterval": "month" }

@@ -10,7 +10,8 @@ export const adminPtBR = {
     estoque: "Estoque",
     produtos: "Produtos",
     categorias: "Categorias",
-    planos: "Planos",
+    colecoes: "Coleções",
+    planos: "Planos de assinatura",
     clientes: "Clientes",
     assinaturas: "Assinaturas",
     pagamentos: "Pagamentos",
@@ -29,7 +30,8 @@ export const adminPtBR = {
       estoque: "Estoque",
       produtos: "Produtos",
       categorias: "Categorias",
-      planos: "Planos",
+      colecoes: "Coleções",
+      planos: "Planos de assinatura",
       clientes: "Clientes",
       assinaturas: "Assinaturas",
       pagamentos: "Pagamentos",
@@ -37,7 +39,12 @@ export const adminPtBR = {
       configuracoes: "Configurações"
     },
     navigationGroups: {
+      principal: "Principal",
+      club: "Clube",
+      management: "Gestão",
       overview: "Visão geral",
+      base: "Base do produto",
+      commerce: "Comercial",
       operations: "Operação",
       catalog: "Catálogo",
       customers: "Clientes",
@@ -76,13 +83,18 @@ export const adminPtBR = {
     statusDelivered: "Entregue",
     statusOutForDelivery: "Saiu para entrega",
     statusPending: "Pendente",
+    statusInactive: "Inativo",
     statusPacking: "Embalagem",
     statusPaused: "Pausado",
-    statusPreparing: "Em preparação"
+    statusPreparing: "Em preparação",
+    statusDraft: "Rascunho",
+    statusBlocked: "Bloqueado",
+    statusArchived: "Arquivado"
   },
   entities: {
     box: "Caixa térmica",
     category: "Categoria",
+    collection: "Coleção",
     customer: "Cliente",
     cut: "Corte nobre",
     delivery: "Entrega",
@@ -126,7 +138,8 @@ export const adminPtBR = {
   },
   standard: {
     loading: "Atualizando",
-    loadingRows: "Atualizando registros..."
+    loadingRows: "Atualizando registros...",
+    saving: "Salvando"
   },
   pedidos: {
     title: "Pedidos",
@@ -178,45 +191,152 @@ export const adminPtBR = {
     title: "Produtos",
     subtitle: "Gestão de catálogo, disponibilidade, preço e dados comerciais dos itens.",
     ctaAdd: "Novo produto",
+    searchPlaceholder: "Buscar produtos...",
     tableHeaders: {
       name: "Produto",
+      key: "Chave",
       category: "Categoria",
-      aging: "Maturação",
-      line: "Linha / Categoria",
-      origin: "Origem",
-      preparation: "Preparo",
-      stock: "Estoque",
-      weight: "Peso / unidade",
+      collection: "Coleção",
+      unit: "Unidade",
       price: "Preço",
-      status: "Disponibilidade"
+      variants: "Variantes",
+      commercialModes: "Canais",
+      status: "Status"
     },
     filters: {
-      line: "Linha"
+      status: "Status"
     },
-    filterOptions: {
-      dailyCuts: "Cortes do dia a dia",
-      nobleLine: "Linha nobre",
-      premiumCuts: "Cortes premium",
-      royalCombos: "Combos Royal"
+    fields: {
+      name: "Produto",
+      key: "Chave",
+      description: "Descrição",
+      unit: "Unidade",
+      status: "Status",
+      categories: "Categorias",
+      categoryKeys: "Categorias por chave",
+      collections: "Coleções",
+      collectionKeys: "Coleções por chave",
+      commercialModes: "Canais comerciais",
+      commercialModeKeys: "Canais por chave",
+      variantCount: "Quantidade de variantes",
+      price: "Preço base",
+      priceCents: "Preço",
+      primaryImage: "Imagem principal"
     },
-    form: {
-      line: "Linha",
-      name: "Nome do produto",
-      price: "Preço",
-      weight: "Peso / unidade"
+    detail: {
+      title: "Detalhe do produto",
+      tabs: {
+        data: "Dados",
+        collections: "Coleções",
+        variants: "Variantes",
+        prices: "Preços",
+        media: "Mídia"
+      },
+      sections: {
+        identity: "Identificação",
+        catalog: "Catálogo",
+        variants: "Variantes"
+      },
+      emptyData: "Nenhum dado cadastrado para este produto.",
+      emptyCollections: "Nenhuma coleção vinculada a este produto.",
+      emptyVariants: "Nenhuma variante cadastrada para este produto.",
+      emptyPrices: "Nenhum preço cadastrado para este produto.",
+      emptyMedia: "Nenhuma mídia cadastrada para este produto."
+    },
+    add: {
+      title: "Cadastrar produto",
+      submit: "Cadastrar",
+      sections: {
+        identity: "Identificação",
+        commercial: "Comercial",
+        media: "Mídia"
+      }
     }
   },
   categorias: {
     title: "Categorias",
     subtitle: "Estrutura comercial para organizar produtos, cortes, combos e linhas do catálogo.",
-    ctaAdd: "Nova categoria"
+    ctaAdd: "Nova categoria",
+    searchPlaceholder: "Buscar categorias...",
+    tableHeaders: {
+      name: "Nome",
+      key: "Chave",
+      parent: "Categoria pai",
+      sortOrder: "Ordem",
+      status: "Status"
+    },
+    filters: {
+      status: "Status"
+    },
+    fields: {
+      name: "Nome",
+      key: "Chave",
+      parent: "Categoria pai",
+      sortOrder: "Ordem",
+      status: "Status"
+    },
+    detail: {
+      title: "Detalhe da categoria",
+      tabs: {
+        data: "Dados"
+      },
+      emptyData: "Nenhum dado cadastrado para esta categoria."
+    },
+    add: {
+      title: "Cadastrar categoria",
+      submit: "Cadastrar",
+      helpers: {
+        parent: "Obs: deixar vazio a torna categoria pai."
+      },
+      sections: {
+        data: "Dados"
+      }
+    }
+  },
+  colecoes: {
+    title: "Coleções",
+    subtitle: "Agrupamentos comerciais para vitrines, combos, campanhas e ofertas do catálogo.",
+    searchPlaceholder: "Buscar coleções...",
+    tableHeaders: {
+      name: "Coleção",
+      key: "Chave",
+      productCount: "Produtos",
+      sortOrder: "Ordem",
+      status: "Status"
+    },
+    filters: {
+      status: "Status"
+    },
+    fields: {
+      name: "Coleção",
+      key: "Chave",
+      image: "Imagem",
+      description: "Descrição",
+      productCount: "Produtos vinculados",
+      sortOrder: "Ordem",
+      status: "Status"
+    },
+    detail: {
+      title: "Detalhe da coleção",
+      tabs: {
+        data: "Dados"
+      },
+      emptyData: "Nenhum dado cadastrado para esta coleção."
+    }
   },
   planos: {
-    title: "Planos",
+    title: "Planos de assinatura",
     subtitle: "Configuração dos planos vendidos: preço, limites, benefícios e disponibilidade.",
     ctaAdd: "Novo plano",
+    searchPlaceholder: "Buscar planos...",
     tableHeaders: {
       name: "Plano",
+      price: "Preco",
+      billingInterval: "Recorrencia",
+      entitlements: "Itens inclusos",
+      includedItems: "Itens inclusos",
+      activeSubscribers: "Assinantes ativos",
+      status: "Status",
       subtitle: "Descrição",
       protein: "Proteínas",
       charcoal: "Carvão",
@@ -224,24 +344,121 @@ export const adminPtBR = {
       annualPrice: "Preço anual"
     },
     filters: {
-      planType: "Tipo de plano"
+      status: "Status"
     },
     filterOptions: {
       basic: "Basic",
       premium: "Premium",
       pro: "Pro"
     },
+    fields: {
+      billingInterval: "Recorrencia",
+      description: "Descricao",
+      entitlementCount: "Itens inclusos",
+      entitlementSummary: "Produtos, quantidades e unidades",
+      includedItemCount: "Itens inclusos",
+      includedItemSummary: "Produtos, quantidades e unidades",
+      subscriberCount: "Assinantes",
+      activeSubscriberCount: "Assinantes ativos",
+      subscriberSummary: "Clientes vinculados",
+      key: "Chave",
+      price: "Preco",
+      name: "Nome do plano",
+      sortOrder: "Ordem",
+      status: "Status",
+      trialDays: "Dias de teste"
+    },
     form: {
+      billingInterval: "Recorrência",
+      description: "Descrição",
+      entitlementCount: "Benefícios",
+      key: "Chave",
+      priceCents: "Preço",
       annualMonthlyPrice: "Preço anual",
       monthlyPrice: "Preço mensal",
       name: "Nome do plano",
       subtitle: "Descrição"
+    },
+    detail: {
+      title: "Detalhe do plano",
+      sections: {
+        identity: "Identificacao",
+        commercial: "Comercial"
+      },
+      tabs: {
+        data: "Dados",
+        entitlements: "Itens inclusos",
+        includedItems: "Itens inclusos",
+        subscribers: "Assinantes",
+        prices: "Preços"
+      },
+      emptyData: "Nenhum dado cadastrado para este plano.",
+      emptyEntitlements: "Nenhum item incluso cadastrado para este plano.",
+      emptyIncludedItems: "Nenhum item incluso cadastrado para este plano.",
+      emptySubscribers: "Nenhum assinante vinculado a este plano.",
+      emptyPrices: "Nenhum preço cadastrado para este plano."
+    },
+    add: {
+      title: "Cadastrar plano",
+      submit: "Cadastrar",
+      sections: {
+        identity: "Identificacao",
+        commercial: "Comercial"
+      }
+    },
+    billingIntervals: {
+      day: "Diário",
+      week: "Semanal",
+      month: "Mensal",
+      year: "Anual"
     }
   },
   clientes: {
     title: "Clientes",
     subtitle: "Base de clientes, contatos, endereços e histórico operacional.",
-    ctaAdd: "Novo cliente"
+    ctaAdd: "Novo cliente",
+    searchPlaceholder: "Buscar clientes...",
+    tableHeaders: {
+      name: "Cliente",
+      email: "E-mail",
+      phone: "Telefone",
+      status: "Status",
+      addressCount: "Endereços"
+    },
+    filters: {
+      status: "Status"
+    },
+    fields: {
+      name: "Nome",
+      email: "E-mail",
+      phone: "Telefone",
+      document: "CPF/CNPJ",
+      status: "Status",
+      memberSince: "Cliente desde",
+      defaultAddress: "Endereço principal",
+      addressCount: "Endereços cadastrados",
+      createdAt: "Criado em",
+      updatedAt: "Atualizado em"
+    },
+    detail: {
+      title: "Detalhe do cliente",
+      tabs: {
+        data: "Dados",
+        addresses: "Endereços",
+        history: "Histórico"
+      },
+      emptyData: "Nenhum dado cadastrado para este cliente.",
+      emptyAddresses: "Nenhum endereço cadastrado para este cliente.",
+      emptyHistory: "Nenhum histórico disponível para este cliente."
+    },
+    add: {
+      title: "Cadastrar cliente",
+      submit: "Cadastrar",
+      sections: {
+        identity: "Identificação",
+        contact: "Contato"
+      }
+    }
   },
   assinaturas: {
     title: "Assinaturas",
@@ -255,9 +472,7 @@ export const adminPtBR = {
       monthlyPrice: "Preço mensal",
       annualPrice: "Preço anual"
     },
-    filters: {
-      planType: "Tipo de plano"
-    },
+    filters: {},
     filterOptions: {
       basic: "Basic",
       premium: "Premium",
@@ -386,6 +601,17 @@ export const adminPtBR = {
   },
   forms: {
     addTitle: "Cadastrar",
+    assetChooseFile: "Selecionar imagem",
+    assetDropzone: "Arraste uma imagem ou selecione um arquivo.",
+    assetRemove: "Remover imagem",
+    assetUrlPlaceholder: "Cole a URL da imagem",
+    closeConfirmation: "Fechar confirmação",
+    confirmRemoveAction: "Remover",
+    confirmRemoveImageDescription: "Esta imagem sairá do cadastro quando você salvar.",
+    confirmRemoveImageTitle: "Remover imagem?",
+    confirmRemoveSelectedOptionDescription: "Tem certeza que deseja remover {option}?",
+    confirmRemoveSelectedOptionTitle: "Remover item?",
+    removeSelectedOption: "Remover {option}",
     selectOption: "Selecione uma opção...",
     typePlaceholder: "Digite",
     typePlaceholderFor: "Digite {field}"

@@ -18,6 +18,21 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ("id", "key", "name", "parent_id", "sort_order", "is_active")
 
 
+class CategoryUpdateSerializer(serializers.Serializer):
+    key = serializers.SlugField(max_length=100, required=False)
+    name = serializers.CharField(max_length=160, required=False)
+    sort_order = serializers.IntegerField(min_value=0, required=False)
+    is_active = serializers.BooleanField(required=False)
+
+
+class CategoryCreateSerializer(serializers.Serializer):
+    key = serializers.SlugField(max_length=100)
+    name = serializers.CharField(max_length=160)
+    parent_key = serializers.SlugField(max_length=100, required=False, allow_blank=True)
+    sort_order = serializers.IntegerField(min_value=0, required=False, default=0)
+    is_active = serializers.BooleanField(required=False, default=True)
+
+
 class CommercialModeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommercialMode
@@ -44,7 +59,17 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Collection
-        fields = ("id", "key", "name", "description", "status", "sort_order", "product_ids")
+        fields = (
+            "id",
+            "key",
+            "name",
+            "description",
+            "image_url",
+            "image_alt",
+            "status",
+            "sort_order",
+            "product_ids",
+        )
 
     def get_product_ids(self, collection):
         return [
@@ -178,6 +203,8 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductCreateSerializer(serializers.Serializer):
     key = serializers.SlugField(max_length=120)
     name = serializers.CharField(max_length=180)
+    description = serializers.CharField(required=False, allow_blank=True, default="")
+    status = serializers.ChoiceField(choices=Product.Status.choices, required=False, default=Product.Status.ACTIVE)
     category_keys = serializers.ListField(
         child=serializers.SlugField(max_length=100),
         allow_empty=False,
@@ -199,6 +226,11 @@ class ProductCreateSerializer(serializers.Serializer):
         required=False,
         default=list,
     )
+    media_items = serializers.ListField(
+        child=serializers.DictField(),
+        required=False,
+        default=list,
+    )
     variants = serializers.ListField(
         child=serializers.DictField(),
         required=False,
@@ -209,6 +241,8 @@ class ProductCreateSerializer(serializers.Serializer):
 class ProductUpdateSerializer(serializers.Serializer):
     key = serializers.SlugField(max_length=120, required=False)
     name = serializers.CharField(max_length=180, required=False)
+    description = serializers.CharField(required=False, allow_blank=True)
+    status = serializers.ChoiceField(choices=Product.Status.choices, required=False)
     category_keys = serializers.ListField(
         child=serializers.SlugField(max_length=100),
         required=False,
@@ -227,6 +261,10 @@ class ProductUpdateSerializer(serializers.Serializer):
     )
     collection_keys = serializers.ListField(
         child=serializers.SlugField(max_length=100),
+        required=False,
+    )
+    media_items = serializers.ListField(
+        child=serializers.DictField(),
         required=False,
     )
     variants = serializers.ListField(

@@ -34,6 +34,8 @@ export interface CollectionBase {
   key: CollectionKey;
   name: string;
   description?: string | null;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
   status: CatalogStatus;
   sortOrder: number;
   productIds: ProductId[];

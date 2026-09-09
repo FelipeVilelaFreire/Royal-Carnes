@@ -55,6 +55,8 @@ class SubscriptionsApiTests(APITestCase):
         self.assertEqual(pro["prices"][0]["amount_cents"], 44900)
         self.assertEqual(pro["entitlements"][0]["target_key"], "churrasco-premium")
         self.assertEqual(pro["entitlements"][0]["measurement_unit_key"], "kg")
+        self.assertNotIn("subscribers", pro)
+        self.assertNotIn("subscriber_count", pro)
 
     def test_customer_can_read_own_subscription_and_current_cycle(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -113,6 +115,10 @@ class SubscriptionsApiTests(APITestCase):
         self.assertEqual(plans_response.status_code, 200, plans_response.data)
         self.assertEqual(subscriptions_response.status_code, 200, subscriptions_response.data)
         self.assertEqual(cycles_response.status_code, 200, cycles_response.data)
+        pro = next(plan for plan in plans_response.data if plan["key"] == "pro")
+        self.assertEqual(pro["subscriber_count"], 1)
+        self.assertEqual(pro["active_subscriber_count"], 1)
+        self.assertEqual(pro["subscribers"][0]["customer_name"], "Cliente RoyalPrime")
         self.assertEqual(subscriptions_response.data[0]["customer_name"], "Cliente RoyalPrime")
 
     def test_admin_can_create_plan_with_entitlement(self):
@@ -123,6 +129,9 @@ class SubscriptionsApiTests(APITestCase):
             {
                 "key": "familia",
                 "name": "Familia",
+                "status": "draft",
+                "trial_days": 7,
+                "sort_order": 30,
                 "price_cents": 25900,
                 "entitlements": [
                     {
@@ -144,6 +153,9 @@ class SubscriptionsApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data["key"], "familia")
+        self.assertEqual(response.data["status"], "draft")
+        self.assertEqual(response.data["trial_days"], 7)
+        self.assertEqual(response.data["sort_order"], 30)
         self.assertEqual(response.data["entitlements"][0]["target_key"], "carnes")
         self.assertEqual(response.data["entitlements"][0]["measurement_unit_key"], "kg")
 

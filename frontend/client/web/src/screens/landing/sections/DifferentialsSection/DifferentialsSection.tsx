@@ -10,9 +10,9 @@ export const DifferentialsSection: React.FC = () => {
   const strings = useClientStrings().landing.differentials;
 
   const items = [
-    { icon: <SnowflakeIcon className={styles.cardIconSvg} size={26} />, ...strings.coldChain },
-    { icon: <CheckIcon className={styles.cardIconSvg} size={26} />, ...strings.curatorship },
-    { icon: <FlameIcon className={styles.cardIconSvg} size={26} />, ...strings.flexibility },
+    { icon: <SnowflakeIcon className={styles.cardIconSvg} />, ...strings.coldChain },
+    { icon: <CheckIcon className={styles.cardIconSvg} />, ...strings.curatorship },
+    { icon: <FlameIcon className={styles.cardIconSvg} />, ...strings.flexibility },
   ];
 
   return (

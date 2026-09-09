@@ -28,8 +28,8 @@
 }
 
 .card {
-  --ui-surface-bg: var(--theme--color-surface);
-  --ui-surface-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 92%, var(--theme--color-background));
+  --ui-surface-border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 32%, var(--theme--color-border));
   --ui-surface-radius: var(--theme--radius-2xl);
   box-sizing: border-box;
   display: flex;
@@ -45,13 +45,15 @@
   justify-content: center;
   width: var(--theme--dimensions-height-xl);
   height: var(--theme--dimensions-height-xl);
-  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 45%, var(--theme--color-border));
   border-radius: var(--theme--radius-xl);
   background: color-mix(in srgb, var(--theme--color-primary) 12%, transparent);
 }
 
 .cardIconSvg {
   color: var(--theme--color-primary);
+  height: var(--theme--dimensions-icon-lg);
+  width: var(--theme--dimensions-icon-lg);
 }
 
 .cardDescription {

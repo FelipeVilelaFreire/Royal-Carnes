@@ -36,9 +36,11 @@ class CustomerSerializer(serializers.ModelSerializer):
             "document",
             "status",
             "member_since",
+            "created_at",
+            "updated_at",
             "addresses",
         )
-        read_only_fields = ("id", "status", "member_since", "addresses")
+        read_only_fields = ("id", "status", "member_since", "created_at", "updated_at", "addresses")
 
 
 class CustomerCreateSerializer(serializers.Serializer):
@@ -46,3 +48,11 @@ class CustomerCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False, allow_blank=True)
     phone = serializers.CharField(max_length=32, required=False, allow_blank=True)
     document = serializers.CharField(max_length=40, required=False, allow_blank=True)
+
+
+class CustomerUpdateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=180, required=False)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(max_length=32, required=False, allow_blank=True)
+    document = serializers.CharField(max_length=40, required=False, allow_blank=True)
+    status = serializers.ChoiceField(choices=Customer.Status.choices, required=False)

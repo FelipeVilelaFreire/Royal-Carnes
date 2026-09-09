@@ -27,6 +27,15 @@ export interface AdminPlanEntitlementDto {
   sort_order?: number;
 }
 
+export interface AdminPlanSubscriberDto {
+  id: string | number;
+  customer_id: string | number;
+  customer_name: string;
+  status: "active" | "paused" | "cancelled" | "past_due";
+  started_at: string;
+  current_cycle_ends_at?: string | null;
+}
+
 export interface AdminPlanDto {
   id: string | number;
   key: string;
@@ -38,6 +47,9 @@ export interface AdminPlanDto {
   sort_order?: number;
   prices?: AdminPlanPriceDto[];
   entitlements?: AdminPlanEntitlementDto[];
+  subscriber_count?: number;
+  active_subscriber_count?: number;
+  subscribers?: AdminPlanSubscriberDto[];
 }
 
 export interface AdminSubscriptionCycleItemDto {
@@ -89,7 +101,10 @@ export interface AdminPlanFormInput {
   key: string;
   name: string;
   description?: string;
+  status?: "active" | "draft" | "archived";
   billingInterval?: "day" | "week" | "month" | "year";
+  trialDays?: number;
+  sortOrder?: number;
   priceCents?: number;
   entitlements?: AdminPlanEntitlementFormInput[];
 }
@@ -98,7 +113,10 @@ export interface AdminPlanCreateDto {
   key: string;
   name: string;
   description?: string;
+  status?: "active" | "draft" | "archived";
   billing_interval?: "day" | "week" | "month" | "year";
+  trial_days?: number;
+  sort_order?: number;
   price_cents?: number;
   entitlements?: Array<{
     key: string;
@@ -126,6 +144,20 @@ export interface AdminSubscriptionCreateDto {
 }
 
 export type AdminCycleItemSelectionInput = CycleItemSelectionInputBase;
-export type AdminPlanView = PlanBase;
+export interface AdminPlanSubscriberView {
+  id: string | number;
+  customerId: string | number;
+  customerName: string;
+  status: "active" | "paused" | "cancelled" | "past_due";
+  startedAt: string;
+  currentCycleEndsAt?: string | null;
+}
+
+export interface AdminPlanView extends PlanBase {
+  subscriberCount: number;
+  activeSubscriberCount: number;
+  subscribers: AdminPlanSubscriberView[];
+}
+
 export type AdminSubscriptionView = SubscriptionBase;
 export type AdminSubscriptionCycleView = SubscriptionCycleBase;

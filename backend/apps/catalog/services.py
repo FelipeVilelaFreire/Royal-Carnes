@@ -15,15 +15,31 @@ from .models import (
     ProductVariant,
 )
 
+class CatalogValidationError(ValueError):
+    def __init__(self, code: str, detail: str):
+        self.code = code
+        self.detail = detail
+        super().__init__(detail)
+
 
 @transaction.atomic
-def upsert_collection(*, organization, key: str, name: str, description: str = "") -> Collection:
+def upsert_collection(
+    *,
+    organization,
+    key: str,
+    name: str,
+    description: str = "",
+    image_url: str = "",
+    image_alt: str = "",
+) -> Collection:
     collection, _created = Collection.objects.update_or_create(
         organization=organization,
         key=key,
         defaults={
             "name": name,
             "description": description,
+            "image_url": image_url,
+            "image_alt": image_alt,
             "status": Collection.Status.ACTIVE,
         },
     )
@@ -31,16 +47,79 @@ def upsert_collection(*, organization, key: str, name: str, description: str = "
 
 
 @transaction.atomic
-def upsert_category(*, organization, key: str, name: str) -> Category:
+def upsert_category(
+    *,
+    organization,
+    key: str,
+    name: str,
+    parent: Category | None = None,
+    sort_order: int = 0,
+) -> Category:
     category, _created = Category.objects.update_or_create(
         organization=organization,
         key=key,
         defaults={
             "name": name,
+            "parent": parent,
+            "sort_order": sort_order,
             "is_active": True,
         },
     )
     return category
+
+
+@transaction.atomic
+def update_category(
+    *,
+    category: Category,
+    key: str | None = None,
+    name: str | None = None,
+    sort_order: int | None = None,
+    is_active: bool | None = None,
+) -> Category:
+    update_fields = []
+    if key is not None:
+        category.key = key
+        update_fields.append("key")
+    if name is not None:
+        category.name = name
+        update_fields.append("name")
+    if sort_order is not None:
+        category.sort_order = sort_order
+        update_fields.append("sort_order")
+    if is_active is not None:
+        category.is_active = is_active
+        update_fields.append("is_active")
+    if update_fields:
+        category.save(update_fields=update_fields)
+    return category
+
+
+@transaction.atomic
+def create_category(
+    *,
+    organization,
+    key: str,
+    name: str,
+    parent_key: str = "",
+    sort_order: int = 0,
+    is_active: bool = True,
+) -> Category:
+    parent = None
+    if parent_key:
+        try:
+            parent = Category.objects.get(organization=organization, key=parent_key)
+        except Category.DoesNotExist as exc:
+            raise CatalogValidationError("category_parent_not_found", f"Category parent not found: {parent_key}") from exc
+
+    return Category.objects.create(
+        organization=organization,
+        key=key,
+        name=name,
+        parent=parent,
+        sort_order=sort_order,
+        is_active=is_active,
+    )
 
 
 @transaction.atomic
@@ -124,6 +203,23 @@ def set_product_categories(*, organization, product: Product, categories: list[C
         )
 
 
+def resolve_categories_for_keys(*, organization, category_keys: list[str]) -> list[Category]:
+    if not category_keys:
+        raise CatalogValidationError("product_category_required", "Product requires at least one category")
+
+    categories_by_key = {
+        category.key: category
+        for category in Category.objects.filter(
+            organization=organization,
+            key__in=category_keys,
+        )
+    }
+    missing_keys = [category_key for category_key in category_keys if category_key not in categories_by_key]
+    if missing_keys:
+        raise CatalogValidationError("product_category_not_found", f"Category not found: {', '.join(missing_keys)}")
+    return [categories_by_key[category_key] for category_key in category_keys]
+
+
 @transaction.atomic
 def set_product_collections(*, organization, product: Product, collections: list[Collection]) -> None:
     collection_ids = [collection.id for collection in collections]
@@ -159,6 +255,8 @@ def set_product_media(*, organization, product: Product, media_items: list[dict]
         ProductMedia.objects.filter(organization=organization, product=product).exclude(
             url__in=active_urls,
         ).delete()
+    else:
+        ProductMedia.objects.filter(organization=organization, product=product).delete()
 
 
 @transaction.atomic
@@ -252,10 +350,13 @@ def create_admin_product(
     key: str,
     name: str,
     category_keys: list[str],
+    description: str = "",
+    status: str = Product.Status.ACTIVE,
     unit: str = "unit",
     price_cents: int | None = None,
     commercial_mode_keys: list[str] | None = None,
     collection_keys: list[str] | None = None,
+    media_items: list[dict] | None = None,
     price_type: str = ProductPrice.PriceType.BASE,
     variants: list[dict] | None = None,
 ) -> Product:
@@ -263,14 +364,11 @@ def create_admin_product(
         organization=organization,
         key=key,
         name=name,
+        description=description,
+        status=status,
         unit=unit,
     )
-    categories = list(
-        Category.objects.filter(
-            organization=organization,
-            key__in=category_keys,
-        )
-    )
+    categories = resolve_categories_for_keys(organization=organization, category_keys=category_keys)
     set_product_categories(organization=organization, product=product, categories=categories)
     collections = list(
         Collection.objects.filter(
@@ -279,6 +377,8 @@ def create_admin_product(
         )
     )
     set_product_collections(organization=organization, product=product, collections=collections)
+    if media_items:
+        set_product_media(organization=organization, product=product, media_items=media_items)
     if variants:
         for variant_data in variants:
             variant = upsert_product_variant(
@@ -340,11 +440,14 @@ def update_admin_product(
     product: Product,
     key: str | None = None,
     name: str | None = None,
+    description: str | None = None,
+    status: str | None = None,
     category_keys: list[str] | None = None,
     unit: str | None = None,
     price_cents: int | None = None,
     commercial_mode_keys: list[str] | None = None,
     collection_keys: list[str] | None = None,
+    media_items: list[dict] | None = None,
     price_type: str = ProductPrice.PriceType.BASE,
     variants: list[dict] | None = None,
 ) -> Product:
@@ -356,6 +459,12 @@ def update_admin_product(
     if name is not None:
         product.name = name
         update_fields.append("name")
+    if description is not None:
+        product.description = description
+        update_fields.append("description")
+    if status is not None:
+        product.status = status
+        update_fields.append("status")
     if unit is not None:
         product.unit = unit
         update_fields.append("unit")
@@ -363,12 +472,7 @@ def update_admin_product(
         product.save(update_fields=update_fields)
 
     if category_keys is not None:
-        categories = list(
-            Category.objects.filter(
-                organization=organization,
-                key__in=category_keys,
-            )
-        )
+        categories = resolve_categories_for_keys(organization=organization, category_keys=category_keys)
         set_product_categories(organization=organization, product=product, categories=categories)
 
     if collection_keys is not None:
@@ -379,6 +483,9 @@ def update_admin_product(
             )
         )
         set_product_collections(organization=organization, product=product, collections=collections)
+
+    if media_items is not None:
+        set_product_media(organization=organization, product=product, media_items=media_items)
 
     if commercial_mode_keys is not None:
         modes = list(

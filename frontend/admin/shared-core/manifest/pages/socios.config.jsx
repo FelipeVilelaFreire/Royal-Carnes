@@ -9,11 +9,7 @@ export const sociosConfig = {
   columns: [
     { key: "customerName", labelKey: "socios.tableHeaders.customerName" },
     { key: "planName", labelKey: "socios.tableHeaders.planName" },
-    {
-      key: "priceMonthly",
-      labelKey: "socios.tableHeaders.priceMonthly",
-      render: (row) => `R$ ${row.priceMonthly?.toFixed(2)}`,
-    },
+    { key: "priceMonthlyCents", labelKey: "socios.tableHeaders.priceMonthly", valueType: "currency", currency: "BRL", locale: "pt-BR" },
     { key: "status", labelKey: "socios.tableHeaders.status" },
     { key: "joinedDate", labelKey: "socios.tableHeaders.joinedDate" },
   ],
@@ -32,8 +28,11 @@ export const sociosConfig = {
       { key: "customerName", labelKey: "socios.form.customerName", required: true },
       { key: "email", labelKey: "socios.form.email" },
       { key: "planName", labelKey: "socios.form.planName" },
-      { key: "priceMonthly", labelKey: "socios.form.priceMonthly" },
+      { key: "priceMonthlyCents", labelKey: "socios.form.priceMonthly", type: "currency", currency: "BRL", locale: "pt-BR" },
     ],
   },
-  rows: mockAdminSubscribers,
+  rows: mockAdminSubscribers.map((subscriber) => ({
+    ...subscriber,
+    priceMonthlyCents: Math.round((subscriber.priceMonthly || 0) * 100),
+  })),
 };

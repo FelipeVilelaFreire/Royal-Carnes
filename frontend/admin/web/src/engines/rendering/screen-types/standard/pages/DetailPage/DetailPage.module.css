@@ -18,6 +18,16 @@
   width: 100%;
 }
 
+.detailSections,
+.detailSection {
+  width: 100%;
+}
+
+.sectionTitle {
+  border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
+  padding-block-end: var(--theme--spacing-sm);
+}
+
 .detailEntry {
   background: color-mix(in srgb, var(--theme--color-surface) 88%, transparent);
   border: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
@@ -27,6 +37,15 @@
   gap: var(--theme--spacing-xs);
   min-inline-size: 0;
   padding: var(--theme--spacing-md);
+}
+
+.assetPreview {
+  border: var(--theme--border-width-sm) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-md);
+  display: block;
+  inline-size: 100%;
+  max-block-size: var(--theme--dimensions-height-8xl);
+  object-fit: cover;
 }
 
 .detailKey {

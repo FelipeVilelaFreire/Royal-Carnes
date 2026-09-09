@@ -1,7 +1,10 @@
 import type {
   AdminCategoryDto,
+  AdminCategoryUpdateDto,
+  AdminCategoryUpdateInput,
   AdminCollectionDto,
   AdminCommercialModeDto,
+  AdminMeasurementUnitDto,
   AdminProductCreateDto,
   AdminProductDto,
   AdminProductFormInput,
@@ -13,6 +16,7 @@ import type {
   CategoryBase,
   CollectionBase,
   CommercialModeBase,
+  MeasurementUnitBase,
   ProductBase,
   ProductPriceBase,
   ProductVariantBase,
@@ -29,12 +33,24 @@ export function mapAdminCategoryDto(dto: AdminCategoryDto): CategoryBase {
   };
 }
 
+export function mapAdminCategoryUpdateInput(input: AdminCategoryUpdateInput): AdminCategoryUpdateDto {
+  return {
+    key: input.key,
+    name: input.name,
+    parent_key: input.parentKey,
+    sort_order: input.sortOrder,
+    is_active: input.isActive,
+  };
+}
+
 export function mapAdminCollectionDto(dto: AdminCollectionDto): CollectionBase {
   return {
     id: dto.id,
     key: dto.key,
     name: dto.name,
     description: dto.description ?? null,
+    imageUrl: dto.image_url ?? null,
+    imageAlt: dto.image_alt ?? null,
     status: dto.status,
     sortOrder: dto.sort_order ?? 0,
     productIds: dto.product_ids || [],
@@ -48,6 +64,17 @@ export function mapAdminCommercialModeDto(dto: AdminCommercialModeDto): Commerci
     name: dto.name,
     isActive: dto.is_active !== false,
     sortOrder: dto.sort_order ?? 0,
+  };
+}
+
+export function mapAdminMeasurementUnitDto(dto: AdminMeasurementUnitDto): MeasurementUnitBase {
+  return {
+    id: dto.id,
+    key: dto.key,
+    name: dto.name,
+    symbol: dto.symbol ?? null,
+    kind: dto.kind,
+    decimalPlaces: dto.decimal_places ?? 0,
   };
 }
 
@@ -113,15 +140,25 @@ export function mapAdminProductDto(dto: AdminProductDto): ProductBase {
 }
 
 export function mapAdminProductFormInput(input: AdminProductFormInput | AdminProductUpdateInput): Partial<AdminProductCreateDto> {
+  const hasImage = Object.prototype.hasOwnProperty.call(input, "image");
+  const mediaItems = input.mediaItems || (hasImage
+    ? input.image
+      ? [{ url: String(input.image), isPrimary: true }]
+      : []
+    : undefined);
+
   return {
     key: input.key,
     name: input.name,
     category_keys: input.categoryKeys,
+    description: input.description,
+    status: input.status,
     unit: input.unit,
     price_cents: input.priceCents,
     price_type: input.priceType,
     commercial_mode_keys: input.commercialModeKeys,
     collection_keys: input.collectionKeys,
+    media_items: mediaItems,
     variants: input.variants?.map((variant) => ({
       sku: variant.sku,
       name: variant.name,

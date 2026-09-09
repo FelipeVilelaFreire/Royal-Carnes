@@ -1,6 +1,6 @@
 from django.db.models import Prefetch
 
-from .models import Category, Collection, CommercialMode, Product, ProductVariant
+from .models import Category, Collection, CommercialMode, MeasurementUnit, Product, ProductVariant
 
 
 PRODUCT_VARIANT_PREFETCH = Prefetch(
@@ -16,12 +16,30 @@ def active_collections_for_organization(organization):
     ).prefetch_related("collection_products__product")
 
 
+def admin_collections_for_organization(organization):
+    return Collection.objects.filter(organization=organization).prefetch_related(
+        "collection_products__product",
+    )
+
+
 def active_categories_for_organization(organization):
     return Category.objects.filter(organization=organization, is_active=True)
 
 
+def admin_categories_for_organization(organization):
+    return Category.objects.filter(organization=organization)
+
+
+def category_detail(category_id, organization):
+    return Category.objects.get(id=category_id, organization=organization)
+
+
 def active_commercial_modes_for_organization(organization):
     return CommercialMode.objects.filter(organization=organization, is_active=True)
+
+
+def active_measurement_units_for_organization(organization):
+    return MeasurementUnit.objects.filter(organization=organization, is_active=True)
 
 
 def public_products_for_organization(organization):

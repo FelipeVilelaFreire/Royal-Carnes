@@ -1,6 +1,8 @@
+export * from "./AssetPicker";
 export * from "./Button";
 export * from "./Badge";
 export * from "./Card";
+export * from "./CurrencyInput";
 export * from "./Divider";
 export * from "./DropdownPicker";
 export * from "./EmptyState";
@@ -9,6 +11,7 @@ export * from "./Icon";
 export * from "./Input";
 export * from "./Layout";
 export * from "./Modal";
+export * from "./MultiSelect";
 export * from "./SegmentedControl";
 export * from "./Select";
 export * from "./Surface";

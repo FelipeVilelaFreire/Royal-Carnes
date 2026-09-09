@@ -417,12 +417,100 @@ Auth:
 publico
 ```
 
+Response inclui:
+
+```text
+id, key, name, description, image_url, image_alt, status, sort_order, product_ids
+```
+
 ### GET /api/v1/catalog/commercial-modes/
 
 Objetivo:
 
 ```text
 listar modos comerciais ativos da request.organization
+```
+
+Auth:
+
+```text
+publico
+```
+
+### GET /api/v1/catalog/categories/
+
+Objetivo:
+
+```text
+listar categorias ativas da request.organization para composicao do catalogo
+```
+
+Auth:
+
+```text
+publico
+```
+
+### GET /api/v1/catalog/admin/categories/
+
+Objetivo:
+
+```text
+listar categorias para admin, incluindo ativas e inativas
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+### POST /api/v1/catalog/admin/categories/
+
+Objetivo:
+
+```text
+criar categoria da request.organization, com categoria pai opcional por key
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+Request:
+
+```json
+{
+  "key": "bovinos-premium",
+  "name": "Bovinos premium",
+  "parent_key": "bovinos",
+  "sort_order": 20,
+  "is_active": true
+}
+```
+
+### PATCH /api/v1/catalog/admin/categories/:id/
+
+Objetivo:
+
+```text
+editar nome, chave, ordem e ativo/inativo da categoria na request.organization
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+### GET /api/v1/catalog/measurement-units/
+
+Objetivo:
+
+```text
+listar unidades de medida ativas da request.organization para formularios e contratos de catalogo
 ```
 
 Auth:
@@ -471,6 +559,26 @@ Auth:
 
 ```text
 requer products.manage
+```
+
+### GET /api/v1/catalog/admin/collections/
+
+Objetivo:
+
+```text
+listar colecoes para admin, incluindo status e vinculos de produtos
+```
+
+Auth:
+
+```text
+requer products.manage
+```
+
+Response inclui:
+
+```text
+id, key, name, description, image_url, image_alt, status, sort_order, product_ids
 ```
 
 ### POST /api/v1/catalog/admin/products/

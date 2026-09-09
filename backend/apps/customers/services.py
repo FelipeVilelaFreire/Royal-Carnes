@@ -61,3 +61,16 @@ def create_customer_from_input(
         phone=phone,
         document=document,
     )
+
+
+@transaction.atomic
+def update_customer_from_input(*, customer: Customer, data: dict) -> Customer:
+    update_fields = []
+    for field in ("name", "email", "phone", "document", "status"):
+        if field in data:
+            setattr(customer, field, data[field])
+            update_fields.append(field)
+
+    if update_fields:
+        customer.save(update_fields=[*update_fields, "updated_at"])
+    return customer

@@ -26,10 +26,13 @@ import type {
 } from "./types";
 
 export const nativeFoundationPrimitives: NativeFoundationPrimitive[] = [
+  "AssetPicker",
   "Avatar",
   "Badge",
   "Button",
   "Card",
+  "ConfirmationModal",
+  "CurrencyInput",
   "Divider",
   "DropdownPicker",
   "EmptyState",
@@ -37,6 +40,7 @@ export const nativeFoundationPrimitives: NativeFoundationPrimitive[] = [
   "Icon",
   "Input",
   "Layout",
+  "MultiSelect",
   "SegmentedControl",
   "Select",
   "Surface",
@@ -137,6 +141,15 @@ export const resolveNativeUiManifest = (
           color: nativeTheme.colors.text,
         },
       }),
+      AssetPicker: primitive("AssetPicker", "media-input", {
+        default: {
+          ...cardStyle(defaultCard),
+          mediaPreview: {
+            resizeMode: "cover",
+            width: "100%",
+          },
+        },
+      }),
       Badge: primitive("Badge", "status-label", { default: badgeStyle(defaultBadge) }),
       Button: primitive("Button", "action", {
         active: buttonStyle(activeButton),
@@ -145,6 +158,26 @@ export const resolveNativeUiManifest = (
         inactive: buttonStyle(inactiveButton),
       }),
       Card: primitive("Card", "content-surface", { default: cardStyle(defaultCard) }),
+      ConfirmationModal: primitive("ConfirmationModal", "confirmation-dialog", {
+        default: {
+          ...cardStyle(defaultCard),
+          actionLayout: "row",
+          presentation: "auto",
+        },
+      }),
+      CurrencyInput: primitive("CurrencyInput", "currency-input", {
+        default: {
+          ...fieldStyle(defaultField),
+          ...buttonStyle(inactiveButton),
+          inputMode: "decimal",
+          justifyContent: "flex-start",
+          text: {
+            color: nativeTheme.colors.text,
+            fontFamily: nativeTheme.tokens.typography.bodyFamily,
+            fontSize: nativeTheme.tokens.typography.sizeMd,
+          },
+        },
+      }),
       Divider: primitive("Divider", "separator", {
         default: {
           backgroundColor: defaultDivider.strokeRecipe.color,
@@ -194,6 +227,17 @@ export const resolveNativeUiManifest = (
           containerMaxWidth: nativeTheme.tokens.layout.containerLg,
           gap: nativeTheme.tokens.spacing.spaceMd,
           paddingHorizontal: nativeTheme.tokens.spacing.spaceMd,
+        },
+      }),
+      MultiSelect: primitive("MultiSelect", "multiple-choice-field", {
+        default: {
+          gap: nativeTheme.tokens.spacing.spaceSm,
+          selectedItem: badgeStyle(defaultBadge),
+          trigger: {
+            ...fieldStyle(defaultField),
+            minHeight: nativeTheme.tokens.dimensions.height[defaultSelect.level],
+            width: defaultSelect.width,
+          },
         },
       }),
       SegmentedControl: primitive("SegmentedControl", "choice-toggle", {

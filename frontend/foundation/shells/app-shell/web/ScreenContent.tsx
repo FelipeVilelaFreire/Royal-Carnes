@@ -8,12 +8,10 @@ import type { AppShellLayoutRegion } from "../foundation";
 export interface ScreenContentProps {
   children: React.ReactNode;
   layout?: AppShellLayoutRegion;
-  offsetBottom: string;
-  offsetTop: string;
 }
 
-export const ScreenContent: React.FC<ScreenContentProps> = ({ children, layout, offsetBottom, offsetTop }) => (
-  <main className={styles.content} style={{ paddingTop: offsetTop, paddingBottom: offsetBottom }}>
+export const ScreenContent: React.FC<ScreenContentProps> = ({ children, layout }) => (
+  <main className={styles.content}>
     <Container gutter={layout?.gutter as ContainerProps["gutter"]} width={layout?.width as ContainerProps["width"]}>
       {children}
     </Container>

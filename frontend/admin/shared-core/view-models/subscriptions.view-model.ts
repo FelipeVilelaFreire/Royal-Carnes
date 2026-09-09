@@ -10,10 +10,20 @@ export interface AdminPlanRowViewModel {
   id: string | number;
   key: string;
   name: string;
+  description: string | null;
   status: string;
+  statusLabelKey: string;
+  priceCents: number | null;
   priceLabel: string | null;
   billingInterval: string;
+  billingIntervalLabelKey: string;
+  trialDays: number;
+  sortOrder: number;
   entitlementCount: number;
+  entitlementSummary: string;
+  subscriberCount: number;
+  activeSubscriberCount: number;
+  subscriberSummary: string;
 }
 
 export interface AdminSubscriptionRowViewModel {
@@ -68,14 +78,31 @@ function formatPrice(plan: AdminPlanView): string | null {
 }
 
 export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowViewModel {
+  const firstEntitlements = plan.entitlements.slice(0, 3).map((entitlement) => {
+    const targetName = entitlement.targetName || entitlement.targetKey || entitlement.key;
+    const unit = entitlement.measurementUnitSymbol || entitlement.measurementUnitKey || "";
+    return `${entitlement.quantity} ${unit} ${targetName}`.trim();
+  });
+  const firstSubscribers = plan.subscribers.slice(0, 5).map((subscriber) => subscriber.customerName);
+
   return {
     id: plan.id,
     key: plan.key,
     name: plan.name,
+    description: plan.description ?? null,
     status: plan.status,
+    statusLabelKey: `common.status${plan.status.charAt(0).toUpperCase()}${plan.status.slice(1)}`,
+    priceCents: plan.prices[0]?.amountCents ?? null,
     priceLabel: formatPrice(plan),
     billingInterval: plan.billingInterval,
+    billingIntervalLabelKey: `planos.billingIntervals.${plan.billingInterval}`,
+    trialDays: plan.trialDays,
+    sortOrder: plan.sortOrder,
     entitlementCount: plan.entitlements.length,
+    entitlementSummary: firstEntitlements.length ? firstEntitlements.join(", ") : "",
+    subscriberCount: plan.subscriberCount,
+    activeSubscriberCount: plan.activeSubscriberCount,
+    subscriberSummary: firstSubscribers.length ? firstSubscribers.join(", ") : "",
   };
 }
 

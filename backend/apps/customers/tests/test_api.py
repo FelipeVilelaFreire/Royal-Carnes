@@ -30,6 +30,7 @@ class CustomersApiTests(APITestCase):
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
         self.assertEqual(list_response.status_code, 200, list_response.data)
+        self.assertIn("created_at", list_response.data[0])
 
         create_response = self.client.post(
             "/api/v1/customers/",
@@ -49,6 +50,20 @@ class CustomersApiTests(APITestCase):
         )
         self.assertEqual(detail_response.status_code, 200, detail_response.data)
         self.assertEqual(detail_response.data["email"], "cliente-api@royalprime.local")
+        self.assertIn("updated_at", detail_response.data)
+
+        update_response = self.client.patch(
+            f"/api/v1/customers/{create_response.data['id']}/",
+            {
+                "name": "Cliente API Editado",
+                "status": "paused",
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        self.assertEqual(update_response.status_code, 200, update_response.data)
+        self.assertEqual(update_response.data["name"], "Cliente API Editado")
+        self.assertEqual(update_response.data["status"], "paused")
 
     def test_customer_role_cannot_list_customers(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

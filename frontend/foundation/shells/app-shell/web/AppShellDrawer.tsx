@@ -30,19 +30,13 @@ export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, 
       <Surface
         appearance="solid"
         className={styles.drawerPanel}
-        style={{
-          "--ui-surface-bg": "var(--app-shell-panel-bg)",
-          "--ui-surface-border": "var(--app-shell-border)",
-          "--ui-surface-color": "var(--app-shell-color)",
-          "--ui-surface-shadow": "var(--app-shell-panel-shadow, none)"
-        } as React.CSSProperties}
       >
         <Inline align="center" className={styles.drawerHeader} justify="between" wrap={false}>
           <AppShellBrand brand={model.brand} onNavigate={onNavigate} />
           <Button
             aria-label={model.strings.closeDrawerAriaLabel}
             appearance="transparent"
-            className={styles.iconButton}
+            className={[styles.iconButton, styles.drawerCloseButton].filter(Boolean).join(" ")}
             icon={<CloseIcon color="currentColor" />}
             iconPosition="only"
             onClick={onClose}
@@ -68,8 +62,8 @@ export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, 
                       size="md"
                       tone={isActive ? "primary" : "neutral"}
                     >
-                      <Icon tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
-                      <span>{item.label}</span>
+                      <Icon className={styles.verticalLinkIcon} tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
+                      <span className={styles.verticalLinkLabel}>{item.label}</span>
                     </Button>
                   );
                 })}

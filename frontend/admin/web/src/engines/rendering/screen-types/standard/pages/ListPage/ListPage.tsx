@@ -13,6 +13,16 @@ import type { AdminTranslate } from "@/locales/i18n";
 import type { AdminStandardListViewModel } from "@/view-models/standard.view-model";
 import styles from "./ListPage.module.css";
 
+function formatCurrencyCents(value: unknown, currency = "BRL", locale = "pt-BR"): string {
+  if (value === undefined || value === null || value === "") return "";
+  const amountCents = Number(value);
+  if (!Number.isFinite(amountCents)) return "";
+  return new Intl.NumberFormat(locale, {
+    currency,
+    style: "currency",
+  }).format(amountCents / 100);
+}
+
 export interface ListPageProps {
   entityName: string;
   isLoading?: boolean;
@@ -55,9 +65,9 @@ export const ListPage: React.FC<ListPageProps> = ({
               ) : null}
             </Stack>
 
-            {onCreateRow ? (
+            {onCreateRow && viewModel.actionLabelKey ? (
               <Button appearance="solid" onClick={onCreateRow} size="md" tone="neutral">
-                {t(viewModel.actionLabelKey || "", entityName)}
+                {t(viewModel.actionLabelKey, entityName)}
               </Button>
             ) : null}
           </Inline>
@@ -141,6 +151,10 @@ export const ListPage: React.FC<ListPageProps> = ({
                               </Inline>
                             ) : column.render ? (
                               column.render(row)
+                            ) : column.valueType === "currency" ? (
+                              formatCurrencyCents(row[column.key], column.currency, column.locale)
+                            ) : column.valueType === "translationKey" ? (
+                              t(String(row[column.key] || ""), "")
                             ) : (
                               String(row[column.key] ?? "")
                             )}

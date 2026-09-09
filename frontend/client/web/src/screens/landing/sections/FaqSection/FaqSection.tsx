@@ -40,7 +40,7 @@ export const FaqSection: React.FC = () => {
                 >
                   {faq.question}
                 </Text>
-                <ChevronRightIcon className={styles.chevron} size={18} />
+                <ChevronRightIcon className={styles.chevron} />
               </button>
 
               <div className={styles.answerShell}>

@@ -1,0 +1,24 @@
+.assetPicker {
+  width: 100%;
+}
+
+.dropZone {
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+}
+
+.dropZone[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.fileInput {
+  display: none;
+}
+
+.previewImage {
+  display: block;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}

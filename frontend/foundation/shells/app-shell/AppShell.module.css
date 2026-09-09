@@ -8,6 +8,7 @@
   --app-shell-nav-hover-bg: color-mix(in srgb, var(--app-shell-surface-bg) 72%, transparent);
   --app-shell-nav-icon-bg: color-mix(in srgb, var(--app-shell-color) 8%, transparent);
   --app-shell-nav-muted-bg: color-mix(in srgb, var(--app-shell-muted) 10%, transparent);
+  --app-shell-header-scroll-progress: 0;
   --app-shell-sidebar-label-max-width: var(--theme--dimensions-minWidth-3xl);
   --app-shell-space-none: var(--theme--borders-none);
   --app-shell-panel-shadow: calc(var(--theme--elevation-lg-x) * -1) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--app-shell-background) 70%, transparent);
@@ -38,10 +39,16 @@
   color: inherit;
   flex: 1;
   min-height: calc(100vh - var(--app-shell-content-min-offset, var(--theme--dimensions-height-3xl)));
+  padding-block-end: var(--app-shell-content-offset-bottom, 0);
+  padding-block-start: var(--app-shell-content-offset-top, 0);
   width: 100%;
 }
 
 .header {
+  --ui-surface-bg: var(--app-shell-header-bg, var(--theme--color-surface));
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-shadow: none;
   background: var(--app-shell-header-bg, var(--theme--color-surface));
   border-block-end: var(--app-shell-border-width) solid var(--app-shell-border);
   box-sizing: border-box;
@@ -51,9 +58,21 @@
   opacity: 1;
   position: fixed;
   top: 0;
-  transition: background var(--theme--motion-durationSm) var(--theme--motion-easingStandard), border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+  transition:
+    background var(--theme--motion-durationLg) var(--theme--motion-easingStandard),
+    border-color var(--theme--motion-durationLg) var(--theme--motion-easingStandard),
+    opacity var(--theme--motion-durationLg) var(--theme--motion-easingStandard),
+    box-shadow var(--theme--motion-durationLg) var(--theme--motion-easingStandard);
   width: 100%;
   z-index: var(--theme--z-index-appShellHeader, 1300);
+}
+
+.header[data-surface-style="glassBlur"] {
+  backdrop-filter: blur(var(--theme--blur-md));
+}
+
+.header[data-scrolled="true"] {
+  box-shadow: var(--theme--elevation-sm-x) var(--theme--elevation-sm-y) var(--theme--elevation-sm-blur) var(--theme--elevation-sm-spread) color-mix(in srgb, var(--app-shell-background) 42%, transparent);
 }
 
 .header::before {
@@ -84,15 +103,29 @@
   display: flex;
   gap: var(--app-shell-gap);
   justify-content: space-between;
-  min-height: var(--theme--dimensions-height-3xl);
+  min-height: calc(
+    var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) -
+    ((var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) - var(--app-shell-header-compact-height, var(--theme--dimensions-height-2xl))) * var(--app-shell-header-scroll-progress))
+  );
   overflow: hidden;
-  padding: var(--app-shell-header-padding-y) var(--app-shell-header-padding-x);
+  padding:
+    calc(
+      var(--app-shell-header-padding-y) -
+      ((var(--app-shell-header-padding-y) - var(--app-shell-header-compact-padding-y, var(--theme--spacing-spaceXs))) * var(--app-shell-header-scroll-progress))
+    )
+    var(--app-shell-header-padding-x);
   width: 100%;
 }
 
 .headerPortalClassic .headerInner {
-  height: var(--theme--dimensions-height-3xl);
-  min-height: var(--theme--dimensions-height-3xl);
+  height: calc(
+    var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) -
+    ((var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) - var(--app-shell-header-compact-height, var(--theme--dimensions-height-2xl))) * var(--app-shell-header-scroll-progress))
+  );
+  min-height: calc(
+    var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) -
+    ((var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) - var(--app-shell-header-compact-height, var(--theme--dimensions-height-2xl))) * var(--app-shell-header-scroll-progress))
+  );
 }
 
 .headerInnerLayout {
@@ -106,6 +139,10 @@
   --ui-surface-border-width: var(--app-shell-border-width);
   --ui-surface-color: var(--app-shell-color);
   --ui-surface-radius: var(--theme--radius-xl);
+  --ui-button-gap: var(--theme--spacing-spaceSm);
+  --ui-button-height: var(--theme--dimensions-height-lg);
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
   align-items: center;
   color: inherit;
   flex-shrink: 0;
@@ -145,7 +182,10 @@
 }
 
 .brandTextOnly .brandText span:first-child {
-  font-size: var(--app-shell-brand-name-size) !important;
+  font-size: calc(
+    var(--app-shell-brand-name-size) -
+    ((var(--app-shell-brand-name-size) - var(--app-shell-header-compact-brand-size, var(--theme--typography-sizeLg))) * var(--app-shell-header-scroll-progress))
+  ) !important;
   font-weight: var(--theme--typography-bold) !important;
   letter-spacing: var(--theme--typography-letterSpacingMd);
   line-height: var(--theme--typography-lineHeightLg) !important;
@@ -279,14 +319,25 @@
 }
 
 .headerNavPill .navLink {
+  --ui-button-height: calc(
+    var(--theme--dimensions-height-md) -
+    ((var(--theme--dimensions-height-md) - var(--app-shell-header-compact-nav-height, var(--theme--dimensions-height-sm))) * var(--app-shell-header-scroll-progress))
+  );
+  --ui-button-padding-x: calc(
+    var(--theme--spacing-spaceMd) -
+    ((var(--theme--spacing-spaceMd) - var(--app-shell-header-compact-nav-padding-x, var(--theme--spacing-spaceSm))) * var(--app-shell-header-scroll-progress))
+  );
+  --ui-button-padding-y: var(--app-shell-space-none);
+  --ui-surface-border-width: var(--app-shell-border-width);
   --ui-surface-radius: var(--theme--radius-full);
+  --ui-surface-shadow: none;
   align-items: center;
   border: var(--app-shell-border-width) solid transparent;
   border-radius: var(--theme--radius-full);
   display: inline-flex;
   font-size: var(--theme--typography-sizeSm);
   font-weight: var(--theme--typography-medium);
-  height: var(--theme--dimensions-height-md);
+  height: var(--ui-button-height);
   justify-content: center;
   letter-spacing: var(--theme--typography-letterSpacingMd);
   padding: var(--app-shell-space-none) var(--theme--spacing-spaceMd);
@@ -302,6 +353,9 @@
 }
 
 .headerNavPill .navLinkActive {
+  --ui-surface-bg: var(--app-shell-surface-bg);
+  --ui-surface-border: var(--app-shell-accent);
+  --ui-surface-color: var(--app-shell-color);
   background: var(--app-shell-active-bg);
   border-color: var(--app-shell-accent);
 }
@@ -330,7 +384,7 @@
   display: flex;
   inset: 0;
   position: fixed;
-  z-index: var(--theme--z-index-appShellDrawer, 1200);
+  z-index: var(--theme--z-index-appShellDrawer, 1400);
 }
 
 .drawerLayerRight {
@@ -346,6 +400,10 @@
 }
 
 .drawerPanel {
+  --ui-surface-bg: var(--app-shell-panel-bg);
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-shadow: var(--app-shell-panel-shadow, none);
   background: var(--app-shell-panel-bg);
   border-inline-start: var(--app-shell-border-width) solid var(--app-shell-border);
   box-shadow: var(--app-shell-panel-shadow);
@@ -354,16 +412,81 @@
   flex-direction: column;
   gap: var(--theme--spacing-spaceLg);
   height: 100%;
-  padding: var(--theme--spacing-spaceLg);
+  padding: var(--theme--spacing-spaceMd);
   position: relative;
-  width: min(var(--theme--dimensions-minWidth-3xl), 86vw);
-  z-index: var(--theme--z-index-appShellDrawer, 1200);
+  max-width: calc(100% - var(--theme--spacing-spaceMd));
+  width: var(--app-shell-drawer-width, calc((var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-4xl)) / 2));
+  z-index: var(--theme--z-index-appShellDrawer, 1400);
 }
 
 .drawerHeader {
   align-items: center;
   display: flex;
+  gap: var(--theme--spacing-spaceSm);
   justify-content: space-between;
+  min-width: 0;
+}
+
+.drawerHeader .brand {
+  --app-shell-brand-name-size: var(--theme--typography-sizeSm);
+  --ui-button-gap: var(--theme--spacing-spaceXs);
+  --ui-button-height: var(--theme--dimensions-height-sm);
+  --ui-button-padding-x: var(--app-shell-space-none);
+  --ui-button-padding-y: var(--app-shell-space-none);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.drawerHeader .brand > span {
+  gap: var(--theme--spacing-spaceXs);
+  min-width: 0;
+  width: 100%;
+}
+
+.drawerHeader .brandLogoFrame {
+  border-radius: var(--theme--radius-lg);
+  height: var(--theme--dimensions-height-sm);
+  width: var(--theme--dimensions-height-sm);
+}
+
+.drawerHeader .brandLogo {
+  border-radius: var(--theme--radius-lg);
+  height: var(--theme--dimensions-height-xs);
+  width: var(--theme--dimensions-height-xs);
+}
+
+.drawerHeader .brandText {
+  flex: 1;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.drawerHeader .brandText span:first-child {
+  line-height: var(--theme--typography-lineHeightSm) !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawerCloseButton {
+  --ui-surface-bg: var(--app-shell-nav-muted-bg);
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-radius: var(--theme--radius-full);
+  --ui-button-height: var(--theme--dimensions-height-sm);
+  --ui-button-min-width: var(--theme--dimensions-height-sm);
+  --ui-button-padding-x: var(--app-shell-space-none);
+  --ui-button-padding-y: var(--app-shell-space-none);
+  border: var(--app-shell-border-width) solid var(--app-shell-border);
+  border-radius: var(--theme--radius-full);
+  color: var(--app-shell-color) !important;
+  flex-shrink: 0;
+}
+
+.drawerCloseButton svg {
+  height: var(--theme--dimensions-icon-xs);
+  width: var(--theme--dimensions-icon-xs);
 }
 
 .verticalNav {
@@ -515,6 +638,10 @@
 }
 
 .bottomTabBar {
+  --ui-surface-bg: var(--app-shell-panel-bg);
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-shadow: var(--app-shell-bottom-shadow, none);
   align-items: center;
   background: color-mix(in srgb, var(--app-shell-panel-bg) 94%, transparent);
   backdrop-filter: blur(var(--theme--blur-sm));
@@ -542,6 +669,15 @@
 }
 
 .bottomTabButton {
+  --ui-button-font-size: var(--theme--typography-size2xs);
+  --ui-button-font-weight: var(--theme--typography-bold);
+  --ui-button-gap: var(--theme--spacing-space2xs);
+  --ui-button-height: var(--theme--dimensions-height-xl);
+  --ui-button-letter-spacing: var(--theme--typography-letterSpacingMd);
+  --ui-button-line-height: var(--theme--typography-lineHeight2xs);
+  --ui-button-min-width: 0;
+  --ui-button-padding-x: var(--theme--spacing-space2xs);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
   --ui-surface-bg: transparent;
   --ui-surface-border: transparent;
   --ui-surface-color: var(--app-shell-muted);
@@ -583,6 +719,10 @@
 }
 
 .sidebar {
+  --ui-surface-bg: var(--app-shell-panel-bg);
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-shadow: none;
   background: color-mix(in srgb, var(--app-shell-panel-bg) 92%, var(--app-shell-background));
   border-inline-end: var(--app-shell-border-width) solid var(--app-shell-border);
   box-sizing: border-box;
@@ -893,6 +1033,10 @@
 }
 
 .footer {
+  --ui-surface-bg: var(--app-shell-panel-bg);
+  --ui-surface-border: var(--app-shell-border);
+  --ui-surface-color: var(--app-shell-color);
+  --ui-surface-shadow: none;
   background: var(--app-shell-panel-bg);
   border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
   margin-block-start: var(--theme--spacing-space3xl);
@@ -914,6 +1058,28 @@
 
   .mobileDrawerTrigger {
     display: inline-flex;
+  }
+
+  .headerMobileDrawerEnd .headerInnerLayout,
+  .headerMobileDrawerEnd .headerLeft {
+    width: 100%;
+  }
+
+  .headerMobileDrawerEnd .headerLeft {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  .headerMobileDrawerEnd .brand {
+    order: 1;
+  }
+
+  .headerMobileDrawerEnd .mobileDrawerTrigger {
+    order: 2;
+  }
+
+  .header[data-mobile-actions="hidden"] .headerActions {
+    display: none;
   }
 
   .headerActions {

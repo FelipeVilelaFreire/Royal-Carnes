@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node ../../../scripts/verify-code-rules.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },

@@ -17,10 +17,17 @@ export interface LandingViewProps {
   onNavigate?: (path: string) => void;
 }
 
+const LANDING_SECTION_IDS = new Set(["top", "clube", "selecao", "como-funciona", "assinaturas", "royal-box", "faq"]);
+
 export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
   const handleRouteClick = (routeKey: string) => {
     if (routeKey === "plans") {
       onNavigate?.("/home");
+      return;
+    }
+
+    if (LANDING_SECTION_IDS.has(routeKey)) {
+      document.getElementById(routeKey)?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 

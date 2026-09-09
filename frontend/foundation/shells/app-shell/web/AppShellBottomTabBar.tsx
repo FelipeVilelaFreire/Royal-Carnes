@@ -16,35 +16,11 @@ export interface AppShellBottomTabBarProps {
 export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ model, onNavigate }) => {
   if (!model.bottomTabEnabled || model.bottomItems.length === 0) return null;
 
-  const resolveTabButtonStyle = (isActive: boolean) => ({
-    "--ui-surface-bg": isActive ? "var(--app-shell-surface-bg)" : "transparent",
-    "--ui-surface-border": isActive ? "var(--app-shell-accent)" : "transparent",
-    "--ui-surface-border-width": "var(--app-shell-border-width)",
-    "--ui-surface-color": isActive ? "var(--app-shell-color)" : "var(--app-shell-muted)",
-    "--ui-surface-radius": "var(--theme--radius-full)",
-    "--ui-surface-shadow": "none",
-    "--ui-button-font-size": "var(--theme--typography-size2xs)",
-    "--ui-button-font-weight": "var(--theme--typography-bold)",
-    "--ui-button-gap": "var(--theme--spacing-space2xs)",
-    "--ui-button-height": "var(--theme--dimensions-height-xl)",
-    "--ui-button-letter-spacing": "var(--theme--typography-letterSpacingMd)",
-    "--ui-button-line-height": "var(--theme--typography-lineHeight2xs)",
-    "--ui-button-min-width": "0",
-    "--ui-button-padding-x": "var(--theme--spacing-space2xs)",
-    "--ui-button-padding-y": "var(--theme--spacing-space2xs)"
-  } as React.CSSProperties);
-
   return (
     <Surface
       as="nav"
       appearance="solid"
       className={styles.bottomTabBar}
-      style={{
-        "--ui-surface-bg": "var(--app-shell-panel-bg)",
-        "--ui-surface-border": "var(--app-shell-border)",
-        "--ui-surface-color": "var(--app-shell-color)",
-        "--ui-surface-shadow": "var(--app-shell-bottom-shadow, none)"
-      } as React.CSSProperties}
     >
       <Container
         className={styles.bottomTabInner}
@@ -55,7 +31,6 @@ export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ mode
           align="center"
           className={styles.bottomTabItems}
           justify={(model.currentLayout.bottomTabBar?.align || "evenly") as InlineProps["justify"]}
-          style={{ "--app-shell-bottom-count": String(model.bottomItems.length) } as React.CSSProperties}
           wrap={false}
         >
           {model.bottomItems.map((item) => {
@@ -69,7 +44,6 @@ export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ mode
                 iconPosition="start"
                 onClick={() => onNavigate?.(item.routePath)}
                 size="xs"
-                style={resolveTabButtonStyle(isActive)}
                 tone={isActive ? "primary" : "neutral"}
                 type="button"
               >

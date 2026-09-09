@@ -77,6 +77,12 @@ Caminhos sao pontos de inspecao, nao promessa de que todo fluxo esta concluido.
 
 ## Matriz de verificacao
 
+Para alteracao de codigo, execute npm run verify:rules (ou -- --base COMMIT
+inicial da tarefa). npm run verify agrega os testes do analisador e a verificacao
+Foundation. O check incremental tambem roda no prebuild client/admin e no CI.
+Veja [comandos e limites](../scripts/README.md); nao presume cobertura de toda
+regra semantica nem substitui as verificacoes da tabela.
+
 Comandos de frontend abaixo partem da raiz RoyalPrime. Use dependencias locais;
 nao instalar ferramentas implicitamente para executar uma verificacao.
 

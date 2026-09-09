@@ -21,6 +21,10 @@
   gap: var(--theme--spacing-lg);
 }
 
+.formSection {
+  width: 100%;
+}
+
 .formActions {
   border-block-start: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
   padding-block-start: var(--theme--spacing-md);

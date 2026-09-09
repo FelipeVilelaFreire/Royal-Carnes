@@ -1,0 +1,38 @@
+name: Code Rules
+on:
+  pull_request:
+  push:
+permissions:
+  contents: read
+jobs:
+  code-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run test:rules
+      - name: Check introduced violations
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_BRANCH: ${{ github.base_ref }}
+          BEFORE_SHA: ${{ github.event.before }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            base=$(git merge-base HEAD "origin/$BASE_BRANCH")
+            npm run verify:rules -- --base "$base"
+          elif [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            npm run verify:rules -- --base "$BEFORE_SHA"
+          elif git rev-parse --verify "origin/$DEFAULT_BRANCH" >/dev/null 2>&1; then
+            base=$(git merge-base HEAD "origin/$DEFAULT_BRANCH")
+            npm run verify:rules -- --base "$base"
+          else
+            npm run verify:rules -- --all
+          fi

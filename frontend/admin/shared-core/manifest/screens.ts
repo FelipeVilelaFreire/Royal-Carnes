@@ -29,6 +29,11 @@ export const adminScreens = {
     type: "standard",
     configPath: "pages/categorias.config.jsx"
   },
+  colecoes: {
+    key: "colecoes",
+    type: "standard",
+    configPath: "pages/colecoes.config.jsx"
+  },
   planos: {
     key: "planos",
     type: "standard",
@@ -38,11 +43,6 @@ export const adminScreens = {
     key: "clientes",
     type: "standard",
     configPath: "pages/clientes.config.jsx"
-  },
-  assinaturas: {
-    key: "assinaturas",
-    type: "standard",
-    configPath: "pages/assinaturas.config.jsx"
   },
   pagamentos: {
     key: "pagamentos",
