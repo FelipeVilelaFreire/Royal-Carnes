@@ -3,8 +3,8 @@ import { Button } from "../../../ui/Button";
 import { Container, Stack } from "../../../ui/Layout";
 import { Surface } from "../../../ui/Surface";
 import { Text } from "../../../ui/Text";
-import { clientPtBR } from "../../../../../shared-core/locales/pt-BR";
 import { useClientCheckout } from "../../../../../shared-core/hooks/useClientCheckout";
+import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
 import { formatClientCheckoutMoney } from "../../../../../shared-core/utils/checkout.formatters";
 import { createMobileAppShellConfig, type AppThemeMode } from "../../../shell/AppShell/config";
 import { CheckoutStepTracker } from "./pedido/CheckoutStepTracker";
@@ -18,17 +18,19 @@ import { createPedidoStyles } from "./pedido/styles";
 export interface PedidoViewProps {
   activePath?: string;
   isAuthenticated?: boolean;
+  strings: ReturnType<typeof useClientStrings>;
   themeMode?: AppThemeMode;
 }
 
 export const PedidoView: React.FC<PedidoViewProps> = ({
   isAuthenticated = true,
+  strings: clientStrings,
   themeMode = "dark",
 }) => {
   const mobileConfig = createMobileAppShellConfig(themeMode) as any;
   const theme = mobileConfig.theme;
   const styles = createPedidoStyles(theme);
-  const strings = clientPtBR.pedido;
+  const strings = clientStrings.pedido;
   const checkout = useClientCheckout({ isAuthenticated });
   const {
     actions,

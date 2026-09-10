@@ -166,7 +166,7 @@ function OrderDetailDialog({
 
 export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
   const strings = useClientStrings().meusPedidos;
-  const orders = useClientOrders({ fallbackOnError: true });
+  const orders = useClientOrders();
   const [selectedOrderId, setSelectedOrderId] = useState<string | number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 

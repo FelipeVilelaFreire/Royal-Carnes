@@ -1,5 +1,6 @@
 import type {
   ClientOrderConfigDto,
+  ClientOrderConfigView,
   ClientOrderCreateDto,
   ClientOrderCreateInput,
   ClientOrderDto,
@@ -48,10 +49,11 @@ export function mapClientOrderStatusDto(dto: ClientOrderStatusDto): OrderStatusB
   };
 }
 
-export function mapClientOrderConfigDto(dto: ClientOrderConfigDto): OrderConfigBase {
+export function mapClientOrderConfigDto(dto: ClientOrderConfigDto): ClientOrderConfigView {
   return {
     kinds: (dto.kinds || []).map(mapClientOrderKindDto),
     statuses: (dto.statuses || []).map(mapClientOrderStatusDto),
+    checkout: dto.checkout,
   };
 }
 

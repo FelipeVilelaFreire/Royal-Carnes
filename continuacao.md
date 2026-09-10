@@ -35,7 +35,138 @@ docs/kits/README.md
 frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
-## Checkpoint Atual - 2026-09-09
+## Checkpoint Atual - 2026-09-10
+
+O corte mais recente mudou a prioridade imediata do admin: a base funcional,
+conexao com backend/shared-core e retirada dos mocks diretos ja foi bem
+encaminhada. A continuacao natural agora e melhorar o frontend do painel admin
+com calma, mantendo as regras de render-only, config-first, i18n-first e
+Foundation/AppShell.
+
+Importante: `continuacao1.md` nao existe neste repo no momento deste corte.
+O handoff principal do admin continua sendo este `continuacao.md`.
+`continuacao2.md` segue como handoff separado do client.
+
+### Estado atual do admin
+
+```text
+Backend/shared-core/admin
+  -> Clientes, Catalogo, Assinaturas, Pedidos, Entregas e Pagamentos ja estao
+     conectados ao pipeline real em vez de mocks diretos nas telas.
+  -> `frontend/admin/shared-core/mocks/*` foi removido no corte atual/dirty.
+  -> `standard.data-source.ts` concentra o carregamento real para screen-types.
+  -> telas admin continuam no caminho:
+     screen -> shared-core data-source/hook/api -> backend.
+
+AppShell admin
+  -> admin usa o AppShell da Foundation; transitional app-shell antigo foi
+     removido do admin web.
+  -> sidebar agora tem grupos expansiveis/recolhiveis.
+  -> brand/sidebar/footer foram reorganizados para caber melhor em notebook
+     com zoom alto.
+  -> estilos de `groupButton` e `routeButton` foram separados no contrato:
+     `sidebar.groupButton` controla accordion/expansao;
+     `sidebar.routeButton` controla item de navegacao/estado ativo.
+  -> nao existe mais faixa lateral custom adicionada nos route buttons.
+
+Dashboard admin
+  -> rota canonica passou a ser `/dashboard`.
+  -> `/admin` continua como alias para compatibilidade.
+  -> KPIs do dashboard devem ficar 4 lado a lado no desktop/notebook; evitar
+     voltar para 2x2 em notebook porque fica grande demais.
+
+Visual/admin frontend
+  -> background/glass e AppShell melhoraram, mas ainda nao declarar 10/10 sem
+     browser check real.
+  -> proximo foco e polir frontend admin, nao reabrir backend/mocks sem motivo.
+```
+
+### Arquivos centrais do corte admin
+
+```text
+AppShell/admin config
+  frontend/admin/shared-core/manifest/adminAppShell.config.jsx
+  frontend/admin/shared-core/navigation/admin.navigation.ts
+  frontend/admin/shared-core/manifest/routes.ts
+  frontend/foundation/shells/app-shell/web/AppShellSidebar.tsx
+  frontend/foundation/shells/app-shell/AppShell.module.css
+
+Dashboard
+  frontend/admin/web/src/engines/rendering/screen-types/dashboard/DashboardPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/dashboard/DashboardPage.module.css
+
+Screen-types que devem receber polimento depois
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/ListPage/ListPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/ListPage/ListPage.module.css
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/DetailPage/DetailPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/DetailPage/DetailPage.module.css
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/AddPage/AddPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/standard/pages/AddPage/AddPage.module.css
+  frontend/admin/web/src/engines/rendering/screen-types/settings/SettingsPage.tsx
+  frontend/admin/web/src/engines/rendering/screen-types/settings/SettingsPage.module.css
+```
+
+### Validacoes executadas no corte 2026-09-10
+
+```text
+npm run build:admin
+  -> passou
+  -> prebuild verify-code-rules passou com 0 violacoes novas
+  -> permanecem achados legados ja existentes
+
+npm run verify:foundation
+  -> passou, 93 checks
+
+git diff --check
+  -> passou, apenas avisos LF/CRLF do Windows
+```
+
+Nao houve browser QA final neste corte. A avaliacao visual do admin deve ser
+confirmada em `http://localhost:3001/dashboard` e nas principais rotas do
+sidebar antes de afirmar nota maxima.
+
+### Proximo passo recomendado para amanha
+
+Continuar o polimento do frontend admin, agora que a conexao e retirada dos
+mocks ja estao encaminhadas.
+
+Ordem sugerida:
+
+```text
+1. AppShell Sidebar
+   -> finalizar estilo separado de `groupButton` vs `routeButton`
+   -> `groupButton`: discreto, accordion, chevron, transicao
+   -> `routeButton`: navegacao, ativo claro, icone + label
+   -> nao misturar estilo de grupo com estado ativo de rota
+
+2. Dashboard
+   -> revisar compactacao real em notebook/zoom 110%
+   -> manter 4 KPIs lado a lado no desktop/notebook
+   -> ajustar tabela de ultimos pedidos para ficar mais leve e executiva
+
+3. Screen-type standard
+   -> ListPage menor/mais denso
+   -> DetailPage com tabs/sections mais bem hierarquizadas
+   -> AddPage com formulario mais limpo
+   -> manter screens render-only e sem mock direto
+
+4. Settings
+   -> melhorar visual sem transformar em tela standard
+   -> manter `type setting`
+   -> preparar mentalmente para futuro manifest editor, mas nao implementar
+      isso agora se o pedido for apenas polish
+```
+
+Regra para a proxima sessao:
+
+```text
+backend/shared-core so mexer se o polish revelar bug real de contrato.
+nao reabrir mocks diretos.
+nao iniciar refactor grande de tree/foundation sem necessidade.
+nao declarar 10/10 visual sem browser check.
+```
+
+## Checkpoint Anterior - 2026-09-09
 
 O corte mais recente fechou a base funcional de Assinaturas e Pagamentos no
 admin, com backend real, shared-core e screen-types mantendo a regra:

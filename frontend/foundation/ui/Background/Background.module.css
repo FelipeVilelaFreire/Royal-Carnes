@@ -1,0 +1,135 @@
+.background {
+  color: var(--ui-background-color);
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+.background::before {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, currentColor 6%, transparent) var(--ui-background-line-width), transparent var(--ui-background-line-width)),
+    linear-gradient(0deg, color-mix(in srgb, currentColor 4%, transparent) var(--ui-background-line-width), transparent var(--ui-background-line-width));
+  background-size: var(--ui-background-grid-size) var(--ui-background-grid-size);
+  content: "";
+  inset: 0;
+  mask-image: linear-gradient(to bottom, transparent, currentColor 18%, currentColor 74%, transparent);
+  opacity: var(--ui-background-opacity-grid);
+  position: absolute;
+}
+
+.atmosphere,
+.cursor {
+  inset: 0;
+  position: absolute;
+}
+
+.atmosphere {
+  display: none;
+}
+
+.cursor {
+  display: none;
+}
+
+.background[data-pattern="solid"] .atmosphere {
+  background: var(--ui-background-bg);
+  display: block;
+}
+
+.background[data-pattern="glass"] .atmosphere,
+.background[data-pattern="glassFlow"] .atmosphere {
+  background:
+    linear-gradient(138deg, color-mix(in srgb, var(--ui-background-color) var(--ui-background-highlight-opacity), transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ui-background-accent) var(--ui-background-tint-opacity), transparent), transparent 82%),
+    radial-gradient(ellipse at 0 0, color-mix(in srgb, var(--ui-background-accent) 52%, transparent), transparent 54%),
+    radial-gradient(ellipse at 88% 18%, color-mix(in srgb, var(--ui-background-surface-bg) 58%, transparent), transparent 44%),
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--ui-background-color) 18%, transparent), transparent 38%),
+    linear-gradient(145deg, color-mix(in srgb, var(--ui-background-surface-bg) 82%, transparent), color-mix(in srgb, var(--ui-background-bg) 80%, transparent)),
+    var(--ui-background-bg);
+  display: block;
+  opacity: var(--ui-background-opacity-high);
+}
+
+.background[data-pattern="glass"] .atmosphere::before,
+.background[data-pattern="glass"] .atmosphere::after,
+.background[data-pattern="glassFlow"] .atmosphere::before,
+.background[data-pattern="glassFlow"] .atmosphere::after {
+  content: "";
+  inset: 0;
+  position: absolute;
+}
+
+.background[data-pattern="glass"] .atmosphere::before,
+.background[data-pattern="glassFlow"] .atmosphere::before {
+  background:
+    linear-gradient(112deg, transparent 0%, color-mix(in srgb, var(--ui-background-color) 18%, transparent) 12%, transparent 28%, transparent 40%, color-mix(in srgb, var(--ui-background-accent) 28%, transparent) 58%, transparent 78%),
+    repeating-linear-gradient(
+      105deg,
+      transparent 0,
+      transparent var(--ui-background-space-lg),
+      color-mix(in srgb, currentColor 12%, transparent) var(--ui-background-space-lg),
+      color-mix(in srgb, currentColor 12%, transparent) calc(var(--ui-background-space-lg) + var(--ui-background-line-width)),
+      transparent calc(var(--ui-background-space-lg) + var(--ui-background-line-width)),
+      transparent calc(var(--ui-background-space-lg) * 2)
+    );
+  opacity: var(--ui-background-opacity-line);
+}
+
+.background[data-pattern="glassFlow"] .atmosphere::before {
+  animation: uiBackgroundGlassFlow var(--ui-background-duration) linear infinite;
+}
+
+.background[data-pattern="glass"] .atmosphere::after,
+.background[data-pattern="glassFlow"] .atmosphere::after {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--ui-background-color) 11%, transparent), transparent 42%),
+    radial-gradient(ellipse at 34% 22%, color-mix(in srgb, var(--ui-background-accent) 38%, transparent), transparent 58%),
+    radial-gradient(ellipse at 78% 8%, color-mix(in srgb, var(--ui-background-surface-bg) 62%, transparent), transparent 50%),
+    linear-gradient(180deg, transparent, color-mix(in srgb, var(--ui-background-bg) 22%, transparent));
+  backdrop-filter: blur(var(--ui-background-blur-sm));
+}
+
+.background[data-cursor="glass"] .cursor {
+  background:
+    radial-gradient(
+      circle at var(--ui-background-cursor-x, var(--ui-background-cursor-offscreen)) var(--ui-background-cursor-y, var(--ui-background-cursor-offscreen)),
+      color-mix(in srgb, var(--ui-background-accent) 22%, transparent) 0,
+      color-mix(in srgb, var(--ui-background-accent) 13%, transparent) var(--ui-background-spotlight-sm),
+      transparent var(--ui-background-spotlight-xl)
+    ),
+    radial-gradient(
+      circle at var(--ui-background-cursor-x, var(--ui-background-cursor-offscreen)) var(--ui-background-cursor-y, var(--ui-background-cursor-offscreen)),
+      color-mix(in srgb, currentColor 16%, transparent) 0,
+      transparent var(--ui-background-spotlight-sm)
+    );
+  display: block;
+  filter: blur(var(--ui-background-blur-sm));
+  opacity: 0;
+  transition: opacity var(--ui-background-duration) var(--ui-background-easing);
+}
+
+.background[data-cursor="glass"][data-cursor-active="true"] .cursor {
+  opacity: var(--ui-background-opacity-high);
+}
+
+@keyframes uiBackgroundGlassFlow {
+  from {
+    transform: translate3d(calc(var(--ui-background-space-xl) * -1), 0, 0);
+  }
+
+  to {
+    transform: translate3d(var(--ui-background-space-xl), 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .background[data-pattern="glassFlow"] .atmosphere::before {
+    animation: none;
+  }
+
+  .background[data-cursor="glass"] .cursor {
+    display: none;
+  }
+}

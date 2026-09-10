@@ -16,11 +16,40 @@
   min-height: var(--ui-button-height);
   min-width: var(--ui-button-min-width);
   outline: none;
+  overflow: hidden;
   padding: var(--ui-button-padding-y) var(--ui-button-padding-x);
+  position: relative;
   transition:
     transform var(--ui-button-duration) var(--ui-button-easing),
     filter var(--ui-button-duration) var(--ui-button-easing),
     box-shadow var(--ui-button-duration) var(--ui-button-easing);
+}
+
+.button::before,
+.button::after {
+  content: "";
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--ui-button-duration) var(--ui-button-easing), transform var(--ui-button-duration) var(--ui-button-easing);
+}
+
+.button::before {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ui-surface-color, currentColor) 10%, transparent), transparent 42%),
+    radial-gradient(circle at 18% 0, color-mix(in srgb, var(--ui-surface-accent, currentColor) 24%, transparent), transparent 52%);
+}
+
+.button::after {
+  background: linear-gradient(105deg, transparent 0%, color-mix(in srgb, var(--ui-surface-color, currentColor) 18%, transparent) 42%, transparent 68%);
+  transform: translateX(-60%);
+}
+
+.button > span,
+.button > svg {
+  position: relative;
+  z-index: 1;
 }
 
 .button:not(:disabled)[data-appearance="outline"],
@@ -36,10 +65,24 @@
 }
 
 .button:not(:disabled):hover {
+  box-shadow:
+    var(--ui-surface-shadow, none),
+    0 0 var(--ui-button-height) color-mix(in srgb, var(--ui-surface-accent, currentColor) 18%, transparent),
+    inset 0 var(--ui-surface-border-width) 0 color-mix(in srgb, var(--ui-surface-color, currentColor) 12%, transparent);
   transform: translateY(calc(var(--ui-button-lift) * -1));
 }
 
+.button:not(:disabled):hover::before {
+  opacity: 1;
+}
+
+.button:not(:disabled):hover::after {
+  opacity: 1;
+  transform: translateX(60%);
+}
+
 .button:not(:disabled):active {
+  filter: saturate(1.08);
   transform: translateY(0) scale(var(--ui-button-pressed-scale));
 }
 

@@ -79,7 +79,7 @@ export const portalAppShellConfig = {
     mockAuthenticated: false,
     mobileMockAuthenticated: false,
     publicNavKeys: ["home", "cortes", "produtos"],
-    protectedNavKeys: ["minhaCaixa", "royalDelivery", "meuClube", "meusPedidos", "minhaConta"]
+    protectedNavKeys: ["meusPedidos", "minhaConta"]
   },
   bottomTabBar: {
     enabled: true,

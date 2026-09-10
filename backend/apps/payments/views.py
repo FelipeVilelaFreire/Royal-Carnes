@@ -16,6 +16,17 @@ from .selectors import payment_detail, payments_for_organization
 from .serializers import PaymentCreateSerializer, PaymentSerializer, PaymentUpdateSerializer
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_payments(request):
+    organization = get_request_organization(request)
+    customer = Customer.objects.filter(organization=organization, user=request.user).first()
+    if customer is None:
+        return Response([], status=status.HTTP_200_OK)
+    queryset = Payment.objects.filter(organization=organization, customer=customer).select_related("subscription__plan", "order")
+    return Response(PaymentSerializer(queryset, many=True).data)
+
+
 def _require_payments_access(request, organization):
     require_organization_permission(request.user, organization, "payments.markPaid")
 
@@ -36,6 +47,8 @@ def _resolve_payment_refs(organization, data):
             customer=customer,
             id=data["order_id"],
         )
+    if subscription and order and order.subscription_id and order.subscription_id != subscription.id:
+        raise ValueError("payment_subscription_order_mismatch")
     return customer, subscription, order
 
 
@@ -56,6 +69,8 @@ def admin_payments(request):
         customer, subscription, order = _resolve_payment_refs(organization, data)
     except ObjectDoesNotExist:
         return Response({"code": "payment_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
+    except ValueError as error:
+        return Response({"code": str(error)}, status=status.HTTP_400_BAD_REQUEST)
 
     payment = Payment.objects.create(
         organization=organization,
@@ -97,4 +112,3 @@ def admin_payment_detail(request, payment_id):
         payment.paid_at = timezone.now()
     payment.save()
     return Response(PaymentSerializer(payment_detail(payment.id, organization)).data)
-

@@ -115,6 +115,32 @@ comprovada para global. Kit e mapa de capacidade, nao uma engine.
 
 screen -> hook do escopo -> API client -> endpoint -> service/use-case -> banco.
 
+## Quatro separacoes do produto
+
+Todo fluxo funcional do produto deve poder ser explicado por quatro donos:
+
+```text
+backend
+  -> persistencia, autorizacao, regra comercial e endpoints
+
+shared-core
+  -> contratos, API clients, hooks, mappers, view-models e runtime tecnico
+
+config.jsx / manifest
+  -> declaracao de composicao, capacidades, campos, defaults, rotas e opcoes
+
+JSX render-only
+  -> apresenta o estado recebido e dispara callbacks; nao conhece HTTP, seed,
+     mock, regra comercial ou configuracao tecnica de transporte
+```
+
+No frontend, a cadeia alvo e `shared-core -> config.jsx -> JSX`. Nem toda tela
+legada do Portal possui ainda um manifest proprio. Enquanto essa migracao nao
+chega, ela continua obrigada a ser render-only e a consumir shared-core; nao
+criar `config.jsx` artificial apenas para esconder logica. Quando houver
+variacao real de composicao ou capacidade editavel, o manifest nasce em
+`frontend/client/shared-core/manifest/` antes de a tela ganhar essa variacao.
+
 - Backend valida organization, identidade, acesso, estoque, limites, transicoes
   e valores persistidos. IDs e FKs seguem models e backend/API_CONTRACTS.md.
 - API client respeita endpoint e payload reais. Mappers convertem DTOs;
@@ -122,6 +148,10 @@ screen -> hook do escopo -> API client -> endpoint -> service/use-case -> banco.
 - Hook controla fluxo reutilizavel, loading, erro e acoes.
 - Screen pode controlar input imediato, modal, aba, selecao e estado visual.
   Mesmo com um unico consumidor, regra de negocio nao passa a pertencer a tela.
+- Uma rota Client so recebe o status "sem mock" depois que Web e Mobile foram
+  revisados no mesmo fluxo: ambos devem consumir o shared-core, nao ter
+  fallback de apresentacao e expor loading, erro e vazio reais. A conclusao em
+  uma plataforma nao permite inferir a equivalencia da outra.
 - Uma acao de salvar deve persistir pelo fluxo real ou informar explicitamente
   sua indisponibilidade. Navegar ou fechar modal nao demonstra salvamento.
 - Nao usar any/casts para esconder incompatibilidade de contrato sem registrar

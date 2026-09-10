@@ -15,6 +15,7 @@ export type NativeDescriptorSource = {
 export type NativeFoundationPrimitive =
   | "AssetPicker"
   | "Avatar"
+  | "Background"
   | "Badge"
   | "Button"
   | "Card"

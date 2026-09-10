@@ -11,7 +11,7 @@ import { DEFAULT_UI_LAYOUT_CONFIG, resolveLayoutConfig } from "./layout";
 import { DEFAULT_SEGMENTED_CONTROL_CONFIG, resolveSegmentedControlConfig } from "./segmented-control";
 import { DEFAULT_SELECT_CONFIG, resolveSelectConfig } from "./select";
 import { DEFAULT_UI_TEXT_CONFIG } from "./text";
-import type { SurfaceUiConfig, UiSurfaceConfig } from "./contract";
+import type { SurfaceUiConfig, UiBackgroundConfig, UiSurfaceConfig } from "./contract";
 
 export type ResolvedUiConfig = SurfaceUiConfig & {
   theme: NonNullable<SurfaceUiConfig["theme"]>;
@@ -36,7 +36,19 @@ export const DEFAULT_UI_SURFACE_CONFIG: UiSurfaceConfig = {
   tone: "neutral",
 };
 
+export const DEFAULT_UI_BACKGROUND_CONFIG: UiBackgroundConfig = {
+  enabled: false,
+  pattern: "none",
+  cursor: {
+    disabledBelow: 900,
+    enabled: false,
+    intensity: "soft",
+    mode: "none",
+  },
+};
+
 export const DEFAULT_SURFACE_UI_CONFIG: ResolvedUiConfig = {
+  background: DEFAULT_UI_BACKGROUND_CONFIG,
   badge: DEFAULT_BADGE_CONFIG,
   button: DEFAULT_BUTTON_CONFIG,
   card: DEFAULT_CARD_CONFIG,
@@ -63,8 +75,20 @@ export const DEFAULT_SURFACE_UI_CONFIG: ResolvedUiConfig = {
 
 export function resolveSurfaceUiConfig(config?: Partial<SurfaceUiConfig>): ResolvedUiConfig {
   const theme = config?.theme ?? DEFAULT_SURFACE_UI_CONFIG.theme;
+  const visualBackground = (config as any)?.visual?.background;
+  const visualCursor = (config as any)?.visual?.cursor;
+  const backgroundConfig = config?.background || visualBackground;
 
   return {
+    background: {
+      ...DEFAULT_UI_BACKGROUND_CONFIG,
+      ...backgroundConfig,
+      cursor: {
+        ...DEFAULT_UI_BACKGROUND_CONFIG.cursor,
+        ...backgroundConfig?.cursor,
+        ...visualCursor,
+      },
+    },
     badge: resolveBadgeConfig(config?.badge),
     button: resolveButtonConfig(config?.button),
     card: resolveCardConfig(config?.card),

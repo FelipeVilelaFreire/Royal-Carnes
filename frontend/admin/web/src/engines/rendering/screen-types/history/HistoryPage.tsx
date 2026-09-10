@@ -17,7 +17,7 @@ export const HistoryPage: React.FC<HistoryPageProps> = ({ config = historyConfig
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Stack gap="xs">
             <Text as="h1" variant="h1">

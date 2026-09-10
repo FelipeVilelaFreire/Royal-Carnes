@@ -1,0 +1,64 @@
+.fieldGrid {
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--ui-spacing-md);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+  width: 100%;
+}
+
+.fieldGrid[data-columns="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.fieldGrid[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fieldGrid[data-columns="4"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.fieldGrid[data-columns="auto"] {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--ui-spacing-lg) * 12)), 1fr));
+}
+
+.fieldGrid[data-gap="xs"],
+.fieldGrid[data-gap="sm"] {
+  gap: var(--ui-spacing-sm);
+}
+
+.fieldGrid[data-gap="lg"] {
+  gap: var(--ui-spacing-lg);
+}
+
+.fieldGrid[data-density="compact"] {
+  row-gap: var(--ui-spacing-sm);
+}
+
+.fieldGrid[data-density="comfortable"] {
+  row-gap: var(--ui-spacing-lg);
+}
+
+.fieldGridItem {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.fieldGridItem[data-span="2"],
+.fieldGridItem[data-span="3"],
+.fieldGridItem[data-span="4"] {
+  grid-column: span 2;
+}
+
+.fieldGridItem[data-span="3"] {
+  grid-column: span 3;
+}
+
+.fieldGridItem[data-span="4"] {
+  grid-column: span 4;
+}
+
+.fieldGridItem[data-span="full"] {
+  grid-column: 1 / -1;
+}

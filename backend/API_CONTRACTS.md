@@ -393,6 +393,12 @@ code sequences
 delivery status definitions
 ```
 
+Payments aplica:
+
+```text
+pagamentos demo vinculados a customer, subscription e order
+```
+
 Status:
 
 ```text
@@ -1114,6 +1120,12 @@ Response inclui:
   "code": "RP-000001",
   "kind_key": "delivery",
   "status_key": "received",
+  "subscription_id": null,
+  "subscription_plan_key": null,
+  "subscription_plan_name": null,
+  "subscription_cycle_id": null,
+  "subscription_cycle_number": null,
+  "subscription_cycle_status": null,
   "total_cents": 8990,
   "items": [],
   "status_history": []
@@ -1126,6 +1138,14 @@ Kinds seedados no RoyalPrime:
 delivery -> Royal Delivery, commercial mode delivery
 subscription-cycle -> ciclo de assinatura, commercial mode subscription
 royal-box -> Royal Box, commercial mode box
+```
+
+Regra para `subscription-cycle`:
+
+```text
+pedido recorrente exige subscription_id e subscription_cycle_id coerentes
+subscription precisa pertencer ao mesmo customer e organization
+subscription_cycle precisa pertencer a subscription informada
 ```
 
 ### GET /api/v1/orders/me/:id/
@@ -1208,6 +1228,11 @@ order_reference_not_found
 order_status_not_found
 order_status_transition_not_allowed
 order_status_terminal
+subscription_customer_mismatch
+subscription_cycle_mismatch
+subscription_required_for_cycle
+subscription_required_for_order
+subscription_cycle_required_for_order
 inventory_item_not_found
 reserved_exceeds_available
 ```
@@ -1324,6 +1349,106 @@ Scheduling:
 fora da Fase 5 atual.
 Entrega recorrente, janela de entrega, capacidade e calendario ficam para kit
 futuro de Delivery Scheduling.
+```
+
+## Payments
+
+### GET /api/v1/payments/admin/payments/
+
+Objetivo:
+
+```text
+listar pagamentos da request.organization para operacao financeira/admin
+```
+
+Permissao:
+
+```text
+payments.markPaid
+```
+
+Response inclui:
+
+```json
+{
+  "id": 1,
+  "reference": "PAY-RP-2026-09-PRO",
+  "customer_id": 1,
+  "customer_name": "Cliente RoyalPrime",
+  "subscription_id": 1,
+  "subscription_plan_name": "Pro",
+  "order_id": 1,
+  "order_code": "RP-000001",
+  "status": "paid",
+  "currency": "BRL",
+  "amount_cents": 44900,
+  "due_at": "2026-09-05T15:00:00Z",
+  "paid_at": "2026-09-04T19:40:00Z",
+  "notes": "",
+  "metadata": {},
+  "created_at": "2026-09-10T00:00:00Z",
+  "updated_at": "2026-09-10T00:00:00Z"
+}
+```
+
+### POST /api/v1/payments/admin/payments/
+
+Objetivo:
+
+```text
+criar cobranca manual vinculada a cliente e opcionalmente a assinatura/pedido
+```
+
+Request:
+
+```json
+{
+  "reference": "PAY-MANUAL-001",
+  "customer_id": 1,
+  "subscription_id": 1,
+  "order_id": 1,
+  "status": "pending",
+  "currency": "BRL",
+  "amount_cents": 44900,
+  "due_at": "2026-09-12T15:00:00Z",
+  "paid_at": null,
+  "notes": "Cobranca manual",
+  "metadata": {}
+}
+```
+
+Regra:
+
+```text
+customer, subscription e order precisam pertencer a mesma organization
+subscription, quando informada, precisa pertencer ao customer
+order, quando informado, precisa pertencer ao customer
+se order ja tiver subscription, ela precisa bater com subscription_id informado
+status paid sem paid_at grava paid_at automaticamente no backend
+```
+
+Erros principais:
+
+```text
+payment_reference_not_found
+payment_subscription_order_mismatch
+```
+
+### GET /api/v1/payments/admin/payments/:id/
+
+Objetivo:
+
+```text
+detalhar pagamento da request.organization
+```
+
+### PATCH /api/v1/payments/admin/payments/:id/
+
+Objetivo:
+
+```text
+editar dados financeiros do pagamento, incluindo status, valor, vencimento,
+data de pagamento e notas
 ```
 
 ## Regra De Evolucao

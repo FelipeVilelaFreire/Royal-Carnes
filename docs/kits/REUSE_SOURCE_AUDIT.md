@@ -239,7 +239,7 @@ promover Foundation/AppShell antes do produto provar necessidade
 | Kit 04 Inventory | RoyalPrime backend atual, Syrax admin patterns | estoque admin, ajustes, status visual, permissoes | nao copiar dominio externo |
 | Kit 05 Orders & Deliveries | RoyalPrime backend atual, Syrax admin screens | pedidos, timeline, delivery, transicoes, detalhes | alinhar contratos primeiro |
 | Kit futuro Scheduling | ServiceOS appointments, HobbyMap agenda docs | calendario, recorrencia, slots, capacidade | planejar separado depois |
-| Kit futuro Payments | HobbyMap payments docs, Syrax business-model | pagamento manual/gateway, status, conciliacao | depois de orders/admin firmes |
+| Kit 07 Payments | HobbyMap payments docs, Syrax business-model | pagamento manual agora; gateway, status e conciliacao depois | backend/admin foundation ja nasceu |
 | Kit futuro Notifications | HobbyMap notification patterns | notification DTO, bell, toast, read/unread | nao iniciar agora |
 
 ## Como Usar Este Audit
@@ -268,7 +268,7 @@ Kit 01 Auth & Users
 Kit 02 Catalog
 Kit 03 Subscriptions
 Kit 05 Orders & Deliveries
-Kit futuro Payments
+Kit 07 Payments
 ```
 
 O que muda:

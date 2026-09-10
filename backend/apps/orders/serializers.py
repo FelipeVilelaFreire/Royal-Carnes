@@ -81,6 +81,12 @@ class OrderSerializer(serializers.ModelSerializer):
     customer_id = serializers.IntegerField(source="customer.id", read_only=True)
     customer_name = serializers.CharField(source="customer.name", read_only=True)
     address_id = serializers.IntegerField(source="address.id", read_only=True, allow_null=True)
+    subscription_plan_key = serializers.CharField(source="subscription.plan.key", read_only=True, allow_null=True)
+    subscription_plan_name = serializers.CharField(source="subscription.plan.name", read_only=True, allow_null=True)
+    subscription_cycle_number = serializers.IntegerField(source="subscription_cycle.cycle_number", read_only=True, allow_null=True)
+    subscription_cycle_status = serializers.CharField(source="subscription_cycle.status", read_only=True, allow_null=True)
+    subscription_cycle_starts_at = serializers.DateTimeField(source="subscription_cycle.starts_at", read_only=True, allow_null=True)
+    subscription_cycle_ends_at = serializers.DateTimeField(source="subscription_cycle.ends_at", read_only=True, allow_null=True)
     items = OrderItemSerializer(many=True, read_only=True)
     status_history = OrderStatusHistorySerializer(many=True, read_only=True)
 
@@ -95,7 +101,13 @@ class OrderSerializer(serializers.ModelSerializer):
             "customer_name",
             "address_id",
             "subscription_id",
+            "subscription_plan_key",
+            "subscription_plan_name",
             "subscription_cycle_id",
+            "subscription_cycle_number",
+            "subscription_cycle_status",
+            "subscription_cycle_starts_at",
+            "subscription_cycle_ends_at",
             "currency",
             "subtotal_cents",
             "discount_cents",

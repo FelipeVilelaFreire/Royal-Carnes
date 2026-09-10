@@ -4,6 +4,12 @@ import type {
   AdminOrderTransitionInput,
   AdminOrderView,
 } from "../contracts/orders.contract";
+import type {
+  AdminDeliveryConfigView,
+  AdminDeliveryView,
+} from "../contracts/deliveries.contract";
+import type { AdminPaymentView } from "../contracts/payments.contract";
+import { createAdminPaymentRowViewModel } from "./payments.view-model";
 
 export interface AdminOrderRowViewModel {
   id: string | number;
@@ -11,10 +17,40 @@ export interface AdminOrderRowViewModel {
   customerName: string;
   kindKey: string;
   kindLabel: string;
+  recurrenceLabel: string;
+  deliveryStatusLabel: string;
+  deliveryCode: string;
+  paymentStatusLabelKey: string;
+  paymentReference: string;
+  subscriptionCycleLabel: string;
+  subscriptionCycleStatus: string;
+  subscriptionId: string | number | null;
+  subscriptionCycleId: string | number | null;
   statusKey: string;
   statusLabel: string;
+  statusLabelKey: string;
   totalLabel: string;
+  totalFormatted: string;
+  summary: string;
   itemCount: number;
+  items: AdminOrderView["items"];
+  deliveries: Array<{
+    id: string | number;
+    code: string;
+    statusLabel: string;
+    address: string;
+    confirmationCode: string;
+    notes: string;
+  }>;
+  payments: Array<{
+    id: string | number;
+    reference: string;
+    statusLabelKey: string;
+    amountLabel: string;
+    dueAt: string | null;
+    paidAt: string | null;
+  }>;
+  statusHistory: AdminOrderView["statusHistory"];
   createdAt: string;
 }
 
@@ -54,20 +90,91 @@ function resolveStatusLabel(config: AdminOrderConfigView | null, statusKey: stri
   return config?.statuses.find((status) => status.key === statusKey)?.label || statusKey;
 }
 
+function resolveDeliveryStatusLabel(
+  config: AdminDeliveryConfigView | null,
+  statusKey: string,
+): string {
+  return config?.statuses.find((status) => status.key === statusKey)?.label || statusKey;
+}
+
+function formatAddressSnapshot(snapshot: Record<string, unknown>): string {
+  const addressParts = [
+    snapshot.street,
+    snapshot.number,
+    snapshot.neighborhood,
+    snapshot.city,
+    snapshot.state,
+    snapshot.zipCode || snapshot.zip_code,
+  ];
+  return addressParts.map((part) => String(part || "").trim()).filter(Boolean).join(", ");
+}
+
 export function createAdminOrderRowViewModel(
   order: AdminOrderView,
   config: AdminOrderConfigView | null = null,
+  deliveries: AdminDeliveryView[] = [],
+  deliveryConfig: AdminDeliveryConfigView | null = null,
+  payments: AdminPaymentView[] = [],
 ): AdminOrderRowViewModel {
+  const relatedDeliveries = deliveries.filter((delivery) => String(delivery.orderId) === String(order.id));
+  const relatedPayments = payments.filter((payment) => String(payment.orderId || "") === String(order.id));
+  const primaryDelivery = relatedDeliveries[0] || null;
+  const primaryPayment = relatedPayments[0] || null;
+  const paymentRow = primaryPayment ? createAdminPaymentRowViewModel(primaryPayment) : null;
+  const isSubscriptionCycle = Boolean(order.subscriptionId || order.subscriptionCycleId);
+  const subscriptionCycleLabel = order.subscriptionCycleNumber
+    ? String(order.subscriptionCycleNumber)
+    : "";
+  const recurrenceLabel = isSubscriptionCycle
+    ? [order.subscriptionPlanName, subscriptionCycleLabel].filter(Boolean).join(" - ")
+    : "";
+  const totalLabel = formatMoney(order.totalCents, order.currency);
+
   return {
     id: order.id,
     code: order.code,
     customerName: order.customerName,
     kindKey: order.kindKey,
     kindLabel: resolveKindLabel(config, order.kindKey),
+    recurrenceLabel,
+    deliveryCode: primaryDelivery?.code || "",
+    deliveryStatusLabel: primaryDelivery
+      ? resolveDeliveryStatusLabel(deliveryConfig, primaryDelivery.statusKey)
+      : "",
+    paymentReference: primaryPayment?.reference || "",
+    paymentStatusLabelKey: paymentRow?.statusLabelKey || "",
+    subscriptionCycleLabel,
+    subscriptionCycleStatus: order.subscriptionCycleStatus || "",
+    subscriptionId: order.subscriptionId ?? null,
+    subscriptionCycleId: order.subscriptionCycleId ?? null,
     statusKey: order.statusKey,
     statusLabel: resolveStatusLabel(config, order.statusKey),
-    totalLabel: formatMoney(order.totalCents, order.currency),
+    statusLabelKey: `common.status${order.statusKey.charAt(0).toUpperCase()}${order.statusKey.slice(1)}`,
+    totalLabel,
+    totalFormatted: totalLabel,
+    summary: order.items.map((item) => `${item.nameSnapshot} x ${item.quantity}`).join(", "),
     itemCount: order.items.length,
+    items: order.items,
+    deliveries: relatedDeliveries.map((delivery) => ({
+      id: delivery.id,
+      code: delivery.code,
+      statusLabel: resolveDeliveryStatusLabel(deliveryConfig, delivery.statusKey),
+      address: formatAddressSnapshot(delivery.addressSnapshot),
+      confirmationCode: delivery.confirmationCode,
+      notes: delivery.notes,
+    })),
+    payments: relatedPayments.map((payment) => {
+      const row = createAdminPaymentRowViewModel(payment);
+      return {
+        id: row.id,
+        reference: row.reference,
+        statusLabelKey: row.statusLabelKey,
+        amountLabel: row.amountLabel,
+        dueAt: row.dueAt,
+        paidAt: row.paidAt,
+      };
+    }),
+    statusHistory: order.statusHistory,
     createdAt: order.createdAt,
   };
 }
@@ -75,9 +182,14 @@ export function createAdminOrderRowViewModel(
 export function createAdminOrdersViewModel(
   orders: AdminOrderView[],
   config: AdminOrderConfigView | null = null,
+  deliveries: AdminDeliveryView[] = [],
+  deliveryConfig: AdminDeliveryConfigView | null = null,
+  payments: AdminPaymentView[] = [],
 ): AdminOrdersViewModel {
   return {
-    orders: orders.map((order) => createAdminOrderRowViewModel(order, config)),
+    orders: orders.map((order) =>
+      createAdminOrderRowViewModel(order, config, deliveries, deliveryConfig, payments),
+    ),
     totals: {
       orders: orders.length,
       byStatus: orders.reduce<Record<string, number>>((acc, order) => {

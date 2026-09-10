@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from apps.accounts.permissions import require_organization_permission
 from apps.core.tenant import get_request_organization
 from apps.customers.models import Address, Customer
+from apps.organizations.models import OrganizationSettings
 from apps.subscriptions.models import Subscription, SubscriptionCycle
 
 from .models import OrderKindDefinition
@@ -56,10 +57,15 @@ def _resolve_order_refs(organization, customer, data):
 @api_view(["GET"])
 def order_config(request):
     organization = get_request_organization(request)
+    checkout_setting = OrganizationSettings.objects.filter(
+        organization=organization,
+        key="client-checkout",
+    ).first()
     return Response(
         {
             "kinds": OrderKindSerializer(order_kinds_for_organization(organization), many=True).data,
             "statuses": OrderStatusSerializer(order_statuses_for_organization(organization), many=True).data,
+            "checkout": checkout_setting.value if checkout_setting else {},
         }
     )
 

@@ -1,6 +1,6 @@
 export type ClientCheckoutProductKind = "meat" | "seasoning" | "charcoal" | "utensil" | "kit";
 export type ClientCheckoutProductExperience = "subscription" | "royalBox" | "royalDelivery";
-export type ClientCheckoutSubscriptionTier = "basic" | "premium" | "pro";
+export type ClientCheckoutSubscriptionTier = string;
 export type ClientCheckoutBillingMode = "monthly" | "annual" | "oneTime";
 export type ClientCheckoutStockStatus = "available" | "limited" | "unavailable";
 export type ClientCheckoutShippingPolicy = "included" | "calculated" | "customerChoice";

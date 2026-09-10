@@ -3,6 +3,7 @@ from pathlib import Path
 
 import dj_database_url
 from decouple import Csv, config
+from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -149,6 +150,7 @@ CORS_ALLOWED_ORIGINS = config(
     cast=Csv(),
 )
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [*default_headers, "x-organization-slug"]
 
 ROYALPRIME_DEFAULT_ORGANIZATION = {
     "slug": config("ROYALPRIME_DEFAULT_ORGANIZATION_SLUG", default="royalprime"),

@@ -13,7 +13,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
   const strings = useClientStrings().meusPedidos;
   const mobileConfig = createMobileAppShellConfig(themeMode) as any;
   const theme = mobileConfig.theme;
-  const orders = useClientOrders({ fallbackOnError: true });
+  const orders = useClientOrders();
   const rows = orders.viewModel.orders;
   const [selectedOrderId, setSelectedOrderId] = useState<string | number | null>(null);
   const selectedOrder = useMemo(

@@ -177,7 +177,10 @@ frontend/admin/shared-core/hooks/useAdminProductDetail.ts
 frontend/admin/shared-core/hooks/useAdminProductForm.ts
 frontend/admin/shared-core/mappers/catalog.mapper.ts
 frontend/admin/shared-core/view-models/catalog.view-model.ts
-frontend/admin/shared-core/kits/catalog/
+frontend/admin/shared-core/manifest/pages/produtos.config.jsx
+frontend/admin/shared-core/manifest/pages/categorias.config.jsx
+frontend/admin/shared-core/manifest/pages/colecoes.config.jsx
+docs/kits/admin/catalog-kit.md
 ```
 
 Responsabilidades:

@@ -73,7 +73,13 @@ export interface AdminOrderDto {
   customer_name: string;
   address_id?: string | number | null;
   subscription_id?: string | number | null;
+  subscription_plan_key?: string | null;
+  subscription_plan_name?: string | null;
   subscription_cycle_id?: string | number | null;
+  subscription_cycle_number?: number | null;
+  subscription_cycle_status?: string | null;
+  subscription_cycle_starts_at?: string | null;
+  subscription_cycle_ends_at?: string | null;
   currency: string;
   subtotal_cents: number;
   discount_cents: number;

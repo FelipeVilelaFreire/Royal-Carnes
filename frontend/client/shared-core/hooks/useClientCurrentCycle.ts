@@ -8,25 +8,23 @@ import type {
   ClientCycleItemSelectionInput,
   ClientSubscriptionCycleView,
 } from "../contracts/subscriptions.contract";
-import { subscriptionsFallbackDataSource } from "../data-sources/subscriptions.fallback";
 import { createClientCycleViewModel } from "../view-models/subscriptions.view-model";
 
 type ClientSubscriptionsApi = ReturnType<typeof createClientSubscriptionsApi>;
 
 export interface UseClientCurrentCycleOptions {
   api?: ClientSubscriptionsApi;
-  fallbackOnError?: boolean;
   initialCycle?: ClientSubscriptionCycleView | null;
 }
 
 export function useClientCurrentCycle(options: UseClientCurrentCycleOptions = {}) {
   const api = options.api || clientSubscriptionsApi;
   const [cycle, setCycle] = useState<ClientSubscriptionCycleView | null>(
-    options.initialCycle || subscriptionsFallbackDataSource.cycle,
+    options.initialCycle || null,
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
-  const [source, setSource] = useState<"api" | "fallback">("fallback");
+  const [source, setSource] = useState<"api">("api");
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -39,16 +37,11 @@ export function useClientCurrentCycle(options: UseClientCurrentCycleOptions = {}
     } catch (err) {
       const normalized = normalizeApiError(err);
       setError(normalized);
-      if (options.fallbackOnError !== false) {
-        setCycle(subscriptionsFallbackDataSource.cycle);
-        setSource("fallback");
-        return subscriptionsFallbackDataSource.cycle;
-      }
       throw err;
     } finally {
       setIsLoading(false);
     }
-  }, [api, options.fallbackOnError]);
+  }, [api]);
 
   const selectItem = useCallback(
     async (input: ClientCycleItemSelectionInput) => {

@@ -51,7 +51,7 @@ export const ListPage: React.FC<ListPageProps> = ({
 }) => {
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Inline align="start" justify="between" wrap>
             <Stack className={styles.heading} gap="xs">

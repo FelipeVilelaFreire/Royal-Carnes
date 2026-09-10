@@ -88,7 +88,7 @@ export const clientPtBR = {
     description: "Esta área guarda suas escolhas, pedidos, endereços e preferências Royal Prime.",
     action: "Ver cortes"
   },
-  authModal: {
+  accessShell: {
     close: "Fechar",
     tabs: {
       login: "Entrar",
@@ -125,17 +125,6 @@ export const clientPtBR = {
       }
     },
     registerHint: "A conta libera pedidos, caixa e acompanhamento.",
-    providers: [
-      { key: "google", label: "Continuar com Google", shortLabel: "Google" },
-      { key: "facebook", label: "Continuar com Facebook", shortLabel: "Facebook" },
-      { key: "apple", label: "Continuar com Apple", shortLabel: "Apple" }
-    ],
-    demo: {
-      email: "centauroadmin@gmail.com",
-      password: "royalprime",
-      hint: "Acesso principal do MVP."
-    },
-    separator: "ou",
     fields: {
       name: "Nome completo",
       email: "E-mail",
@@ -147,7 +136,8 @@ export const clientPtBR = {
       password: "Sua senha"
     },
     forgotPassword: "Esqueci minha senha",
-    legal: "Este MVP simula o acesso para validar a experiencia do cliente. Nenhuma cobranca real e processada aqui."
+    error: "Nao foi possivel acessar a conta. Confira os dados e tente novamente.",
+    legal: "O acesso protege sua conta, pedidos, caixa e preferencias."
   },
   royalDelivery: {
     emptyTitle: "Royal Delivery",
@@ -723,6 +713,12 @@ export const clientPtBR = {
       resultSuffix: "produtos disponíveis",
       originLabel: "Origem",
       defaultLineLabel: "Catalogo Royal",
+      allCategoriesLabel: "Todos",
+      loadingTitle: "Carregando catalogo",
+      loadingDescription: "Buscando os produtos disponiveis agora.",
+      errorTitle: "Nao foi possivel carregar o catalogo",
+      errorDescription: "Confira sua conexao e tente novamente.",
+      retry: "Tentar novamente",
       emptyTitle: "Nenhum produto encontrado",
       emptyDescription: "Ajuste a busca ou escolha outra categoria para continuar explorando o catalogo.",
       clearFilters: "Limpar filtros"

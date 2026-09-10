@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ClientOrderCreateInput } from "../contracts/orders.contract";
 import type {
   ClientCheckoutAddress,
@@ -6,12 +6,18 @@ import type {
   ClientCheckoutPaymentMethodKey,
   ClientCheckoutProduct,
   ClientCheckoutProductExperience,
+  ClientCheckoutSubscriptionPlan,
   ClientCheckoutSubscriptionTier,
 } from "../contracts/checkout.contract";
 import { clientCheckoutConfig, type ClientCheckoutStepKey } from "../manifest/checkout.config";
-import { checkoutFallbackDataSource } from "../data-sources/checkout.fallback";
 import { createClientCheckoutViewModel } from "../view-models/checkout.view-model";
+import { mapCheckoutCatalog } from "../mappers/checkout-catalog.mapper";
 import { useClientOrders } from "./useClientOrders";
+import { createClientOrdersApi } from "../api/orders.api";
+import { createClientCustomerApi } from "../api/customer.api";
+import { useClientCatalog } from "./useClientCatalog";
+import { useClientApiConfig } from "../runtime/ClientApiProvider";
+import { createClientSubscriptionsApi } from "../api/subscriptions.api";
 
 export interface UseClientCheckoutOptions {
   isAuthenticated?: boolean;
@@ -35,10 +41,94 @@ const createEmptyAddressDraft = (): NewAddressDraft => ({
   zipCode: "",
 });
 
+const asNumber = (value: string | number | undefined) => Number(value || 0);
+const constraintNumber = (constraints: Record<string, unknown>, key: string) =>
+  typeof constraints[key] === "number" ? constraints[key] as number : 0;
+
+const mapPlan = (plan: Awaited<ReturnType<ReturnType<typeof createClientSubscriptionsApi>["listPlans"]>>[number]): ClientCheckoutSubscriptionPlan => {
+  const monthly = plan.prices.find((price) => price.billingInterval === "month") || plan.prices[0];
+  const entitlements = plan.entitlements || [];
+  const cuts = entitlements.filter((item) => item.measurementUnitKey === "kg");
+  const charcoal = entitlements.filter((item) => (item.targetKey || "").toLowerCase().includes("carvao"));
+  return {
+    id: String(plan.id), key: plan.key, name: plan.name, subtitle: plan.description || "",
+    monthlyPrice: (monthly?.amountCents || 0) / 100, annualMonthlyPrice: (monthly?.amountCents || 0) / 100,
+    billingModes: ["monthly"],
+    productSelectionLimit: cuts.reduce((total, item) => total + constraintNumber(item.constraints || {}, "maxSelections"), 0),
+    proteinKgLimit: cuts.reduce((total, item) => total + asNumber(item.quantity), 0),
+    allowedPlanTiers: [plan.key], includedCharcoalPackages: charcoal.reduce((total, item) => total + asNumber(item.quantity), 0),
+    charcoalKgLimit: 0, seasoningSelectionLimit: 0, sideSelectionLimit: 0, utensilSelectionLimit: 0,
+    includesUtensilProductIds: [], shipping: "calculated", description: plan.description || "",
+    features: entitlements.map((item) => item.targetName || item.targetKey || item.key),
+  };
+};
+
+const mapCheckoutAddress = (address: {
+  id: string;
+  label?: string | null;
+  recipient_name?: string | null;
+  postal_code?: string | null;
+  street?: string | null;
+  number?: string | null;
+  complement?: string | null;
+  district?: string | null;
+  city?: string | null;
+  state?: string | null;
+  is_default?: boolean | null;
+}): ClientCheckoutAddress => ({
+  id: String(address.id),
+  label: address.label || "",
+  recipientName: address.recipient_name || "",
+  streetLine: [address.street, address.number, address.complement].filter(Boolean).join(", "),
+  neighborhoodLine: [address.district, address.city, address.state].filter(Boolean).join(" - "),
+  zipCode: address.postal_code || "",
+  isPrimary: Boolean(address.is_default),
+});
+
 export function useClientCheckout({ isAuthenticated = false }: UseClientCheckoutOptions = {}) {
-  const orders = useClientOrders();
-  const dataSource = checkoutFallbackDataSource;
-  const [addresses, setAddresses] = useState<ClientCheckoutAddress[]>(dataSource.customer.addresses);
+  const apiConfig = useClientApiConfig();
+  const catalog = useClientCatalog({ apiConfig });
+  const customerApi = useMemo(() => createClientCustomerApi(apiConfig), [apiConfig]);
+  const subscriptionsApi = useMemo(() => createClientSubscriptionsApi(apiConfig), [apiConfig]);
+  const orders = useClientOrders({ api: useMemo(() => createClientOrdersApi(apiConfig), [apiConfig]) });
+  const checkoutCatalog = useMemo(() => mapCheckoutCatalog(catalog.snapshot.products), [catalog.snapshot.products]);
+  const [plans, setPlans] = useState<ClientCheckoutSubscriptionPlan[]>([]);
+  const [activeSubscription, setActiveSubscription] = useState<{ id: string; planKey: ClientCheckoutSubscriptionTier; nextBillingLabel: string; nextDeliveryLabel: string }>();
+  const [activeCycle, setActiveCycle] = useState<any>(null);
+
+  useEffect(() => {
+    void catalog.load().catch(() => undefined);
+    void orders.loadConfig().catch(() => undefined);
+    void Promise.all([
+      subscriptionsApi.listPlans(),
+      isAuthenticated ? subscriptionsApi.me() : Promise.resolve(null),
+      isAuthenticated ? subscriptionsApi.currentCycle() : Promise.resolve(null),
+    ]).then(([nextPlans, subscription, cycle]) => {
+      setPlans(nextPlans.map(mapPlan));
+      setActiveSubscription(subscription ? {
+        id: String(subscription.id), planKey: subscription.plan.key,
+        nextBillingLabel: subscription.currentCycleEndsAt || "", nextDeliveryLabel: subscription.currentCycleEndsAt || "",
+      } : undefined);
+      const selectedPlan = subscription ? nextPlans.find((plan) => plan.key === subscription.plan.key) : undefined;
+      const selectedPlanLimits = selectedPlan ? mapPlan(selectedPlan) : null;
+      setActiveCycle(cycle ? {
+        id: String(cycle.id), cutsUsed: cycle.items.length, cutsLimit: selectedPlanLimits?.productSelectionLimit || 0,
+        weightKgUsed: cycle.items.reduce((total, item) => total + asNumber(item.quantity), 0), weightKgLimit: selectedPlanLimits?.proteinKgLimit || 0,
+        charcoalKgUsed: 0, charcoalKgLimit: selectedPlanLimits?.charcoalKgLimit || 0,
+        seasoningsUsed: 0, seasoningsLimit: 0, sidesUsed: 0, sidesLimit: 0, utensilsUsed: 0, utensilsLimit: 0,
+      } : null);
+    }).catch(() => undefined);
+  }, [catalog.load, isAuthenticated, orders.loadConfig, subscriptionsApi]);
+  const serverCheckout = orders.config?.checkout;
+  const freightOptions = useMemo(
+    () => (serverCheckout?.freightOptions || []).map(({ priceCents, ...option }) => ({ ...option, price: priceCents / 100 })),
+    [serverCheckout?.freightOptions],
+  );
+  const freightPolicies = useMemo(
+    () => ({ subscription: { price: 0 }, royalBox: { price: 0 }, royalDelivery: { price: 0 }, ...Object.fromEntries(Object.entries(serverCheckout?.freightPolicies || {}).map(([mode, policy]) => [mode, { ...policy, price: policy.priceCents / 100 }])) }) as Record<ClientCheckoutProductExperience, { price: number; defaultOptionKey?: ClientCheckoutFreightOptionKey }>,
+    [serverCheckout?.freightPolicies],
+  );
+  const [addresses, setAddresses] = useState<ClientCheckoutAddress[]>([]);
   const [selectedMode, setSelectedMode] = useState<ClientCheckoutProductExperience | null>(clientCheckoutConfig.defaultMode);
   const [selectedPlanKey, setSelectedPlanKey] = useState<ClientCheckoutSubscriptionTier>(
     clientCheckoutConfig.defaultPlanKey as ClientCheckoutSubscriptionTier,
@@ -61,34 +151,32 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
   );
   const [newAddressDraft, setNewAddressDraft] = useState(createEmptyAddressDraft);
 
-  const activeSubscription = isAuthenticated ? dataSource.customer.activeSubscription : undefined;
-  const activeSubscriptionOrder = activeSubscription
-    ? dataSource.customerOrders.find((order) =>
-        order.customerId === dataSource.customer.id &&
-        order.subscriptionId === activeSubscription.id &&
-        order.kind === "subscriptionCycle" &&
-        order.status !== "delivered" &&
-        order.status !== "cancelled"
-      )
-    : undefined;
-  const activeCycleUsage = activeSubscriptionOrder?.cycleUsage || null;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setAddresses([]);
+      return;
+    }
+    void customerApi.me().then((customer) => {
+      const nextAddresses = (customer.addresses || []).map(mapCheckoutAddress);
+      setAddresses(nextAddresses);
+      setSelectedAddressId(nextAddresses.find((address) => address.isPrimary)?.id || nextAddresses[0]?.id || "");
+    }).catch(() => undefined);
+  }, [customerApi, isAuthenticated]);
 
-  const labeledFreightOptions = useMemo(
-    () => dataSource.freightOptions.map((option) => ({ ...option })),
-    [],
-  );
+  const activeCycleUsage = activeCycle;
+
   const viewModel = useMemo(
     () => createClientCheckoutViewModel({
       activeCycleUsage,
       activeSubscription,
       addresses,
-      categories: dataSource.productCategories,
+      categories: checkoutCatalog.categories,
       config: clientCheckoutConfig,
-      freightOptions: labeledFreightOptions,
-      freightPolicies: dataSource.freightPolicies,
-      paymentMethods: dataSource.paymentMethods,
-      plans: dataSource.subscriptionPlans,
-      products: dataSource.products,
+      freightOptions,
+      freightPolicies,
+      paymentMethods: serverCheckout?.paymentMethods || [],
+      plans,
+      products: checkoutCatalog.products,
       query,
       selectedAddressId,
       selectedCategoryId,
@@ -102,9 +190,12 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
     }),
     [
       activeCycleUsage,
+      activeCycle,
       activeSubscription,
       addresses,
-      labeledFreightOptions,
+      checkoutCatalog,
+      freightOptions,
+      freightPolicies,
       query,
       selectedAddressId,
       selectedCategoryId,
@@ -169,29 +260,25 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
     setNewAddressDraft((current) => ({ ...current, [field]: value }));
   }, []);
 
-  const submitNewAddress = useCallback((labelPrefix: string) => {
-    const nextIndex = addresses.length + 1;
-    const streetParts = [newAddressDraft.street, newAddressDraft.number, newAddressDraft.complement]
-      .map((part) => part.trim())
-      .filter(Boolean);
-    const neighborhoodParts = [newAddressDraft.neighborhood, newAddressDraft.city]
-      .map((part) => part.trim())
-      .filter(Boolean);
-    const nextAddress: ClientCheckoutAddress = {
-      id: `address-draft-${Date.now()}`,
-      label: `${labelPrefix} ${nextIndex}`,
-      recipientName: dataSource.customer.name,
-      streetLine: streetParts.join(", ") || newAddressDraft.street.trim() || dataSource.customer.addresses[0]?.streetLine || "",
-      neighborhoodLine: neighborhoodParts.join(" - ") || dataSource.customer.addresses[0]?.neighborhoodLine || "",
-      zipCode: newAddressDraft.zipCode.trim() || dataSource.customer.addresses[0]?.zipCode || "",
-      phone: dataSource.customer.phone,
-    };
+  const submitNewAddress = useCallback(async (labelPrefix: string) => {
+    const createdAddress = await customerApi.createAddress({
+      label: `${labelPrefix} ${addresses.length + 1}`,
+      postal_code: newAddressDraft.zipCode.trim(),
+      street: newAddressDraft.street.trim(),
+      number: newAddressDraft.number.trim(),
+      complement: newAddressDraft.complement.trim(),
+      district: newAddressDraft.neighborhood.trim(),
+      city: newAddressDraft.city.trim(),
+      state: "",
+      is_default: addresses.length === 0,
+    });
+    const nextAddress = mapCheckoutAddress(createdAddress);
     setAddresses((current) => [...current, nextAddress]);
     setSelectedAddressId(nextAddress.id);
     setNewAddressDraft(createEmptyAddressDraft());
     setIsAddingAddress(false);
     return nextAddress;
-  }, [addresses.length, newAddressDraft]);
+  }, [addresses.length, customerApi, newAddressDraft]);
 
   const buildOrderInput = useCallback((): ClientOrderCreateInput | null => {
     if (!selectedMode || viewModel.selectedProductEntries.length === 0) {
@@ -205,7 +292,7 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
       kindKey,
       addressId: viewModel.selectedAddress?.id || null,
       subscriptionId: activeSubscription?.id || null,
-      subscriptionCycleId: activeSubscriptionOrder?.id || null,
+      subscriptionCycleId: activeCycle?.id || null,
       notes: "",
       items: viewModel.selectedProductEntries.map(({ product, quantity }) => ({
         productKey: product.sku || product.id,
@@ -214,7 +301,7 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
         sourceKey: product.id,
       })),
     };
-  }, [activeSubscription, activeSubscriptionOrder, selectedMode, viewModel]);
+  }, [activeCycle, activeSubscription, selectedMode, viewModel]);
 
   const submitOrder = useCallback(async () => {
     const input = buildOrderInput();
@@ -227,23 +314,22 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
   return {
     activeCycleUsage,
     activeSubscription,
-    activeSubscriptionOrder,
     addresses,
-    catalogSubscriptionPlans: dataSource.subscriptionPlans,
+    catalogSubscriptionPlans: plans,
     config: clientCheckoutConfig,
     currentStep,
     filterModalOpen,
-    freightOptions: labeledFreightOptions,
-    freightPolicies: dataSource.freightPolicies,
+    freightOptions,
+    freightPolicies,
     isAddingAddress,
     orderCreateState: {
       error: orders.error,
       isLoading: orders.isLoading,
     },
-    paymentInstallments: dataSource.paymentInstallments,
-    paymentMethods: dataSource.paymentMethods,
-    productCategories: dataSource.productCategories,
-    products: dataSource.products,
+    paymentInstallments: serverCheckout?.paymentInstallments || [],
+    paymentMethods: serverCheckout?.paymentMethods || [],
+    productCategories: checkoutCatalog.categories,
+    products: checkoutCatalog.products,
     query,
     selectedAddressId,
     newAddressDraft,
@@ -255,7 +341,7 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
     selectedPaymentMethod,
     selectedPlanKey,
     selectedProductQuantities,
-    source: "fallback" as const,
+    source: "api" as const,
     viewModel,
     actions: {
       addProduct,

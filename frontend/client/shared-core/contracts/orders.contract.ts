@@ -7,6 +7,19 @@ import type {
   OrderStatusBase,
   OrderStatusHistoryBase,
 } from "../../../shared-core";
+import type {
+  ClientCheckoutFreightOption,
+  ClientCheckoutPaymentMethod,
+  ClientCheckoutProductExperience,
+} from "./checkout.contract";
+
+export interface ClientCheckoutServerConfig {
+  deliveryDays: number[];
+  freightOptions: Array<Omit<ClientCheckoutFreightOption, "price"> & { priceCents: number }>;
+  freightPolicies: Record<ClientCheckoutProductExperience, { priceCents: number; defaultOptionKey?: string }>;
+  paymentMethods: ClientCheckoutPaymentMethod[];
+  paymentInstallments: number[];
+}
 
 export interface ClientOrderKindDto {
   id: string | number;
@@ -37,6 +50,7 @@ export interface ClientOrderStatusDto {
 export interface ClientOrderConfigDto {
   kinds: ClientOrderKindDto[];
   statuses: ClientOrderStatusDto[];
+  checkout?: ClientCheckoutServerConfig;
 }
 
 export interface ClientOrderItemDto {
@@ -106,7 +120,9 @@ export interface ClientOrderCreateDto {
 
 export type ClientOrderKindView = OrderKindBase;
 export type ClientOrderStatusView = OrderStatusBase;
-export type ClientOrderConfigView = OrderConfigBase;
+export interface ClientOrderConfigView extends OrderConfigBase {
+  checkout?: ClientCheckoutServerConfig;
+}
 export type ClientOrderItemView = OrderItemBase;
 export type ClientOrderStatusHistoryView = OrderStatusHistoryBase;
 export type ClientOrderView = OrderBase;

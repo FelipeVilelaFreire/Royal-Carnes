@@ -76,7 +76,13 @@ export interface OrderBase {
   customerName: string;
   addressId?: string | number | null;
   subscriptionId?: string | number | null;
+  subscriptionPlanKey?: string | null;
+  subscriptionPlanName?: string | null;
   subscriptionCycleId?: string | number | null;
+  subscriptionCycleNumber?: number | null;
+  subscriptionCycleStatus?: string | null;
+  subscriptionCycleStartsAt?: string | null;
+  subscriptionCycleEndsAt?: string | null;
   currency: string;
   subtotalCents: number;
   discountCents: number;
@@ -128,6 +134,11 @@ export type OrderErrorCode =
   | "address_mismatch"
   | "subscription_organization_mismatch"
   | "subscription_cycle_organization_mismatch"
+  | "subscription_customer_mismatch"
+  | "subscription_cycle_mismatch"
+  | "subscription_required_for_cycle"
+  | "subscription_required_for_order"
+  | "subscription_cycle_required_for_order"
   | "order_items_required"
   | "product_price_not_found"
   | "inventory_item_not_found"

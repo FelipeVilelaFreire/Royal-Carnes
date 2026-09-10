@@ -3,7 +3,7 @@ import styles from "./SectionContainer.module.css";
 
 export interface SectionContainerProps {
   id?: string;
-  atmosphere?: "solid" | "glass" | "image";
+  atmosphere?: "solid" | "glass" | "image" | "transparent";
   usefulColumns?: 17 | 14 | 20;
   heightRecipe?: "heroPeek" | "auto" | "fullScreen";
   headerSafety?: boolean;

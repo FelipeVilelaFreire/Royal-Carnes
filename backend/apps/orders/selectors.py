@@ -14,16 +14,16 @@ def order_kinds_for_organization(organization):
 def orders_for_customer(organization, customer):
     return (
         Order.objects.filter(organization=organization, customer=customer)
-        .select_related("customer", "address")
-        .prefetch_related("items", "status_history")
+        .select_related("customer", "address", "subscription__plan", "subscription_cycle")
+        .prefetch_related("items__product", "items__variant", "items__measurement_unit", "status_history")
     )
 
 
 def orders_for_organization(organization):
     return (
         Order.objects.filter(organization=organization)
-        .select_related("customer", "address")
-        .prefetch_related("items", "status_history")
+        .select_related("customer", "address", "subscription__plan", "subscription_cycle")
+        .prefetch_related("items__product", "items__variant", "items__measurement_unit", "status_history")
     )
 
 

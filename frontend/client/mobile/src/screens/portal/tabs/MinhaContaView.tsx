@@ -3,21 +3,23 @@ import { Button } from "../../../ui/Button";
 import { Container, Inline, Stack } from "../../../ui/Layout";
 import { Surface } from "../../../ui/Surface";
 import { Text } from "../../../ui/Text";
-import { clientPtBR } from "../../../../../shared-core/locales/pt-BR";
 import { useClientCustomer, type ClientCustomerTabKey } from "../../../../../shared-core/hooks/useClientCustomer";
+import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
 import { createMobileAppShellConfig, type AppThemeMode } from "../../../shell/AppShell/config";
 
 export interface MinhaContaViewProps {
   activePath?: string;
+  strings: ReturnType<typeof useClientStrings>;
   themeMode?: AppThemeMode;
 }
 
 export const MinhaContaView: React.FC<MinhaContaViewProps> = ({
+  strings: allStrings,
   themeMode = "dark",
 }) => {
   const mobileConfig = createMobileAppShellConfig(themeMode) as any;
   const theme = mobileConfig.theme;
-  const strings = clientPtBR.minhaContaV2;
+  const strings = allStrings.minhaContaV2;
   const customer = useClientCustomer();
   const tabs: Array<{ key: ClientCustomerTabKey; label: string }> = [
     { key: "overview", label: strings.tabs.overview },

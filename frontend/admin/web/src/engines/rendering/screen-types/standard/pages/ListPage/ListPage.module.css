@@ -1,5 +1,5 @@
 .page {
-  background: var(--theme--color-background);
+  background: transparent;
   min-block-size: 100%;
   padding-block-end: var(--theme--spacing-3xl);
   width: 100%;

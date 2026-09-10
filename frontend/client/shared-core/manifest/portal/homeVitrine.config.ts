@@ -94,13 +94,6 @@ export const homeVitrineConfig = {
   } satisfies HomeVitrineNoticeConfig,
   customerNotices: [
     {
-      key: "next-box",
-      titleKey: "home.vitrine.customerNotices.nextBox.title",
-      descriptionKey: "home.vitrine.customerNotices.nextBox.description",
-      routeKey: "minhaCaixa",
-      tone: "primary",
-    },
-    {
       key: "current-order",
       titleKey: "home.vitrine.customerNotices.currentOrder.title",
       descriptionKey: "home.vitrine.customerNotices.currentOrder.description",

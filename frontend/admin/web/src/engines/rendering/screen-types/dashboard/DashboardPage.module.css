@@ -1,5 +1,5 @@
 .page {
-  background: var(--theme--color-background);
+  background: transparent;
   min-block-size: 100%;
   padding-block-end: var(--theme--spacing-3xl);
   width: 100%;
@@ -25,6 +25,7 @@
 
 .kpiCard {
   block-size: 100%;
+  min-inline-size: 0;
 }
 
 .kpiLabel {
@@ -57,6 +58,10 @@
 
 .kpiValue {
   color: var(--theme--color-text);
+}
+
+.kpiHelper {
+  max-inline-size: 100%;
 }
 
 .tableCard {
@@ -131,6 +136,34 @@
 
 @media (min-width: 761px) and (max-width: 1100px) {
   .kpiGrid {
-    --ui-layout-columns: 2 !important;
+    --ui-layout-columns: 4 !important;
+  }
+}
+
+@media (max-height: 52em) and (min-width: 48.01em) {
+  .page {
+    padding-block-end: var(--theme--spacing-lg);
+  }
+
+  .content {
+    --ui-layout-gap: var(--theme--spacing-md) !important;
+    padding-block-start: var(--theme--spacing-xs);
+  }
+
+  .heading {
+    max-inline-size: var(--theme--layout-container-md);
+  }
+
+  .kpiGrid {
+    --ui-layout-columns: 4 !important;
+  }
+
+  .kpiHelper {
+    display: none;
+  }
+
+  .table th,
+  .table td {
+    padding: var(--theme--spacing-xs) var(--theme--spacing-sm);
   }
 }

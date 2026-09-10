@@ -11,8 +11,6 @@ import {
 } from "@royalprime/client/manifest/portal/routes.config";
 
 const themeStorageKey = "royal_prime_theme";
-const authStorageKey = "royal_prime_mock_authenticated";
-const authChangedEvent = "royal_auth_changed";
 const themeChangedEvent = "royal_theme_changed";
 
 type PortalThemeMode = "dark" | "light";
@@ -21,11 +19,6 @@ const resolveStoredTheme = (): PortalThemeMode => {
   if (typeof window === "undefined") return "dark";
   const stored = localStorage.getItem(themeStorageKey);
   return stored === "light" ? "light" : "dark";
-};
-
-const resolveStoredAuth = () => {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(authStorageKey) === "true";
 };
 
 const syncDocumentTheme = (themeMode: PortalThemeMode) => {
@@ -42,46 +35,32 @@ const syncDocumentTheme = (themeMode: PortalThemeMode) => {
   }
 };
 
-export function usePortalRuntime(initialTab: PortalScreenKey = "home") {
+export function usePortalRuntime(initialTab: PortalScreenKey = "home", isAuthenticated = false) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isMobileScreen, setIsMobileScreen] = useState(false);
-  const [themeMode, setThemeMode] = useState<PortalThemeMode>(resolveStoredTheme);
+  const [themeMode, setThemeMode] = useState<PortalThemeMode>("dark");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [mockAuthenticatedOverride, setMockAuthenticatedOverride] = useState(resolveStoredAuth);
   const [activeScreenKey, setActiveScreenKey] = useState<PortalScreenKey>(
     resolvePortalScreenKeyFromPath(pathname, initialTab),
   );
-
-  useEffect(() => {
-    const handleResize = () => setIsMobileScreen(window.innerWidth <= 768);
-    const handleAuthChange = () => setMockAuthenticatedOverride(resolveStoredAuth());
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    window.addEventListener(authChangedEvent, handleAuthChange);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener(authChangedEvent, handleAuthChange);
-    };
-  }, []);
 
   useEffect(() => {
     setActiveScreenKey(resolvePortalScreenKeyFromPath(pathname, initialTab));
   }, [initialTab, pathname]);
 
   useEffect(() => {
+    setThemeMode(resolveStoredTheme());
+  }, []);
+
+  useEffect(() => {
     syncDocumentTheme(themeMode);
   }, [themeMode]);
 
   const activeRoutePath = clientRoutes[activeScreenKey] || clientRoutes.home;
-  const isMockAuthenticated = isMobileScreen
-    ? Boolean(portalAppShellConfig.auth?.mobileMockAuthenticated) || mockAuthenticatedOverride
-    : Boolean(portalAppShellConfig.auth?.mockAuthenticated) || mockAuthenticatedOverride;
   const protectedNavKeys = portalAppShellConfig.auth?.protectedNavKeys || [];
   const publicNavKeys = portalAppShellConfig.auth?.publicNavKeys || [];
   const isProtectedScreen = protectedNavKeys.includes(activeScreenKey);
-  const visiblePortalNavigation = isMockAuthenticated
+  const visiblePortalNavigation = isAuthenticated
     ? portalNavigation
     : portalNavigation.filter(
       (item) =>
@@ -123,12 +102,11 @@ export function usePortalRuntime(initialTab: PortalScreenKey = "home") {
     activeRoutePath,
     activeScreenKey,
     isAuthModalOpen,
-    isMockAuthenticated,
+    isAuthenticated,
     isProtectedScreen,
     navigate,
     portalShellConfig,
     setIsAuthModalOpen,
-    setMockAuthenticatedOverride,
     themeMode,
     toggleTheme,
     visiblePortalNavigation,

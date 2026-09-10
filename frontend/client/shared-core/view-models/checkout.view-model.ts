@@ -137,7 +137,13 @@ export const createClientCheckoutViewModel = ({
   selectedPlanKey,
   selectedProductQuantities,
 }: ClientCheckoutViewModelInput): ClientCheckoutViewModel => {
-  const selectedPlan = plans.find((plan) => plan.key === selectedPlanKey) || plans[0];
+  const selectedPlan = plans.find((plan) => plan.key === selectedPlanKey) || plans[0] || {
+    id: "", key: "", name: "", subtitle: "", monthlyPrice: 0, annualMonthlyPrice: 0,
+    billingModes: [], productSelectionLimit: 0, proteinKgLimit: 0, allowedPlanTiers: [],
+    includedCharcoalPackages: 0, charcoalKgLimit: 0, seasoningSelectionLimit: 0,
+    sideSelectionLimit: 0, utensilSelectionLimit: 0, includesUtensilProductIds: [],
+    shipping: "calculated" as const, description: "", features: [],
+  };
   const activeSubscriptionPlan = activeSubscription
     ? plans.find((plan) => plan.key === activeSubscription.planKey)
     : undefined;
@@ -200,7 +206,7 @@ export const createClientCheckoutViewModel = ({
     selectedMode === "royalDelivery" && selectedFreight
       ? freightOptions.find((option) => option.key === selectedFreight)?.price || 0
       : selectedMode
-        ? freightPolicies[selectedMode].price
+        ? freightPolicies[selectedMode]?.price || 0
         : 0;
   const orderEstimateTotal =
     selectedMode === "royalDelivery" && selectedFreight

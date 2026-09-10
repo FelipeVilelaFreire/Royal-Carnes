@@ -1,5 +1,5 @@
 export const adminProductComponentsCapability = {
-  status: "transitional",
-  currentOwner: "admin/web/src/transitional/product-components",
+  status: "removed-legacy",
+  currentOwner: "admin/web/src/engines/rendering/screen-types",
   futureOwner: "foundation/product-components/admin",
 };

@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { normalizeApiError, type ApiErrorEnvelope } from "../../../shared-core";
-import { clientCatalogApi, type createClientCatalogApi } from "../api/catalog.api";
+import { createClientCatalogApi } from "../api/catalog.api";
+import type { ApiClientConfig } from "../../../shared-core";
 import type {
   ClientCatalogQuery,
   ClientCatalogSnapshot,
@@ -11,6 +12,7 @@ type ClientCatalogApi = ReturnType<typeof createClientCatalogApi>;
 
 export interface UseClientCatalogOptions {
   api?: ClientCatalogApi;
+  apiConfig?: ApiClientConfig;
   initialSnapshot?: ClientCatalogSnapshot;
   initialQuery?: ClientCatalogQuery;
 }
@@ -22,7 +24,10 @@ const emptySnapshot: ClientCatalogSnapshot = {
 };
 
 export function useClientCatalog(options: UseClientCatalogOptions = {}) {
-  const api = options.api || clientCatalogApi;
+  const api = useMemo(
+    () => options.api || createClientCatalogApi(options.apiConfig),
+    [options.api, options.apiConfig],
+  );
   const [snapshot, setSnapshot] = useState<ClientCatalogSnapshot>(
     options.initialSnapshot || emptySnapshot,
   );

@@ -239,8 +239,6 @@ operator-only actions
 Local:
 
 ```text
-frontend/admin/shared-core/kits/auth
-frontend/admin/shared-core/kits/users
 frontend/admin/shared-core/types
 frontend/admin/shared-core/contracts
 frontend/admin/shared-core/api
@@ -249,6 +247,8 @@ frontend/admin/shared-core/mappers
 frontend/admin/shared-core/view-models
 frontend/admin/shared-core/locales
 frontend/admin/shared-core/manifest
+docs/kits/admin/auth-users-kit.md
+docs/kits/admin/customers-kit.md
 ```
 
 Responsabilidades:

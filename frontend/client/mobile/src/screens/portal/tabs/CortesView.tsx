@@ -1,53 +1,77 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "../../../ui/Button";
 import { DropdownPicker } from "../../../ui/DropdownPicker";
 import { Input } from "../../../ui/Input";
-import { Container, Stack } from "../../../ui/Layout";
+import { Container, Inline, Stack } from "../../../ui/Layout";
+import { Surface } from "../../../ui/Surface";
 import { Text } from "../../../ui/Text";
 import { ProductItemCard } from "../../../product-components/ecommerce/ProductItemCard";
-import { createCortesModel, type CortesModelInput } from "./cortes.model";
+import { useClientApiConfig } from "../../../../../shared-core/runtime/ClientApiProvider";
+import { useClientCatalog } from "../../../../../shared-core/hooks/useClientCatalog";
+import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
+import { createCortesCatalogViewModel } from "../../../../../shared-core/view-models/cortes-catalog.view-model";
 import type { CortesCatalogSortKey } from "../../../../../shared-core/view-models/cortes-catalog.view-model";
 
-export interface CortesViewProps extends CortesModelInput {
+export interface CortesViewProps {
   onProductAction?: (productId: string) => void;
+  strings: ReturnType<typeof useClientStrings>;
 }
 
-export const CortesView: React.FC<CortesViewProps> = ({ onProductAction, ...input }) => {
-  const [activeCategoryId, setActiveCategoryId] = useState(input.activeCategoryId || "all");
-  const [searchQuery, setSearchQuery] = useState(input.searchQuery || "");
-  const [sortBy, setSortBy] = useState<CortesCatalogSortKey>(input.sortBy || "relevance");
-  const model = createCortesModel({ ...input, activeCategoryId, searchQuery, sortBy });
-  const firstProducts = model.catalog.filteredProducts.slice(0, 6);
+const moneyFormatter = new Intl.NumberFormat("pt-BR", { currency: "BRL", style: "currency" });
+
+export const CortesView: React.FC<CortesViewProps> = ({ onProductAction, strings: clientStrings }) => {
+  const [activeCategoryId, setActiveCategoryId] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<CortesCatalogSortKey>("relevance");
+  const apiConfig = useClientApiConfig();
+  const catalog = useClientCatalog({ apiConfig });
+  const strings = clientStrings.cortes.catalogPage;
+  const catalogViewModel = useMemo(
+    () => createCortesCatalogViewModel({
+      activeCategoryId,
+      allCategoriesLabel: strings.allCategoriesLabel,
+      apiProducts: catalog.snapshot.products,
+      defaultLineLabel: strings.defaultLineLabel,
+      searchQuery,
+      sortBy,
+    }),
+    [activeCategoryId, catalog.snapshot.products, searchQuery, sortBy, strings.allCategoriesLabel, strings.defaultLineLabel],
+  );
+
+  useEffect(() => {
+    void catalog.load().catch(() => undefined);
+  }, [catalog.load]);
+
   const sortOptions = useMemo(
     () => [
-      { value: "relevance", label: model.strings.sortOptions.relevance },
-      { value: "best_sellers", label: model.strings.sortOptions.bestSellers },
-      { value: "price_asc", label: model.strings.sortOptions.priceAsc },
-      { value: "price_desc", label: model.strings.sortOptions.priceDesc },
+      { value: "relevance", label: strings.sortOptions.relevance },
+      { value: "best_sellers", label: strings.sortOptions.bestSellers },
+      { value: "price_asc", label: strings.sortOptions.priceAsc },
+      { value: "price_desc", label: strings.sortOptions.priceDesc },
     ],
-    [model.strings.sortOptions.bestSellers, model.strings.sortOptions.priceAsc, model.strings.sortOptions.priceDesc, model.strings.sortOptions.relevance],
+    [strings.sortOptions.bestSellers, strings.sortOptions.priceAsc, strings.sortOptions.priceDesc, strings.sortOptions.relevance],
   );
 
   return (
     <Container>
-      <Stack>
-        <Text variant="h1">{model.strings.title}</Text>
-        <Text tone="muted">{model.strings.description}</Text>
+      <Stack gap="lg">
+        <Text variant="h1">{strings.title}</Text>
+        <Text tone="muted">{strings.description}</Text>
         <Input
-          accessibilityLabel={model.strings.searchAriaLabel}
+          accessibilityLabel={strings.searchAriaLabel}
           iconIntent="search"
           onChangeText={setSearchQuery}
-          placeholder={model.strings.searchPlaceholder}
+          placeholder={strings.searchPlaceholder}
           value={searchQuery}
         />
         <DropdownPicker
-          accessibilityLabel={model.strings.sortAriaLabel}
+          accessibilityLabel={strings.sortAriaLabel}
           onChange={(next) => setSortBy(next as CortesCatalogSortKey)}
           options={sortOptions}
           value={sortBy}
         />
-        <Stack>
-          {model.catalog.categories.map((category) => (
+        <Inline gap="xs">
+          {catalogViewModel.categories.map((category) => (
             <Button
               key={category.id}
               onAction={() => setActiveCategoryId(category.id)}
@@ -56,19 +80,49 @@ export const CortesView: React.FC<CortesViewProps> = ({ onProductAction, ...inpu
               {category.name}
             </Button>
           ))}
-        </Stack>
-        {firstProducts.map((product) => (
-          <ProductItemCard
-            key={product.id}
-            name={product.name}
-            description={product.subtitle}
-            image={product.image}
-            onAction={() => onProductAction?.(product.id)}
-          />
-        ))}
-        {firstProducts.length === 0 ? (
-          <Button onAction={() => undefined}>{model.strings.clearFilters}</Button>
-        ) : null}
+        </Inline>
+        {catalog.isLoading ? (
+          <Surface appearance="soft">
+            <Stack gap="sm">
+              <Text variant="h3">{strings.loadingTitle}</Text>
+              <Text tone="muted">{strings.loadingDescription}</Text>
+            </Stack>
+          </Surface>
+        ) : catalog.error ? (
+          <Surface appearance="soft" tone="danger">
+            <Stack gap="sm">
+              <Text variant="h3">{strings.errorTitle}</Text>
+              <Text tone="muted">{strings.errorDescription}</Text>
+              <Button onAction={() => void catalog.load()}>{strings.retry}</Button>
+            </Stack>
+          </Surface>
+        ) : catalogViewModel.filteredProducts.length > 0 ? (
+          <Stack gap="md">
+            {catalogViewModel.filteredProducts.map((product) => (
+              <ProductItemCard
+                actionLabel={onProductAction ? clientStrings.cortes.ctaBuy : undefined}
+                description={product.subtitle}
+                formattedPrice={moneyFormatter.format(product.price)}
+                image={product.image}
+                key={product.id}
+                name={product.name}
+                onAction={() => onProductAction?.(product.id)}
+              />
+            ))}
+          </Stack>
+        ) : (
+          <Surface appearance="soft">
+            <Stack gap="sm">
+              <Text variant="h3">{strings.emptyTitle}</Text>
+              <Text tone="muted">{strings.emptyDescription}</Text>
+              <Button onAction={() => {
+                setActiveCategoryId("all");
+                setSearchQuery("");
+                setSortBy("relevance");
+              }}>{strings.clearFilters}</Button>
+            </Stack>
+          </Surface>
+        )}
       </Stack>
     </Container>
   );

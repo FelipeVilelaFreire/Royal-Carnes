@@ -33,6 +33,13 @@ class OrdersApiTests(APITestCase):
         self.assertTrue(OrderStatusDefinition.objects.get(key="received").is_initial)
         self.assertEqual(OrderKindDefinition.objects.get(key="royal-box").commercial_mode.key, "box")
         self.assertTrue(Order.objects.filter(metadata__seedKey="pedido-felipe-churrasco-familia").exists())
+        subscription_order = Order.objects.select_related("subscription", "subscription_cycle").get(
+            metadata__seedKey="pedido-assinatura-pro-setembro"
+        )
+        self.assertEqual(subscription_order.kind_key, "subscription-cycle")
+        self.assertIsNotNone(subscription_order.subscription)
+        self.assertIsNotNone(subscription_order.subscription_cycle)
+        self.assertEqual(subscription_order.subscription_cycle.cycle_number, 1)
 
     def test_customer_can_create_order_and_inventory_is_reserved(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -107,6 +114,28 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(response.data["kind_key"], "royal-box")
         self.assertEqual(response.data["total_cents"], 8990)
         self.assertEqual(Delivery.objects.count(), 5)
+
+    def test_subscription_order_requires_cycle(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+
+        response = self.client.post(
+            "/api/v1/orders/me/",
+            {
+                "kind_key": "subscription-cycle",
+                "items": [
+                    {
+                        "product_key": "picanha",
+                        "variant_sku": "PICANHA-1KG",
+                        "quantity": "1.000",
+                    }
+                ],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(response.data["code"], "subscription_required_for_order")
 
     def test_admin_can_list_and_transition_order_by_seeded_workflow(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

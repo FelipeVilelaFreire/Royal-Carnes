@@ -8,16 +8,17 @@ secoes visuais da web antes da hora.
 
 ## Cortes
 
-`CortesView.tsx` e o primeiro corte mobile da tela de catalogo. Ele consome
-`cortes.model.ts`, `ProductItemCard` e primitives locais com os mesmos nomes do
-web.
+`CortesView.tsx` e o corte mobile da tela de catalogo sem fallback de
+apresentacao. Ele consome o mesmo hook e view-model do shared-core usados pelo
+Web, alem de `ProductItemCard` e primitives locais com os mesmos nomes do web.
 
 Contrato:
 
 ```text
 mobile view
-  -> ClientCatalogSnapshot vindo do hook/API client mobile
-  -> cortes.model.ts
+  -> useClientApiConfig() via ClientApiProvider
+  -> useClientCatalog({ apiConfig })
+  -> createClientCatalogApi(apiConfig)
   -> createCortesCatalogViewModel()
   -> AppShell
   -> Button/Text/Surface/Layout/Icon
@@ -26,12 +27,14 @@ mobile view
 Regra:
 
 ```text
-webIsMobile == native behavior
+webIsMobile == native behavior == mesma fonte real
 ```
 
 A tela native deve manter os mesmos filtros, ordenacao, categorias, empty state,
 strings e dados da web mobile. A diferenca permitida e apenas o runtime visual:
 web usa DOM/CSS; native usa componentes React Native mapeados pela Foundation.
+Uma rota so recebe o status sem mock depois da auditoria e remocao de fallback
+nos dois runtimes.
 
 ## Montar Box
 

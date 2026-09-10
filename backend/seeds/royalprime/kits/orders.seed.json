@@ -83,6 +83,7 @@
       "key": "pedido-assinatura-pro-setembro",
       "customerKey": "cliente-royalprime",
       "subscriptionKey": "cliente-royalprime-pro",
+      "subscriptionCycleKey": "cliente-royalprime-pro-2026-09",
       "planKey": "pro",
       "kindKey": "subscription-cycle",
       "statusPath": ["approved", "separating"],

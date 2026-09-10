@@ -17,7 +17,7 @@ export const TrashPage: React.FC<TrashPageProps> = ({ config = trashConfig }) =>
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Stack gap="xs">
             <Inline align="center" className={styles.titleLine} gap="sm" wrap={false}>

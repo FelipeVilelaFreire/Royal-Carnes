@@ -44,7 +44,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Inline align="start" justify="between" wrap>
             <Stack className={styles.heading} gap="xs">
@@ -81,7 +81,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     {widgetView?.value || widget.value || "-"}
                   </Text>
 
-                  <Badge appearance="soft" tone={toBadgeTone(widgetView?.tone)}>
+                  <Badge appearance="soft" className={styles.kpiHelper} tone={toBadgeTone(widgetView?.tone)}>
                     {widgetView
                       ? t(widgetView.helperKey, widget.helper, widgetView.helperVariables)
                       : widget.helper || "-"}

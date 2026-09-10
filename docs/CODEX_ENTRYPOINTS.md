@@ -22,6 +22,7 @@ Referencia detalha exemplos; nao amplia permissao nem muda ownership.
 | --- | --- | --- |
 | Backend, endpoint, models, permissao, workflow | [backend/ARCHITECTURE.md](../backend/ARCHITECTURE.md), [API_CONTRACTS.md](../backend/API_CONTRACTS.md) | backend/apps do dominio, urls, serializers, services, permissions, tests |
 | Payload, DTO, hook, mapper, view-model | [API_CONTRACTS.md](../backend/API_CONTRACTS.md) e contrato raiz | shared-core do escopo: contracts, api, hooks, mappers, view-models e tela consumidora |
+| Migracao funcional de tela Portal | Secoes Quatro separacoes e Fluxo de dados do contrato raiz | backend real, client/shared-core, manifest existente e JSX consumidor; auditar Web e Mobile e provar ausencia de fallback nos dois |
 | Admin, client, AppShell, rotas, navigation, screen types | [SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md](contracts/SCREENTYPE_MANIFEST_PIPELINE_CONTRACT.md) | manifest, navigation, locales da surface; frontend/foundation/shells/app-shell; bootstrap real |
 | Mocks, fallback, env, seed | [MOCK_AND_ENV_ARCHITECTURE.md](contracts/MOCK_AND_ENV_ARCHITECTURE.md) | hook, API client, data source, .env.example e backend/seeds |
 | Portal, autenticacao, acesso publico/protegido | [CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md](contracts/CLIENT_PORTAL_NAVIGATION_AND_AUTH_STATE_CONTRACT.md) | client/shared-core auth, navigation, portal manifest, PortalView web/mobile |

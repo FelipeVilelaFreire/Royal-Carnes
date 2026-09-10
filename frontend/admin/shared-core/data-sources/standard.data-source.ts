@@ -1,4 +1,4 @@
-import { normalizeApiError, type ApiClientConfig, type ApiErrorEnvelope } from "../../../shared-core";
+import { normalizeApiError, type ApiClientConfig } from "../../../shared-core";
 import { createAdminCatalogApi } from "../api/catalog.api";
 import { createAdminCustomersApi } from "../api/customers.api";
 import { createAdminDeliveriesApi } from "../api/deliveries.api";
@@ -22,125 +22,24 @@ import {
   createAdminPlanRowViewModel,
   createAdminSubscriptionRowViewModel,
 } from "../view-models/subscriptions.view-model";
-import type {
-  AdminStandardFieldOption,
-  AdminStandardOptionSources,
-} from "../view-models/standard.view-model";
 import { createAdminUsersViewModel } from "../view-models/users.view-model";
-
-export interface AdminStandardDataSourceConfig {
-  key: string;
-  fallbackOnError?: boolean;
-}
-
-export interface AdminStandardDataSourceResult {
-  error: ApiErrorEnvelope | null;
-  isFallback: boolean;
-  rows: any[] | null;
-}
-
-export interface AdminStandardMutationResult {
-  error: ApiErrorEnvelope | null;
-  row: any | null;
-}
-
-export interface AdminStandardOptionSourceResult {
-  error: ApiErrorEnvelope | null;
-  optionSources: AdminStandardOptionSources;
-}
-
-const adminStandardOptionSourceLoaders = {
-  categorias: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listCategories()).map((category) => ({
-      label: category.name,
-      value: category.key,
-    })),
-  colecoes: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listAdminCollections()).map((collection) => ({
-      label: collection.name,
-      value: collection.key,
-    })),
-  clientes: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCustomersApi(apiConfig).list()).map((customer) => ({
-      label: customer.name,
-      value: String(customer.id),
-    })),
-  enderecos: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCustomersApi(apiConfig).list()).flatMap((customer) =>
-      customer.addresses.map((address) => ({
-        label: [
-          customer.name,
-          address.label || address.street,
-          [address.street, address.number, address.city, address.state].filter(Boolean).join(", "),
-        ].filter(Boolean).join(" - "),
-        value: String(address.id),
-      })),
-    ),
-  planos: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminSubscriptionsApi(apiConfig).listPlans()).map((plan) => ({
-      label: plan.name,
-      value: plan.key,
-    })),
-  assinaturas: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminSubscriptionsApi(apiConfig).listSubscriptions()).map((subscription) => ({
-      label: [subscription.customerName, subscription.plan.name].filter(Boolean).join(" - "),
-      value: String(subscription.id),
-    })),
-  produtos: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listProducts()).map((product) => ({
-      label: product.name,
-      meta: {
-        measurementUnitKey: product.unit,
-      },
-      value: product.key,
-    })),
-  variantes: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listProducts()).flatMap((product) =>
-      product.variants.map((variant) => ({
-        label: `${product.name} - ${variant.name}`,
-        value: variant.sku || String(variant.id),
-      })),
-    ),
-  commercialModes: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listCommercialModes()).map((mode) => ({
-      label: mode.name,
-      value: mode.key,
-    })),
-  unidades: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listMeasurementUnits()).map((unit) => ({
-      label: unit.symbol ? `${unit.name} (${unit.symbol})` : unit.name || unit.key || "",
-      value: unit.key || "",
-    })),
-};
-
-function collectFieldSources(entityConfig: any): string[] {
-  const sourceSet = new Set<string>();
-  const addFieldSources = (fields: any[] = []) => {
-    fields.forEach((field) => {
-      if (field.source) sourceSet.add(field.source);
-      (field.columns || []).forEach((column: any) => {
-        if (column.source) sourceSet.add(column.source);
-        Object.values(column.sources || {}).forEach((source) => sourceSet.add(String(source)));
-      });
-    });
-  };
-
-  (entityConfig?.detailPage?.tabs || []).forEach((tab: any) => {
-    addFieldSources(tab.fields || []);
-    (tab.sections || []).forEach((section: any) => addFieldSources(section.fields || []));
-  });
-  (entityConfig?.addPage?.sections || []).forEach((section: any) => addFieldSources(section.fields || []));
-  addFieldSources(entityConfig?.addPage?.fields || []);
-  addFieldSources(entityConfig?.form?.fields || []);
-  return [...sourceSet];
-}
+import type {
+  AdminStandardDataSourceConfig,
+  AdminStandardDataSourceResult,
+  AdminStandardMutationResult,
+} from "./standard-data-source.types";
+export { loadAdminStandardOptionSources } from "./standard-option-sources";
+export type {
+  AdminStandardDataSourceConfig,
+  AdminStandardDataSourceResult,
+  AdminStandardMutationResult,
+  AdminStandardOptionSourceResult,
+} from "./standard-data-source.types";
 
 function mapOrderRows(rows: ReturnType<typeof createAdminOrdersViewModel>["orders"]) {
   return rows.map((row) => ({
     ...row,
     status: row.statusKey,
-    summary: String(row.itemCount),
-    totalFormatted: row.totalLabel,
   }));
 }
 
@@ -245,26 +144,6 @@ async function mapCatalogProductResult(
   }).rows)[0];
 }
 
-export async function loadAdminStandardOptionSources(
-  entityConfig: any,
-  apiConfig: ApiClientConfig = {},
-): Promise<AdminStandardOptionSourceResult> {
-  const sources = collectFieldSources(entityConfig);
-  if (!sources.length) return { error: null, optionSources: {} };
-
-  try {
-    const entries = await Promise.all(
-      sources.map(async (source) => {
-        const loader = adminStandardOptionSourceLoaders[source as keyof typeof adminStandardOptionSourceLoaders];
-        return [source, loader ? await loader(apiConfig) : []] as const;
-      }),
-    );
-    return { error: null, optionSources: Object.fromEntries(entries) };
-  } catch (err) {
-    return { error: normalizeApiError(err), optionSources: {} };
-  }
-}
-
 function mapInventoryRows(rows: ReturnType<typeof createAdminInventoryViewModel>["items"]) {
   return rows.map((row) => ({
     ...row,
@@ -285,11 +164,21 @@ export async function loadAdminStandardRows(
   try {
     if (dataSource.key === "pedidos") {
       const api = createAdminOrdersApi(apiConfig);
-      const [config, orders] = await Promise.all([api.config(), api.list()]);
+      const deliveriesApi = createAdminDeliveriesApi(apiConfig);
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const [config, deliveryConfig, deliveries, orders, payments] = await Promise.all([
+        api.config(),
+        deliveriesApi.config(),
+        deliveriesApi.list(),
+        api.list(),
+        paymentsApi.list(),
+      ]);
       return {
         error: null,
         isFallback: false,
-        rows: mapOrderRows(createAdminOrdersViewModel(orders, config).orders),
+        rows: mapOrderRows(
+          createAdminOrdersViewModel(orders, config, deliveries, deliveryConfig, payments).orders,
+        ),
       };
     }
 
@@ -342,7 +231,10 @@ export async function loadAdminStandardRows(
       return {
         error: null,
         isFallback: false,
-        rows: createAdminUsersViewModel(users).users,
+        rows: createAdminUsersViewModel(users).users.map((user) => ({
+          ...user,
+          statusLabelKey: user.status === "inactive" ? "common.statusInactive" : "common.statusActive",
+        })),
       };
     }
 
@@ -375,11 +267,21 @@ export async function loadAdminStandardRows(
     }
 
     if (dataSource.key === "pagamentos") {
-      const payments = await createAdminPaymentsApi(apiConfig).list();
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const subscriptionsApi = createAdminSubscriptionsApi(apiConfig);
+      const [payments, orderConfig, orders, subscriptions] = await Promise.all([
+        paymentsApi.list(),
+        ordersApi.config(),
+        ordersApi.list(),
+        subscriptionsApi.listSubscriptions(),
+      ]);
       return {
         error: null,
         isFallback: false,
-        rows: payments.map(createAdminPaymentRowViewModel),
+        rows: payments.map((payment) =>
+          createAdminPaymentRowViewModel(payment, orders, orderConfig, subscriptions),
+        ),
       };
     }
 
@@ -458,10 +360,20 @@ export async function loadAdminStandardRow(
     }
 
     if (dataSource.key === "pagamentos") {
-      const payments = await createAdminPaymentsApi(apiConfig).list();
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const subscriptionsApi = createAdminSubscriptionsApi(apiConfig);
+      const [payments, orderConfig, orders, subscriptions] = await Promise.all([
+        paymentsApi.list(),
+        ordersApi.config(),
+        ordersApi.list(),
+        subscriptionsApi.listSubscriptions(),
+      ]);
       return {
         error: null,
-        row: payments.map(createAdminPaymentRowViewModel).find((row) => row.id === rowId) || null,
+        row: payments
+          .map((payment) => createAdminPaymentRowViewModel(payment, orders, orderConfig, subscriptions))
+          .find((row) => row.id === rowId) || null,
       };
     }
 
@@ -470,6 +382,25 @@ export async function loadAdminStandardRow(
       const category = categories.find((candidate) => candidate.id === rowId) || await createAdminCatalogApi(apiConfig).categoryDetail(rowId);
       const rows = createAdminCategoryRowsViewModel(categories);
       return { error: null, row: rows.find((row) => row.id === category.id) || createAdminCategoryRowsViewModel([category])[0] };
+    }
+
+    if (dataSource.key === "pedidos") {
+      const api = createAdminOrdersApi(apiConfig);
+      const deliveriesApi = createAdminDeliveriesApi(apiConfig);
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const [config, deliveryConfig, deliveries, order, payments] = await Promise.all([
+        api.config(),
+        deliveriesApi.config(),
+        deliveriesApi.list(),
+        api.detail(rowId),
+        paymentsApi.list(),
+      ]);
+      return {
+        error: null,
+        row: mapOrderRows(
+          createAdminOrdersViewModel([order], config, deliveries, deliveryConfig, payments).orders,
+        )[0],
+      };
     }
 
     return { error: null, row: null };
@@ -558,7 +489,17 @@ export async function createAdminStandardRow(
         status: values.status || "pending",
         subscriptionId: values.subscriptionId || null,
       });
-      return { error: null, row: createAdminPaymentRowViewModel(payment) };
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const subscriptionsApi = createAdminSubscriptionsApi(apiConfig);
+      const [orderConfig, orders, subscriptions] = await Promise.all([
+        ordersApi.config(),
+        ordersApi.list(),
+        subscriptionsApi.listSubscriptions(),
+      ]);
+      return {
+        error: null,
+        row: createAdminPaymentRowViewModel(payment, orders, orderConfig, subscriptions),
+      };
     }
 
     if (dataSource.key === "categorias") {
@@ -574,6 +515,40 @@ export async function createAdminStandardRow(
       return {
         error: null,
         row: createAdminCategoryRowsViewModel(categories).find((row) => row.id === category.id) || createAdminCategoryRowsViewModel([category])[0],
+      };
+    }
+
+    if (dataSource.key === "pedidos") {
+      const order = await createAdminOrdersApi(apiConfig).create({
+        addressId: values.addressId || null,
+        customerId: values.customerId,
+        items: normalizeLineItems(values.items).map((item) => ({
+          metadata: item.metadata || {},
+          productKey: item.productKey,
+          quantity: item.quantity,
+          sourceKey: item.sourceKey || undefined,
+          sourceType: item.sourceType || undefined,
+          variantSku: item.variantSku || undefined,
+        })),
+        kindKey: values.kindKey,
+        notes: values.notes,
+        subscriptionCycleId: values.subscriptionCycleId || null,
+        subscriptionId: values.subscriptionId || null,
+      });
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const deliveriesApi = createAdminDeliveriesApi(apiConfig);
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const [config, deliveryConfig, deliveries, payments] = await Promise.all([
+        ordersApi.config(),
+        deliveriesApi.config(),
+        deliveriesApi.list(),
+        paymentsApi.list(),
+      ]);
+      return {
+        error: null,
+        row: mapOrderRows(
+          createAdminOrdersViewModel([order], config, deliveries, deliveryConfig, payments).orders,
+        )[0],
       };
     }
 
@@ -675,7 +650,17 @@ export async function updateAdminStandardRow(
         reference: values.reference,
         status: values.status,
       });
-      return { error: null, row: createAdminPaymentRowViewModel(payment) };
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const subscriptionsApi = createAdminSubscriptionsApi(apiConfig);
+      const [orderConfig, orders, subscriptions] = await Promise.all([
+        ordersApi.config(),
+        ordersApi.list(),
+        subscriptionsApi.listSubscriptions(),
+      ]);
+      return {
+        error: null,
+        row: createAdminPaymentRowViewModel(payment, orders, orderConfig, subscriptions),
+      };
     }
 
     return { error: null, row: null };

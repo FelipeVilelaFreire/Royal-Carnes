@@ -55,6 +55,28 @@ def me(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_my_password(request):
+    current_password = request.data.get("current_password", "")
+    new_password = request.data.get("new_password", "")
+    if not current_password or not request.user.check_password(current_password):
+        return error_response("current_password_invalid", status_code=status.HTTP_400_BAD_REQUEST)
+    if len(new_password) < 8:
+        return error_response("new_password_invalid", status_code=status.HTTP_400_BAD_REQUEST)
+    request.user.set_password(new_password)
+    request.user.save(update_fields=["password"])
+    return Response({"status": "ok"})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def deactivate_my_account(request):
+    request.user.is_active = False
+    request.user.save(update_fields=["is_active"])
+    return Response({"status": "ok"})
+
+
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def register(request):
     serializer = RegisterSerializer(data=request.data)

@@ -163,7 +163,9 @@ frontend/admin/shared-core/hooks/useAdminPlanForm.ts
 frontend/admin/shared-core/hooks/useAdminSubscriptionForm.ts
 frontend/admin/shared-core/mappers/subscriptions.mapper.ts
 frontend/admin/shared-core/view-models/subscriptions.view-model.ts
-frontend/admin/shared-core/kits/subscriptions/
+frontend/admin/shared-core/manifest/pages/planos.config.jsx
+frontend/admin/shared-core/manifest/pages/assinaturas.config.jsx
+docs/kits/admin/subscriptions-kit.md
 ```
 
 Responsabilidades:

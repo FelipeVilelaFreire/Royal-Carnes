@@ -8,5 +8,29 @@
     "locale": "pt-BR",
     "timezone": "America/Sao_Paulo",
     "currency": "BRL"
-  }
+  },
+  "settings": [
+    {
+      "key": "client-checkout",
+      "value": {
+        "deliveryDays": [5, 10, 15, 20, 25],
+        "freightOptions": [
+          { "key": "pickup", "labelKey": "pickup", "priceCents": 0, "etaLabel": "Retirada na loja", "availableFor": ["royalDelivery"] },
+          { "key": "standard", "labelKey": "standardDelivery", "priceCents": 1990, "etaLabel": "1 a 2 dias uteis", "availableFor": ["royalDelivery"] },
+          { "key": "express", "labelKey": "expressDelivery", "priceCents": 3490, "etaLabel": "Hoje ou proximo periodo", "availableFor": ["royalDelivery"] }
+        ],
+        "freightPolicies": {
+          "subscription": { "priceCents": 0 },
+          "royalBox": { "priceCents": 0 },
+          "royalDelivery": { "priceCents": 0, "defaultOptionKey": "standard" }
+        },
+        "paymentMethods": [
+          { "key": "pix", "labelKey": "pix", "descriptionKey": "pixDescription", "availableFor": ["subscription", "royalBox", "royalDelivery"], "supportsRecurring": false, "feePercentage": 0 },
+          { "key": "creditCard", "labelKey": "creditCard", "descriptionKey": "creditCardDescription", "availableFor": ["subscription", "royalBox", "royalDelivery"], "supportsRecurring": true, "feePercentage": 0 },
+          { "key": "payOnDelivery", "labelKey": "payOnDelivery", "descriptionKey": "payOnDeliveryDescription", "availableFor": ["royalDelivery"], "supportsRecurring": false, "feePercentage": 0 }
+        ],
+        "paymentInstallments": [1, 2, 3]
+      }
+    }
+  ]
 }

@@ -93,7 +93,18 @@ export const createClientCustomerAccountViewModel = ({
   const activePlan =
     plans.find((plan) => plan.key === selectedPlanKey) ||
     plans.find((plan) => plan.key === customer.activeSubscription?.planKey) ||
-    plans[0];
+    plans[0] || {
+      key: "",
+      name: "",
+      monthlyPrice: 0,
+      productSelectionLimit: 0,
+      proteinKgLimit: 0,
+      charcoalKgLimit: 0,
+      seasoningSelectionLimit: 0,
+      sideSelectionLimit: 0,
+      utensilSelectionLimit: 0,
+      features: [],
+    };
   const usage = dataSource.cycleUsage || emptyCycleUsage(activePlan);
   const primaryAddress = customer.addresses.find((address) => address.isPrimary) || customer.addresses[0];
   const firstName = customer.name.trim().split(" ")[0] || customer.name;

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../../../ui/Button";
 import { Icon } from "../../../ui/Icon";
 import { ChevronRightIcon } from "../../../ui/Icon/AppIcons";
@@ -30,6 +30,25 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
   if (!model.sidebarEnabled) return null;
   const profile = config?.sidebar?.userProfile;
   const density = config?.sidebar?.density || "default";
+  const groupButtonConfig = config?.sidebar?.groupButton || {};
+  const routeButtonConfig = config?.sidebar?.routeButton || {};
+  const groupsExpandable = groupButtonConfig.expandable !== false;
+  const groupButtonStyle = groupButtonConfig.style || "accordion";
+  const routeButtonStyle = routeButtonConfig.style || "navigation";
+  const [closedGroups, setClosedGroups] = useState<Set<string>>(() => new Set());
+
+  const toggleGroup = (groupKey: string) => {
+    if (!groupsExpandable) return;
+    setClosedGroups((current) => {
+      const next = new Set(current);
+      if (next.has(groupKey)) {
+        next.delete(groupKey);
+      } else {
+        next.add(groupKey);
+      }
+      return next;
+    });
+  };
 
   return (
     <Surface
@@ -42,36 +61,65 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
       ].filter(Boolean).join(" ")}
       data-sidebar-density={density}
     >
+      <div className={styles.sidebarBrand}>
+        <AppShellBrand brand={model.brand} collapsed={isCollapsed} onNavigate={onNavigate} />
+      </div>
       <Stack className={styles.sidebarMain} gap="md">
-        <div className={styles.sidebarBrand}>
-          <AppShellBrand brand={model.brand} collapsed={isCollapsed} onNavigate={onNavigate} />
-        </div>
         <nav className={styles.verticalNav}>
           <Stack className={styles.navGroups} gap="sm">
-            {model.sidebarGroups.map((group) => (
-              <Stack className={styles.navGroup} gap="xs" key={group.key}>
-                {group.label ? <span className={styles.navGroupLabel}>{group.label}</span> : null}
-                <Stack className={styles.navGroupItems} gap="2xs">
-                  {group.items.map((item) => {
-                    const isActive = model.activePath === item.routePath;
-                    return (
-                      <Button
-                        appearance={isActive ? "soft" : "transparent"}
-                        className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
-                        key={item.key}
-                        onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
-                        size="md"
-                        title={isCollapsed ? item.label : undefined}
-                        tone={isActive ? "primary" : "neutral"}
-                      >
-                        <Icon className={styles.verticalLinkIcon} tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
-                        <span className={styles.verticalLinkLabel}>{item.label}</span>
-                      </Button>
-                    );
-                  })}
+            {model.sidebarGroups.map((group) => {
+              const isGroupExpanded = isCollapsed || !groupsExpandable || !closedGroups.has(group.key);
+
+              return (
+                <Stack
+                  className={styles.navGroup}
+                  data-expanded={isGroupExpanded ? "true" : "false"}
+                  gap="xs"
+                  key={group.key}
+                >
+                  {group.label ? (
+                    <button
+                      aria-expanded={isGroupExpanded}
+                      className={styles.navGroupButton}
+                      data-sidebar-group-button-style={groupButtonStyle}
+                      onClick={() => toggleGroup(group.key)}
+                      type="button"
+                    >
+                      <span className={styles.navGroupLabel}>{group.label}</span>
+                      <ChevronRightIcon
+                        aria-hidden="true"
+                        className={isGroupExpanded ? styles.navGroupChevronExpanded : styles.navGroupChevron}
+                      />
+                    </button>
+                  ) : null}
+                  <Stack
+                    aria-hidden={!isGroupExpanded}
+                    className={styles.navGroupItems}
+                    data-expanded={isGroupExpanded ? "true" : "false"}
+                    gap="2xs"
+                  >
+                    {group.items.map((item) => {
+                      const isActive = model.activePath === item.routePath;
+                      return (
+                        <Button
+                          appearance={isActive ? "soft" : "transparent"}
+                          className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
+                          data-sidebar-route-button-style={routeButtonStyle}
+                          key={item.key}
+                          onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
+                          size="md"
+                          title={isCollapsed ? item.label : undefined}
+                          tone={isActive ? "primary" : "neutral"}
+                        >
+                          <Icon className={styles.verticalLinkIcon} tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
+                          <span className={styles.verticalLinkLabel}>{item.label}</span>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
                 </Stack>
-              </Stack>
-            ))}
+              );
+            })}
           </Stack>
         </nav>
       </Stack>

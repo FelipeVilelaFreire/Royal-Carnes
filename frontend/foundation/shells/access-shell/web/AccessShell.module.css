@@ -1,0 +1,119 @@
+.screen {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: var(--ui-access-shell-screen-min-height, 100%);
+  padding: var(--theme--spacing-space2xl);
+}
+
+.screen > .content {
+  max-width: var(--theme--layout-content-narrow);
+  width: 100%;
+}
+
+.content {
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+}
+
+.callout,
+.formPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface-container, var(--theme--color-surfaceContainer)) 92%, var(--theme--color-accent));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 72%, var(--theme--color-accent));
+  --ui-surface-color: var(--theme--color-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceLg);
+  --ui-surface-padding-y: var(--theme--spacing-spaceLg);
+  --ui-surface-radius: var(--theme--radius-xl);
+}
+
+.formPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-accent) 8%, var(--theme--color-surface-container, var(--theme--color-surfaceContainer)));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 54%, var(--theme--color-accent));
+}
+
+.eyebrow {
+  color: var(--theme--color-accent);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.calloutTitle {
+  color: var(--theme--color-text);
+}
+
+.calloutDescription,
+.hint,
+.legal {
+  color: var(--theme--color-text-muted, var(--theme--color-textMuted));
+}
+
+.tabs {
+  background: color-mix(in srgb, var(--theme--color-surface-container, var(--theme--color-surfaceContainer)) 84%, var(--theme--color-background));
+  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-full);
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: var(--theme--spacing-space2xs);
+}
+
+.tabButton {
+  --ui-button-height: var(--theme--dimensions-height-md);
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
+  --ui-surface-radius: var(--theme--radius-full);
+}
+
+.tabButton[aria-pressed="true"] {
+  --ui-surface-bg: var(--theme--color-accent);
+  --ui-surface-border: var(--theme--color-accent);
+  --ui-surface-color: var(--theme--color-accent-contrast, var(--theme--color-background));
+}
+
+.form {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.formMeta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-spaceSm);
+  justify-content: space-between;
+}
+
+.forgotButton {
+  --ui-surface-color: var(--theme--color-accent);
+}
+
+.submitButton {
+  --ui-button-height: var(--theme--dimensions-height-xl);
+  --ui-surface-radius: var(--theme--radius-lg);
+  width: 100%;
+}
+
+.error {
+  border: var(--theme--borders-hairline) solid var(--theme--color-danger, var(--theme--color-border));
+  border-radius: var(--theme--radius-md);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
+}
+
+.legal {
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 48em) {
+  .screen {
+    padding: var(--theme--spacing-spaceLg);
+  }
+
+  .callout,
+  .formPanel {
+    --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+    --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+  }
+}

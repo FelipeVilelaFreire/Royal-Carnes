@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
+from apps.orders.models import Order
 from apps.payments.models import Payment
 from apps.subscriptions.models import Subscription
 
@@ -52,6 +53,47 @@ class PaymentsApiTests(APITestCase):
         self.assertEqual(list_response.status_code, 200, list_response.data)
         self.assertTrue(any(payment["reference"] == "PAY-TEST-001" for payment in list_response.data))
 
+    def test_seed_payments_include_order_and_subscription_context(self):
+        self.authenticate()
+
+        response = self.client.get(
+            "/api/v1/payments/admin/payments/",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        seeded_payment = next(
+            payment for payment in response.data
+            if payment["reference"] == "PAY-RP-2026-09-PRO"
+        )
+        self.assertEqual(seeded_payment["status"], "paid")
+        self.assertIsNotNone(seeded_payment["order_id"])
+        self.assertIsNotNone(seeded_payment["subscription_id"])
+        self.assertEqual(seeded_payment["subscription_plan_name"], "Pro")
+
+    def test_rejects_payment_when_subscription_does_not_match_order(self):
+        self.authenticate()
+        subscription = Subscription.objects.select_related("customer").get()
+        order = Order.objects.exclude(customer=subscription.customer).first()
+
+        response = self.client.post(
+            "/api/v1/payments/admin/payments/",
+            {
+                "reference": "PAY-TEST-MISMATCH",
+                "customer_id": subscription.customer_id,
+                "subscription_id": subscription.id,
+                "order_id": order.id,
+                "amount_cents": 44900,
+                "currency": "BRL",
+                "status": "pending",
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(response.data["code"], "payment_reference_not_found")
+
     def test_admin_can_mark_payment_as_paid(self):
         self.authenticate()
         subscription = Subscription.objects.select_related("organization", "customer").get()
@@ -73,4 +115,3 @@ class PaymentsApiTests(APITestCase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["status"], "paid")
         self.assertIsNotNone(response.data["paid_at"])
-

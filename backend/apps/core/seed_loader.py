@@ -14,7 +14,7 @@ from apps.accounts.services import (
     upsert_user_with_roles,
 )
 from apps.customers.services import upsert_customer
-from apps.organizations.models import Organization
+from apps.organizations.models import Organization, OrganizationSettings
 from apps.catalog.models import (
     Category,
     Collection,
@@ -37,7 +37,7 @@ from apps.catalog.services import (
     upsert_product_variant,
 )
 from apps.customers.models import Customer
-from apps.subscriptions.models import Plan, PlanEntitlement, SubscriptionCycleItem
+from apps.subscriptions.models import Plan, PlanEntitlement, Subscription, SubscriptionCycle, SubscriptionCycleItem
 from apps.subscriptions.services import (
     set_plan_price,
     upsert_plan,
@@ -61,6 +61,7 @@ from apps.deliveries.services import (
     transition_delivery_status,
     upsert_delivery_status,
 )
+from apps.payments.models import Payment
 
 
 @dataclass(frozen=True)
@@ -146,11 +147,14 @@ class BackendSeedApplier:
         self.variants_by_sku: dict[str, ProductVariant] = {}
         self.plans_by_key: dict[str, Plan] = {}
         self.entitlements_by_key: dict[str, PlanEntitlement] = {}
+        self.subscriptions_by_key: dict[str, Subscription] = {}
+        self.subscription_cycles_by_key: dict[str, SubscriptionCycle] = {}
         self.orders_by_key: dict[str, Order] = {}
         self.order_kinds_by_key: dict[str, OrderKindDefinition] = {}
         self.order_statuses_by_key: dict[str, OrderStatusDefinition] = {}
         self.deliveries_by_key: dict[str, Delivery] = {}
         self.delivery_statuses_by_key: dict[str, DeliveryStatusDefinition] = {}
+        self.payments_by_key: dict[str, Payment] = {}
 
     def apply(self) -> list[str]:
         if self.dry_run:
@@ -177,6 +181,8 @@ class BackendSeedApplier:
                     self.apply_orders(module.data)
                 elif module.kit == "deliveries":
                     self.apply_deliveries(module.data)
+                elif module.kit == "payments":
+                    self.apply_payments(module.data)
                 else:
                     self.summary.append(f"skipped planned kit={module.kit}")
         return self.summary
@@ -193,6 +199,12 @@ class BackendSeedApplier:
                 "currency": organization_data.get("currency", "BRL"),
             },
         )
+        for setting_data in data.get("settings", []):
+            OrganizationSettings.objects.update_or_create(
+                organization=self.organization,
+                key=setting_data["key"],
+                defaults={"value": setting_data.get("value", {})},
+            )
         self.summary.append(f"applied organizations: {self.organization.slug}")
 
     def apply_auth_users(self, data: dict[str, Any]) -> None:
@@ -422,6 +434,7 @@ class BackendSeedApplier:
                 current_cycle_ends_at=subscription_data.get("currentCycleEndsAt"),
             )
             subscriptions_by_key[subscription_data["key"]] = subscription
+            self.subscriptions_by_key[subscription_data["key"]] = subscription
 
         for cycle_data in data.get("cycles", []):
             subscription = subscriptions_by_key[cycle_data["subscriptionKey"]]
@@ -434,6 +447,7 @@ class BackendSeedApplier:
                 status=cycle_data.get("status", "open"),
             )
             cycles_by_key[cycle_data["key"]] = cycle
+            self.subscription_cycles_by_key[cycle_data["key"]] = cycle
 
         for item_data in data.get("cycleItems", []):
             cycle = cycles_by_key[item_data["cycleKey"]]
@@ -519,20 +533,32 @@ class BackendSeedApplier:
                 metadata__seedKey=order_data["key"],
             ).first()
             if existing_order:
+                subscription_key = order_data.get("subscriptionKey")
+                if subscription_key and existing_order.subscription_id is None:
+                    existing_order.subscription = self.subscriptions_by_key.get(subscription_key)
+                cycle_key = order_data.get("subscriptionCycleKey")
+                if cycle_key and existing_order.subscription_cycle_id is None:
+                    existing_order.subscription_cycle = self.subscription_cycles_by_key.get(cycle_key)
+                existing_order.save(update_fields=["subscription", "subscription_cycle", "updated_at"])
                 self.orders_by_key[order_data["key"]] = existing_order
                 continue
 
             customer = self.customers_by_key[order_data["customerKey"]]
             address = customer.addresses.filter(is_default=True).first()
             subscription = None
+            subscription_cycle = None
             subscription_key = order_data.get("subscriptionKey")
             if subscription_key:
-                subscription = customer.subscriptions.filter(plan__key=order_data.get("planKey", "")).first()
+                subscription = self.subscriptions_by_key.get(subscription_key)
+            cycle_key = order_data.get("subscriptionCycleKey")
+            if cycle_key:
+                subscription_cycle = self.subscription_cycles_by_key.get(cycle_key)
             order = create_order(
                 organization=organization,
                 customer=customer,
                 address=address,
                 subscription=subscription,
+                subscription_cycle=subscription_cycle,
                 kind_key=order_data["kindKey"],
                 items=order_data.get("items", []),
                 notes=order_data.get("notes", ""),
@@ -625,6 +651,40 @@ class BackendSeedApplier:
                 )
             self.deliveries_by_key[delivery_data["key"]] = delivery
         self.summary.append(f"applied deliveries: deliveries={len(data.get('deliveries', []))}")
+
+    def apply_payments(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        for payment_data in data.get("payments", []):
+            customer = self.customers_by_key[payment_data["customerKey"]]
+            subscription = None
+            subscription_key = payment_data.get("subscriptionKey")
+            if subscription_key:
+                subscription = self.subscriptions_by_key[subscription_key]
+            order = None
+            order_key = payment_data.get("orderKey")
+            if order_key:
+                order = self.orders_by_key[order_key]
+            payment, _created = Payment.objects.update_or_create(
+                organization=organization,
+                reference=payment_data["reference"],
+                defaults={
+                    "customer": customer,
+                    "subscription": subscription,
+                    "order": order,
+                    "status": payment_data.get("status", Payment.Status.PENDING),
+                    "currency": payment_data.get("currency", organization.currency),
+                    "amount_cents": payment_data["amountCents"],
+                    "due_at": payment_data.get("dueAt"),
+                    "paid_at": payment_data.get("paidAt"),
+                    "notes": payment_data.get("notes", ""),
+                    "metadata": {
+                        **payment_data.get("metadata", {}),
+                        "seedKey": payment_data["key"],
+                    },
+                },
+            )
+            self.payments_by_key[payment_data["key"]] = payment
+        self.summary.append(f"applied payments: payments={len(data.get('payments', []))}")
 
     def require_organization(self) -> Organization:
         if self.organization is None:

@@ -133,8 +133,14 @@ def create_order(
         raise OrderValidationError("address_mismatch", "Address must belong to customer and organization")
     if subscription is not None and subscription.organization_id != organization.id:
         raise OrderValidationError("subscription_organization_mismatch", "Subscription must belong to organization")
+    if subscription is not None and subscription.customer_id != customer.id:
+        raise OrderValidationError("subscription_customer_mismatch", "Subscription must belong to customer")
     if subscription_cycle is not None and subscription_cycle.organization_id != organization.id:
         raise OrderValidationError("subscription_cycle_organization_mismatch", "Subscription cycle must belong to organization")
+    if subscription_cycle is not None and subscription is None:
+        raise OrderValidationError("subscription_required_for_cycle", "Subscription is required when cycle is provided")
+    if subscription_cycle is not None and subscription_cycle.subscription_id != subscription.id:
+        raise OrderValidationError("subscription_cycle_mismatch", "Subscription cycle must belong to subscription")
     if not items:
         raise OrderValidationError("order_items_required", "Order requires at least one item")
 
@@ -143,6 +149,11 @@ def create_order(
         key=kind_key,
         is_active=True,
     )
+    if kind.commercial_mode and kind.commercial_mode.key == "subscription":
+        if subscription is None:
+            raise OrderValidationError("subscription_required_for_order", "Subscription order requires a subscription")
+        if subscription_cycle is None:
+            raise OrderValidationError("subscription_cycle_required_for_order", "Subscription order requires a cycle")
     status = initial_order_status(organization)
     order = Order.objects.create(
         organization=organization,

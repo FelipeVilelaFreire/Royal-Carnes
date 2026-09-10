@@ -1,32 +1,32 @@
 import { useCallback, useMemo, useState } from "react";
 import { normalizeApiError, type ApiErrorEnvelope } from "../../../shared-core";
-import { clientOrdersApi, type createClientOrdersApi } from "../api/orders.api";
+import { createClientOrdersApi } from "../api/orders.api";
 import type {
   ClientOrderConfigView,
   ClientOrderCreateInput,
   ClientOrderView,
 } from "../contracts/orders.contract";
-import { ordersFallbackDataSource } from "../data-sources/orders.fallback";
 import { createClientOrdersViewModel } from "../view-models/orders.view-model";
+import { useClientApiConfig } from "../runtime/ClientApiProvider";
 
 type ClientOrdersApi = ReturnType<typeof createClientOrdersApi>;
 
 export interface UseClientOrdersOptions {
   api?: ClientOrdersApi;
-  fallbackOnError?: boolean;
   initialConfig?: ClientOrderConfigView | null;
   initialOrders?: ClientOrderView[];
 }
 
 export function useClientOrders(options: UseClientOrdersOptions = {}) {
-  const api = options.api || clientOrdersApi;
+  const apiConfig = useClientApiConfig();
+  const api = useMemo(() => options.api || createClientOrdersApi(apiConfig), [apiConfig, options.api]);
   const [config, setConfig] = useState<ClientOrderConfigView | null>(
-    options.initialConfig || ordersFallbackDataSource.config,
+    options.initialConfig || null,
   );
-  const [orders, setOrders] = useState<ClientOrderView[]>(options.initialOrders || ordersFallbackDataSource.orders);
+  const [orders, setOrders] = useState<ClientOrderView[]>(options.initialOrders || []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
-  const [source, setSource] = useState<"api" | "fallback">("fallback");
+  const [source, setSource] = useState<"api">("api");
 
   const loadConfig = useCallback(async () => {
     const nextConfig = await api.config();
@@ -46,17 +46,11 @@ export function useClientOrders(options: UseClientOrdersOptions = {}) {
     } catch (err) {
       const normalized = normalizeApiError(err);
       setError(normalized);
-      if (options.fallbackOnError !== false) {
-        setConfig(ordersFallbackDataSource.config);
-        setOrders(ordersFallbackDataSource.orders);
-        setSource("fallback");
-        return ordersFallbackDataSource;
-      }
       throw err;
     } finally {
       setIsLoading(false);
     }
-  }, [api, options.fallbackOnError]);
+  }, [api]);
 
   const create = useCallback(
     async (input: ClientOrderCreateInput) => {

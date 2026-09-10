@@ -5,6 +5,63 @@ import { adminNavigationGroups } from "../navigation/admin.navigation";
 export const adminAppShellConfig = {
   mode: "admin",
   theme: adminThemeManifest,
+  visual: {
+    background: {
+      enabled: true,
+      pattern: "glassFlow"
+    },
+    cursor: {
+      disabledBelow: 900,
+      enabled: true,
+      intensity: "soft",
+      mode: "glass"
+    },
+    material: "glass"
+  },
+  componentDensity: "comfortable",
+  surface: {
+    appearance: "glass",
+    level: "md",
+    shadowMode: "outer",
+    tone: "neutral"
+  },
+  card: {
+    defaults: {
+      appearance: "glass",
+      level: "md",
+      tone: "neutral",
+      width: "full"
+    }
+  },
+  button: {
+    defaults: {
+      appearance: "glass",
+      level: "md",
+      tone: "neutral"
+    }
+  },
+  segmentedControl: {
+    defaults: {
+      level: "xs",
+      variant: "panel",
+      width: "content"
+    },
+    variants: {
+      panel: {
+        track: {
+          appearance: "glass",
+          gapToken: "2xs",
+          paddingToken: "2xs",
+          surfaceLevel: "xs",
+          tone: "neutral"
+        },
+        activeOption: {
+          appearance: "soft",
+          tone: "primary"
+        }
+      }
+    }
+  },
   strings: adminPtBR.appShell,
   navigationGroups: adminNavigationGroups,
   navigationPlacements: {
@@ -12,7 +69,7 @@ export const adminAppShellConfig = {
       enabled: false
     },
     sidebar: {
-      routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes", "usuarios"]
+      routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes"]
     },
     drawer: {
       inheritFrom: "sidebar"
@@ -59,6 +116,15 @@ export const adminAppShellConfig = {
     collapsible: true,
     defaultCollapsed: false,
     density: "compact",
+    groupButton: {
+      expandable: true,
+      style: "accordion",
+      transition: "smooth"
+    },
+    routeButton: {
+      activeStyle: "soft",
+      style: "navigation"
+    },
     expandedCols: 3,
     collapsedCols: 1,
     brandNameKey: "brand.name",

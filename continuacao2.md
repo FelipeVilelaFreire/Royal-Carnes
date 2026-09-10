@@ -519,6 +519,140 @@ manifest/config, nunca criar um header/drawer/shell paralelo da landing.
 
 ## Portal Atual
 
+### Escopo Principal Atual
+
+O Portal Client ativo foi reduzido ao conjunto que existe em Web e Mobile:
+
+```text
+/home
+/cortes
+/montar-box
+/meus-pedidos
+/perfil
+```
+
+O inventario de paridade, fontes de dados e decisoes de limpeza esta em
+`docs/CLIENT_PORTAL_SCREEN_MAP.md`. Rotas planejadas, aliases `portal-*`,
+`/hero`, `/library`, Minha Caixa, Meu Clube e a rota propria de Royal Delivery
+foram removidos do Client. Royal Delivery continua como modalidade dentro de
+Montar Box, nao como tela separada.
+
+Validacao da simplificacao: `npm run verify:rules` passou. O build Client
+resolveu o Portal, mas a checagem TypeScript final foi bloqueada por mudanca
+concorrente em `frontend/foundation/ui/Surface/Surface.tsx` (`appearance`,
+`tone` e `level` ausentes no tipo), fora deste corte.
+
+### AccessShell Compartilhado
+
+O acesso deixou de ser uma implementacao local por surface. O dono visual e:
+
+```text
+frontend/foundation/shells/access-shell/
+```
+
+Capacidades atuais:
+
+```text
+web    -> modal, bottomModal e screen
+native -> screen via hosts nativos
+config -> flow, campos, apresentacao e opcoes visuais
+```
+
+No Native, o AccessShell nao monta `Pressable`, `TextInput`, `Text` ou
+`View` como controles de acesso diretamente. Ele compoe as primitivas
+`Button`, `Input`, `Surface`, `Text` e layouts da Foundation em
+`frontend/foundation/native/components/`; essas primitivas
+resolvem Theme -> semi-composed -> descriptor nativo antes de falar com os
+hosts React Native. Os adapters antigos em `frontend/client/mobile/src/ui/`
+sao legado a migrar, e nao uma dependencia do AccessShell.
+
+Consumidores atuais:
+
+```text
+Client Web
+  -> frontend/client/web/src/screens/portal/PortalView.tsx
+  -> useClientAuthSession + createClientAuthApi
+  -> config: frontend/client/shared-core/manifest/portal/access-shell.config.jsx
+
+Client Mobile
+  -> frontend/client/mobile/src/screens/portal/PortalView.tsx
+  -> mesmo config e useClientAuthSession
+  -> host fornece storage/API config da plataforma quando disponivel
+
+Admin Web
+  -> frontend/admin/web/src/App.tsx
+  -> useAdminAuthSession
+  -> config: frontend/admin/shared-core/manifest/access-shell.config.jsx
+```
+
+Limite de ownership:
+
+```text
+AccessShell -> campos, loading, erro, apresentacao e callbacks
+Client/Admin shared-core -> session, API, token, mapper e persistencia
+backend -> autenticacao, autorizacao e identidade
+```
+
+Nao recriar `AuthModal` ou `LoginScreen` localmente. Os arquivos locais antigos
+foram removidos. Copy continua em locale; config declara somente capacidade e
+composicao, nunca texto, endpoint ou regra de sessao.
+
+### Portal Sem Mock: Cortes
+
+`/cortes` e a primeira rota Client migrada sem fallback de apresentacao nos dois
+runtimes, Web e Mobile:
+
+```text
+CortesView
+  -> useClientApiConfig() via ClientApiProvider
+  -> useClientCatalog({ apiConfig })
+  -> createClientCatalogApi(apiConfig)
+  -> GET /api/v1/catalog/collections/
+  -> GET /api/v1/catalog/commercial-modes/
+  -> GET /api/v1/catalog/products/
+  -> catalogo seed/backend real
+```
+
+`cortes-catalog.view-model.ts` nao importa mais `cuts.mock`,
+`mockCutsCatalog` ou `mockCutCategories`. Loading, vazio e erro sao estados
+reais da API; erro nao troca silenciosamente para dados demonstrativos.
+
+O `CortesView` Mobile segue o mesmo `useClientApiConfig()` ->
+`useClientCatalog({ apiConfig })` -> `createCortesCatalogViewModel()`. O antigo
+`cortes.model.ts`, que criava snapshot local vazio, foi removido. A partir daqui,
+uma rota Client somente e marcada como sem mock apos revisar Web e Mobile no
+mesmo contrato e eliminar fallback nos dois; uma migracao unilateral nao vale
+como concluida.
+
+### Auditoria Atual: Montar Box
+
+`/montar-box` usa um unico `useClientCheckout` nos dois runtimes, portanto a
+regra esta centralizada no shared-core. A auditoria detalhada esta em
+`docs/CLIENT_PORTAL_SCREEN_MAP.md`.
+
+Estado confirmado:
+
+```text
+pedido final       -> POST /api/v1/orders/me/ ja e backend real
+catalogo/planos    -> backend ja possui endpoints, mas Checkout ainda usa fallback
+endereco           -> modelo existe; falta API self-service do cliente
+frete/prazo        -> falta contrato/backend publicado
+pagamento/parcelas -> falta contrato/backend publicado
+```
+
+O Mobile agora recebe as strings pelo `PortalView`, como as demais telas, e nao
+importa `clientPtBR` diretamente. Ele ainda e visualmente mais compacto que o
+Web; isso e um gap de paridade de apresentacao, nao deve resultar em uma regra
+separada de checkout.
+
+Nao declarar Montar Box como sem mock antes de substituir o
+`checkoutFallbackDataSource` por um snapshot de checkout real nos dois
+runtimes. O contrato correto continua:
+
+```text
+backend -> shared-core API/mapper/hook/view-model -> PedidoView Web/Mobile
+```
+
 Fluxos ja trabalhados no corte render-only:
 
 ```text
@@ -572,7 +706,7 @@ Kits relevantes para Client:
 ```text
 Kit 01 - Auth & Users
   -> auth/session/login/register/logout
-  -> AuthModal ainda deve seguir Foundation/render-only
+  -> AccessShell Foundation por config, sem modal/tela local por surface
 
 Kit 02 - Catalog
   -> catalog API/hooks/view-models
@@ -690,4 +824,76 @@ depois render-only
 depois validacao automatica
 depois screenshot
 depois refinamento visual fino
+```
+
+## Atualizacao Client: Portal Sem Mocks
+
+Estado desta atualizacao:
+
+```text
+escopo: Portal Client Web + Mobile
+rotas: /cortes, /montar-box, /meus-pedidos e /perfil
+objetivo concluido: remover dados demonstrativos e fallback executavel do client
+```
+
+O Client nao possui mais os data-sources de fallback nem a pasta
+`frontend/client/shared-core/mocks`. Uma falha de API agora preserva o estado
+real vazio/erro; ela nao troca silenciosamente para pedidos, planos, produtos,
+enderecos ou pagamentos demonstrativos.
+
+Fluxos atuais:
+
+```text
+/cortes
+  -> catalog API -> useClientCatalog -> Web/Mobile
+
+/montar-box
+  -> catalog, orders/config, subscriptions/plans, subscriptions/me,
+     subscriptions/me/cycles/current e customers/me
+  -> useClientCheckout -> PedidoView Web/Mobile
+  -> endereco novo persiste em customers/me/addresses
+  -> pedido final usa orders/me
+
+/meus-pedidos
+  -> orders/config + orders/me autenticados
+  -> useClientOrders resolve a configuracao de API do Portal
+  -> MeusPedidosView Web/Mobile apenas renderiza loading, vazio, erro ou API
+
+/perfil
+  -> customers/me, payments/me, subscriptions e orders/me
+  -> useClientCustomer -> MinhaContaView Web/Mobile
+```
+
+Limites dos dados reais:
+
+```text
+pagamento salvo depende de provider/gateway e pode aparecer vazio
+troca de plano e acoes de seguranca ainda exigem concluir os callbacks de UI
+limites do checkout refletem entitlements, mas a regra autoritativa continua no backend
+```
+
+Validacoes desta atualizacao:
+
+```text
+rg de mocks/fallback no frontend/client -> sem ocorrencias
+npm run verify:rules -> passou, sem violacoes novas
+git diff --check -> passou
+Next dev reiniciado em http://localhost:3000
+```
+
+O build do Client compilou o codigo deste corte, mas a etapa TypeScript segue
+bloqueada por erros concorrentes da Foundation em `UiBackgroundConfig` e
+props de `Surface`. A validacao Django nao rodou porque `python.exe` estava
+inacessivel neste ambiente.
+
+## Proximo Corte
+
+Agora o foco deixa de ser remover mocks. A sequencia recomendada e:
+
+```text
+1. Testar login real e /meus-pedidos com uma conta seed no navegador.
+2. Testar /montar-box: catalogo, endereco, frete, pagamento e POST de pedido.
+3. Testar /perfil: salvar dados, preferencias e enderecos.
+4. Ajustar loading, vazio, erro e feedback de salvamento nas duas plataformas.
+5. Fazer QA visual Web/Mobile e melhorar cada tela com screenshot real.
 ```

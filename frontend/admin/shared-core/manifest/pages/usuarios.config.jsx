@@ -1,5 +1,3 @@
-import { mockAdminCustomers } from "../../mocks/customers.mock";
-
 export const usuariosConfig = {
   screenKey: "usuarios",
   titleKey: "usuarios.title",
@@ -12,7 +10,7 @@ export const usuariosConfig = {
     { key: "email", labelKey: "usuarios.tableHeaders.email" },
     { key: "phone", labelKey: "usuarios.tableHeaders.phone" },
     { key: "activePlan", labelKey: "usuarios.tableHeaders.planName" },
-    { key: "statusLabel", labelKey: "usuarios.tableHeaders.status" },
+    { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey" },
     { key: "memberSince", labelKey: "usuarios.tableHeaders.joinedDate" },
   ],
   filters: [
@@ -20,8 +18,8 @@ export const usuariosConfig = {
       key: "status",
       labelKey: "common.status",
       options: [
-        { value: "ativo", labelKey: "common.statusActive" },
-        { value: "pausado", labelKey: "common.statusPaused" },
+        { value: "active", labelKey: "common.statusActive" },
+        { value: "inactive", labelKey: "common.statusInactive" },
       ],
     },
   ],
@@ -33,8 +31,4 @@ export const usuariosConfig = {
       { key: "activePlan", labelKey: "usuarios.form.activePlan" },
     ],
   },
-  rows: mockAdminCustomers.map((customer) => ({
-    ...customer,
-    statusLabel: customer.status === "ativo" ? "Ativo" : "Pausado",
-  })),
 };

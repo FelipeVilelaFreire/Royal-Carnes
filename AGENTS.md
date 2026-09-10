@@ -49,6 +49,9 @@ Nao percorra todos os roadmaps, auditorias e handoffs antes de uma tarefa pequen
 ## Regras obrigatorias para codigo novo ou alterado
 
 - Backend decide regras, autorizacao, calculos, workflow e persistencia.
+- Todo fluxo funcional respeita quatro donos: backend -> shared-core ->
+  config.jsx/manifest -> JSX render-only. Em tela Portal sem manifest proprio,
+  mantenha shared-core -> JSX; nao crie config artificial sem capacidade real.
 - Fluxo de produto usa screen -> hook -> API client -> backend.
 - Shared-core fica no menor escopo correto: client, admin ou global comprovado.
 - Texto novo de UI nasce em chave de locale, inclusive aria-label e feedback.
@@ -60,6 +63,9 @@ Nao percorra todos os roadmaps, auditorias e handoffs antes de uma tarefa pequen
 - Admin e client declaram manifest e consomem o mesmo AppShell da Foundation.
   Nao implementar Header, Sidebar, Drawer, Footer ou BottomTabBar por surface.
 - webIsMobile compartilha contrato e comportamento com mobile native.
+- Uma rota Client so e considerada migrada sem mock depois da revisao e
+  eliminacao de fallback tanto no Web quanto no Mobile; a revisao de uma
+  plataforma nunca autoriza assumir a outra equivalente.
 - Legado tolerado nao e exemplo para codigo novo. Nao adicionar mocks diretos,
   copy inline, regras comerciais ou persistencia em screens.
 - Nao criar runtime, engine ou abstracao nova apenas para conectar configuracao existente.

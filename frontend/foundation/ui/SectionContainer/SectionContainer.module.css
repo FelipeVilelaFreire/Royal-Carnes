@@ -76,6 +76,15 @@
   background-size: cover;
 }
 
+.section[data-atmosphere="transparent"] {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+.section[data-atmosphere="transparent"]::after {
+  display: none;
+}
+
 .grid {
   align-items: center;
   box-sizing: border-box;

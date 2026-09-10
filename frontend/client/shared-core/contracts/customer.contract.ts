@@ -1,6 +1,6 @@
 import type { ClientCustomerProfile } from "../types/customer.types";
 
-export type ClientCustomerSubscriptionTier = "basic" | "premium" | "pro";
+export type ClientCustomerSubscriptionTier = string;
 export type ClientCustomerOrderStatus = "sentToStore" | "approved" | "preparing" | "outForDelivery" | "delivered" | "cancelled";
 export type ClientCustomerOrderTone = "success" | "danger" | "pending" | "active";
 
@@ -9,12 +9,31 @@ export interface ClientCustomerDto {
   name: string;
   email?: string | null;
   phone?: string | null;
+  document?: string | null;
+  member_since?: string | null;
+  birth_date?: string | null;
+  preferences?: Record<string, unknown>;
+  notification_settings?: Partial<ClientCustomerNotificationPreferences>;
+  payment_methods?: Array<{
+    id: string | number;
+    method_type: string;
+    label?: string | null;
+    provider?: string | null;
+    metadata?: Record<string, unknown>;
+    is_default?: boolean | null;
+  }>;
   status?: string | null;
   addresses?: Array<{
     id: string;
     label?: string | null;
+    recipient_name?: string | null;
+    postal_code?: string | null;
+    street?: string | null;
+    number?: string | null;
+    complement?: string | null;
     city?: string | null;
     district?: string | null;
+    state?: string | null;
     is_default?: boolean | null;
   }>;
 }

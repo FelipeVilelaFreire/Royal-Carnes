@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { UiBackgroundConfig, UiBackgroundCursorConfig } from "../../../ui/core";
 
 export type AppShellMode = "client" | "admin";
 export type AppShellPlacement = "header" | "sidebar" | "drawer" | "bottomTabBar" | "nativeTabBar" | "footer";
@@ -102,6 +103,7 @@ export interface AppShellLayoutConfig {
 
 export interface AppShellConfig {
   auth?: any;
+  background?: UiBackgroundConfig;
   bottomTabBar?: any;
   drawer?: any;
   footer?: any;
@@ -115,6 +117,12 @@ export interface AppShellConfig {
   sidebar?: any;
   strings?: AppShellStrings & Record<string, any>;
   theme?: any;
+  visual?: {
+    background?: UiBackgroundConfig;
+    cursor?: UiBackgroundCursorConfig;
+    material?: "glass" | "solid" | string;
+    [key: string]: any;
+  };
 }
 
 export interface ResolvedAppShellNavigationItem extends AppShellNavigationItem {

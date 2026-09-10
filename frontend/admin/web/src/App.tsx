@@ -1,42 +1,26 @@
 import React, { useEffect, useMemo } from "react";
+import { AccessShell } from "@foundation/shells/access-shell";
 import { AppShell } from "@foundation/shells/app-shell";
 import type { ApiClientConfig } from "@shared-core";
 import {
   createAdminAuthApi,
   createAdminDevAuthBypassFetcher,
   readAdminDevAuthBypassAccessToken,
-  useAdminDevAuthBypassToken,
   useAdminAuthSession,
+  useAdminDevAuthBypassToken,
 } from "@royalprime/admin";
-import { adminNavigation } from "@/navigation/admin.navigation";
+import { adminAccessShellConfig } from "@/manifest/access-shell.config";
 import { adminAppShellConfig } from "@/manifest/adminAppShell.config";
-import { adminRoutes } from "@/manifest/routes";
 import { adminPtBR } from "@/locales/pt-BR";
-
-import { dashboardConfig } from "@/manifest/pages/dashboard.config";
-import { produtosConfig } from "@/manifest/pages/produtos.config";
-import { categoriasConfig } from "@/manifest/pages/categorias.config";
-import { colecoesConfig } from "@/manifest/pages/colecoes.config";
-import { planosConfig } from "@/manifest/pages/planos.config";
-import { assinaturasConfig } from "@/manifest/pages/assinaturas.config";
-import { clientesConfig } from "@/manifest/pages/clientes.config";
-import { usuariosConfig } from "@/manifest/pages/usuarios.config";
-import { pedidosConfig } from "@/manifest/pages/pedidos.config";
-import { deliveriesConfig } from "@/manifest/pages/deliveries.config";
-import { estoqueConfig } from "@/manifest/pages/estoque.config";
-import { pagamentosConfig } from "@/manifest/pages/pagamentos.config";
-import { settingsConfig } from "@/manifest/pages/settings.config";
-
-import { DashboardScreen } from "./engines/rendering/screen-types/dashboard/DashboardScreen";
-import { StandardScreen } from "./engines/rendering/screen-types/standard/StandardScreen";
-import { SettingsPage } from "./engines/rendering/screen-types/settings/SettingsPage";
-import { LoginScreen } from "./engines/rendering/screen-types/auth/LoginScreen";
+import { adminRoutes } from "@/manifest/routes";
+import { adminNavigation } from "@/navigation/admin.navigation";
 import {
   adminAuthStorage,
   readStoredAdminAccessToken,
   readStoredAdminSession,
 } from "./auth/adminAuthStorage";
 import styles from "./App.module.css";
+import { renderAdminScreen } from "./engines/rendering/screenRegistry";
 import { useAdminRuntime } from "./useAdminRuntime";
 
 const adminAuthBypassEnabled = import.meta.env.VITE_ADMIN_AUTH_DISABLED === "true";
@@ -93,49 +77,16 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  const renderActiveScreenEngine = () => {
-    // 1. Dashboard (ScreenType: dashboard)
-    if (activeScreenKey === "dashboard") {
-      return <DashboardScreen apiConfig={apiConfig} config={dashboardConfig as any} onNavigate={navigate} />;
-    }
-
-    // 2. Configurações (ScreenType: settings)
-    if (activeScreenKey === "configuracoes" || activeScreenKey === "settings") {
-      return <SettingsPage config={settingsConfig} />;
-    }
-
-    // 3. Entidades Padrão (ScreenType: standard -> produtos, usuarios, assinaturas, pedidos, deliveries)
-    let activeConfig: any = null;
-    if (activeScreenKey === "pedidos") activeConfig = pedidosConfig;
-    if (activeScreenKey === "deliveries") activeConfig = deliveriesConfig;
-    if (activeScreenKey === "estoque") activeConfig = estoqueConfig;
-    if (activeScreenKey === "produtos") activeConfig = produtosConfig;
-    if (activeScreenKey === "categorias") activeConfig = categoriasConfig;
-    if (activeScreenKey === "colecoes") activeConfig = colecoesConfig;
-    if (activeScreenKey === "planos") activeConfig = planosConfig;
-    if (activeScreenKey === "assinaturas") activeConfig = assinaturasConfig;
-    if (activeScreenKey === "clientes") activeConfig = clientesConfig;
-    if (activeScreenKey === "pagamentos") activeConfig = pagamentosConfig;
-    if (activeScreenKey === "usuarios") activeConfig = usuariosConfig;
-
-    if (activeConfig) {
-      return (
-        <StandardScreen
-          apiConfig={apiConfig}
-          entityConfig={activeConfig}
-          onBackToList={backToList}
-          onCreateRow={createNew}
-          onEditRow={createNew}
-          onSelectRow={selectRow}
-          onSubmit={backToList}
-          routeAction={routeAction}
-          selectedRow={selectedRow}
-        />
-      );
-    }
-
-    return <DashboardScreen apiConfig={apiConfig} config={dashboardConfig as any} onNavigate={navigate} />;
-  };
+  const activeScreen = renderAdminScreen({
+    activeScreenKey,
+    apiConfig,
+    backToList,
+    createNew,
+    navigate,
+    routeAction,
+    selectedRow,
+    selectRow,
+  });
 
   if (!adminAuthBypassEnabled && !auth.isAuthenticated) {
     return (
@@ -150,10 +101,17 @@ export const App: React.FC = () => {
         onNavigate={navigate}
       >
         <div className={styles.adminContent}>
-          <LoginScreen
+          <AccessShell
+            config={adminAccessShellConfig as any}
             errorMessage={auth.error ? adminPtBR.auth.invalid : null}
             isLoading={auth.isLoading}
-            onLogin={auth.login}
+            onSubmit={(_flow, values) =>
+              auth.login({
+                email: values.email || "",
+                password: values.password || "",
+              })
+            }
+            strings={adminPtBR.accessShell}
           />
         </div>
       </AppShell>
@@ -190,7 +148,7 @@ export const App: React.FC = () => {
       activePath={activeRoutePath}
       onNavigate={navigate}
     >
-      <div className={styles.adminContent}>{renderActiveScreenEngine()}</div>
+      <div className={styles.adminContent}>{activeScreen}</div>
     </AppShell>
   );
 };

@@ -12,6 +12,24 @@ Produto de ecommerce, assinaturas, pedidos, entregas e operacao administrativa.
 
 ## Estrutura
 
+### Quatro Separacoes
+
+```text
+backend
+  -> dados, regras, autorizacao, persistencia e endpoints
+shared-core
+  -> contratos, API clients, hooks, mappers, view-models e runtime tecnico
+config.jsx / manifest
+  -> composicao, capacidades, campos, defaults, rotas e opcoes
+JSX render-only
+  -> apresenta estado e dispara callbacks, sem HTTP, mock ou regra de negocio
+```
+
+No Portal, telas ainda sem manifest proprio seguem temporariamente
+`shared-core -> JSX render-only`; o manifest entra quando houver uma capacidade
+ou composicao real para declarar. A definicao normativa completa esta no
+[Contrato arquitetural](ROYALPRIME_ARCHITECTURE_CONTRACT.md#quatro-separacoes-do-produto).
+
 - backend/: Django, API e regras persistidas.
 - frontend/foundation/: capacidades visuais e AppShell.
 - frontend/shared-core/: base comum comprovada.

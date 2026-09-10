@@ -1,5 +1,5 @@
 .page {
-  background: var(--theme--color-background);
+  background: transparent;
   min-block-size: 100%;
   padding-block-end: var(--theme--spacing-3xl);
   width: 100%;
@@ -7,6 +7,10 @@
 
 .content {
   padding-block-start: var(--theme--spacing-lg);
+  width: 100%;
+}
+
+.header {
   width: 100%;
 }
 
@@ -22,28 +26,34 @@
   width: 100%;
 }
 
-.settingsGrid {
+.settingList {
+  display: grid;
+  gap: var(--theme--spacing-sm);
   width: 100%;
 }
 
-.settingCard {
-  background: color-mix(in srgb, var(--theme--color-surface) 88%, transparent);
-  border: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
-  border-radius: var(--theme--radius-md);
+.settingItem {
+  align-items: center;
+  border: var(--theme--border-width-sm) solid var(--theme--color-border-subtle);
+  border-radius: var(--theme--radius-lg);
   display: flex;
-  flex-direction: column;
-  gap: var(--theme--spacing-xs);
-  min-inline-size: 0;
+  gap: var(--theme--spacing-md);
+  justify-content: space-between;
+  min-width: 0;
   padding: var(--theme--spacing-md);
 }
 
-.successValue {
-  color: var(--theme--color-success, var(--theme--color-primary));
+.settingText {
+  min-width: 0;
 }
 
-.primaryValue,
-.mutedValue {
-  color: var(--theme--color-primary);
+.fieldLabel {
+  min-inline-size: 0;
+}
+
+.fieldValue {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 760px) {
@@ -51,13 +61,8 @@
     padding-block-end: var(--theme--spacing-xl);
   }
 
-  .settingsGrid {
-    --ui-layout-columns: 1 !important;
-  }
-}
-
-@media (min-width: 761px) and (max-width: 1180px) {
-  .settingsGrid {
-    --ui-layout-columns: 2 !important;
+  .settingItem {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

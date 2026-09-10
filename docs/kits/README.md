@@ -54,9 +54,9 @@ depois vira decisao de kit
 so depois vira codigo
 ```
 
-## Tres Camadas De Reuso
+## Quatro Separacoes De Reuso
 
-Kits devem documentar reuso em tres camadas:
+Kits devem documentar reuso nas quatro separacoes do produto:
 
 ```text
 backend
@@ -66,6 +66,9 @@ backend
 frontend shared-core
   -> reutilizavel por funcao/kit
   -> contracts, API clients, hooks, mappers, view-models e fallback dev
+
+config.jsx / manifest
+  -> composicao, campos, capacidades, defaults, rotas e opcoes declarativas
 
 frontend web/native/admin-web
   -> render-only agora
@@ -104,6 +107,9 @@ se aparece na tela e e copy de interface, deve vir de locales/config
 
 se aparece na tela e e visual, deve vir de Foundation/AppShell/CSS module
 tokenizado
+
+se a tela ainda nao tem config proprio, ela permanece render-only e consome
+shared-core; nao inventar manifest sem capacidade real para declarar
 ```
 
 Exemplo Catalog:
@@ -212,12 +218,37 @@ serviceos-candidate
 | Admin Operations | planned | Fase 3 | Painel operacional para loja/equipe |
 | Inventory | local foundation | Fase 4 | Estoque simples de produto/insumo |
 | Fulfillment & Delivery | local foundation | Fase 5B | Entrega simples, separacao, confirmacao |
-| Payments | planned | Fase 6/7 | Manual, Pix, gateway, conciliacao |
+| Payments | local foundation | Fase 5/6 | Manual, Pix futuro, gateway, conciliacao |
 | Wallet & Vouchers | planned | Fase 8 | Credito, voucher, saldo, estorno |
 
 ## Kits Admin
 
 Os kits em `docs/kits/admin/` existem para permitir trabalho paralelo no Admin.
+
+Leitura admin atual:
+
+```text
+docs/kits/admin/README.md
+docs/kits/admin/admin-operations-kit.md
+docs/kits/admin/admin-screen-types-kit.md
+docs/kits/admin/audits/admin-audit-2026-09-10.md
+docs/kits/admin/customers-kit.md
+docs/kits/admin/catalog-kit.md
+docs/kits/admin/subscriptions-kit.md
+docs/kits/admin/payments-kit.md
+docs/kits/admin/orders-kit.md
+docs/kits/admin/fulfillment-delivery-kit.md
+docs/kits/admin/inventory-kit.md
+docs/kits/admin/auth-users-kit.md
+```
+
+Regra pratica:
+
+```text
+kit geral explica a capacidade completa
+kit admin explica como a loja opera essa capacidade no painel
+continuacao.md explica somente o estado do corte atual
+```
 Eles nao substituem os kits gerais; eles explicam o recorte operacional do
 Admin para cada capacidade.
 
@@ -225,6 +256,7 @@ Admin para cada capacidade.
 docs/kits/admin/README.md
 docs/kits/admin/admin-operations-kit.md
 docs/kits/admin/admin-screen-types-kit.md
+docs/kits/admin/audits/admin-audit-2026-09-10.md
 docs/kits/admin/auth-users-kit.md
 docs/kits/admin/catalog-kit.md
 docs/kits/admin/subscriptions-kit.md

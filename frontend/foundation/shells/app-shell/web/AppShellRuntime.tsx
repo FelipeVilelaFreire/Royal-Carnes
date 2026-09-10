@@ -14,7 +14,7 @@ import { AppShellFooter } from "./AppShellFooter";
 import { AppShellHeader } from "./AppShellHeader";
 import { AppShellSidebar } from "./AppShellSidebar";
 import { ScreenContent } from "./ScreenContent";
-import { UiProvider } from "../../../ui";
+import { Background, UiProvider } from "../../../ui";
 import styles from "../AppShell.module.css";
 
 export interface AppShellRuntimeProps {
@@ -174,12 +174,15 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
   }, [model.cssVars]);
 
   return (
-    <UiProvider config={{ theme: resolvedConfig?.theme } as any}>
+    <UiProvider config={resolvedConfig as any}>
       <div
         className={[styles.shell, model.sidebarEnabled ? styles.shellWithSidebar : ""].filter(Boolean).join(" ")}
         data-app-shell-mode={model.effectiveMode}
+        data-app-shell-material={resolvedConfig?.visual?.material}
+        data-sidebar-collapsed={model.sidebarEnabled && isSidebarCollapsed ? "true" : undefined}
         ref={shellRef}
       >
+      <Background background={resolvedConfig?.visual?.background} cursor={resolvedConfig?.visual?.cursor} />
       <AppShellSidebar
         config={resolvedConfig}
         isCollapsed={isSidebarCollapsed}

@@ -10,6 +10,7 @@
     { "kit": "subscriptions", "path": "kits/subscriptions.seed.json" },
     { "kit": "inventory", "path": "kits/inventory.seed.json" },
     { "kit": "orders", "path": "kits/orders.seed.json" },
-    { "kit": "deliveries", "path": "kits/deliveries.seed.json" }
+    { "kit": "deliveries", "path": "kits/deliveries.seed.json" },
+    { "kit": "payments", "path": "kits/payments.seed.json" }
   ]
 }

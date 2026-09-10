@@ -82,7 +82,6 @@ view-models/
 manifest/
 locales/
 navigation/
-mocks/
 kits/
 ```
 
@@ -98,9 +97,11 @@ Screen types prioritarios:
 
 ```text
 src/engines/rendering/screen-types/dashboard/DashboardPage.tsx
-src/engines/rendering/screen-types/standard/pages/ListPage.tsx
-src/engines/rendering/screen-types/standard/pages/DetailPage.tsx
-src/engines/rendering/screen-types/standard/pages/AddPage.tsx
+src/engines/rendering/screen-types/standard/pages/ListPage/ListPage.tsx
+src/engines/rendering/screen-types/standard/pages/DetailPage/DetailPage.tsx
+src/engines/rendering/screen-types/standard/pages/AddPage/AddPage.tsx
+src/engines/rendering/screen-types/standard/components/LineItemsEditor/
+src/engines/rendering/screen-types/standard/components/RelatedList/
 ```
 
 Render pode possuir:
@@ -127,20 +128,35 @@ emoji de UI
 design system paralelo
 ```
 
-## Ordem Recomendada
+## Ordem Recomendada Atual
 
 ```text
 1. AppShell admin por manifest consumindo Foundation
-2. DashboardPage
-3. ListPage
-4. DetailPage
-5. AddPage
-6. Orders
-7. Deliveries
-8. Inventory
-9. Catalog
-10. Subscriptions
-11. Auth/Users/Customers
+2. Screen types standard: ListPage, DetailPage, AddPage
+3. Clientes
+4. Catalogo base: Categorias, Colecoes, Produtos
+5. Planos de Assinatura
+6. Assinaturas
+7. Pagamentos
+8. Pedidos
+9. Entregas
+10. Dashboard com dados reais
+11. Configuracoes e Historico
+12. Usuarios internos, quando voltar ao menu
+13. Estoque depois da V1 imediata
+```
+
+Motivo da ordem:
+
+```text
+Pagamento depende de cliente e de assinatura/pedido.
+Pedido depende de cliente e catalogo.
+Assinatura depende de cliente e plano.
+Plano depende de catalogo/produtos/unidades para beneficios.
+Produto depende de categoria e colecao.
+Entrega depende de pedido.
+Dashboard depende dos dados reais anteriores.
+Usuarios fica oculto ate haver necessidade operacional clara de permissao/times.
 ```
 
 ## AppShell Admin
@@ -172,5 +188,7 @@ admin screen types consomem manifest/view-model/locales
 hooks admin chamam api clients admin
 api clients admin batem com backend/API_CONTRACTS.md
 status/tone/icon nao ficam hardcoded no TSX
+copy nova vem de frontend/admin/shared-core/locales
+manifest/pages/*.config.jsx declara colunas, tabs, fields e fontes de select
 npm run build:admin passa
 ```

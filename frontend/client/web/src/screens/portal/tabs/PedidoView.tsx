@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Container } from "@foundation/ui";
-import { AuthModal } from "../AuthModal";
 import { useClientCheckout } from "@/hooks/useClientCheckout";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { formatClientCheckoutMeasure, formatClientCheckoutMoney } from "@royalprime/client/utils/checkout.formatters";
@@ -20,13 +19,15 @@ import { StickyOrderSummary } from "./pedido/StickyOrderSummary";
 import { usePedidoRuntime } from "./pedido/usePedidoRuntime";
 
 export interface PedidoViewProps {
+  isAuthenticated: boolean;
+  onRequestAccess: () => void;
 }
 
-export const PedidoView: React.FC<PedidoViewProps> = () => {
+export const PedidoView: React.FC<PedidoViewProps> = ({ isAuthenticated, onRequestAccess }) => {
   const strings = useClientStrings().pedido;
-  const runtime = usePedidoRuntime();
-  const { isDark, isDemoAuthenticated, tokens } = runtime;
-  const checkout = useClientCheckout({ isAuthenticated: isDemoAuthenticated });
+  const runtime = usePedidoRuntime({ isAuthenticated, onRequestAccess });
+  const { tokens } = runtime;
+  const checkout = useClientCheckout({ isAuthenticated });
   const {
     actions,
     activeCycleUsage,
@@ -322,14 +323,6 @@ export const PedidoView: React.FC<PedidoViewProps> = () => {
           ) : null}
         </Container>
       </main>
-
-      <AuthModal
-        open={runtime.isAuthModalOpen}
-        onClose={runtime.closeAuthModal}
-        onAuthenticated={() => runtime.handleAuthenticatedCheckout(actions.setCurrentStep)}
-        isDark={isDark}
-        context="portal"
-      />
 
       {filterModalOpen ? (
         <ProductFilterModal

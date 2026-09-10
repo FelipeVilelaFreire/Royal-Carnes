@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "kit": "payments",
+  "payments": [
+    {
+      "key": "pagamento-assinatura-pro-setembro",
+      "reference": "PAY-RP-2026-09-PRO",
+      "customerKey": "cliente-royalprime",
+      "subscriptionKey": "cliente-royalprime-pro",
+      "orderKey": "pedido-assinatura-pro-setembro",
+      "status": "paid",
+      "currency": "BRL",
+      "amountCents": 44900,
+      "dueAt": "2026-09-05T12:00:00-03:00",
+      "paidAt": "2026-09-04T16:40:00-03:00",
+      "notes": "Mensalidade Pro de setembro vinculada ao ciclo aberto."
+    },
+    {
+      "key": "pagamento-felipe-royal-box",
+      "reference": "PAY-RP-BOX-0001",
+      "customerKey": "felipe-vilela",
+      "orderKey": "pedido-felipe-churrasco-familia",
+      "status": "pending",
+      "currency": "BRL",
+      "amountCents": 11880,
+      "dueAt": "2026-09-12T12:00:00-03:00",
+      "notes": "Cobranca manual do Royal Box familiar."
+    },
+    {
+      "key": "pagamento-lucas-delivery-falhou",
+      "reference": "PAY-RP-DEL-0001",
+      "customerKey": "lucas-dias",
+      "orderKey": "pedido-lucas-delivery-picanha",
+      "status": "failed",
+      "currency": "BRL",
+      "amountCents": 8990,
+      "dueAt": "2026-09-08T12:00:00-03:00",
+      "notes": "Pagamento recusado aguardando nova tentativa."
+    }
+  ]
+}

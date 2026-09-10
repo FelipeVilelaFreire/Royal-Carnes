@@ -1,5 +1,5 @@
 .adminContent {
-  background: var(--app-shell-background);
+  background: transparent;
   min-height: 100vh;
 }
 

@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import { SearchIcon } from "@foundation/ui/Icon/AppIcons";
 import { Button } from "@foundation/ui/Button";
 import { DropdownPicker } from "@foundation/ui/DropdownPicker";
+import { EmptyState } from "@foundation/ui/EmptyState";
 import { Input } from "@foundation/ui/Input";
 import { Container, Grid, Inline, Stack } from "@foundation/ui/Layout";
 import { Surface } from "@foundation/ui/Surface";
@@ -14,29 +15,21 @@ import {
 } from "@/view-models/cortes-catalog.view-model";
 import { useClientCatalog } from "@/hooks/useClientCatalog";
 import { ProductItemCard } from "../../../product-components/ecommerce";
+import { useClientApiConfig } from "@royalprime/client/runtime/ClientApiProvider";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./CortesView.module.css";
-
-export interface CortesViewProps {
-}
 
 const moneyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL"
 });
 
-export const CortesView: React.FC<CortesViewProps> = () => {
+export const CortesView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<CortesCatalogSortKey>("relevance");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-  const [themeMode, setThemeMode] = useState<"dark" | "light">(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("royal_prime_theme");
-      if (stored === "dark" || stored === "light") return stored;
-    }
-    return "dark";
-  });
+  const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");
 
   React.useEffect(() => {
     const handleThemeChange = () => {
@@ -45,6 +38,7 @@ export const CortesView: React.FC<CortesViewProps> = () => {
         setThemeMode(current);
       }
     };
+    handleThemeChange();
     window.addEventListener("royal_theme_changed", handleThemeChange);
     return () => window.removeEventListener("royal_theme_changed", handleThemeChange);
   }, []);
@@ -53,7 +47,8 @@ export const CortesView: React.FC<CortesViewProps> = () => {
   const clientStrings = useClientStrings();
   const strings = clientStrings.cortes.catalogPage;
   const productCardStrings = clientStrings.pedido.productCard;
-  const catalog = useClientCatalog();
+  const apiConfig = useClientApiConfig();
+  const catalog = useClientCatalog({ apiConfig });
 
   React.useEffect(() => {
     catalog.load().catch(() => undefined);
@@ -62,12 +57,13 @@ export const CortesView: React.FC<CortesViewProps> = () => {
   const catalogViewModel = useMemo(
     () => createCortesCatalogViewModel({
       activeCategoryId: activeTab,
+      allCategoriesLabel: strings.allCategoriesLabel,
       apiProducts: catalog.snapshot.products,
       defaultLineLabel: strings.defaultLineLabel,
       searchQuery,
       sortBy,
     }),
-    [activeTab, catalog.snapshot.products, searchQuery, sortBy, strings.defaultLineLabel],
+    [activeTab, catalog.snapshot.products, searchQuery, sortBy, strings.allCategoriesLabel, strings.defaultLineLabel],
   );
   const sortOptions = useMemo(
     () => [
@@ -167,7 +163,28 @@ export const CortesView: React.FC<CortesViewProps> = () => {
             ) : null}
           </Inline>
 
-          {filteredCuts.length > 0 ? (
+          {catalog.isLoading ? (
+            <EmptyState
+              className={styles.emptyPanel}
+              description={strings.loadingDescription}
+              framed
+              size="regular"
+              title={strings.loadingTitle}
+            />
+          ) : catalog.error ? (
+            <EmptyState
+              className={styles.emptyPanel}
+              actions={(
+                <Button appearance="solid" size="sm" tone="primary" type="button" onClick={() => void catalog.load()}>
+                  {strings.retry}
+                </Button>
+              )}
+              description={strings.errorDescription}
+              framed
+              size="regular"
+              title={strings.errorTitle}
+            />
+          ) : filteredCuts.length > 0 ? (
             <Grid className={styles.productGrid}>
               {filteredCuts.map((cut) => {
                 const isFav = Boolean(favorites[cut.id]);

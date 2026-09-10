@@ -1,5 +1,3 @@
-import { mockAdminDeliveries } from "../../mocks/deliveries.mock";
-
 export const deliveriesConfig = {
   screenKey: "deliveries",
   titleKey: "deliveries.title",
@@ -32,5 +30,4 @@ export const deliveriesConfig = {
       { key: "address", labelKey: "deliveries.form.address", type: "textarea" },
     ],
   },
-  rows: mockAdminDeliveries,
 };

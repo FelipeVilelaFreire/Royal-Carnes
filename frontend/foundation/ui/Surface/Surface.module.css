@@ -19,7 +19,13 @@
 }
 
 .surface[data-appearance="glass"] {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--ui-surface-color, currentColor) var(--ui-surface-highlight-opacity), transparent), transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--ui-surface-accent, var(--ui-surface-border)) var(--ui-surface-tint-opacity), transparent), transparent),
+    radial-gradient(ellipse at 0 0, color-mix(in srgb, var(--ui-surface-accent, var(--ui-surface-border)) var(--ui-surface-tint-opacity), transparent), transparent 70%),
+    var(--ui-surface-bg, transparent);
   backdrop-filter: blur(var(--ui-surface-blur, var(--theme--blur-md)));
+  overflow: hidden;
 }
 
 .surface[data-interactive="true"] {

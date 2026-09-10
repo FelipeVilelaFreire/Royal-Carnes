@@ -1,5 +1,10 @@
 # Shared-Core Kit Reset Result
 
+> Nota 2026-09-09: este arquivo registra o reset antigo. O runtime admin atual
+> renasceu em `frontend/admin/shared-core/contracts`, `api`, `hooks`,
+> `mappers`, `view-models`, `manifest/pages` e nos guias
+> `docs/kits/admin/*.md`. Nao usar a lista preservada abaixo como mapa atual.
+
 Branch:
 
 ```text

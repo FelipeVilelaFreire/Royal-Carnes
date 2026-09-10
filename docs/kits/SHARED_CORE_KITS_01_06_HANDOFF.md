@@ -15,10 +15,11 @@ Kit 03 Subscriptions
 Kit 04 Inventory
 Kit 05 Orders
 Kit 06 Fulfillment & Delivery
+Kit 07 Payments
 ```
 
-Nao existe Kit 07 implementavel neste momento. Payments, Checkout, Wallet e
-Vouchers continuam planejados ate nascer backend real.
+Payments deixou de ser apenas planejado no corte de 2026-09-09: existe backend
+real inicial e runtime admin. Checkout, Wallet e Vouchers continuam planejados.
 
 ## Regra Central
 
@@ -58,6 +59,7 @@ Tela nao hardcoda status como regra.
 | 04 Inventory | real | inventory puro | sem runtime | inventory admin | nao |
 | 05 Orders | real | orders puro | config/me/create/detail/fallback | admin list/create/detail/transition | MeusPedidosView web/mobile |
 | 06 Delivery | real | deliveries puro | config/me/detail | admin list/create/detail/transition/confirm | nao |
+| 07 Payments | real inicial | sem global dedicado | sem runtime | payments admin | Admin Pagamentos e aba Pagamentos em Assinaturas |
 
 ## Documentos Principais
 
@@ -85,6 +87,8 @@ docs/kits/kit-03-subscriptions-shared-core-map.md
 docs/kits/kit-04-inventory-shared-core-map.md
 docs/kits/kit-05-orders-shared-core-map.md
 docs/kits/kit-06-fulfillment-delivery-shared-core-map.md
+docs/kits/payments-kit.md
+docs/kits/admin/payments-kit.md
 ```
 
 ## Arvore De Runtime
@@ -118,7 +122,8 @@ frontend/admin/shared-core/api/
 frontend/admin/shared-core/mappers/
 frontend/admin/shared-core/view-models/
 frontend/admin/shared-core/hooks/
-frontend/admin/shared-core/kits/
+frontend/admin/shared-core/manifest/pages/
+frontend/admin/shared-core/data-sources/standard.data-source.ts
 ```
 
 ## Como Identificar Onde Uma Mudanca Entra
@@ -167,7 +172,8 @@ calculo de estoque vendavel no TSX
 validacao de workflow no TSX
 if por nome de empresa, plano, produto ou status
 mock silencioso como se fosse API real
-novo Kit 07 sem backend real
+novo kit sem backend real
+payment gateway antes do fluxo manual estar validado
 ```
 
 Fazer:

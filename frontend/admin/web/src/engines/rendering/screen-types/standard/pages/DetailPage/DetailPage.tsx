@@ -4,7 +4,9 @@ import { AssetPicker } from "@foundation/ui/AssetPicker";
 import { Button } from "@foundation/ui/Button";
 import { Card } from "@foundation/ui/Card";
 import { CurrencyInput } from "@foundation/ui/CurrencyInput";
-import { Grid, Inline, Stack } from "@foundation/ui/Layout";
+import { DataField } from "@foundation/ui/DataField";
+import { FieldGrid, FieldGridItem } from "@foundation/ui/FieldGrid";
+import { Inline, Stack } from "@foundation/ui/Layout";
 import { Input } from "@foundation/ui/Input";
 import { MultiSelect } from "@foundation/ui/MultiSelect";
 import { SectionContainer } from "@foundation/ui/SectionContainer";
@@ -23,8 +25,10 @@ import { LineItemsEditor } from "../../components/LineItemsEditor";
 import { RelatedList } from "../../components/RelatedList";
 import styles from "./DetailPage.module.css";
 
+type DetailEntry = AdminStandardDetailViewModel["entries"][number];
+
 function resolveDisplayValue(
-  entry: AdminStandardDetailViewModel["entries"][number],
+  entry: DetailEntry,
   t: AdminTranslate,
 ): string {
   if (entry.valueType === "optionLabel") {
@@ -33,6 +37,10 @@ function resolveDisplayValue(
   }
   if (entry.valueType === "translationKey") return t(entry.value, "");
   return entry.value;
+}
+
+function resolveEntrySpan(entry: DetailEntry) {
+  return entry.layout === "full" ? "full" : 1;
 }
 
 export interface DetailPageProps {
@@ -49,6 +57,153 @@ export interface DetailPageProps {
   onTabChange: (tab: string) => void;
   t: AdminTranslate;
   viewModel: AdminStandardDetailViewModel;
+}
+
+function renderEditableEntryValue(
+  entry: DetailEntry,
+  formValues: Record<string, any>,
+  onFieldChange: DetailPageProps["onFieldChange"],
+  t: AdminTranslate,
+) {
+  if (entry.type === "asset") {
+    return (
+      <AssetPicker
+        cancelRemoveLabel={t("common.cancel")}
+        chooseFileLabel={t("forms.assetChooseFile")}
+        confirmRemoveDescription={t("forms.confirmRemoveImageDescription")}
+        confirmRemoveLabel={t("forms.confirmRemoveAction")}
+        confirmRemoveTitle={t("forms.confirmRemoveImageTitle")}
+        dropzoneLabel={t("forms.assetDropzone")}
+        onChange={(value) => onFieldChange?.(entry.key, value)}
+        previewAlt={t(entry.labelKey, entry.key)}
+        removeModalCloseLabel={t("forms.closeConfirmation")}
+        removeLabel={t("forms.assetRemove")}
+        urlPlaceholder={t("forms.assetUrlPlaceholder")}
+        value={formValues[entry.key] ?? entry.rawValue ?? ""}
+      />
+    );
+  }
+
+  if (entry.type === "lineItems") {
+    return (
+      <LineItemsEditor
+        addLabel={t(entry.addLabelKey || "forms.addLineItem")}
+        columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]}
+        emptyLabel={t("forms.emptyLineItems")}
+        onChange={(value) => onFieldChange?.(entry.key, value)}
+        removeLabel={t("forms.removeLineItem")}
+        t={t}
+        value={Array.isArray(formValues[entry.key]) ? formValues[entry.key] : []}
+      />
+    );
+  }
+
+  if (entry.type === "multiSelect") {
+    return (
+      <MultiSelect
+        cancelRemoveLabel={t("common.cancel")}
+        confirmRemoveDescription={(option) => t("forms.confirmRemoveSelectedOptionDescription", "", { option })}
+        confirmRemoveLabel={t("forms.confirmRemoveAction")}
+        confirmRemoveTitle={t("forms.confirmRemoveSelectedOptionTitle")}
+        emptyOptionLabel={t("forms.selectOption")}
+        onChange={(value) => onFieldChange?.(entry.key, value)}
+        options={(entry.options || []).map((option) => ({
+          label: option.label || t(option.labelKey || "", option.value),
+          value: option.value,
+        }))}
+        removeModalCloseLabel={t("forms.closeConfirmation")}
+        removeLabel={(option) => t("forms.removeSelectedOption", "", { option })}
+        value={Array.isArray(formValues[entry.key]) ? formValues[entry.key].map(String) : []}
+      />
+    );
+  }
+
+  if (entry.type === "select") {
+    return (
+      <Select
+        onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
+        options={(entry.options || []).map((option) => ({
+          label: option.label || t(option.labelKey || "", option.value),
+          value: option.value,
+        }))}
+        value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
+      />
+    );
+  }
+
+  if (entry.type === "currency") {
+    const fieldValue = formValues[entry.key];
+    const emptyValue =
+      fieldValue === "" ||
+      fieldValue === null ||
+      (fieldValue === undefined && (entry.rawValue === null || entry.rawValue === undefined));
+
+    return (
+      <CurrencyInput
+        currency={entry.currency}
+        locale={entry.locale}
+        onChange={(value) => onFieldChange?.(entry.key, value)}
+        value={emptyValue ? null : Number(fieldValue ?? entry.rawValue)}
+      />
+    );
+  }
+
+  if (entry.type === "textarea") {
+    return (
+      <TextArea
+        onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
+        rows={4}
+        value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
+      />
+    );
+  }
+
+  return (
+    <Input
+      onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
+      type={entry.type === "number" ? "number" : entry.type === "datetime" ? "datetime-local" : "text"}
+      value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
+    />
+  );
+}
+
+function renderReadonlyEntryValue(
+  entry: DetailEntry,
+  viewModel: AdminStandardDetailViewModel,
+  onFieldChange: DetailPageProps["onFieldChange"],
+  t: AdminTranslate,
+) {
+  if (entry.type === "lineItems") {
+    return (
+      <LineItemsEditor
+        addLabel={t(entry.addLabelKey || "forms.addLineItem")}
+        columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]}
+        emptyLabel={t(viewModel.emptyKey || "forms.emptyLineItems")}
+        onChange={(value) => onFieldChange?.(entry.key, value)}
+        readOnly
+        removeLabel={t("forms.removeLineItem")}
+        t={t}
+        value={Array.isArray(entry.rawValue) ? entry.rawValue : []}
+      />
+    );
+  }
+
+  if (entry.type === "relatedList") {
+    return (
+      <RelatedList
+        columns={(entry.columns || []) as AdminStandardRelatedListColumnViewModel[]}
+        emptyLabel={t(viewModel.emptyKey || "details.emptySummary")}
+        rows={Array.isArray(entry.rawValue) ? entry.rawValue : []}
+        t={t}
+      />
+    );
+  }
+
+  if (entry.type === "asset" && entry.value) {
+    return <img alt={viewModel.displayName} className={styles.assetPreview} src={entry.value} />;
+  }
+
+  return resolveDisplayValue(entry, t);
 }
 
 export const DetailPage: React.FC<DetailPageProps> = ({
@@ -72,7 +227,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="solid" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Inline align="center" justify="between" wrap>
             <Inline align="center" gap="md" wrap>
@@ -149,126 +304,20 @@ export const DetailPage: React.FC<DetailPageProps> = ({
                         {t(section.titleKey)}
                       </Text>
                     ) : null}
-                    <Grid className={styles.detailGrid} columns={3} gap="md">
+                    <FieldGrid className={styles.detailGrid} columns="auto" gap="md">
                       {section.entries.map((entry) => (
-                        <div
-                          className={[
-                            styles.detailEntry,
-                            entry.layout === "full" ? styles.detailEntryFull : "",
-                          ].filter(Boolean).join(" ")}
-                          key={entry.key}
-                        >
-                          <Text as="span" className={styles.detailKey} tone="muted" variant="caption" weight="bold">
-                            {t(entry.labelKey, entry.key)}
-                          </Text>
-                          {isEditing && entry.editable ? (
-                            entry.type === "asset" ? (
-                              <AssetPicker
-                                cancelRemoveLabel={t("common.cancel")}
-                                chooseFileLabel={t("forms.assetChooseFile")}
-                                confirmRemoveDescription={t("forms.confirmRemoveImageDescription")}
-                                confirmRemoveLabel={t("forms.confirmRemoveAction")}
-                                confirmRemoveTitle={t("forms.confirmRemoveImageTitle")}
-                                dropzoneLabel={t("forms.assetDropzone")}
-                                onChange={(value) => onFieldChange?.(entry.key, value)}
-                                previewAlt={t(entry.labelKey, entry.key)}
-                                removeModalCloseLabel={t("forms.closeConfirmation")}
-                                removeLabel={t("forms.assetRemove")}
-                                urlPlaceholder={t("forms.assetUrlPlaceholder")}
-                                value={formValues[entry.key] ?? entry.rawValue ?? ""}
-                              />
-                            ) : entry.type === "lineItems" ? (
-                              <LineItemsEditor
-                                addLabel={t(entry.addLabelKey || "forms.addLineItem")}
-                                columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]}
-                                emptyLabel={t("forms.emptyLineItems")}
-                                onChange={(value) => onFieldChange?.(entry.key, value)}
-                                removeLabel={t("forms.removeLineItem")}
-                                t={t}
-                                value={Array.isArray(formValues[entry.key]) ? formValues[entry.key] : []}
-                              />
-                            ) : entry.type === "multiSelect" ? (
-                              <MultiSelect
-                                cancelRemoveLabel={t("common.cancel")}
-                                confirmRemoveDescription={(option) => t("forms.confirmRemoveSelectedOptionDescription", "", { option })}
-                                confirmRemoveLabel={t("forms.confirmRemoveAction")}
-                                confirmRemoveTitle={t("forms.confirmRemoveSelectedOptionTitle")}
-                                emptyOptionLabel={t("forms.selectOption")}
-                                onChange={(value) => onFieldChange?.(entry.key, value)}
-                                options={(entry.options || []).map((option) => ({
-                                  label: option.label || t(option.labelKey || "", option.value),
-                                  value: option.value,
-                                }))}
-                                removeModalCloseLabel={t("forms.closeConfirmation")}
-                                removeLabel={(option) => t("forms.removeSelectedOption", "", { option })}
-                                value={Array.isArray(formValues[entry.key]) ? formValues[entry.key].map(String) : []}
-                              />
-                            ) : entry.type === "select" ? (
-                              <Select
-                                onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
-                                options={(entry.options || []).map((option) => ({
-                                  label: option.label || t(option.labelKey || "", option.value),
-                                  value: option.value,
-                                }))}
-                                value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
-                              />
-                            ) : entry.type === "currency" ? (
-                              <CurrencyInput
-                                currency={entry.currency}
-                                locale={entry.locale}
-                                onChange={(value) => onFieldChange?.(entry.key, value)}
-                                value={
-                                  formValues[entry.key] === "" || formValues[entry.key] === null ||
-                                  (formValues[entry.key] === undefined && (entry.rawValue === null || entry.rawValue === undefined))
-                                    ? null
-                                    : Number(formValues[entry.key] ?? entry.rawValue)
-                                }
-                              />
-                            ) : entry.type === "textarea" ? (
-                              <TextArea
-                                onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
-                                rows={4}
-                                value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
-                              />
-                            ) : (
-                              <Input
-                                onChange={(event) => onFieldChange?.(entry.key, event.target.value)}
-                                type={entry.type === "number" ? "number" : entry.type === "datetime" ? "datetime-local" : "text"}
-                                value={String(formValues[entry.key] ?? entry.rawValue ?? "")}
-                              />
-                            )
-                          ) : entry.type === "lineItems" ? (
-                            <LineItemsEditor
-                              addLabel={t(entry.addLabelKey || "forms.addLineItem")}
-                              columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]}
-                              emptyLabel={t(viewModel.emptyKey || "forms.emptyLineItems")}
-                              onChange={(value) => onFieldChange?.(entry.key, value)}
-                              readOnly
-                              removeLabel={t("forms.removeLineItem")}
-                              t={t}
-                              value={Array.isArray(entry.rawValue) ? entry.rawValue : []}
-                            />
-                          ) : entry.type === "relatedList" ? (
-                            <RelatedList
-                              columns={(entry.columns || []) as AdminStandardRelatedListColumnViewModel[]}
-                              emptyLabel={t(viewModel.emptyKey || "details.emptySummary")}
-                              rows={Array.isArray(entry.rawValue) ? entry.rawValue : []}
-                              t={t}
-                            />
-                          ) : entry.type === "asset" && entry.value ? (
-                            <img
-                              alt={viewModel.displayName}
-                              className={styles.assetPreview}
-                              src={entry.value}
-                            />
-                          ) : (
-                            <Text as="strong" tone="default" variant="body" weight="var(--theme--typography-semibold)">
-                              {resolveDisplayValue(entry, t)}
-                            </Text>
-                          )}
-                        </div>
+                        <FieldGridItem key={entry.key} span={resolveEntrySpan(entry)}>
+                          <DataField
+                            label={t(entry.labelKey, entry.key)}
+                            value={
+                              isEditing && entry.editable
+                                ? renderEditableEntryValue(entry, formValues, onFieldChange, t)
+                                : renderReadonlyEntryValue(entry, viewModel, onFieldChange, t)
+                            }
+                          />
+                        </FieldGridItem>
                       ))}
-                    </Grid>
+                    </FieldGrid>
                   </Stack>
                 ))}
               </Stack>

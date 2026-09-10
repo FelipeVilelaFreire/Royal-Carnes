@@ -317,11 +317,17 @@ docs/kits/auth-users-kit.md
 docs/kits/kit-01-auth-users-shared-core-map.md
   -> mostra a tree exata e a matriz de arquivos
 
-frontend/client/shared-core/kits/auth/
-  -> documenta o auth do client e aponta para contracts/api/hooks reais
+frontend/client/shared-core/
+  -> auth do client em contracts/api/hooks/mappers/view-models
 
-frontend/admin/shared-core/kits/users/
-  -> documenta users admin e aponta para contracts/api/hooks reais
+frontend/admin/shared-core/
+  -> auth/users/permissions do admin em contracts/api/hooks/mappers/view-models
+
+docs/kits/admin/auth-users-kit.md
+  -> leitura operacional do admin
+
+docs/kits/admin/customers-kit.md
+  -> leitura operacional de clientes finais no admin
 ```
 
 Regra:

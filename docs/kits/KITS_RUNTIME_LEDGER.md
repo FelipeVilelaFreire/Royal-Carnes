@@ -1,6 +1,6 @@
 # Kits Runtime Ledger
 
-Data: 2026-09-07
+Data: 2026-09-09
 
 ## Objetivo
 
@@ -43,8 +43,9 @@ entrega o view-model e qual endpoint/fallback ainda sustenta o dado.
 | 02 Catalog | local foundation | catalog API/hooks/view-models, mocks temporarios | Cortes/Pedido parcialmente | eliminar regra de catalogo em TSX antigo |
 | 03 Subscriptions | local foundation + corte render-only | plans, subscription, current cycle, fallback, view-model | `MinhaCaixaView` web/mobile | backend real e fallbackOnError de producao |
 | 04 Inventory | local foundation | admin inventory API/hooks/view-models | admin ainda parcial | conectar telas admin render-only |
-| 05 Orders | local foundation + corte render-only | config/me/detail/create, fallback, view-model | `MeusPedidosView` web/mobile | revisar fallbackOnError em producao |
+| 05 Orders | local foundation + admin base real | config/me/detail/create, fallback, view-model, admin standard | `MeusPedidosView` web/mobile; Admin Pedidos com detalhe 360 | validar Pedidos no browser e expor acoes de status |
 | 06 Fulfillment & Delivery | local foundation | deliveries API/hooks/view-models | usado indiretamente em pedidos | tela delivery/admin operacional |
+| 07 Payments | local foundation + admin 360 real | admin payments API/mapper/view-model/contexto | Admin Pagamentos, Pedido e Assinaturas | validacao browser e acoes Pix/gateway futuras |
 
 ## Kit 01 - Auth & Users
 
@@ -57,8 +58,14 @@ frontend/client/shared-core/hooks/useClientAuthSession.ts
 frontend/client/shared-core/hooks/useClientLogin.ts
 frontend/client/shared-core/hooks/useClientRegister.ts
 frontend/client/shared-core/hooks/useClientLogout.ts
-frontend/admin/shared-core/kits/auth/
-frontend/admin/shared-core/kits/users/
+frontend/admin/shared-core/api/auth.api.ts
+frontend/admin/shared-core/api/users.api.ts
+frontend/admin/shared-core/api/permissions.api.ts
+frontend/admin/shared-core/api/dev-auth-bypass.api.ts
+frontend/admin/shared-core/hooks/useAdminAuthSession.ts
+frontend/admin/shared-core/hooks/useAdminDevAuthBypassToken.ts
+frontend/admin/shared-core/view-models/auth.view-model.ts
+frontend/admin/shared-core/view-models/users.view-model.ts
 ```
 
 Gap:
@@ -134,7 +141,13 @@ frontend/client/shared-core/hooks/useClientCycleItems.ts
 frontend/client/shared-core/data-sources/subscriptions.fallback.ts
 frontend/client/shared-core/mappers/subscriptions.mapper.ts
 frontend/client/shared-core/view-models/subscriptions.view-model.ts
-frontend/admin/shared-core/kits/subscriptions/
+frontend/admin/shared-core/api/subscriptions.api.ts
+frontend/admin/shared-core/hooks/useAdminSubscriptions.ts
+frontend/admin/shared-core/hooks/useAdminPlans.ts
+frontend/admin/shared-core/mappers/subscriptions.mapper.ts
+frontend/admin/shared-core/view-models/subscriptions.view-model.ts
+frontend/admin/shared-core/manifest/pages/assinaturas.config.jsx
+frontend/admin/shared-core/manifest/pages/planos.config.jsx
 ```
 
 Render conectado:
@@ -162,6 +175,7 @@ Gap:
 backend precisa responder assinatura/ciclo reais por usuario autenticado
 fallbackOnError deve ser revisto antes de producao
 limites/entitlements finais devem vir do backend, nao do fallback
+admin assinaturas ja usa backend real para list/detail/add/patch no standard
 ```
 
 ## Kit 04 - Inventory
@@ -171,7 +185,6 @@ Ja existe:
 ```text
 frontend/shared-core/types/inventory.types.ts
 frontend/shared-core/contracts/inventory.contract.ts
-frontend/admin/shared-core/kits/inventory/
 frontend/admin/shared-core/api/inventory.api.ts
 frontend/admin/shared-core/hooks/useAdminInventory.ts
 frontend/admin/shared-core/hooks/useAdminInventoryAdjustment.ts
@@ -198,7 +211,10 @@ frontend/client/shared-core/hooks/useClientOrders.ts
 frontend/client/shared-core/data-sources/orders.fallback.ts
 frontend/client/shared-core/mappers/orders.mapper.ts
 frontend/client/shared-core/view-models/orders.view-model.ts
-frontend/admin/shared-core/kits/orders/
+frontend/admin/shared-core/api/orders.api.ts
+frontend/admin/shared-core/hooks/useAdminOrders.ts
+frontend/admin/shared-core/hooks/useAdminOrderDetail.ts
+frontend/admin/shared-core/hooks/useAdminOrderTransition.ts
 ```
 
 Render conectado:
@@ -221,9 +237,25 @@ MeusPedidosView
 Gap:
 
 ```text
-backend autenticado deve substituir fallback demonstrativo
-status visual deve usar Badge Foundation por tone sem cor local
-admin orders ainda precisa tela operacional render-only
+client ainda precisa revisar fallbackOnError antes de producao
+admin Pedidos ja usa backend/shared-core/standard, mas falta validacao real em browser
+acao de transition ainda precisa ser exposta/validada na tela
+pagamentos e entregas vinculados ao pedido precisam aparecer no detalhe
+configs inativos caixas/socios ainda usam mocks e nao fazem parte do mapa atual
+```
+
+Atualizacao 2026-09-10:
+
+```text
+backend orders valida subscription-cycle com subscription e cycle coerentes
+seed royalprime vincula pedido-assinatura-pro-setembro ao ciclo 2026-09
+OrderSerializer expoe contexto de assinatura/ciclo
+admin pedidos.config.jsx saiu de mock direto e declara List/Detail/Add reais
+standard.data-source cria pedidos reais via adminOrdersApi
+ListPage admin ficou enxuta; DetailPage admin relaciona entregas e pagamentos
+por orderId sem misturar as entidades no backend
+evidencias: seed, shell readback, apps.orders/apps.subscriptions tests,
+build:admin, verify:rules e git diff --check
 ```
 
 ## Kit 06 - Fulfillment & Delivery
@@ -237,7 +269,10 @@ frontend/client/shared-core/api/deliveries.api.ts
 frontend/client/shared-core/hooks/useClientDeliveries.ts
 frontend/client/shared-core/hooks/useClientDeliveryDetail.ts
 frontend/client/shared-core/view-models/deliveries.view-model.ts
-frontend/admin/shared-core/kits/deliveries/
+frontend/admin/shared-core/api/deliveries.api.ts
+frontend/admin/shared-core/hooks/useAdminDeliveries.ts
+frontend/admin/shared-core/hooks/useAdminDeliveryDetail.ts
+frontend/admin/shared-core/hooks/useAdminDeliveryTransition.ts
 ```
 
 Gap:
@@ -246,6 +281,49 @@ Gap:
 criar tela de acompanhamento ou admin delivery por hook/view-model
 transicao e confirmacao continuam no backend/admin
 cliente apenas acompanha entrega
+```
+
+## Kit 07 - Payments
+
+Ja existe:
+
+```text
+backend/apps/payments/
+backend/seeds/royalprime/kits/payments.seed.json
+frontend/admin/shared-core/contracts/payments.contract.ts
+frontend/admin/shared-core/api/payments.api.ts
+frontend/admin/shared-core/mappers/payments.mapper.ts
+frontend/admin/shared-core/view-models/payments.view-model.ts
+frontend/admin/shared-core/manifest/pages/pagamentos.config.jsx
+docs/kits/payments-kit.md
+docs/kits/admin/payments-kit.md
+```
+
+Render conectado:
+
+```text
+frontend/admin/web/src/engines/rendering/screen-types/standard/pages/ListPage/ListPage.tsx
+frontend/admin/web/src/engines/rendering/screen-types/standard/pages/DetailPage/DetailPage.tsx
+frontend/admin/web/src/engines/rendering/screen-types/standard/pages/AddPage/AddPage.tsx
+```
+
+Contrato:
+
+```text
+Pagamentos
+  -> standard.data-source carrega paymentsApi + ordersApi + subscriptionsApi
+  -> payments mapper normaliza DTO
+  -> payments view-model formata valor/data/status e relaciona pedido/assinatura
+  -> manifest define List curta, Detail 360 e Add com pedido/assinatura
+  -> Assinaturas recebe pagamentos relacionados na aba Pagamentos
+  -> Pedidos recebe pagamentos relacionados na aba Pagamento
+```
+
+Gap:
+
+```text
+validar create/edit/refresh no browser
+gateway, Pix, invoice, recibo e conciliacao ficam depois
 ```
 
 ## Foundation Consumida Pelos Kits

@@ -28,6 +28,7 @@ import type {
 export const nativeFoundationPrimitives: NativeFoundationPrimitive[] = [
   "AssetPicker",
   "Avatar",
+  "Background",
   "Badge",
   "Button",
   "Card",
@@ -139,6 +140,19 @@ export const resolveNativeUiManifest = (
           borderColor: nativeTheme.colors.border,
           borderRadius: nativeTheme.tokens.radius.full,
           color: nativeTheme.colors.text,
+        },
+      }),
+      Background: primitive("Background", "ambient-background", {
+        active: {
+          backgroundColor: nativeTheme.colors.background,
+          overlayColor: nativeTheme.colors.primary,
+          overlayOpacity: 0.12,
+        },
+        default: {
+          backgroundColor: nativeTheme.colors.background,
+        },
+        inactive: {
+          backgroundColor: "transparent",
         },
       }),
       AssetPicker: primitive("AssetPicker", "media-input", {

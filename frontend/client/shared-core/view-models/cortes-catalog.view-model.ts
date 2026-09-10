@@ -1,5 +1,4 @@
 import type { ClientProductView } from "../contracts/catalog.contract";
-import { mockCutCategories, mockCutsCatalog } from "../mocks/cuts.mock";
 
 export type CortesCatalogSortKey = "relevance" | "best_sellers" | "price_asc" | "price_desc";
 
@@ -26,6 +25,7 @@ export interface CortesCatalogDisplayProduct {
 export interface CortesCatalogViewModelInput {
   apiProducts: ClientProductView[];
   activeCategoryId: string;
+  allCategoriesLabel: string;
   defaultLineLabel: string;
   searchQuery: string;
   sortBy: CortesCatalogSortKey;
@@ -34,12 +34,9 @@ export interface CortesCatalogViewModelInput {
 export interface CortesCatalogViewModel {
   categories: CortesCatalogCategoryOption[];
   filteredProducts: CortesCatalogDisplayProduct[];
-  isUsingApiCatalog: boolean;
   products: CortesCatalogDisplayProduct[];
   total: number;
 }
-
-const fallbackImage = "/assets/brand/royal-prime-logo.jpg";
 
 const mapProductToDisplayProduct = (
   product: ClientProductView,
@@ -59,11 +56,14 @@ const mapProductToDisplayProduct = (
     price: price ? price.amountCents / 100 : 0,
     category: primaryCategory?.key || product.primaryCategoryKey || "all",
     line: primaryCategory?.name || product.collectionKeys[0] || defaultLineLabel,
-    image: product.primaryMediaUrl || product.media[0]?.url || fallbackImage,
+    image: product.primaryMediaUrl || product.media[0]?.url || "",
   };
 };
 
-const createApiCategoryOptions = (products: ClientProductView[]): CortesCatalogCategoryOption[] => {
+const createCategoryOptions = (
+  products: ClientProductView[],
+  allCategoriesLabel: string,
+): CortesCatalogCategoryOption[] => {
   const categories = new Map<string, string>();
   products.forEach((product) => {
     product.categories.forEach((category) => {
@@ -74,7 +74,7 @@ const createApiCategoryOptions = (products: ClientProductView[]): CortesCatalogC
   });
 
   return [
-    mockCutCategories[0],
+    { id: "all", name: allCategoriesLabel },
     ...Array.from(categories, ([id, name]) => ({ id, name })),
   ];
 };
@@ -95,16 +95,14 @@ const sortProducts = (
 
 export const createCortesCatalogViewModel = ({
   activeCategoryId,
+  allCategoriesLabel,
   apiProducts,
   defaultLineLabel,
   searchQuery,
   sortBy,
 }: CortesCatalogViewModelInput): CortesCatalogViewModel => {
-  const isUsingApiCatalog = apiProducts.length > 0;
-  const products = isUsingApiCatalog
-    ? apiProducts.map((product) => mapProductToDisplayProduct(product, defaultLineLabel))
-    : mockCutsCatalog;
-  const categories = isUsingApiCatalog ? createApiCategoryOptions(apiProducts) : mockCutCategories;
+  const products = apiProducts.map((product) => mapProductToDisplayProduct(product, defaultLineLabel));
+  const categories = createCategoryOptions(apiProducts, allCategoriesLabel);
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const filtered = products.filter((item) => {
     const matchesCategory = activeCategoryId === "all" || item.category === activeCategoryId;
@@ -120,7 +118,6 @@ export const createCortesCatalogViewModel = ({
   return {
     categories,
     filteredProducts,
-    isUsingApiCatalog,
     products,
     total: filteredProducts.length,
   };

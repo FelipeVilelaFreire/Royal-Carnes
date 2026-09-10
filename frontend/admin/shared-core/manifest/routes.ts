@@ -1,5 +1,5 @@
 export const adminRoutes = {
-  dashboard: "/admin",
+  dashboard: "/dashboard",
   pedidos: "/pedidos",
   deliveries: "/deliveries",
   estoque: "/estoque",
@@ -52,7 +52,7 @@ export const adminRouteAliases: Record<string, string> = {
 };
 
 export function getRoutePathByAction(routeKey: string, action: string) {
-  const basePath = adminRoutes[routeKey as keyof typeof adminRoutes] || "/admin";
+  const basePath = adminRoutes[routeKey as keyof typeof adminRoutes] || adminRoutes.dashboard;
   if (action === "create") return `${basePath}/novo`;
   if (action === "detail") return `${basePath}/detalhes`;
   return basePath;

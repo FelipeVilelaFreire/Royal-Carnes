@@ -63,6 +63,36 @@ export const adminPtBR = {
     invalid: "Nao foi possivel entrar. Confira as credenciais.",
     seedHint: "Acesso local seedado: admin@royalprime.local"
   },
+  accessShell: {
+    close: "Fechar",
+    tabs: {
+      login: "Entrar",
+      register: "Cadastrar"
+    },
+    flows: {
+      login: {
+        title: "Entrar no admin",
+        description: "Use uma conta interna para acessar os dados reais do backend.",
+        submit: "Entrar"
+      },
+      register: {
+        title: "Cadastrar operador",
+        description: "O cadastro de operadores e feito pela administracao do sistema.",
+        submit: "Cadastrar"
+      }
+    },
+    fields: {
+      name: "Nome",
+      email: "E-mail",
+      password: "Senha"
+    },
+    placeholders: {
+      name: "Nome do operador",
+      email: "admin@royalprime.local",
+      password: "Digite sua senha"
+    },
+    legal: "Acesso restrito a operadores autorizados."
+  },
   common: {
     back: "Voltar",
     cancel: "Cancelar",
@@ -86,6 +116,10 @@ export const adminPtBR = {
     statusPaid: "Pago",
     statusFailed: "Falhou",
     statusRefunded: "Reembolsado",
+    statusReceived: "Recebido",
+    statusSeparating: "Separando",
+    statusReady: "Pronto",
+    statusCompleted: "Concluido",
     statusInactive: "Inativo",
     statusPacking: "Embalagem",
     statusPaused: "Pausado",
@@ -158,10 +192,14 @@ export const adminPtBR = {
     title: "Pedidos",
     subtitle: "Acompanhamento de pedidos comerciais, assinatura, separação e status operacional.",
     ctaAdd: "Novo pedido",
+    searchPlaceholder: "Buscar pedidos...",
     tableHeaders: {
       code: "Código",
       customerName: "Cliente",
       kindLabel: "Tipo de pedido",
+      recurrence: "Assinatura / ciclo",
+      deliveryStatus: "Entrega",
+      paymentStatus: "Pagamento",
       summary: "Resumo dos itens",
       total: "Valor total",
       status: "Status",
@@ -172,6 +210,79 @@ export const adminPtBR = {
       customerName: "Cliente",
       summary: "Resumo dos itens",
       totalFormatted: "Total"
+    },
+    fields: {
+      address: "Endereco",
+      code: "Codigo do pedido",
+      createdAt: "Criado em",
+      customer: "Cliente",
+      deliveries: "Entregas",
+      history: "Historico",
+      items: "Itens",
+      kind: "Tipo de pedido",
+      notes: "Observacoes",
+      payments: "Pagamentos",
+      recurrence: "Assinatura / ciclo",
+      status: "Status",
+      subscription: "Assinatura",
+      subscriptionCycle: "Ciclo de assinatura",
+      subscriptionCycleStatus: "Status do ciclo",
+      total: "Total"
+    },
+    detail: {
+      title: "Detalhe do pedido",
+      tabs: {
+        data: "Dados",
+        delivery: "Entrega",
+        history: "Historico",
+        items: "Itens",
+        payment: "Pagamento",
+        subscription: "Assinatura"
+      },
+      emptyData: "Nenhum dado cadastrado para este pedido.",
+      emptyDelivery: "Nenhuma entrega vinculada a este pedido.",
+      emptyHistory: "Nenhum historico cadastrado para este pedido.",
+      emptyItems: "Nenhum item cadastrado para este pedido.",
+      emptyPayment: "Nenhum pagamento vinculado a este pedido.",
+      emptySubscription: "Pedido sem assinatura ou ciclo vinculado."
+    },
+    add: {
+      title: "Cadastrar pedido",
+      submit: "Cadastrar",
+      sections: {
+        data: "Dados",
+        items: "Itens"
+      }
+    },
+    items: {
+      add: "Adicionar item",
+      name: "Item",
+      product: "Produto",
+      quantity: "Quantidade",
+      source: "Origem",
+      sourceKey: "Chave da origem",
+      unit: "Unidade",
+      variant: "Variante"
+    },
+    history: {
+      createdAt: "Data",
+      from: "De",
+      note: "Nota",
+      to: "Para"
+    },
+    deliveries: {
+      address: "Endereco",
+      code: "Entrega",
+      confirmationCode: "Confirmacao",
+      notes: "Observacoes",
+      status: "Status"
+    },
+    payments: {
+      amount: "Valor",
+      dueAt: "Vencimento",
+      paidAt: "Pago em",
+      reference: "Referencia",
+      status: "Status"
     }
   },
   deliveries: {
@@ -627,30 +738,70 @@ export const adminPtBR = {
       amount: "Valor",
       customer: "Cliente",
       dueAt: "Vencimento",
+      origin: "Origem",
       reference: "Referência",
+      relation: "Vinculo",
       status: "Status"
     },
     filters: {
+      origin: "Origem",
       status: "Status"
     },
     fields: {
       amount: "Valor",
       customer: "Cliente",
       dueAt: "Vencimento",
+      history: "Historico",
       notes: "Observações",
       order: "Pedido",
+      origin: "Origem",
       paidAt: "Pago em",
       reference: "Referência",
+      relation: "Vinculo",
       status: "Status",
       subscription: "Assinatura",
       subscriptionPlan: "Plano da assinatura"
     },
+    origins: {
+      manual: "Manual",
+      order: "Pedido avulso",
+      subscription: "Assinatura",
+      subscriptionOrder: "Pedido de assinatura"
+    },
     detail: {
       title: "Detalhe do pagamento",
       tabs: {
-        data: "Dados"
+        data: "Dados",
+        history: "Historico",
+        order: "Pedido",
+        subscription: "Assinatura",
+        values: "Valores"
       },
-      emptyData: "Nenhum dado cadastrado para este pagamento."
+      emptyData: "Nenhum dado cadastrado para este pagamento.",
+      emptyHistory: "Nenhum evento cadastrado para este pagamento.",
+      emptyOrder: "Nenhum pedido vinculado a este pagamento.",
+      emptySubscription: "Nenhuma assinatura vinculada a este pagamento.",
+      emptyValues: "Nenhum valor cadastrado para este pagamento."
+    },
+    orders: {
+      code: "Pedido",
+      createdAt: "Criado em",
+      status: "Status",
+      total: "Total"
+    },
+    subscriptions: {
+      cycle: "Ciclo",
+      cycleStatus: "Status do ciclo",
+      cycleWindow: "Janela do ciclo",
+      plan: "Plano",
+      status: "Status"
+    },
+    events: {
+      created: "Criado",
+      date: "Data",
+      event: "Evento",
+      status: "Status",
+      updated: "Atualizado"
     },
     add: {
       title: "Cadastrar pagamento",
@@ -703,8 +854,60 @@ export const adminPtBR = {
   },
   configuracoes: {
     title: "Configurações gerais",
-    subtitle: "Parâmetros operacionais do clube, integrações de pagamento e cadeia de frio.",
+    subtitle: "Manifesto operacional da aplicação, identidade, AppShell e parâmetros globais.",
     sectionOperation: "Parâmetros de operação",
+    actions: {
+      previewManifest: "Prévia do manifest",
+      saveDraft: "Salvar rascunho"
+    },
+    badges: {
+      manifestReady: "Manifest"
+    },
+    tabs: {
+      appShell: "AppShell",
+      commerce: "Comercial",
+      identity: "Identidade",
+      operation: "Operação"
+    },
+    sections: {
+      brand: "Identidade da aplicação",
+      brandDescription: "Valores que nomeiam o produto e alimentam AppShell, títulos e superfícies publicadas.",
+      fulfillment: "Operação e entrega",
+      fulfillmentDescription: "Parâmetros globais para expedição, cadeia de frio e janela padrão.",
+      navigation: "Navegação do admin",
+      navigationDescription: "Configuração declarativa da casca administrativa e das rotas visíveis.",
+      payments: "Comercial e cobrança",
+      paymentsDescription: "Parâmetros globais de moeda, provedor financeiro e ciclo de cobrança."
+    },
+    fields: {
+      adminTagline: "Subtítulo do admin",
+      adminTitle: "Título do admin",
+      appName: "Nome da aplicação",
+      billingCyclePolicy: "Política de ciclo",
+      businessName: "Nome comercial",
+      coldChainSensor: "Cadeia de frio",
+      currency: "Moeda",
+      defaultDeliveryWindow: "Janela padrão",
+      fulfillmentWarehouse: "Centro de expedição",
+      hiddenRoutes: "Rotas ocultas",
+      mobileNavigation: "Navegação mobile",
+      paymentProvider: "Provedor de pagamento",
+      sidebarMode: "Sidebar"
+    },
+    status: {
+      active: "Ativo",
+      connected: "Conectado",
+      monitoring: "Monitorando",
+      pendingManifestSync: "Pendente",
+      review: "Revisar"
+    },
+    values: {
+      businessHours: "Horário comercial",
+      hiddenRoutes: "Usuários e Configurações podem sair do menu principal",
+      mobileBottomTabs: "Bottom tabs operacionais",
+      monthlyCycle: "Ciclo mensal por assinatura",
+      sidebarOperational: "Menu operacional por domínio"
+    },
     cards: {
       brand: "Marca global",
       recurrency: "Recorrência",

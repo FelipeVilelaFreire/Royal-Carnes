@@ -15,6 +15,7 @@ import type { UiTextConfig } from "./text";
 export type { UiColorTokens, UiThemeConfig } from "../../tokens";
 
 export type UiComponentDensity = "compact" | "comfortable" | "spacious";
+export type UiBackgroundPattern = "glassFlow" | "glass" | "solid" | "none";
 export type UiSurfaceAppearance = "glass" | "outline" | "soft" | "solid" | "transparent";
 export type UiSurfaceBorderEdges = "all" | "bottom" | "horizontal" | "left" | "none" | "right" | "top" | "vertical";
 export type UiSurfaceGradientPreset = "none";
@@ -41,7 +42,21 @@ export type UiSurfaceConfig = {
   [key: string]: unknown;
 };
 
+export type UiBackgroundCursorConfig = {
+  disabledBelow?: number;
+  enabled?: boolean;
+  intensity?: "soft" | "medium" | "strong";
+  mode?: "glass" | "none";
+};
+
+export type UiBackgroundConfig = {
+  enabled?: boolean;
+  pattern?: UiBackgroundPattern;
+  cursor?: UiBackgroundCursorConfig;
+};
+
 export type SurfaceUiConfig = {
+  background: UiBackgroundConfig;
   badge: BadgeConfig;
   button: ButtonConfig;
   card: CardConfig;
