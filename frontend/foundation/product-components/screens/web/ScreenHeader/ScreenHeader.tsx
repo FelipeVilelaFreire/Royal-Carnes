@@ -18,6 +18,7 @@ export interface ScreenHeaderProps extends ScreenHeaderContent {
   className?: string;
   mobileGutter?: ScreenHeaderMobileGutter;
   mobileMode?: ScreenHeaderMobileMode;
+  showScrollBorder?: boolean;
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
@@ -27,6 +28,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   mobileGutter,
   mobileMode,
   mobileTitle,
+  showScrollBorder = true,
   title,
 }) => {
   const resolvedMobileMode: ScreenHeaderMobileMode = mobileMode ?? "compact";
@@ -60,6 +62,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
       className={[styles.root, className].filter(Boolean).join(" ")}
       data-mobile-gutter={resolvedMobileGutter}
       data-mobile-mode={resolvedMobileMode}
+      data-scroll-border={showScrollBorder ? "true" : "false"}
       ref={headerRef}
     >
       <Container className={styles.container} gutter="page" width="wide">

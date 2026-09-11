@@ -17,6 +17,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ apiConfig, con
   const dashboard = useAdminDashboard({
     api,
     fallbackOnError: config.dataSource?.fallbackOnError ?? false,
+    recentOrdersLimit: config.recentOrders.limit,
   });
   const { t } = useAdminI18n();
 

@@ -50,6 +50,10 @@ export interface AdminDashboardViewModel {
   widgets: AdminDashboardWidgetViewModel[];
 }
 
+export interface AdminDashboardViewModelOptions {
+  recentOrdersLimit?: number;
+}
+
 function formatMoney(amountCents: number, currency = "BRL"): string {
   return new Intl.NumberFormat("pt-BR", {
     currency,
@@ -142,7 +146,9 @@ function isOrderTerminal(summary: AdminDashboardSummaryView, statusKey: string):
 
 export function createAdminDashboardViewModel(
   summary: AdminDashboardSummaryView,
+  options: AdminDashboardViewModelOptions = {},
 ): AdminDashboardViewModel {
+  const recentOrdersLimit = options.recentOrdersLimit || 10;
   const monthlyRevenueCents = resolveMonthlyPriceCents(summary);
   const activeSubscribers = summary.subscriptions.filter((subscription) => subscription.status === "active").length;
   const pendingDeliveries = summary.deliveries.filter((delivery) => !isDeliveryTerminal(summary, delivery.statusKey)).length;
@@ -228,7 +234,7 @@ export function createAdminDashboardViewModel(
     recentOrders: summary.orders
       .slice()
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 5)
+      .slice(0, recentOrdersLimit)
       .map((order) => ({
         box: resolveOrderBox(summary, order.id) || resolveKindLabel(summary, order.kindKey),
         date: formatDate(order.createdAt),

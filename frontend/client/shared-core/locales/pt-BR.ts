@@ -283,6 +283,7 @@ export const clientPtBR = {
     hero: {
       badge: "Pedido Royal Carnes",
       title: "Monte seu pedido",
+      mobileTitle: "Pedido",
       description: "Escolha primeiro o tipo de compra. Depois selecione produtos, compare categorias e acompanhe o resumo da montagem.",
       searchPlaceholder: "Buscar produto",
       filterLabel: "Filtrar",

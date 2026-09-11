@@ -24,6 +24,11 @@ No Portal web mobile, o AppShell header esta desativado. Por isso o modo
 a propria altura e a separacao visual para o conteudo seguinte; esse container
 nao deve adicionar padding superior no mobile.
 
+O `ScreenHeader` tambem nao pode ficar dentro de um ancestral com `transform`,
+incluindo wrappers de animacao de entrada. Esse CSS cria um novo bloco de
+referencia e impede que o header seja fixo no viewport; a animacao pertence
+somente ao conteudo seguinte.
+
 `mobileGutter` controla somente a borda externa da cabeca no Web mobile:
 `none` usa a superficie de ponta a ponta e mantem o texto com o mesmo gutter
 interno calculado para a pagina;
@@ -55,6 +60,9 @@ copy exibida no mobile; nao cria uma segunda fonte de texto.
 - `full`: titulo, eyebrow e descricao.
 - `compact`: titulo reduzido.
 - `collapsible`: titulo e espacamento acompanham continuamente a rolagem.
+
+`showScrollBorder` controla a linha inferior progressiva. O padrao e `true`;
+telas que precisam de uma cabeca sem divisoria usam `false`.
 
 No Web, o componente atualiza seu progresso interno em cada frame de scroll.
 No Native, o adapter da tela calcula o mesmo progresso com a distancia de

@@ -162,8 +162,6 @@ export const adminPtBR = {
     viewAllBoxes: "Ver todas as caixas",
     emptyRecentOrders: "Nenhum pedido recente encontrado.",
     emptyPlans: "Nenhum plano em operação encontrado.",
-    recordCount: "{count} registros",
-    planCount: "{count} planos",
     panels: {
       revenue: {
         title: "Receita e pedidos",

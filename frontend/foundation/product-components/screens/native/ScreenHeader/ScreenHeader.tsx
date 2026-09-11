@@ -15,6 +15,7 @@ export interface ScreenHeaderProps extends ScreenHeaderContent {
   collapsed?: boolean;
   mobileMode?: ScreenHeaderMobileMode;
   scrollProgress?: number;
+  showScrollBorder?: boolean;
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
@@ -24,6 +25,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   mobileMode,
   mobileTitle,
   scrollProgress,
+  showScrollBorder = true,
   title,
 }) => {
   const { designSystem } = useUi();
@@ -43,8 +45,8 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   const collapsedTitleLineHeight = Number(typography?.lineHeightLg || expandedTitleLineHeight);
   const interpolate = (from: number, to: number) => from + ((to - from) * resolvedScrollProgress);
   const headerStyle = {
-    borderBottomColor: colors?.border,
-    borderBottomWidth: Number(borders?.medium || 0) * resolvedScrollProgress,
+    borderBottomColor: showScrollBorder ? colors?.border : undefined,
+    borderBottomWidth: showScrollBorder ? Number(borders?.medium || 0) * resolvedScrollProgress : Number(borders?.none || 0),
     borderWidth: Number(borders?.none || 0),
     paddingHorizontal: spacing?.spaceXl,
     paddingVertical: interpolate(expandedPadding, collapsedPadding),

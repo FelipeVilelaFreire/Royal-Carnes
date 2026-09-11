@@ -79,7 +79,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading 
             <Inline className={styles.tableHeader} justify="between" wrap>
               <Inline gap="sm" wrap={false}>
                 <Text as="h2" variant="h3">{t(config.recentOrders.titleKey)}</Text>
-                <Badge appearance="soft" level="2xs" tone="neutral">{t("dashboard.recordCount", undefined, { count: viewModel.recentOrders.length })}</Badge>
               </Inline>
               <Button appearance="transparent" icon={<ChevronRightIcon aria-hidden="true" />} iconPosition="end" onClick={onViewOrders} size="sm">
                 {t(config.recentOrders.action.labelKey)}
@@ -105,7 +104,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading 
             <Inline className={styles.tableHeader} justify="between" wrap>
               <Inline gap="sm" wrap={false}>
                 <Text as="h2" variant="h3">{t(config.plans.titleKey)}</Text>
-                <Badge appearance="soft" level="2xs" tone="neutral">{t("dashboard.planCount", undefined, { count: viewModel.plans.length })}</Badge>
               </Inline>
             </Inline>
             <Surface appearance={config.plans.surface.appearance} className={styles.tableCard} tone={config.plans.surface.tone}>

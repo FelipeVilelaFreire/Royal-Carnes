@@ -52,49 +52,6 @@
   padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
 }
 
-.heroWrap {
-  margin-bottom: var(--theme--spacing-spaceXl);
-}
-
-.heroWrap[data-compact="true"] {
-  margin-bottom: var(--theme--spacing-spaceLg);
-}
-
-.heroPanel {
-  --pedido-hero-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
-  --pedido-hero-border: var(--theme--color-border);
-  --pedido-hero-padding-x: var(--theme--spacing-spaceXl);
-  --pedido-hero-padding-y: var(--theme--spacing-spaceXl);
-  --pedido-hero-text: var(--theme--color-text);
-  --ui-surface-bg: color-mix(in srgb, var(--pedido-hero-bg) 94%, var(--theme--color-background));
-  --ui-surface-border: var(--pedido-hero-border);
-  --ui-surface-color: var(--pedido-hero-text);
-  --ui-surface-padding-x: var(--pedido-hero-padding-x);
-  --ui-surface-padding-y: var(--pedido-hero-padding-y);
-  --ui-surface-radius: var(--theme--radius-2xl);
-  display: grid;
-  gap: var(--theme--spacing-spaceSm);
-  box-shadow: var(--theme--elevation-md-shadow, none);
-}
-
-.heroPanel[data-compact="true"] {
-  --pedido-hero-padding-x: var(--theme--spacing-spaceLg);
-  --pedido-hero-padding-y: var(--theme--spacing-spaceLg);
-}
-
-.heroTitle {
-  font-size: var(--theme--typography-size4xl);
-  transition: font-size var(--theme--motion-durationLg) ease;
-}
-
-.heroTitle[data-compact="true"] {
-  font-size: var(--theme--typography-size3xl);
-}
-
-.heroDescription {
-  color: var(--pedido-panel-muted);
-}
-
 .modeList {
   --pedido-mode-gap: var(--theme--spacing-spaceMd);
   display: grid;
@@ -1050,14 +1007,9 @@
 
   .mainWithHeader,
   .mainEmbedded {
-    padding-block-start: var(--theme--spacing-spaceMd);
+    padding-block-start: 0;
   }
 
-  .heroWrap {
-    margin-bottom: var(--theme--spacing-spaceMd);
-  }
-
-  .heroPanel,
   .activePlanPanel,
   .catalogPanel,
   .checkoutPanel,

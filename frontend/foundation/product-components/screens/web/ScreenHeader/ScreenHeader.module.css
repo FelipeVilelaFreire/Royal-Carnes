@@ -65,7 +65,7 @@
     position: relative;
   }
 
-  .root[data-mobile-mode="collapsible"] .surface::after {
+  .root[data-mobile-mode="collapsible"][data-scroll-border="true"] .surface::after {
     background: var(--theme--color-border);
     content: "";
     inset-block-end: 0;

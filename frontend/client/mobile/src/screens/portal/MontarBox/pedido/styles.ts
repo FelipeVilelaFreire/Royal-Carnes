@@ -19,7 +19,8 @@ export const createPedidoStyles = (theme: any) => {
     },
     page: {
       gap: spaceLg,
-      padding: spaceLg,
+      paddingBottom: spaceLg,
+      paddingHorizontal: spaceLg,
     },
     panel: {
       backgroundColor: colors.surfaceContainer,

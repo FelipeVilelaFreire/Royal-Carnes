@@ -35,6 +35,89 @@ docs/kits/README.md
 frontend/client/web/docs/ROYALPRIME_TO_SERVICEOS_ECOMMERCE_DEPARA.md
 ```
 
+## Checkpoint Atual - 2026-09-12
+
+O foco atual do Admin e o acabamento da tela de Dashboard. A estrutura funcional
+permanece baseada nos dados reais do resumo administrativo; o trabalho recente
+foi de hierarquia visual, glass, tabelas, badges e consistencia do AppShell.
+
+### Estado atual do Dashboard
+
+- Rota principal: `/dashboard` (com alias administrativo em `/admin`).
+- Cabecalho editorial com selo de visao executiva, titulo e subtitulo; a
+  tipografia segue Plus Jakarta Sans e valores/codigos usam a familia mono
+  configurada pelo tema.
+- Quatro KPIs em cards glass: faturamento mensal, assinantes ativos, caixas na
+  fila e taxa de retencao. O texto auxiliar usa indicador discreto e cores
+  semanticas, sem criar regras de negocio no render.
+- A esteira de pedidos tem titulo e acao fora da superficie da tabela. A tabela
+  mantem cabecalhos e valores alinhados ao inicio de cada coluna, linhas mais
+  compactas e badges de status com cor semantica individual.
+- A esteira e configurada para exibir no maximo os ultimos 10 pedidos reais.
+  Em bases com menos registros, ela mostra apenas os existentes; nao cria dados
+  artificiais para completar dez linhas.
+- A tabela de planos usa os mesmos principios: dados reais agrupados por plano,
+  valores mono, colunas administrativas e badge de status. Os contadores
+  redundantes como `{count} registros` e `3 planos` foram removidos.
+- A acao transparente "Ver todas as caixas" acompanha o comportamento dos
+  botoes transparentes do AppShell: hover por elevacao/movimento sutil, sem
+  bloco de fundo, borda ou sombra adicionados no hover.
+
+### Donos e pontos de extensao
+
+- Configuracao da tela e limite da esteira:
+  `frontend/admin/shared-core/manifest/pages/dashboard.config.jsx`.
+- Dados e agrupamento dos planos:
+  `frontend/admin/shared-core/view-models/dashboard.view-model.ts`.
+- Carregamento real pelo shared-core:
+  `frontend/admin/shared-core/hooks/useAdminDashboard.ts`.
+- Render fino da tela:
+  `frontend/admin/web/src/engines/rendering/screen-types/dashboard/`.
+- Contrato do config de tela:
+  `frontend/admin/web/src/engines/rendering/screen-types/config/types.ts`.
+- Copy de interface:
+  `frontend/admin/shared-core/locales/pt-BR.ts`.
+- Badge reutilizavel e seus indicadores/cores semanticas:
+  `frontend/foundation/ui/web/Badge/`.
+
+O render continua fino: nao deve fazer HTTP, calcular metricas ou substituir
+dados reais por mocks. Copy nova entra no locale e qualquer capacidade visual
+reutilizavel deve respeitar Theme -> Semi-composed -> UI Foundation.
+
+### Referencia visual e regra de implementacao
+
+A referencia recebida do Stitch foi registrada em
+`docs/kits/admin/dashboard-stitch-reference.md`. Ela serve para reproduzir a
+hierarquia visual: espacamento, tipografia, camadas de glass, tabela compacta
+e badges. Nao transportar Tailwind, hexadecimais ou HTML bruto para o Admin;
+traduzir o efeito para os tokens, receitas e componentes existentes.
+
+### Git e verificacao
+
+- Ultimo commit publicado desta frente: `df859b6 feat: refine admin glass dashboard and feedback`
+  na branch `feature/shared-core-kit-reset`.
+- Os ultimos ajustes de alinhamento, contadores e limite de 10 pedidos ainda
+  estao no working tree e nao foram commitados.
+- O working tree tambem contem alteracoes paralelas do Client/MontarBox e de
+  componentes de tela da Foundation. Elas pertencem ao escopo do
+  `continuacao2.md` e nao devem ser agrupadas automaticamente com este trabalho
+  do Admin.
+- Apos os ultimos ajustes: `npm run build:admin`, `npm run verify:rules` e
+  `git diff --check` passaram. A verificacao de regras reportou somente uma
+  ocorrencia legada, sem violacoes novas.
+- Ainda falta comparacao visual em navegador com o Admin servido. Build e
+  verificacao estatica nao substituem esse QA; o build do Client continuava
+  bloqueado por dependencias locais ausentes de React, sem relacao demonstrada
+  com o Dashboard.
+
+### Proximo passo recomendado
+
+Abrir o Dashboard real e comparar a tabela com a referencia: densidade das
+linhas, alinhamento de cada coluna, cores dos badges e intensidade do glass.
+Se a mesma linguagem se provar boa em outra tela administrativa, extrair apenas
+o que for realmente reutilizavel via Foundation/config, sem copiar CSS local
+nem alterar o contrato do AppShell sem uma necessidade concreta.
+
 ## Checkpoint Atual - 2026-09-10
 
 O corte mais recente mudou a prioridade imediata do admin: a base funcional,

@@ -123,6 +123,7 @@ export const dashboardConfig = {
       { key: "date", labelKey: "dashboard.tableHeaders.date" },
     ],
     iconKey: "boxes",
+    limit: 10,
     surface: { appearance: "glass", tone: "neutral" },
     titleKey: "dashboard.tableTitle",
   },

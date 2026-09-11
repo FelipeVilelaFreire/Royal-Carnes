@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Container } from "@foundation/ui";
+import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenHeader";
 import { useClientCheckout } from "@/hooks/useClientCheckout";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { formatClientCheckoutMeasure, formatClientCheckoutMoney } from "@royalprime/client/utils/checkout.formatters";
@@ -11,7 +12,6 @@ import { CheckoutStepTracker } from "./pedido/CheckoutStepTracker";
 import { DeliveryStep } from "./pedido/DeliveryStep";
 import { ModeSelector } from "./pedido/ModeSelector";
 import { PaymentStep } from "./pedido/PaymentStep";
-import { PedidoHero } from "./pedido/PedidoHero";
 import { ProductCatalogStep } from "./pedido/ProductCatalogStep";
 import { ProductFilterModal } from "./pedido/ProductFilterModal";
 import { ReviewStep } from "./pedido/ReviewStep";
@@ -249,13 +249,21 @@ export const MontarBoxView: React.FC<MontarBoxViewProps> = ({ isAuthenticated, o
 
   return (
     <div className={styles.pageRoot}>
+      <ScreenHeader
+        description={strings.hero.description}
+        eyebrow={strings.hero.badge}
+        mobileGutter="none"
+        mobileMode="collapsible"
+        mobileTitle={strings.hero.mobileTitle}
+        showScrollBorder={false}
+        title={strings.hero.title}
+      />
       <main className="appear-on-scroll">
         <Container
           className={`${styles.main} ${styles.mainEmbedded}`}
           width="wide"
           gutter="page"
         >
-          <PedidoHero hasMode={hasMode} strings={strings.hero} />
           <ModeSelector
             activeCycleUsage={activeCycleUsage}
             activeSubscription={activeSubscription}

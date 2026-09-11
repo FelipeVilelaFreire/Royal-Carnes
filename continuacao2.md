@@ -949,3 +949,55 @@ Agora o foco deixa de ser remover mocks. A sequencia recomendada e:
 4. Ajustar loading, vazio, erro e feedback de salvamento nas duas plataformas.
 5. Fazer QA visual Web/Mobile e melhorar cada tela com screenshot real.
 ```
+
+## Atualizacao Mais Recente - Montar Box e ScreenHeader (2026-09-12)
+
+O foco mais recente foi alinhar a cabeca de `/montar-box` ao contrato visual do
+Catalogo, sem criar uma hero ou header local paralelo.
+
+```text
+Web e Native
+  -> ScreenHeader e o primeiro filho real da tela
+  -> titulo mobile usa a chave curta "Pedido"
+  -> Surface, gutter interno e transicao no scroll usam a capacidade Foundation
+  -> esta tela nao ativa borda progressiva no scroll
+
+MontarBox Web
+  -> PedidoHero foi removido, inclusive o CSS legado associado
+  -> ScreenHeader foi movido para fora de main.appear-on-scroll
+```
+
+O ultimo ponto e estrutural e nao deve ser revertido: `appear-on-scroll` aplica
+`transform`; qualquer ancestral transformado passa a ser a referencia de um
+descendente `position: fixed`. Portanto o `ScreenHeader` precisa ficar fora de
+wrappers de animacao de entrada, e somente o conteudo subsequente pode animar.
+Assim a cabeca permanece fixa no viewport enquanto realiza a transicao de
+scroll esperada.
+
+Arquivos diretamente envolvidos neste corte:
+
+```text
+frontend/client/web/src/screens/portal/MontarBox/MontarBoxView.tsx
+frontend/client/web/src/screens/portal/MontarBox/MontarBoxView.module.css
+frontend/client/web/src/screens/portal/MontarBox/pedido/PedidoHero.tsx (removido)
+frontend/client/mobile/src/screens/portal/MontarBox/MontarBoxView.tsx
+frontend/client/mobile/src/screens/portal/MontarBox/pedido/styles.ts
+frontend/foundation/product-components/screens/web/ScreenHeader/ScreenHeader.tsx
+frontend/foundation/product-components/screens/web/ScreenHeader/ScreenHeader.module.css
+frontend/foundation/product-components/screens/native/ScreenHeader/ScreenHeader.tsx
+frontend/foundation/product-components/screens/README.md
+```
+
+Validacoes executadas durante o corte:
+
+```text
+git diff --check -> passou
+npm run verify:foundation -> passou
+node scripts/verify-code-rules.mjs --base 06ffc08 -> sem violacoes novas
+```
+
+Limite atual: ainda falta abrir `/montar-box` no navegador real e confirmar a
+fixacao no viewport e a transicao em desktop e mobile. O typecheck nao foi
+conclusivo neste ambiente porque `node_modules/react` estava ausente. Nao fazer
+commit, reset ou limpeza: este corte e parte da worktree compartilhada na branch
+`feature/shared-core-kit-reset`.

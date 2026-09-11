@@ -147,6 +147,7 @@ export type DashboardConfig = {
     action: DashboardActionConfig;
     columns: Array<{ key: string; labelKey: string }>;
     iconKey: string;
+    limit: number;
     surface: DashboardSurfaceConfig;
     titleKey: string;
   };

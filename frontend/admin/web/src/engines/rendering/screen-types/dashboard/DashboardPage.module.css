@@ -179,7 +179,6 @@
 
 .tableHeader {
   min-block-size: var(--theme--dimensions-height-md);
-  padding-inline: var(--theme--spacing-spaceLg);
 }
 
 .table {
@@ -201,6 +200,7 @@
   font-weight: var(--theme--typography-bold);
   letter-spacing: var(--theme--typography-letterSpacingLg);
   padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg);
+  text-align: start;
   text-transform: uppercase;
 }
 
@@ -210,6 +210,7 @@
   font-family: var(--theme--typography-bodyFamily);
   font-size: var(--theme--typography-sizeSm);
   padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg);
+  text-align: start;
   vertical-align: middle;
 }
 

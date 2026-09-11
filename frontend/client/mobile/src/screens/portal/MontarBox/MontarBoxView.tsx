@@ -3,10 +3,13 @@ import { Button } from "@foundation/ui/native/Button";
 import { Container, Stack } from "@foundation/ui/native/Layout";
 import { Surface } from "@foundation/ui/native/Surface";
 import { Text } from "@foundation/ui/native/Text";
+import { useUi } from "@foundation/ui/native/context";
 import { useClientCheckout } from "../../../../../shared-core/hooks/useClientCheckout";
 import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
 import { formatClientCheckoutMoney } from "../../../../../shared-core/utils/checkout.formatters";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
+import { ScreenHeader } from "@foundation/product-components/screens/native/ScreenHeader";
+import { normalizeScreenHeaderScrollProgress } from "@foundation/product-components/screens/shared";
 import { CheckoutStepTracker } from "./pedido/CheckoutStepTracker";
 import { DeliveryStep } from "./pedido/DeliveryStep";
 import { ModeSelector } from "./pedido/ModeSelector";
@@ -22,6 +25,14 @@ export interface MontarBoxViewProps {
   themeMode?: AppThemeMode;
 }
 
+type NativeScrollEvent = {
+  nativeEvent?: {
+    contentOffset?: {
+      y?: number;
+    };
+  };
+};
+
 export const MontarBoxView: React.FC<MontarBoxViewProps> = ({
   isAuthenticated = true,
   strings: clientStrings,
@@ -30,6 +41,10 @@ export const MontarBoxView: React.FC<MontarBoxViewProps> = ({
   const mobileConfig = createMobileAppShellConfig(themeMode) as any;
   const theme = mobileConfig.theme;
   const styles = createPedidoStyles(theme);
+  const [headerScrollProgress, setHeaderScrollProgress] = React.useState(0);
+  const { designSystem, hosts } = useUi();
+  const ScrollContainer = hosts.ScrollView || hosts.View;
+  const screenHeaderScrollRange = Math.max(Number(designSystem.theme.tokens.spacing?.space3xl || 0), 1);
   const strings = clientStrings.pedido;
   const checkout = useClientCheckout({ isAuthenticated });
   const {
@@ -67,16 +82,24 @@ export const MontarBoxView: React.FC<MontarBoxViewProps> = ({
   const selectedPayment = paymentMethods.find((method) => method.key === selectedPaymentMethod) || paymentMethods[0];
 
   return (
-    <Container style={styles.page}>
-      <Stack style={styles.stack}>
-        <Surface style={styles.panel}>
-          <Stack style={styles.compactStack}>
-            <Text style={styles.accent} variant="caption">{strings.hero.badge}</Text>
-            <Text style={styles.title} variant="h1">{strings.hero.title}</Text>
-            <Text style={styles.muted}>{strings.hero.description}</Text>
-          </Stack>
-        </Surface>
-
+    <ScrollContainer
+      onScroll={hosts.ScrollView ? (event: NativeScrollEvent) => setHeaderScrollProgress(
+        normalizeScreenHeaderScrollProgress((event.nativeEvent?.contentOffset?.y || 0) / screenHeaderScrollRange),
+      ) : undefined}
+      scrollEventThrottle={hosts.ScrollView ? 16 : undefined}
+      stickyHeaderIndices={hosts.ScrollView ? [0] : undefined}
+    >
+      <ScreenHeader
+        description={strings.hero.description}
+        eyebrow={strings.hero.badge}
+        mobileMode="collapsible"
+        mobileTitle={strings.hero.mobileTitle}
+        scrollProgress={headerScrollProgress}
+        showScrollBorder={false}
+        title={strings.hero.title}
+      />
+      <Container style={styles.page}>
+        <Stack style={styles.stack}>
         <ModeSelector
           modeOrder={config.modeOrder}
           onSelectMode={actions.selectMode}
@@ -189,7 +212,8 @@ export const MontarBoxView: React.FC<MontarBoxViewProps> = ({
             <Text style={styles.muted}>{strings.summary.empty}</Text>
           </Surface>
         )}
-      </Stack>
-    </Container>
+        </Stack>
+      </Container>
+    </ScrollContainer>
   );
 };

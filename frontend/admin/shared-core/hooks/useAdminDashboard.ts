@@ -18,6 +18,7 @@ export interface UseAdminDashboardOptions {
   api?: AdminDashboardApi;
   fallbackOnError?: boolean;
   initialSummary?: AdminDashboardSummaryView | null;
+  recentOrdersLimit?: number;
 }
 
 export function useAdminDashboard(options: UseAdminDashboardOptions = {}) {
@@ -65,8 +66,10 @@ export function useAdminDashboard(options: UseAdminDashboardOptions = {}) {
       isLoading,
       load,
       summary,
-      viewModel: createAdminDashboardViewModel(summary || emptyDashboardSummary),
+      viewModel: createAdminDashboardViewModel(summary || emptyDashboardSummary, {
+        recentOrdersLimit: options.recentOrdersLimit,
+      }),
     }),
-    [error, isFallback, isLoading, load, summary],
+    [error, isFallback, isLoading, load, options.recentOrdersLimit, summary],
   );
 }
