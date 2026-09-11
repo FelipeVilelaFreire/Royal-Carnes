@@ -24,6 +24,11 @@
   --app-shell-sidebar-group-button-height: var(--theme--dimensions-height-sm);
   --app-shell-sidebar-group-button-padding-x: var(--theme--spacing-spaceSm);
   --app-shell-sidebar-group-indicator: var(--theme--borders-medium);
+  --app-shell-motion-disclosure-duration: var(--theme--motion-durationLg);
+  --app-shell-motion-disclosure-easing-enter: var(--theme--motion-easingEnter);
+  --app-shell-motion-disclosure-easing-exit: var(--theme--motion-easingExit);
+  --app-shell-motion-feedback-duration: var(--theme--motion-durationLg);
+  --app-shell-motion-feedback-easing: var(--theme--motion-easingFeedback);
   --app-shell-space-none: var(--theme--borders-none);
   --app-shell-panel-shadow: calc(var(--theme--elevation-lg-x) * -1) var(--theme--elevation-lg-y) var(--theme--elevation-lg-blur) var(--theme--elevation-lg-spread) color-mix(in srgb, var(--app-shell-background) 70%, transparent);
   --ui-background-accent: var(--app-shell-accent);
@@ -62,6 +67,11 @@
   --app-shell-sidebar-button-bg-active: linear-gradient(90deg, color-mix(in srgb, var(--app-shell-accent) 22%, transparent), transparent 74%), linear-gradient(135deg, color-mix(in srgb, var(--app-shell-accent) 10%, transparent), color-mix(in srgb, var(--app-shell-panel-bg) 42%, transparent));
   --app-shell-sidebar-button-bg-hover: linear-gradient(90deg, color-mix(in srgb, var(--app-shell-accent) 7%, transparent), transparent 70%), color-mix(in srgb, var(--app-shell-panel-bg) 34%, transparent);
   background: transparent;
+}
+
+/* The Admin keeps the active-route light on the trailing edge of the sidebar item. */
+:global([data-theme-surface="admin"]) .shell[data-app-shell-material="glass"] {
+  --app-shell-sidebar-button-bg-active: linear-gradient(270deg, color-mix(in srgb, var(--app-shell-accent) 22%, transparent), transparent 74%), linear-gradient(225deg, color-mix(in srgb, var(--app-shell-accent) 10%, transparent), color-mix(in srgb, var(--app-shell-panel-bg) 42%, transparent));
 }
 
 .shellWithSidebar[data-sidebar-collapsed="true"] {
@@ -590,7 +600,7 @@
 .navGroupButton {
   align-items: center;
   appearance: none;
-  background: transparent;
+  background-color: transparent;
   border: var(--theme--borders-none) solid transparent;
   border-radius: var(--theme--radius-lg);
   box-sizing: border-box;
@@ -607,15 +617,16 @@
   position: relative;
   text-align: start;
   transition:
-    background var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
-    color var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
-    transform var(--theme--motion-durationXs) var(--theme--motion-easingStandard);
+    background-color var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing),
+    color var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing),
+    transform var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing);
+  will-change: background-color, transform;
 }
 
 .navGroupButton:hover {
-  background: color-mix(in srgb, var(--app-shell-panel-bg) 28%, transparent);
+  background-color: var(--app-shell-nav-muted-bg);
   color: var(--app-shell-color);
-  transform: translateX(var(--theme--spacing-space2xs));
+  transform: translate3d(0, calc(var(--theme--spacing-space2xs) / -2), 0);
 }
 
 .navGroupButton[aria-expanded="true"] {
@@ -654,8 +665,8 @@
   opacity: var(--theme--opacity-75);
   transform: rotate(0deg);
   transition:
-    opacity var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
-    transform var(--theme--motion-durationXs) var(--theme--motion-easingStandard);
+    opacity var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing),
+    transform var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing);
 }
 
 .navGroupChevronExpanded {
@@ -664,29 +675,34 @@
 }
 
 .navGroupItems {
-  display: flex;
-  flex-direction: column;
-  gap: var(--theme--spacing-space2xs);
-  max-block-size: calc(var(--app-shell-sidebar-button-height) * 12);
+  display: grid;
+  grid-template-rows: 1fr;
   min-width: 0;
   opacity: 1;
-  overflow: hidden;
   transform: translateY(var(--app-shell-space-none));
   transition:
-    max-block-size var(--theme--motion-durationLg) var(--theme--motion-easingStandard),
-    opacity var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
-    transform var(--theme--motion-durationLg) var(--theme--motion-easingStandard),
-    visibility var(--theme--motion-durationLg) var(--theme--motion-easingStandard);
-  visibility: visible;
+    grid-template-rows var(--app-shell-motion-disclosure-duration) var(--app-shell-motion-disclosure-easing-enter),
+    opacity var(--app-shell-motion-disclosure-duration) var(--app-shell-motion-disclosure-easing-enter),
+    transform var(--app-shell-motion-disclosure-duration) var(--app-shell-motion-disclosure-easing-enter);
+  will-change: grid-template-rows, opacity, transform;
   width: 100%;
 }
 
 .navGroupItems[data-expanded="false"] {
-  max-block-size: var(--app-shell-space-none);
+  grid-template-rows: 0fr;
   opacity: 0;
   pointer-events: none;
   transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
-  visibility: hidden;
+  transition-timing-function: var(--app-shell-motion-disclosure-easing-exit);
+}
+
+.navGroupItemsInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-space2xs);
+  min-block-size: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Sidebar route button: real navigation item with active route state. */
@@ -961,6 +977,31 @@
   padding: var(--theme--spacing-spaceMd) var(--app-shell-sidebar-padding-inline);
 }
 
+:global([data-theme-surface="admin"]) .sidebar,
+:global([data-theme-surface="admin"]) .sidebarCompact,
+:global([data-theme-surface="admin"]) .sidebarCollapsed {
+  --app-shell-sidebar-padding-inline: var(--app-shell-space-none);
+  padding: var(--app-shell-space-none);
+}
+
+:global([data-theme-surface="admin"]) .sidebarMain {
+  padding-block-start: var(--theme--spacing-spaceSm);
+  padding-inline-end: var(--theme--spacing-spaceSm);
+}
+
+:global([data-theme-surface="admin"]) .sidebarBrand {
+  padding-block-start: var(--theme--spacing-spaceMd);
+}
+
+:global([data-theme-surface="admin"]) .sidebarFooter {
+  padding-block-end: var(--theme--spacing-spaceMd);
+}
+
+:global([data-theme-surface="admin"]) .verticalLink {
+  border-end-start-radius: var(--app-shell-space-none);
+  border-start-start-radius: var(--app-shell-space-none);
+}
+
 .sidebarCollapsed {
   --app-shell-sidebar-padding-inline: var(--theme--spacing-spaceSm);
   --app-shell-sidebar-rail-width: var(--theme--dimensions-height-3xl);
@@ -1004,7 +1045,10 @@
   --app-shell-brand-name-size: var(--theme--typography-sizeMd);
   --ui-button-gap: var(--theme--spacing-spaceXs);
   --ui-button-height: var(--theme--dimensions-height-md);
-  --ui-button-padding-x: var(--theme--spacing-spaceXs);
+  --ui-button-padding-x: var(--app-shell-space-none) !important;
+  --ui-button-padding-y: var(--app-shell-space-none) !important;
+  --ui-surface-padding-x: var(--app-shell-space-none) !important;
+  --ui-surface-padding-y: var(--app-shell-space-none) !important;
   width: 100%;
 }
 
@@ -1043,6 +1087,16 @@
 
 .sidebarCollapsed .sidebarBrand {
   justify-content: center;
+}
+
+.sidebarCollapsed .sidebarBrand .brand {
+  --ui-button-min-width: var(--theme--dimensions-height-lg) !important;
+  width: auto;
+}
+
+.sidebarCollapsed .sidebarBrand .brand > span {
+  justify-content: center;
+  width: auto;
 }
 
 .sidebarFooter {
@@ -1084,35 +1138,41 @@
   padding: var(--app-shell-space-none);
 }
 
+.sidebarCompact .navGroupButton {
+  --app-shell-sidebar-group-button-height: var(--theme--dimensions-height-sm);
+  --app-shell-sidebar-group-button-padding-x: var(--theme--spacing-spaceSm);
+  padding-inline-start: var(--theme--spacing-spaceXs);
+}
+
 .sidebarCompact .navGroupItems {
   --ui-layout-gap: var(--theme--spacing-space2xs) !important;
   gap: var(--theme--spacing-space2xs);
 }
 
 .sidebarCompact .verticalLink {
-  --app-shell-sidebar-button-height: var(--theme--dimensions-height-sm);
-  --app-shell-sidebar-button-icon-size: var(--theme--dimensions-height-xs);
-  --app-shell-sidebar-button-padding-x: var(--theme--spacing-spaceXs);
-  --app-shell-sidebar-button-padding-y: var(--theme--spacing-space2xs);
-  --ui-button-padding-x: var(--theme--spacing-spaceXs);
-  --ui-button-padding-y: var(--theme--spacing-space2xs);
-  font-size: var(--theme--typography-sizeXs);
-  gap: var(--theme--spacing-spaceXs);
-  padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceXs);
+  --app-shell-sidebar-button-height: var(--theme--dimensions-height-md);
+  --app-shell-sidebar-button-icon-size: var(--theme--dimensions-icon-sm);
+  --app-shell-sidebar-button-padding-x: var(--theme--spacing-spaceSm);
+  --app-shell-sidebar-button-padding-y: var(--theme--spacing-spaceXs);
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
+  --ui-button-padding-y: var(--theme--spacing-spaceXs);
+  font-size: var(--theme--typography-sizeSm);
+  gap: var(--theme--spacing-spaceSm);
+  padding: var(--theme--spacing-spaceXs) var(--theme--spacing-spaceSm);
 }
 
 .sidebarCompact .verticalLink > span {
-  gap: var(--theme--spacing-spaceXs);
+  gap: var(--theme--spacing-spaceSm);
 }
 
 .sidebarCompact .verticalLinkIcon {
-  height: var(--theme--dimensions-height-xs) !important;
-  width: var(--theme--dimensions-height-xs) !important;
+  height: var(--theme--dimensions-icon-sm) !important;
+  width: var(--theme--dimensions-icon-sm) !important;
 }
 
 .sidebarCompact .verticalLinkIcon > svg {
-  height: var(--theme--dimensions-icon-xs);
-  width: var(--theme--dimensions-icon-xs);
+  height: var(--theme--dimensions-icon-sm);
+  width: var(--theme--dimensions-icon-sm);
 }
 
 .sidebarCollapsed .verticalLink {
@@ -1176,20 +1236,23 @@
 }
 
 .sidebarCollapseButton {
-  --ui-button-gap: var(--theme--spacing-spaceXs);
+  --ui-button-gap: var(--theme--spacing-spaceXs) !important;
   --ui-button-height: var(--theme--dimensions-height-sm);
   --ui-button-min-width: var(--app-shell-space-none);
-  --ui-button-padding-x: var(--theme--spacing-spaceXs);
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
   --ui-button-padding-y: var(--app-shell-space-none);
-  --ui-surface-bg: var(--app-shell-sidebar-collapse-bg);
+  --ui-surface-bg: transparent;
   --ui-surface-border: transparent;
   --ui-surface-color: var(--app-shell-muted);
-  --ui-surface-radius: var(--app-shell-sidebar-button-radius);
+  --ui-surface-radius: var(--theme--radius-full);
+  --ui-surface-shadow: none;
+  border: var(--theme--borders-none) solid transparent !important;
   box-sizing: border-box;
   color: var(--app-shell-muted) !important;
-  justify-content: flex-start;
+  justify-content: center;
   min-width: 0 !important;
   overflow: hidden;
+  text-align: center;
   transition:
     background var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
     color var(--theme--motion-durationXs) var(--theme--motion-easingStandard),
@@ -1198,9 +1261,10 @@
 }
 
 .sidebarCollapseButton:hover {
-  background: var(--app-shell-sidebar-collapse-hover-bg) !important;
+  background: var(--app-shell-nav-muted-bg) !important;
+  box-shadow: none !important;
   color: var(--app-shell-color) !important;
-  transform: translateX(var(--theme--spacing-space2xs));
+  transform: translateY(calc(var(--theme--spacing-space2xs) / -2));
 }
 
 .sidebarCollapseButton > span:first-child {
@@ -1208,11 +1272,11 @@
 }
 
 .sidebarCollapseButton > span:last-child {
-  flex: 1;
+  flex: 0 1 auto;
   max-width: var(--app-shell-sidebar-label-max-width);
   min-width: 0;
   overflow: hidden;
-  text-align: start;
+  text-align: center;
   text-overflow: ellipsis;
   transition:
     max-width var(--theme--motion-durationXl) var(--theme--motion-easingStandard),
@@ -1616,7 +1680,7 @@
 
   .sidebarBrand .brand {
     --ui-button-height: var(--theme--dimensions-height-xs);
-    --ui-button-padding-x: var(--theme--spacing-space2xs);
+    --ui-button-padding-x: var(--app-shell-space-none);
     --ui-button-padding-y: var(--app-shell-space-none);
   }
 

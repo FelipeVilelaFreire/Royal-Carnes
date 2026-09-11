@@ -1,4 +1,10 @@
 export const clientPtBR = {
+  format: {
+    dashSeparated: "{first} - {second}",
+    productQuantity: "{quantity}x {product}",
+    kilogram: "kg",
+    valueWithUnit: "{value} {unit}",
+  },
   brand: {
     name: "ROYAL PRIME",
     tagline: "Excellence in every ember. A curadoria definitiva para os apaixonados por fogo e carne."
@@ -144,6 +150,9 @@ export const clientPtBR = {
     emptyDescription: "A montagem avulsa do Royal Delivery entra aqui: carnes, formato, utensílios, carvão, endereço e pagamento."
   },
   meusPedidos: {
+    format: {
+      dashSeparated: "{first} - {second}",
+    },
     title: "Meus Pedidos",
     subtitle: "Acompanhe suas compras, caixas e entregas Royal Delivery.",
     source: {
@@ -268,6 +277,9 @@ export const clientPtBR = {
     }
   },
   pedido: {
+    format: {
+      productQuantity: "{quantity}x {product}",
+    },
     hero: {
       badge: "Pedido Royal Carnes",
       title: "Monte seu pedido",
@@ -459,7 +471,6 @@ export const clientPtBR = {
       installmentsTitle: "Parcelamento",
       installmentsSuffix: "x sem juros",
       totalTitle: "Total desta etapa",
-      paymentMockNotice: "Pagamento ainda não processa cobrança real neste MVP.",
       methods: {
         pix: "Pix",
         pixDescription: "Gera uma chave mockada para pagamento rápido.",
@@ -548,19 +559,9 @@ export const clientPtBR = {
         action: "Ver catalogo completo",
         cardAction: "Ver produto",
         defaultMeta: "Vitrine Royal",
-        fallbackNotice: "Catalogo real indisponivel agora; exibindo vitrine configurada.",
-        brasaClassica: {
-          title: "Brasa classica",
-          description: "Cortes essenciais para montar um churrasco direto e confiavel."
-        },
-        boxFamilia: {
-          title: "Box familia",
-          description: "Selecao pensada para mesa maior, acompanhamentos e preparo simples."
-        },
-        linhaNobre: {
-          title: "Linha nobre",
-          description: "Produtos especiais para quem quer uma vitrine mais premium."
-        }
+        loading: "Carregando produtos disponiveis.",
+        error: "O catalogo esta indisponivel no momento. Tente novamente.",
+        empty: "Nenhum produto disponivel no momento.",
       }
     },
     hero: {
@@ -1208,6 +1209,15 @@ export const clientPtBR = {
     legalNotice: "Ao cancelar ou pausar a assinatura, os benefícios de preços diferenciados e a garantia de cota mensal serão interrompidos ao término do período vigente."
   },
   minhaContaV2: {
+    format: {
+      dashSeparated: "{first} - {second}",
+      greeting: "{greeting}, {name}. {subtitle}",
+      kilogram: "kg",
+      labelValue: "{label}: {value}",
+      paymentMethodSummary: "{holder} | {expiresLabel}: {expiresAt}",
+      invoiceSummary: "{date} | {paymentMethod} | {id}",
+      valueWithUnit: "{value} {unit}",
+    },
     title: "Minha Conta",
     subtitle: "Gerencie plano, pedidos, dados pessoais, enderecos, pagamentos e preferencias.",
     eyebrow: "Area do cliente",
@@ -1219,7 +1229,6 @@ export const clientPtBR = {
     deliveryLabel: "Proxima entrega",
     cycleLabel: "Cota do Ciclo Atual",
     memberSinceLabel: "Cliente desde",
-    sourceFallback: "Dados mockados conectados pelo shared-core",
     currencyPrefix: "R$",
     planNamePrefix: "Royal",
     tabs: {

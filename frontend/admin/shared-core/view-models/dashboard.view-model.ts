@@ -1,6 +1,14 @@
 import type { AdminDashboardSummaryView } from "../contracts/dashboard.contract";
 
 export type AdminDashboardWidgetKey = "mrr" | "subscribers" | "deliveries" | "retention";
+export type AdminDashboardMetricKey =
+  | AdminDashboardWidgetKey
+  | "orders"
+  | "pastDueSubscriptions"
+  | "cancelledSubscriptions"
+  | "readyDeliveries"
+  | "outForDelivery"
+  | "openOrders";
 export type AdminDashboardTone = "primary" | "success" | "warning" | "danger" | "neutral";
 
 export interface AdminDashboardWidgetViewModel {
@@ -23,6 +31,7 @@ export interface AdminDashboardRecentOrderViewModel {
 }
 
 export interface AdminDashboardViewModel {
+  metrics: Record<AdminDashboardMetricKey, string>;
   recentOrders: AdminDashboardRecentOrderViewModel[];
   widgets: AdminDashboardWidgetViewModel[];
 }
@@ -95,23 +104,45 @@ function resolveOrderBox(summary: AdminDashboardSummaryView, orderId: string | n
   return delivery?.code || delivery?.orderCode || null;
 }
 
+function isDeliveryTerminal(summary: AdminDashboardSummaryView, statusKey: string): boolean {
+  return Boolean(summary.deliveryConfig?.statuses.find((status) => status.key === statusKey)?.isTerminal);
+}
+
+function isOrderTerminal(summary: AdminDashboardSummaryView, statusKey: string): boolean {
+  return Boolean(summary.orderConfig?.statuses.find((status) => status.key === statusKey)?.isTerminal);
+}
+
 export function createAdminDashboardViewModel(
   summary: AdminDashboardSummaryView,
 ): AdminDashboardViewModel {
   const monthlyRevenueCents = resolveMonthlyPriceCents(summary);
   const activeSubscribers = summary.subscriptions.filter((subscription) => subscription.status === "active").length;
-  const pendingDeliveries = summary.deliveries.filter((delivery) => {
-    const status = summary.deliveryConfig?.statuses.find((item) => item.key === delivery.statusKey);
-    return !status?.isTerminal;
-  }).length;
+  const pendingDeliveries = summary.deliveries.filter((delivery) => !isDeliveryTerminal(summary, delivery.statusKey)).length;
   const finishedSubscriptions = summary.subscriptions.filter(
     (subscription) => subscription.status === "cancelled" || subscription.status === "past_due",
   ).length;
   const retentionRate = summary.subscriptions.length
     ? ((summary.subscriptions.length - finishedSubscriptions) / summary.subscriptions.length) * 100
     : 100;
+  const pastDueSubscriptions = summary.subscriptions.filter((subscription) => subscription.status === "past_due").length;
+  const cancelledSubscriptions = summary.subscriptions.filter((subscription) => subscription.status === "cancelled").length;
+  const readyDeliveries = summary.deliveries.filter((delivery) => delivery.statusKey === "ready").length;
+  const outForDelivery = summary.deliveries.filter((delivery) => delivery.statusKey === "outForDelivery").length;
+  const openOrders = summary.orders.filter((order) => !isOrderTerminal(summary, order.statusKey)).length;
 
   return {
+    metrics: {
+      cancelledSubscriptions: String(cancelledSubscriptions),
+      deliveries: String(pendingDeliveries),
+      mrr: formatMoney(monthlyRevenueCents),
+      openOrders: String(openOrders),
+      orders: String(summary.orders.length),
+      outForDelivery: String(outForDelivery),
+      pastDueSubscriptions: String(pastDueSubscriptions),
+      readyDeliveries: String(readyDeliveries),
+      retention: `${retentionRate.toFixed(1)}%`,
+      subscribers: String(activeSubscribers),
+    },
     widgets: [
       {
         helperKey: "dashboard.kpiHelpers.mrr",
@@ -158,4 +189,3 @@ export function createAdminDashboardViewModel(
       })),
   };
 }
-

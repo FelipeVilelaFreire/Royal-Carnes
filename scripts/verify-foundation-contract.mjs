@@ -54,6 +54,7 @@ mustContain("frontend/foundation/shells/app-shell/index.ts", /export \* from "\.
 mustContain("frontend/foundation/shells/app-shell/index.ts", /AppShellRuntime/, "AppShell exports web runtime");
 mustContain("frontend/foundation/tokens/resolver.ts", /prefix\.startsWith\("z-index"\).*String\(value\)/s, "Theme resolver keeps z-index tokens unitless");
 mustContain("frontend/foundation/tokens/resolver.ts", /prefix\.startsWith\("opacity"\)[\s\S]*numericValue \/ 100/, "Theme resolver emits opacity tokens as unitless ratios");
+mustContain("frontend/foundation/tokens/resolver.ts", /prefix === "motion"[\s\S]*key\.startsWith\("duration"\)[\s\S]*`\$\{value\}ms`/, "Theme resolver emits motion-duration tokens in milliseconds");
 mustContain("frontend/foundation/tokens/resolver.ts", /setScaleVariables\(root, "z-index", tokens\.zIndex\)/, "Theme resolver injects z-index tokens");
 mustContain("frontend/foundation/tokens/resolver.ts", /setScaleVariables\(root, "opacity", tokens\.opacity\)/, "Theme resolver injects opacity tokens");
 mustContain("frontend/foundation/ui/core/layout.ts", /resolveLayoutConfig/, "UI Layout core exposes ServiceOS-style config resolver");

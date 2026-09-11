@@ -12,11 +12,15 @@ export interface ThemeManifest {
 const px = (value: unknown) => typeof value === "number" ? `${value}px` : String(value);
 const toKebab = (value: string) => value.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 
-const formatScaleValue = (prefix: string, value: unknown) => {
+const formatScaleValue = (prefix: string, key: string, value: unknown) => {
   if (prefix.startsWith("z-index")) return String(value);
   if (prefix.startsWith("opacity")) {
     const numericValue = Number(value);
     return Number.isFinite(numericValue) && numericValue > 1 ? String(numericValue / 100) : String(value);
+  }
+  if (prefix === "motion") {
+    if (key.startsWith("duration")) return typeof value === "number" ? `${value}ms` : String(value);
+    return String(value);
   }
   return px(value);
 };
@@ -32,7 +36,7 @@ const setScaleVariables = (
       setScaleVariables(root, `${prefix}-${key}`, value as Record<string, unknown>);
       return;
     }
-    root.style.setProperty(`--theme--${prefix}-${key}`, formatScaleValue(prefix, value));
+    root.style.setProperty(`--theme--${prefix}-${key}`, formatScaleValue(prefix, key, value));
   });
 };
 

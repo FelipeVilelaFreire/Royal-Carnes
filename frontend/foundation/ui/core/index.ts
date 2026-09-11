@@ -22,5 +22,7 @@ export {
 export type {
   FoundationUiConfig,
   SurfaceUiConfig,
+  UiBackgroundConfig,
+  UiBackgroundCursorConfig,
   UiSurfaceConfig,
 } from "./contract";

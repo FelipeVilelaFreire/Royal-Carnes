@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import type { NativeAppShellHostComponents } from "../../../../../foundation/shells/app-shell/native";
+import { NativeAppShell, type NativeAppShellHostComponents } from "../../../../../foundation/shells/app-shell/native";
+import { resolveNativeUiManifest } from "../../../../../foundation/native";
 import { NativeAccessShell } from "../../../../../foundation/shells/access-shell";
 import type { ApiClientConfig } from "../../../../../shared-core";
 import { useClientPortalAuthSession } from "../../../../shared-core";
@@ -9,13 +10,13 @@ import { clientPortalAccessShellConfig } from "../../../../shared-core/manifest/
 import type { useClientStrings } from "../../../../shared-core/hooks/useClientStrings";
 import { clientRoutes } from "../../../../shared-core/manifest/routes";
 import { portalNavigation } from "../../../../shared-core/navigation/client.navigation";
-import { AppShell } from "../../shell";
-import { createMobileAppShellConfig, type AppThemeMode } from "../../shell/AppShell/config";
-import { CortesView } from "./tabs/CortesView";
-import { HomeView } from "./tabs/HomeView";
-import { MinhaContaView } from "./tabs/MinhaContaView";
-import { MeusPedidosView } from "./tabs/MeusPedidosView";
-import { PedidoView } from "./tabs/PedidoView";
+import { UiProvider } from "@foundation/native/client-ui";
+import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
+import { CortesView } from "./Cortes/CortesView";
+import { HomeView } from "./Home/HomeView";
+import { PerfilView } from "./Perfil/PerfilView";
+import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
+import { MontarBoxView } from "./MontarBox/MontarBoxView";
 
 export interface PortalViewProps {
   authApiConfig?: ApiClientConfig;
@@ -37,6 +38,14 @@ export const PortalView: React.FC<PortalViewProps> = ({
   const [activeScreenKey, setActiveScreenKey] = useState(initialTab);
   const [isAccessOpen, setIsAccessOpen] = useState(false);
   const apiConfig = useMemo(() => authApiConfig || {}, [authApiConfig]);
+  const appShellConfig = useMemo(
+    () => ({ ...createMobileAppShellConfig(themeMode), strings: strings.appShell }),
+    [strings.appShell, themeMode],
+  );
+  const designSystem = useMemo(
+    () => resolveNativeUiManifest({ mode: themeMode, ui: { theme: appShellConfig.theme } as any }),
+    [appShellConfig.theme, themeMode],
+  );
   const auth = useClientPortalAuthSession({ apiConfig, storage: authStorage });
 
   useEffect(() => {
@@ -73,9 +82,10 @@ export const PortalView: React.FC<PortalViewProps> = ({
 
   return (
     <ClientApiProvider config={apiConfig}>
-    <AppShell
+    <UiProvider designSystem={designSystem} hosts={hosts} mode={themeMode}>
+    <NativeAppShell
       activePath={activePath}
-      config={createMobileAppShellConfig(themeMode) as any}
+      config={appShellConfig as any}
       hosts={hosts}
       mode="client"
       navItems={portalNavigation as any}
@@ -97,7 +107,6 @@ export const PortalView: React.FC<PortalViewProps> = ({
         );
       }}
       routesMap={clientRoutes}
-      themeMode={themeMode}
     >
       {isAccessOpen ? (
         <NativeAccessShell
@@ -121,7 +130,7 @@ export const PortalView: React.FC<PortalViewProps> = ({
       ) : activeScreenKey === "cortes" ? (
         <CortesView strings={strings} />
       ) : activeScreenKey === "produtos" ? (
-        <PedidoView
+        <MontarBoxView
           activePath={activePath}
           isAuthenticated={auth.isAuthenticated}
           strings={strings}
@@ -130,11 +139,22 @@ export const PortalView: React.FC<PortalViewProps> = ({
       ) : activeScreenKey === "meusPedidos" ? (
         <MeusPedidosView activePath={activePath} themeMode={themeMode} />
       ) : activeScreenKey === "minhaConta" ? (
-        <MinhaContaView activePath={activePath} strings={strings} themeMode={themeMode} />
+        <PerfilView activePath={activePath} strings={strings} themeMode={themeMode} />
       ) : (
-        <HomeView activePath={activePath} themeMode={themeMode} />
+        <HomeView
+          onNavigate={(path) => {
+            const item = portalNavigation.find((candidate) => clientRoutes[candidate.key as keyof typeof clientRoutes] === path);
+            if (item?.auth === "required" && !auth.isAuthenticated) {
+              setIsAccessOpen(true);
+              return;
+            }
+            setActiveScreenKey(item?.key === "cortes" ? "cortes" : item?.key === "produtos" ? "produtos" : item?.key === "meusPedidos" ? "meusPedidos" : item?.key === "minhaConta" ? "minhaConta" : "home");
+          }}
+          strings={strings}
+        />
       )}
-    </AppShell>
+    </NativeAppShell>
+    </UiProvider>
     </ClientApiProvider>
   );
 };

@@ -2,18 +2,27 @@ import React from "react";
 import type { NativeAppShellHostComponents } from "../../../../foundation/shells/app-shell/native";
 import type { ApiClientConfig } from "../../../../shared-core";
 import type { ClientAuthStorage } from "../../../shared-core/types/auth.types";
-import type { useClientStrings } from "../../../shared-core/hooks/useClientStrings";
+import { ClientStringsProvider, resolveClientStrings, type ClientLocale, type ClientStrings } from "../../../shared-core";
 import { PortalView } from "../screens/portal";
-import type { AppThemeMode } from "../shell/AppShell/config";
+import type { AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 
 export interface AppProps {
   authApiConfig?: ApiClientConfig;
   authStorage?: ClientAuthStorage;
   hosts: NativeAppShellHostComponents;
-  strings: ReturnType<typeof useClientStrings>;
+  locale?: ClientLocale;
+  strings?: ClientStrings;
   themeMode?: AppThemeMode;
 }
 
-export const App: React.FC<AppProps> = ({ authApiConfig, authStorage, hosts, strings, themeMode = "dark" }) => (
-  <PortalView authApiConfig={authApiConfig} authStorage={authStorage} hosts={hosts} strings={strings} themeMode={themeMode} />
+export const App: React.FC<AppProps> = ({ authApiConfig, authStorage, hosts, locale = "pt-BR", strings, themeMode = "dark" }) => (
+  <ClientStringsProvider locale={locale}>
+    <PortalView
+      authApiConfig={authApiConfig}
+      authStorage={authStorage}
+      hosts={hosts}
+      strings={strings || resolveClientStrings(locale)}
+      themeMode={themeMode}
+    />
+  </ClientStringsProvider>
 );

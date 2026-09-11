@@ -2,7 +2,7 @@ export const clientProductComponentsCapability = {
   status: "client-render-only",
   currentOwners: [
     "product-components/ecommerce",
-    "client/web/src/product-components/ecommerce",
+    "product-components/ecommerce/native",
   ],
-  futureOwner: "foundation/product-components/ecommerce",
+  futureOwner: "product-components/ecommerce",
 };

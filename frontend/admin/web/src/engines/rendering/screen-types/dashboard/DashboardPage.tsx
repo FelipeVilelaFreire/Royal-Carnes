@@ -13,7 +13,6 @@ import styles from "./DashboardPage.module.css";
 
 export interface DashboardPageProps {
   config: DashboardConfig;
-  isFallback?: boolean;
   isLoading?: boolean;
   onViewOrders?: () => void;
   t: AdminTranslate;
@@ -33,13 +32,7 @@ function toBadgeTone(tone: string | undefined) {
   return "neutral";
 }
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({
-  config,
-  isLoading = false,
-  onViewOrders,
-  t,
-  viewModel,
-}) => {
+export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading = false, onViewOrders, t, viewModel }) => {
   const widgetsByKey = new Map(viewModel.widgets.map((widget) => [widget.key, widget]));
 
   return (
@@ -48,20 +41,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <Stack className={styles.content} gap="lg">
           <Inline align="start" justify="between" wrap>
             <Stack className={styles.heading} gap="xs">
-              <Text as="h1" variant="h1">
-                {t(config.titleKey)}
-              </Text>
-              <Text tone="muted" variant="body">
-                {t(config.subtitleKey)}
-              </Text>
+              <Text as="h1" variant="h1">{t(config.titleKey)}</Text>
+              <Text tone="muted" variant="body">{t(config.subtitleKey)}</Text>
             </Stack>
-
             <Inline className={styles.stateBar} gap="sm">
-              {isLoading ? (
-                <Badge appearance="soft" tone="neutral">
-                  {t("dashboard.loading")}
-                </Badge>
-              ) : null}
+              {isLoading ? <Badge appearance="soft" tone="neutral">{t("dashboard.loading")}</Badge> : null}
             </Inline>
           </Inline>
 
@@ -71,20 +55,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               return (
                 <Card className={styles.kpiCard} key={widget.key} size="md">
                   <Inline justify="between" wrap={false}>
-                    <Text as="span" className={styles.kpiLabel} tone="muted" variant="caption" weight="bold">
-                      {t(widget.titleKey)}
-                    </Text>
+                    <Text as="span" className={styles.kpiLabel} tone="muted" variant="caption" weight="bold">{t(widget.titleKey)}</Text>
                     <span className={styles.kpiIcon}>{renderWidgetIcon(widget.iconKey, widget.key)}</span>
                   </Inline>
-
-                  <Text as="strong" className={styles.kpiValue} variant="h2">
-                    {widgetView?.value || widget.value || "-"}
-                  </Text>
-
+                  <Text as="strong" className={styles.kpiValue} variant="h2">{widgetView?.value || widget.value || "-"}</Text>
                   <Badge appearance="soft" className={styles.kpiHelper} tone={toBadgeTone(widgetView?.tone)}>
-                    {widgetView
-                      ? t(widgetView.helperKey, widget.helper, widgetView.helperVariables)
-                      : widget.helper || "-"}
+                    {widgetView ? t(widgetView.helperKey, widget.helper, widgetView.helperVariables) : widget.helper || "-"}
                   </Badge>
                 </Card>
               );
@@ -94,61 +70,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <Card className={styles.tableCard} size="lg">
             <Inline justify="between" wrap>
               <Inline gap="sm" wrap={false}>
-                <span className={styles.tableIcon}>
-                  <BoxIcon aria-hidden="true" />
-                </span>
-                <Text as="h2" variant="h3">
-                  {t("dashboard.tableTitle")}
-                </Text>
+                <span className={styles.tableIcon}><BoxIcon aria-hidden="true" /></span>
+                <Text as="h2" variant="h3">{t("dashboard.tableTitle")}</Text>
               </Inline>
-
-              <Button
-                appearance="transparent"
-                icon={<ChevronRightIcon aria-hidden="true" />}
-                iconPosition="end"
-                onClick={onViewOrders}
-                size="sm"
-              >
+              <Button appearance="transparent" icon={<ChevronRightIcon aria-hidden="true" />} iconPosition="end" onClick={onViewOrders} size="sm">
                 {t("dashboard.viewAllBoxes")}
               </Button>
             </Inline>
-
             <div className={styles.tableScroller}>
               <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>{t("dashboard.tableHeaders.order")}</th>
-                    <th>{t("dashboard.tableHeaders.member")}</th>
-                    <th>{t("dashboard.tableHeaders.plan")}</th>
-                    <th>{t("dashboard.tableHeaders.box")}</th>
-                    <th>{t("dashboard.tableHeaders.status")}</th>
-                    <th>{t("dashboard.tableHeaders.date")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {viewModel.recentOrders.length ? (
-                    viewModel.recentOrders.map((order) => (
-                      <tr key={order.id}>
-                        <td className={styles.orderCode}>{order.id}</td>
-                        <td>{order.member}</td>
-                        <td>{order.plan}</td>
-                        <td>{order.box}</td>
-                        <td>
-                          <Badge appearance="soft" tone={toBadgeTone(order.statusTone)}>
-                            {order.statusLabel}
-                          </Badge>
-                        </td>
-                        <td>{order.date}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td className={styles.emptyCell} colSpan={6}>
-                        {t("dashboard.emptyRecentOrders")}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+                <thead><tr>
+                  <th>{t("dashboard.tableHeaders.order")}</th><th>{t("dashboard.tableHeaders.member")}</th><th>{t("dashboard.tableHeaders.plan")}</th><th>{t("dashboard.tableHeaders.box")}</th><th>{t("dashboard.tableHeaders.status")}</th><th>{t("dashboard.tableHeaders.date")}</th>
+                </tr></thead>
+                <tbody>{viewModel.recentOrders.length ? viewModel.recentOrders.map((order) => (
+                  <tr key={order.id}><td className={styles.orderCode}>{order.id}</td><td>{order.member}</td><td>{order.plan}</td><td>{order.box}</td><td><Badge appearance="soft" tone={toBadgeTone(order.statusTone)}>{order.statusLabel}</Badge></td><td>{order.date}</td></tr>
+                )) : <tr><td className={styles.emptyCell} colSpan={6}>{t("dashboard.emptyRecentOrders")}</td></tr>}</tbody>
               </table>
             </div>
           </Card>

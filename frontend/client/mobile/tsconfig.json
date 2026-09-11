@@ -16,6 +16,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@foundation/*": ["../../foundation/*"],
+      "@royalprime/product-components/*": ["../../product-components/*"],
       "@royalprime/client/*": ["../shared-core/*"],
       "@shared-core/*": ["../../shared-core/*"]
     }

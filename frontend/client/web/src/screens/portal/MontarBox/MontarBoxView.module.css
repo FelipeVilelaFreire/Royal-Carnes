@@ -1,0 +1,1223 @@
+@keyframes pedidoAppear {
+  from {
+    opacity: 0;
+    transform: translateY(var(--theme--spacing-spaceMd));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pageRoot {
+  --pedido-page-bg: var(--theme--color-background);
+  --pedido-page-text: var(--theme--color-text);
+  --pedido-page-min-height: auto;
+  --pedido-panel-accent: var(--theme--color-accent);
+  --pedido-panel-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
+  --pedido-panel-border: var(--theme--color-border);
+  --pedido-panel-muted: var(--theme--color-text-muted, var(--theme--color-textMuted));
+  --pedido-panel-text: var(--theme--color-text);
+  --pedido-option-accent: var(--pedido-panel-accent);
+  --pedido-option-accent-contrast: var(--theme--color-accent-contrast, var(--theme--color-accentContrast, var(--theme--color-background)));
+  --pedido-option-bg: var(--pedido-panel-bg);
+  --pedido-option-border: var(--pedido-panel-border);
+  --pedido-option-muted: var(--pedido-panel-muted);
+  --pedido-option-text: var(--pedido-panel-text);
+  background: var(--pedido-page-bg);
+  color: var(--pedido-page-text);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--theme--typography-bodyFamily);
+  min-height: var(--pedido-page-min-height);
+  width: 100%;
+}
+
+.pageRoot[data-standalone="true"] {
+  --pedido-page-min-height: 100%;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mainWithHeader {
+  padding-block: var(--theme--spacing-space2xl) var(--theme--spacing-space3xl);
+}
+
+.mainEmbedded {
+  padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
+}
+
+.heroWrap {
+  margin-bottom: var(--theme--spacing-spaceXl);
+}
+
+.heroWrap[data-compact="true"] {
+  margin-bottom: var(--theme--spacing-spaceLg);
+}
+
+.heroPanel {
+  --pedido-hero-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
+  --pedido-hero-border: var(--theme--color-border);
+  --pedido-hero-padding-x: var(--theme--spacing-spaceXl);
+  --pedido-hero-padding-y: var(--theme--spacing-spaceXl);
+  --pedido-hero-text: var(--theme--color-text);
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-hero-bg) 94%, var(--theme--color-background));
+  --ui-surface-border: var(--pedido-hero-border);
+  --ui-surface-color: var(--pedido-hero-text);
+  --ui-surface-padding-x: var(--pedido-hero-padding-x);
+  --ui-surface-padding-y: var(--pedido-hero-padding-y);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  box-shadow: var(--theme--elevation-md-shadow, none);
+}
+
+.heroPanel[data-compact="true"] {
+  --pedido-hero-padding-x: var(--theme--spacing-spaceLg);
+  --pedido-hero-padding-y: var(--theme--spacing-spaceLg);
+}
+
+.heroTitle {
+  font-size: var(--theme--typography-size4xl);
+  transition: font-size var(--theme--motion-durationLg) ease;
+}
+
+.heroTitle[data-compact="true"] {
+  font-size: var(--theme--typography-size3xl);
+}
+
+.heroDescription {
+  color: var(--pedido-panel-muted);
+}
+
+.modeList {
+  --pedido-mode-gap: var(--theme--spacing-spaceMd);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--pedido-mode-gap, var(--theme--spacing-spaceMd));
+  margin-bottom: 0;
+  transition:
+    gap var(--theme--motion-durationLg) ease,
+    margin-bottom var(--theme--motion-durationLg) ease;
+}
+
+.modeList[data-compact="true"] {
+  --pedido-mode-gap: var(--theme--spacing-spaceXs);
+  margin-bottom: var(--theme--spacing-spaceLg);
+}
+
+.shell {
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+  align-items: flex-start;
+  animation: pedidoAppear var(--theme--motion-durationLg) ease both;
+}
+
+.shellWithSummary {
+  grid-template-columns: minmax(0, 7fr) minmax(calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-lg)), 3fr);
+}
+
+.shellReview {
+  grid-template-columns: 1fr;
+}
+
+.contentStack {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-spaceLg);
+}
+
+.animatedStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-spaceMd);
+  animation: pedidoAppear var(--theme--motion-durationLg) ease both;
+}
+
+.modeCard,
+.planCard,
+.productCard {
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease,
+    box-shadow var(--theme--motion-durationLg) ease,
+    transform var(--theme--motion-durationLg) ease;
+}
+
+.modeCard {
+  --pedido-mode-accent: var(--theme--color-accent);
+  --pedido-mode-bg: var(--pedido-mode-surface);
+  --pedido-mode-border: var(--theme--color-border);
+  --pedido-mode-icon-bg: var(--pedido-mode-surface);
+  --pedido-mode-icon-border: color-mix(in srgb, var(--pedido-mode-text) 12%, var(--pedido-mode-border));
+  --pedido-mode-icon-color: var(--pedido-mode-accent);
+  --pedido-mode-icon-size: var(--theme--dimensions-height-xl);
+  --pedido-mode-muted: var(--theme--color-text-muted, var(--theme--color-textMuted));
+  --pedido-mode-surface: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
+  --pedido-mode-text: var(--theme--color-text);
+  --pedido-mode-title-size: var(--theme--typography-size3xl);
+  --ui-button-height: auto;
+  --ui-button-min-width: 0;
+  --ui-surface-bg: var(--pedido-mode-bg);
+  --ui-surface-border: color-mix(in srgb, var(--pedido-mode-text) 14%, var(--pedido-mode-border));
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-color: var(--pedido-mode-text);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  --ui-surface-shadow: var(--theme--elevation-md-shadow, none);
+  align-items: stretch;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  justify-content: stretch;
+  min-height: calc(var(--theme--dimensions-height-3xl) + var(--theme--dimensions-height-xl));
+  padding: var(--theme--spacing-spaceLg);
+  text-align: left;
+  width: 100%;
+}
+
+.modeCard > span,
+.planButton > span,
+.choiceButton > span,
+.freightButton > span,
+.installmentButton > span {
+  display: grid;
+  gap: inherit;
+  min-width: 0;
+  width: 100%;
+}
+
+.modeCard > span {
+  align-content: space-between;
+  min-height: 100%;
+}
+
+.addressOption > span {
+  align-items: flex-start;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: auto minmax(0, 1fr);
+  min-width: 0;
+  width: 100%;
+}
+
+.paymentMethodButton > span {
+  align-items: center;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  justify-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.modeCard[data-compact="true"] {
+  --pedido-mode-icon-size: var(--theme--dimensions-height-lg);
+  --pedido-mode-title-size: var(--theme--typography-size2xl);
+  min-height: calc(var(--theme--dimensions-height-3xl) + var(--theme--spacing-spaceMd));
+  padding: var(--theme--spacing-spaceMd);
+}
+
+.modeCard[data-compact="true"] > span {
+  align-items: center;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.modeCard[data-active="true"] {
+  --pedido-mode-bg: color-mix(in srgb, var(--pedido-mode-accent) 7%, var(--pedido-mode-surface));
+  --pedido-mode-border: var(--pedido-mode-accent);
+  --pedido-mode-icon-bg: color-mix(in srgb, var(--pedido-mode-accent) 14%, var(--pedido-mode-surface));
+  --pedido-mode-icon-border: color-mix(in srgb, var(--pedido-mode-accent) 72%, var(--pedido-mode-border));
+  --ui-surface-border: color-mix(in srgb, var(--pedido-mode-accent) 76%, var(--pedido-mode-border));
+}
+
+.modeCard:hover {
+  --ui-surface-border: color-mix(in srgb, var(--pedido-mode-text) 22%, var(--pedido-mode-border));
+}
+
+.modeCard[data-active="true"]:hover {
+  --ui-surface-border: var(--pedido-mode-accent);
+}
+
+.modeCardContent {
+  align-items: start;
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  justify-items: start;
+  min-width: 0;
+  width: 100%;
+}
+
+.modeCard[data-compact="true"] .modeCardContent {
+  align-content: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.modeIcon {
+  align-items: center;
+  background: var(--pedido-mode-icon-bg);
+  border: var(--theme--borders-hairline) solid var(--pedido-mode-icon-border);
+  border-radius: var(--theme--radius-lg);
+  color: var(--pedido-mode-icon-color);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: var(--pedido-mode-icon-size);
+  justify-content: center;
+  transition: all 0.28s ease;
+  width: var(--pedido-mode-icon-size);
+}
+
+.modeIcon svg {
+  height: calc(var(--pedido-mode-icon-size) * 0.48);
+  width: calc(var(--pedido-mode-icon-size) * 0.48);
+}
+
+.modeCopy {
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+  min-width: 0;
+}
+
+.modeEyebrow {
+  color: var(--pedido-mode-accent);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  text-transform: uppercase;
+}
+
+.modeTitle {
+  color: var(--pedido-mode-text);
+  font-family: var(--theme--typography-headingFamily);
+  font-size: var(--pedido-mode-title-size);
+  font-weight: var(--theme--typography-bold);
+  line-height: var(--theme--typography-lineHeightSm);
+  overflow-wrap: anywhere;
+}
+
+.modeBadge {
+  align-items: center;
+  border: var(--theme--borders-hairline) solid var(--pedido-mode-accent);
+  border-radius: var(--theme--radius-full);
+  color: var(--pedido-mode-accent);
+  display: inline-flex;
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  margin-top: var(--theme--spacing-space2xs);
+  padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceXs);
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.modeDescription {
+  color: var(--pedido-mode-muted);
+  font-size: var(--theme--typography-sizeSm);
+  line-height: var(--theme--typography-lineHeightMd);
+  margin: 0;
+}
+
+.modeDetails {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  width: 100%;
+}
+
+.modeDetail {
+  align-items: flex-start;
+  border-block-start: var(--theme--borders-hairline) solid color-mix(in srgb, var(--pedido-mode-border) 82%, transparent);
+  color: var(--pedido-mode-muted);
+  display: block;
+  font-size: var(--theme--typography-sizeXs);
+  line-height: var(--theme--typography-lineHeightSm);
+  padding-block-start: var(--theme--spacing-spaceSm);
+}
+
+.modeCard:hover,
+.planCard:hover,
+.productCard:hover {
+  transform: translateY(calc(var(--theme--spacing-space2xs) * -0.5));
+}
+
+.activePlanPanel {
+  --ui-surface-bg: var(--pedido-panel-bg);
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceLg);
+  --ui-surface-padding-y: var(--theme--spacing-spaceLg);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease;
+}
+
+.activePlanContent {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.activePlanHeader {
+  min-width: 0;
+  width: 100%;
+}
+
+.activePlanKicker,
+.sectionKicker,
+.metricLabel {
+  color: var(--pedido-panel-accent);
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  text-transform: uppercase;
+}
+
+.activePlanCopy {
+  display: grid;
+  gap: var(--theme--spacing-spaceXs);
+  min-width: 0;
+}
+
+.activePlanDescription {
+  color: var(--pedido-panel-muted);
+}
+
+.activePlanBadge {
+  align-self: flex-start;
+  border: var(--theme--borders-hairline) solid var(--pedido-panel-accent);
+  border-radius: var(--theme--radius-full);
+  color: var(--pedido-panel-accent);
+  display: inline-flex;
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  max-width: 100%;
+  min-width: 0;
+  padding: var(--theme--spacing-spaceXs) var(--theme--spacing-spaceSm);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.activePlanMetrics {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.planGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
+}
+
+.planButton {
+  --pedido-plan-border: var(--pedido-panel-border);
+  --ui-button-height: auto;
+  --ui-button-min-width: 0;
+  --ui-button-padding-x: var(--theme--spacing-spaceMd);
+  --ui-button-padding-y: var(--theme--spacing-spaceMd);
+  --ui-surface-bg: transparent;
+  --ui-surface-border: var(--pedido-plan-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.planButton[aria-pressed="true"] {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-accent) 11%, var(--pedido-panel-bg));
+  --ui-surface-border: var(--pedido-panel-accent);
+}
+
+.activePlanMetric {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-bg) 86%, var(--theme--color-background));
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceSm);
+  --ui-surface-padding-y: var(--theme--spacing-spaceSm);
+  --ui-surface-radius: var(--theme--radius-xl);
+  min-width: 0;
+}
+
+.metricLabel {
+  color: var(--pedido-panel-muted);
+  display: block;
+  font-size: var(--theme--typography-size2xs);
+  margin-bottom: var(--theme--spacing-space2xs);
+}
+
+.metricValue {
+  color: var(--pedido-panel-text);
+  font-size: var(--theme--typography-sizeSm);
+}
+
+.catalogPanel {
+  --ui-surface-bg: var(--pedido-panel-bg);
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceLg);
+  --ui-surface-padding-y: var(--theme--spacing-spaceLg);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease;
+}
+
+.catalogHeader {
+  display: grid;
+  gap: var(--theme--spacing-spaceXs);
+}
+
+.catalogSubtitle,
+.emptyCatalogDescription {
+  color: var(--pedido-panel-muted);
+}
+
+.filterButton {
+  --ui-surface-bg: var(--pedido-panel-bg);
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  width: 100%;
+}
+
+.checkoutPanel {
+  --ui-surface-bg: var(--pedido-panel-bg);
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceLg);
+  --ui-surface-padding-y: var(--theme--spacing-spaceLg);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease,
+    transform var(--theme--motion-durationLg) ease;
+}
+
+.checkoutDescription {
+  color: var(--pedido-panel-muted);
+  max-width: var(--theme--layout-container-sm);
+}
+
+.fieldLabel {
+  color: var(--pedido-panel-muted);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  text-transform: uppercase;
+}
+
+.checkoutPrimaryAction {
+  --ui-surface-bg: var(--pedido-panel-text);
+  --ui-surface-border: var(--pedido-panel-text);
+  --ui-surface-color: var(--pedido-page-bg);
+}
+
+.checkoutSubtleAction {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+}
+
+.infoGrid,
+.optionGrid,
+.paymentMethodGrid,
+.reviewSummaryGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
+}
+
+.compactOptionGrid,
+.installmentGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-lg), 1fr));
+}
+
+.infoTile,
+.formPanel,
+.reviewCard {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-bg) 86%, var(--theme--color-background));
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+  --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+  --ui-surface-radius: var(--theme--radius-2xl);
+}
+
+.infoTile,
+.formPanel,
+.reviewCard,
+.reviewTotalCard {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.infoIcon,
+.summaryValue {
+  color: var(--pedido-panel-accent);
+}
+
+.addressOption {
+  --ui-button-height: auto;
+  --ui-button-min-width: 0;
+  --ui-button-padding-x: var(--theme--spacing-spaceMd);
+  --ui-button-padding-y: var(--theme--spacing-spaceMd);
+  --ui-surface-bg: var(--pedido-option-bg, var(--theme--color-surface-container));
+  --ui-surface-border: var(--pedido-option-border);
+  --ui-surface-color: var(--pedido-option-text);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  align-items: flex-start;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: auto minmax(0, 1fr);
+  justify-content: stretch;
+  text-align: left;
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease,
+    transform var(--theme--motion-durationLg) ease;
+  width: 100%;
+}
+
+.addressOption[aria-pressed="true"] {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg, var(--theme--color-surface-container)));
+  --ui-surface-border: color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border));
+}
+
+.addressOption:hover,
+.choiceButton:hover,
+.freightButton:hover,
+.installmentButton:hover,
+.paymentMethodButton:hover {
+  --ui-surface-border: color-mix(in srgb, var(--pedido-option-text) 22%, var(--pedido-option-border));
+}
+
+.addressOption[aria-pressed="true"]:hover,
+.choiceButton[aria-pressed="true"]:hover,
+.freightButton[aria-pressed="true"]:hover,
+.installmentButton[aria-pressed="true"]:hover,
+.paymentMethodButton[aria-pressed="true"]:hover {
+  --ui-surface-border: color-mix(in srgb, var(--pedido-option-accent) 78%, var(--pedido-option-border));
+}
+
+.optionIcon,
+.paymentIcon,
+.paymentSelected {
+  align-items: center;
+  border-radius: var(--theme--radius-lg);
+  color: var(--pedido-option-accent);
+  display: inline-flex;
+  justify-content: center;
+}
+
+.optionIcon {
+  background: color-mix(in srgb, var(--pedido-option-accent) 12%, var(--pedido-option-bg));
+  height: var(--theme--dimensions-height-lg);
+  width: var(--theme--dimensions-height-lg);
+}
+
+.addressCopy,
+.paymentCopy {
+  color: var(--pedido-option-muted);
+  display: grid;
+  gap: calc(var(--theme--spacing-space2xs) * 0.75);
+  line-height: var(--theme--typography-lineHeightSm);
+  min-width: 0;
+}
+
+.addressCopy span,
+.addressCopy p,
+.paymentCopy span,
+.paymentCopy p {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.addressTitleLine,
+.selectedHint {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-spaceXs);
+}
+
+.smallBadge {
+  border: var(--theme--borders-hairline) solid var(--pedido-option-accent);
+  border-radius: var(--theme--radius-full);
+  color: var(--pedido-option-accent);
+  display: inline-flex;
+  font-size: var(--theme--typography-size2xs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  max-width: 100%;
+  min-width: 0;
+  padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceXs);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.selectedHint {
+  color: var(--pedido-option-accent);
+  font-weight: var(--theme--typography-bold);
+}
+
+.choiceButton,
+.freightButton,
+.installmentButton,
+.paymentMethodButton {
+  --ui-button-height: auto;
+  --ui-button-min-width: 0;
+  --ui-surface-bg: var(--pedido-option-bg, var(--theme--color-surface-container));
+  --ui-surface-border: var(--pedido-option-border);
+  --ui-surface-color: var(--pedido-option-text);
+  --ui-surface-radius: var(--theme--radius-xl);
+  justify-content: stretch;
+  text-align: left;
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease,
+    transform var(--theme--motion-durationLg) ease;
+  width: 100%;
+}
+
+.choiceButton[aria-pressed="true"],
+.freightButton[aria-pressed="true"],
+.installmentButton[aria-pressed="true"],
+.paymentMethodButton[aria-pressed="true"] {
+  --pedido-option-text: var(--pedido-option-accent);
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-option-bg, var(--theme--color-surface-container)));
+  --ui-surface-border: color-mix(in srgb, var(--pedido-option-accent) 76%, var(--pedido-option-border));
+}
+
+.addressOption[aria-pressed="true"],
+.paymentMethodButton[aria-pressed="true"] {
+  --pedido-option-text: var(--pedido-panel-text);
+}
+
+.optionDescription {
+  color: var(--pedido-option-muted);
+}
+
+.choiceButton,
+.freightButton,
+.installmentButton {
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+}
+
+.choiceButton {
+  min-height: var(--theme--dimensions-height-3xl);
+}
+
+.choiceEyebrow,
+.freightButton small {
+  color: var(--pedido-option-muted, var(--theme--color-text-muted));
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  text-transform: uppercase;
+}
+
+.choiceValue {
+  font-size: var(--theme--typography-sizeXl);
+  line-height: var(--theme--typography-lineHeightXl);
+}
+
+.freightButton span,
+.freightButton small {
+  display: block;
+}
+
+.summaryLine {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-bg) 86%, var(--theme--color-background));
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+  --ui-surface-padding-y: var(--theme--spacing-spaceSm);
+  --ui-surface-radius: var(--theme--radius-xl);
+  align-items: center;
+  display: flex;
+  gap: var(--theme--spacing-spaceSm);
+  justify-content: space-between;
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease;
+}
+
+.paymentMethodButton {
+  --ui-button-padding-x: var(--theme--spacing-spaceLg);
+  --ui-button-padding-y: var(--theme--spacing-spaceMd);
+  align-content: stretch;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  justify-items: stretch;
+  min-height: calc(var(--theme--dimensions-height-3xl) + var(--theme--spacing-spaceLg));
+  text-align: left;
+}
+
+.paymentMethodButton > span {
+  align-items: flex-start;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  justify-items: stretch;
+}
+
+.paymentIcon {
+  background: color-mix(in srgb, var(--pedido-option-accent) 12%, var(--theme--color-surface-container));
+  align-self: flex-start;
+  height: var(--theme--dimensions-height-xl);
+  width: var(--theme--dimensions-height-xl);
+}
+
+.paymentSelected {
+  align-self: flex-start;
+  background: var(--pedido-option-accent);
+  color: var(--pedido-option-accent-contrast);
+  height: var(--theme--dimensions-height-xs);
+  justify-self: end;
+  width: var(--theme--dimensions-height-xs);
+}
+
+.installmentButton {
+  --ui-button-padding-x: var(--theme--spacing-spaceMd);
+  --ui-button-padding-y: var(--theme--spacing-spaceSm);
+  min-height: var(--theme--dimensions-height-xl);
+  text-align: center;
+}
+
+.reviewTotalCard {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-accent) 10%, var(--theme--color-surface-container));
+  --ui-surface-border: var(--pedido-panel-accent);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+  --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+  --ui-surface-radius: var(--theme--radius-2xl);
+}
+
+.limitGroup {
+  border-block-start: var(--theme--borders-hairline) solid var(--pedido-panel-border);
+  padding-block-start: var(--theme--spacing-spaceSm);
+}
+
+.productCardDisabled:hover {
+  transform: none;
+}
+
+.toolbar {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(var(--theme--dimensions-minWidth-xl), auto);
+  gap: var(--theme--spacing-spaceSm);
+  align-items: center;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--spacing-spaceXl)), 1fr));
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.stepGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--theme--spacing-spaceXs);
+}
+
+.stepTracker {
+  --ui-surface-bg: var(--pedido-panel-bg);
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-color: var(--pedido-panel-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+  --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+  --ui-surface-radius: var(--theme--radius-2xl);
+}
+
+.stepItem {
+  --pedido-step-accent: var(--pedido-panel-accent);
+  --pedido-step-border: var(--pedido-panel-border);
+  --pedido-step-index: var(--pedido-panel-muted);
+  --pedido-step-text: var(--pedido-panel-muted);
+  --ui-surface-bg: transparent;
+  --ui-surface-border: var(--pedido-step-border);
+  --ui-surface-color: var(--pedido-step-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceSm);
+  --ui-surface-padding-y: var(--theme--spacing-spaceSm);
+  --ui-surface-radius: var(--theme--radius-xl);
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease,
+    color var(--theme--motion-durationLg) ease;
+}
+
+.stepItem[data-state="done"] {
+  --pedido-step-index: var(--pedido-step-accent);
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-step-accent) 11%, var(--pedido-panel-bg));
+}
+
+.stepItem[data-state="current"] {
+  --pedido-step-border: var(--pedido-step-accent);
+  --pedido-step-index: var(--pedido-step-accent);
+  --pedido-step-text: var(--pedido-panel-text);
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-text) 6%, var(--pedido-panel-bg));
+}
+
+.stepIndex {
+  color: var(--pedido-step-index);
+  display: block;
+  font-size: var(--theme--typography-sizeXs);
+  font-weight: var(--theme--typography-bold);
+  margin-bottom: var(--theme--spacing-space2xs);
+}
+
+.filterResultBar {
+  margin-bottom: var(--theme--spacing-spaceMd);
+}
+
+.emptyCatalog {
+  --ui-surface-border: var(--pedido-panel-border);
+  --ui-surface-padding-x: var(--theme--spacing-spaceXl);
+  --ui-surface-padding-y: var(--theme--spacing-spaceXl);
+  --ui-surface-radius: var(--theme--radius-2xl);
+  text-align: center;
+}
+
+.emptyCatalogIcon {
+  color: var(--pedido-panel-accent);
+}
+
+.paymentGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  align-items: flex-start;
+}
+
+.reviewTotalGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-sm)), 0.6fr);
+  gap: var(--theme--spacing-spaceMd);
+  align-items: stretch;
+}
+
+.addressForm {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.addressField {
+  display: grid;
+  min-width: 0;
+}
+
+.addressField[data-grid-column="span-3"] {
+  grid-column: span 3;
+}
+
+.addressField[data-grid-column="span-4"] {
+  grid-column: span 4;
+}
+
+.addressField[data-grid-column="span-6"] {
+  grid-column: span 6;
+}
+
+.summary {
+  --pedido-summary-bg: var(--pedido-panel-bg);
+  --pedido-summary-border: var(--pedido-panel-border);
+  --pedido-summary-muted: var(--pedido-panel-muted);
+  --pedido-summary-text: var(--pedido-panel-text);
+  --ui-surface-bg: var(--pedido-summary-bg);
+  --ui-surface-border: var(--pedido-summary-border);
+  --ui-surface-color: var(--pedido-summary-text);
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-padding-x: var(--theme--spacing-spaceLg);
+  --ui-surface-padding-y: var(--theme--spacing-spaceLg);
+  --ui-surface-radius: var(--theme--radius-xl);
+  position: sticky;
+  top: calc(var(--theme--dimensions-height-3xl) + var(--theme--spacing-spaceLg));
+  align-self: flex-start;
+  height: fit-content;
+  max-height: calc(100% - var(--theme--dimensions-height-3xl) - var(--theme--spacing-space3xl));
+  overflow-y: auto;
+  min-width: 0;
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease;
+}
+
+.summaryTitle,
+.summaryTotalValue {
+  color: var(--pedido-summary-text);
+}
+
+.summaryMutedText,
+.summaryTotalLabel {
+  color: var(--pedido-summary-muted);
+}
+
+.summaryTotalLabel {
+  font-weight: var(--theme--typography-bold);
+  text-transform: uppercase;
+}
+
+.summaryPrimaryAction {
+  --ui-surface-bg: var(--pedido-summary-text);
+  --ui-surface-border: var(--pedido-summary-text);
+  --ui-surface-color: var(--pedido-page-bg);
+  width: 100%;
+}
+
+.summaryGroup {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-summary-bg) 86%, var(--theme--color-background));
+  --ui-surface-border: color-mix(in srgb, var(--pedido-summary-border) 84%, transparent);
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-color: var(--pedido-summary-text);
+  --ui-surface-padding-x: var(--theme--spacing-spaceSm);
+  --ui-surface-padding-y: var(--theme--spacing-spaceSm);
+  --ui-surface-radius: var(--theme--radius-lg);
+  transition:
+    background var(--theme--motion-durationLg) ease,
+    border-color var(--theme--motion-durationLg) ease;
+}
+
+.summaryItem {
+  align-items: center;
+  color: var(--pedido-summary-muted);
+  display: grid;
+  font-size: var(--theme--typography-sizeXs);
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.summaryRow {
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.summaryRowLabel {
+  color: var(--pedido-summary-muted);
+  font-size: var(--theme--typography-sizeXs);
+}
+
+.summaryRowValue {
+  color: var(--pedido-summary-text);
+  text-align: right;
+}
+
+.summaryTotal {
+  border-block-start: var(--theme--borders-hairline) solid var(--pedido-summary-border);
+  display: grid;
+  gap: var(--theme--spacing-spaceXs);
+  padding-block-start: var(--theme--spacing-spaceMd);
+}
+
+@media (max-width: 1100px) {
+  .shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .summary {
+    position: static;
+  }
+
+  .modeList {
+    grid-template-columns: repeat(3, minmax(var(--theme--dimensions-minWidth-3xl), 1fr)) !important;
+    overflow-x: auto !important;
+    padding-bottom: var(--theme--spacing-space2xs) !important;
+    scroll-snap-type: x mandatory !important;
+  }
+
+  .modeCard {
+    scroll-snap-align: start;
+  }
+
+  .modeCard[data-compact="true"] {
+    min-width: var(--theme--dimensions-minWidth-3xl);
+  }
+}
+
+@media (max-width: 760px) {
+  .main {
+    padding-block-end: calc(var(--theme--dimensions-height-xl) + var(--theme--spacing-space2xl)) !important;
+  }
+
+  .mainWithHeader,
+  .mainEmbedded {
+    padding-block-start: var(--theme--spacing-spaceMd);
+  }
+
+  .heroWrap {
+    margin-bottom: var(--theme--spacing-spaceMd);
+  }
+
+  .heroPanel,
+  .activePlanPanel,
+  .catalogPanel,
+  .checkoutPanel,
+  .summary {
+    --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+    --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+    --ui-surface-radius: var(--theme--radius-xl);
+  }
+
+  .productGrid,
+  .toolbar,
+  .optionGrid,
+  .paymentMethodGrid,
+  .reviewSummaryGrid,
+  .paymentGrid,
+  .reviewTotalGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .infoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .addressForm {
+    grid-template-columns: 1fr !important;
+  }
+
+  .addressField {
+    grid-column: 1 / -1 !important;
+  }
+
+  .modeList {
+    grid-template-columns: 1fr !important;
+    overflow-x: visible !important;
+    gap: var(--theme--spacing-spaceXs) !important;
+  }
+
+  .modeCard {
+    min-height: auto;
+    padding: var(--theme--spacing-spaceMd);
+  }
+
+  .modeCard[data-compact="true"] {
+    min-height: auto;
+  }
+
+  .modeCard[data-compact="true"] .modeCardContent {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .modeIcon {
+    display: none;
+  }
+
+  .modeBadge,
+  .activePlanBadge,
+  .smallBadge {
+    align-self: start;
+    display: inline-flex;
+    font-size: var(--theme--typography-size2xs);
+    letter-spacing: 0;
+    line-height: var(--theme--typography-lineHeightXs);
+    white-space: normal;
+    width: fit-content;
+  }
+
+  .modeCopy {
+    width: 100%;
+  }
+
+  .modeDescription {
+    font-size: var(--theme--typography-sizeXs);
+  }
+
+  .activePlanCard {
+    padding: var(--theme--spacing-spaceMd) !important;
+  }
+
+  .activePlanHeader {
+    align-items: start !important;
+    display: grid !important;
+    gap: var(--theme--spacing-spaceSm) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-items: start !important;
+  }
+
+  .activePlanTitle {
+    font-size: var(--theme--typography-size2xl) !important;
+    line-height: 1.18 !important;
+  }
+
+  .activePlanMetrics {
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--theme--spacing-spaceXs) !important;
+  }
+
+  .activePlanMetric {
+    padding: var(--theme--spacing-spaceXs) !important;
+  }
+
+  .activePlanMetric:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .stepGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--theme--spacing-spaceXs);
+  }
+
+  .addressOption {
+    --ui-button-padding-x: var(--theme--spacing-spaceSm);
+    --ui-button-padding-y: var(--theme--spacing-spaceSm);
+  }
+
+  .addressOption > span {
+    gap: var(--theme--spacing-spaceXs);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .optionIcon {
+    display: none;
+  }
+
+  .addressCopy {
+    gap: var(--theme--spacing-space2xs);
+  }
+
+  .addressTitleLine,
+  .selectedHint {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--theme--spacing-space2xs);
+  }
+
+  .paymentMethodButton {
+    --ui-button-padding-x: var(--theme--spacing-spaceMd);
+    --ui-button-padding-y: var(--theme--spacing-spaceSm);
+    min-height: auto;
+  }
+
+  .paymentMethodButton > span {
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-items: start;
+  }
+
+  .paymentIcon {
+    display: none;
+  }
+
+  .compactOptionGrid,
+  .installmentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .choiceButton,
+  .freightButton,
+  .installmentButton {
+    --ui-button-padding-x: var(--theme--spacing-spaceSm);
+    --ui-button-padding-y: var(--theme--spacing-spaceSm);
+  }
+}

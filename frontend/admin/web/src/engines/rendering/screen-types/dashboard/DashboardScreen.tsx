@@ -23,7 +23,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ apiConfig, con
   return (
     <DashboardPage
       config={config}
-      isFallback={dashboard.isFallback}
       isLoading={dashboard.isLoading}
       onViewOrders={() => onNavigate?.(adminRoutes.pedidos)}
       t={t}

@@ -92,31 +92,32 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
                       />
                     </button>
                   ) : null}
-                  <Stack
+                  <div
                     aria-hidden={!isGroupExpanded}
                     className={styles.navGroupItems}
                     data-expanded={isGroupExpanded ? "true" : "false"}
-                    gap="2xs"
                   >
-                    {group.items.map((item) => {
-                      const isActive = model.activePath === item.routePath;
-                      return (
-                        <Button
-                          appearance={isActive ? "soft" : "transparent"}
-                          className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
-                          data-sidebar-route-button-style={routeButtonStyle}
-                          key={item.key}
-                          onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
-                          size="md"
-                          title={isCollapsed ? item.label : undefined}
-                          tone={isActive ? "primary" : "neutral"}
-                        >
-                          <Icon className={styles.verticalLinkIcon} tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
-                          <span className={styles.verticalLinkLabel}>{item.label}</span>
-                        </Button>
-                      );
-                    })}
-                  </Stack>
+                    <div className={styles.navGroupItemsInner}>
+                      {group.items.map((item) => {
+                        const isActive = model.activePath === item.routePath;
+                        return (
+                          <Button
+                            appearance={isActive ? "soft" : "transparent"}
+                            className={[styles.verticalLink, isActive ? styles.verticalLinkActive : ""].filter(Boolean).join(" ")}
+                            data-sidebar-route-button-style={routeButtonStyle}
+                            key={item.key}
+                            onClick={(event) => handleAppShellNavigation(event, item, onNavigate)}
+                            size="md"
+                            title={isCollapsed ? item.label : undefined}
+                            tone={isActive ? "primary" : "neutral"}
+                          >
+                            <Icon className={styles.verticalLinkIcon} tone="inherit" size="md">{renderAppShellIcon(item, "currentColor")}</Icon>
+                            <span className={styles.verticalLinkLabel}>{item.label}</span>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </Stack>
               );
             })}
@@ -135,7 +136,7 @@ export const AppShellSidebar: React.FC<AppShellSidebarProps> = ({
         )}
         {config?.sidebar?.collapsible !== false && (
           <Button
-            appearance="outline"
+            appearance="transparent"
             className={styles.sidebarCollapseButton}
             icon={<ChevronRightIcon className={isCollapsed ? styles.sidebarCollapseIcon : styles.sidebarCollapseIconExpanded} />}
             iconPosition="start"

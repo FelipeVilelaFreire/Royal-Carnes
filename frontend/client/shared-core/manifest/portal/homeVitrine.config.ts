@@ -7,14 +7,6 @@ export interface HomeVitrineActionConfig {
   auth?: "public" | "required";
 }
 
-export interface HomeVitrineProductConfig {
-  key: string;
-  titleKey: string;
-  descriptionKey: string;
-  imageUrl: string;
-  routeKey: string;
-}
-
 export interface HomeVitrineNoticeConfig {
   key: string;
   titleKey: string;
@@ -62,29 +54,6 @@ export const homeVitrineConfig = {
       auth: "required",
     },
   ] satisfies HomeVitrineActionConfig[],
-  products: [
-    {
-      key: "brasa-classica",
-      titleKey: "home.vitrine.products.brasaClassica.title",
-      descriptionKey: "home.vitrine.products.brasaClassica.description",
-      imageUrl: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=82",
-      routeKey: "cortes",
-    },
-    {
-      key: "box-familia",
-      titleKey: "home.vitrine.products.boxFamilia.title",
-      descriptionKey: "home.vitrine.products.boxFamilia.description",
-      imageUrl: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=900&q=82",
-      routeKey: "produtos",
-    },
-    {
-      key: "linha-nobre",
-      titleKey: "home.vitrine.products.linhaNobre.title",
-      descriptionKey: "home.vitrine.products.linhaNobre.description",
-      imageUrl: "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=900&q=82",
-      routeKey: "cortes",
-    },
-  ] satisfies HomeVitrineProductConfig[],
   guestNotice: {
     key: "guest",
     titleKey: "home.vitrine.guestNotice.title",

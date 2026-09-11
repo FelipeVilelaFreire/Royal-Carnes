@@ -14,7 +14,7 @@ existir e ter comportamento equivalente em Web e Mobile.
 
 | Tela | Rota canonica | Web | Mobile | Estado funcional atual | Decisao |
 | --- | --- | --- | --- | --- | --- |
-| Home | `/home` | `HomeVitrineView` | `HomeView` | Web tem vitrine e busca catalogo; Mobile so monta `sections: []` | Manter e alinhar Mobile ao fluxo da Home Web |
+| Home | `/home` | `HomeVitrineView` | `HomeView` | Web e Mobile usam `useClientCatalog`; carregamento, vazio e erro permanecem estados reais da API. | Manter; paridade de dados concluida. QA visual Web/Mobile continua pendente. |
 | Cortes | `/cortes` | `CortesView` | `CortesView` | Ambos usam `ClientApiProvider` -> `useClientCatalog` -> catalogo real | Manter; primeira paridade funcional concluida |
 | Montar Box | `/montar-box` | `PedidoView` | `PedidoView` | Ambos usam checkout shared-core, ainda com fonte fallback | Manter; proxima auditoria funcional quando selecionada |
 | Meus Pedidos | `/meus-pedidos` | `MeusPedidosView` | `MeusPedidosView` | Ambos usam `useClientOrders({ fallbackOnError: true })` | Manter; candidato a proxima migracao real |

@@ -37,6 +37,9 @@
       "@royalprime/client/*": [
         "../shared-core/*"
       ],
+      "@royalprime/product-components/*": [
+        "../../product-components/*"
+      ],
       "@/view-models/*": [
         "../shared-core/view-models/*"
       ],

@@ -1,5 +1,58 @@
 # Continuacao 2 - RoyalPrime Client
 
+## Atualizacao de Consolidacao - 2026-09-11
+
+O corte de consolidacao removeu residuos confirmados sem consumidores e reduziu
+divergencias entre o Portal Web e Mobile:
+
+```text
+Home Mobile
+  -> deixou de montar sections: []
+  -> usa useClientCatalog e apresenta produtos, loading, vazio e erro reais
+
+Home Web
+  -> nao troca falha do catalogo por vitrine configurada
+  -> produtos, preco e midia somente aparecem quando vierem da API
+
+Mobile AppShell
+  -> client/mobile/src/shell/AppShell/AppShell.tsx removido
+  -> PortalView consome NativeAppShell da Foundation diretamente
+
+Locale
+  -> ClientStringsProvider + resolvedor de locale
+  -> pt-BR e fallback explicito; en-US/de-DE iniciam com cobertura da vitrine
+  -> manifests recebem as strings ativas no consumidor, sem importar pt-BR fixo
+
+Limpeza
+  -> home.model vazio, diretorios mocks/ vazios e screens/legacy vazio removidos
+  -> nomes/tipos/configuracoes de mock mortos removidos ou renomeados
+```
+
+O checkout continua dependente dos contratos backend de endereco, frete/prazo
+e pagamento; nao representa uma capacidade concluida ate esses endpoints e a
+cobranca real existirem.
+
+## Atualizacao de Paridade de Tree - 2026-09-11
+
+`frontend/client/AGENTS.md` declara a paridade obrigatoria de produto entre
+Web e Mobile. A tree canonica atual das surfaces e:
+
+```text
+screens/
+  landing/
+  portal/
+    Home/
+    Cortes/
+    MontarBox/
+    MeusPedidos/
+    Perfil/
+```
+
+`web/src/app` e `mobile/src/app` continuam adaptadores de plataforma. Eles nao
+criam screens, regras, strings ou contratos paralelos. A implementacao Native
+da Landing esta em `mobile/src/screens/landing/LandingView.tsx`; Portal Web e
+Mobile usam as mesmas cinco pastas canonicas acima.
+
 > Status: handoff paralelo focado somente em Client.
 > Use `continuacao.md` para o fluxo geral/admin/backend e este arquivo para
 > landing, portal web, mobile, AppShell de client, shared-core client e UI.
@@ -374,10 +427,8 @@ Portal/client:
 
 ```text
 frontend/client/web/src/screens/portal/
-frontend/client/web/src/screens/portal/tabs/
-frontend/client/web/src/screens/portal/screenTypes/
-frontend/client/web/src/product-components/ecommerce/
-frontend/client/mobile/src/screens/portal/tabs/
+frontend/client/mobile/src/screens/portal/
+frontend/product-components/ecommerce/
 ```
 
 Shared-core client:
@@ -563,8 +614,9 @@ No Native, o AccessShell nao monta `Pressable`, `TextInput`, `Text` ou
 `Button`, `Input`, `Surface`, `Text` e layouts da Foundation em
 `frontend/foundation/native/components/`; essas primitivas
 resolvem Theme -> semi-composed -> descriptor nativo antes de falar com os
-hosts React Native. Os adapters antigos em `frontend/client/mobile/src/ui/`
-sao legado a migrar, e nao uma dependencia do AccessShell.
+hosts React Native. As primitives Mobile ficam em
+`frontend/foundation/native/client-ui/`; Client nao mantem uma biblioteca UI
+paralela.
 
 Consumidores atuais:
 

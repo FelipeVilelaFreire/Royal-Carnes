@@ -69,6 +69,40 @@ export type TrashScreenConfig = {
 
 export type DashboardWidgetTone = "primary" | "success" | "warning" | "danger" | "info" | "neutral";
 export type DashboardWidgetSize = "sm" | "md" | "lg" | "xl";
+export type DashboardSurfaceConfig = {
+  appearance: "glass" | "soft" | "solid" | "outline" | "transparent";
+  tone: "accent" | "neutral" | "primary" | "secondary";
+};
+
+export type DashboardActionConfig = {
+  iconKey: string;
+  labelKey: string;
+  routeKey: string;
+};
+
+export type DashboardMetricConfig = {
+  key: string;
+  labelKey: string;
+  tone?: DashboardWidgetTone;
+};
+
+export type DashboardPanelConfig = {
+  descriptionKey: string;
+  iconKey: string;
+  key: string;
+  metrics: DashboardMetricConfig[];
+  surface: DashboardSurfaceConfig;
+  titleKey: string;
+};
+
+export type DashboardAttentionItemConfig = {
+  action: DashboardActionConfig;
+  descriptionKey: string;
+  iconKey: string;
+  key: string;
+  titleKey: string;
+  tone: DashboardWidgetTone;
+};
 
 export type DashboardStatWidgetConfig = {
   type: "stat";
@@ -80,6 +114,7 @@ export type DashboardStatWidgetConfig = {
   iconKey?: string;
   icon?: ReactNode;
   tone?: DashboardWidgetTone;
+  surface: DashboardSurfaceConfig;
 };
 
 export type DashboardWidgetConfig = DashboardStatWidgetConfig;
@@ -92,8 +127,29 @@ export type DashboardConfig = {
   };
   titleKey: string;
   subtitleKey: string;
+  layout: {
+    atmosphere: "glass" | "image" | "solid" | "transparent";
+    attention: { columns: 1 | 2 | 3 | 4; gap: "sm" | "md" | "lg" };
+    kpis: { columns: 1 | 2 | 3 | 4; gap: "sm" | "md" | "lg" };
+    panels: { columns: 1 | 2 | 3 | 4; gap: "sm" | "md" | "lg" };
+    usefulColumns: 14 | 17 | 20;
+  };
+  headerBadge?: { labelKey: string; tone: DashboardWidgetTone };
   widgets: DashboardWidgetConfig[];
-  recentOrders?: Array<{ id: string; member: string; plan: string; box: string; status: string; date: string }>;
+  panels: DashboardPanelConfig[];
+  attention: {
+    descriptionKey: string;
+    items: DashboardAttentionItemConfig[];
+    surface: DashboardSurfaceConfig;
+    titleKey: string;
+  };
+  recentOrders: {
+    action: DashboardActionConfig;
+    columns: Array<{ key: string; labelKey: string }>;
+    iconKey: string;
+    surface: DashboardSurfaceConfig;
+    titleKey: string;
+  };
 };
 
 export type EntityColumnConfig = {

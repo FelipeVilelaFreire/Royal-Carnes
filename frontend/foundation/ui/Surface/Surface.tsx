@@ -3,6 +3,7 @@
 import React, { forwardRef, type CSSProperties } from "react";
 import { resolveSemiComposedConfig, resolveSemiTheme, resolveSurfaceRecipe } from "../../semi-composed/core";
 import { useUiConfig } from "../UiProvider";
+import type { UiSurfaceConfig } from "../core";
 import styles from "./Surface.module.css";
 
 export type UiSurfaceAppearance = "solid" | "glass" | "soft" | "outline" | "transparent";
@@ -25,7 +26,7 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(function Surface
   ref
 ) {
   const ui = useUiConfig();
-  const surfaceConfig = ui.surface || {};
+  const surfaceConfig: UiSurfaceConfig = ui.surface;
   const configuredAppearance = appearance === "solid" ? surfaceConfig.appearance || appearance : appearance;
   const configuredTone = tone === "neutral" ? surfaceConfig.tone || tone : tone;
   const resolvedRecipe = recipe || resolveSurfaceRecipe(

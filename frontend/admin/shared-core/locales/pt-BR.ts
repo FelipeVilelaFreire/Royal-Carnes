@@ -154,11 +154,59 @@ export const adminPtBR = {
   dashboard: {
     title: "Dashboard Operacional",
     subtitle: "Visão executiva de faturamento recorrente, assinantes e entregas",
+    headerBadge: "Visão operacional",
     ctaBatchDispatch: "Iniciar despacho em lote",
     loading: "Atualizando indicadores",
     tableTitle: "Últimos pedidos em esteira",
     viewAllBoxes: "Ver todas as caixas",
     emptyRecentOrders: "Nenhum pedido recente encontrado.",
+    panels: {
+      revenue: {
+        title: "Receita e pedidos",
+        description: "Leitura comercial baseada nas assinaturas e pedidos cadastrados."
+      },
+      club: {
+        title: "Saúde do Clube",
+        description: "Acompanhamento da base ativa e dos contratos que exigem acompanhamento."
+      },
+      operation: {
+        title: "Operação de entregas",
+        description: "Fila atual de montagem, despacho e confirmação das caixas."
+      }
+    },
+    metrics: {
+      estimatedRecurringRevenue: "Receita recorrente estimada",
+      ordersInPanel: "Pedidos cadastrados",
+      activeSubscribers: "Assinantes ativos",
+      pastDueSubscriptions: "Assinaturas pendentes",
+      cancelledSubscriptions: "Assinaturas canceladas",
+      deliveriesInQueue: "Caixas na fila",
+      readyDeliveries: "Caixas prontas",
+      outForDelivery: "Em rota"
+    },
+    attention: {
+      title: "Atenção imediata",
+      description: "Pendências reais que merecem uma ação da equipe agora.",
+      actions: {
+        viewSubscriptions: "Ver assinaturas",
+        viewDeliveries: "Ver entregas",
+        viewOrders: "Ver pedidos"
+      },
+      items: {
+        pastDueSubscriptions: {
+          title: "Cobranças pendentes",
+          description: "Assinaturas marcadas pelo backend como pagamento pendente."
+        },
+        deliveries: {
+          title: "Caixas em andamento",
+          description: "Entregas que ainda não alcançaram um status terminal."
+        },
+        orders: {
+          title: "Pedidos abertos",
+          description: "Pedidos que permanecem em uma etapa operacional ativa."
+        }
+      }
+    },
     kpis: {
       mrr: "Faturamento mensal",
       activeSubscribers: "Assinantes ativos",

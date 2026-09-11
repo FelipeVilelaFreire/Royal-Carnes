@@ -1,7 +1,7 @@
 # PrimeCutClub Frontend Mobile
 
 Surface Mobile (React Native / Expo) para o aplicativo iOS/Android do cliente.
-Consome contratos, manifestos, locales, navigation e mocks de `frontend/client/shared-core/`.
+Consome contratos, manifestos, locales e navigation de `frontend/client/shared-core/`.
 
 ## Status
 
@@ -22,34 +22,30 @@ da mesma tela e criar seu contrato native em `src/screens`.
 
 ```text
 src/app/App.tsx
-src/shell/AppShell/AppShell.tsx
-src/ui/Button/Button.tsx
-src/ui/Text/Text.tsx
-src/ui/Surface/Surface.tsx
-src/ui/Layout/Layout.tsx
-src/ui/Icon/Icon.tsx
+../../foundation/native/client-ui/
 src/screens/portal/PortalView.tsx
-src/screens/portal/tabs/HomeView.tsx
-src/screens/portal/tabs/CortesView.tsx
-src/screens/portal/tabs/PedidoView.tsx
-src/screens/portal/tabs/pedido/*
-src/screens/portal/tabs/home.model.ts
-src/screens/portal/tabs/cortes.model.ts
+src/screens/landing/LandingView.tsx
+src/screens/portal/Home/HomeView.tsx
+src/screens/portal/Cortes/CortesView.tsx
+src/screens/portal/MontarBox/MontarBoxView.tsx
+src/screens/portal/MontarBox/pedido/*
+src/screens/portal/MeusPedidos/MeusPedidosView.tsx
+src/screens/portal/Perfil/PerfilView.tsx
 ```
 
-`HomeView.tsx` nasce vazio por enquanto: resolve AppShell, rota ativa e strings,
-mas ainda nao declara secoes visuais.
+`HomeView.tsx` consome o catalogo real via `useClientCatalog`, incluindo os
+estados de carregamento, vazio e erro.
 
-`CortesView.tsx` usa o mesmo view-model de catalogo da web via `cortes.model.ts`:
+`CortesView.tsx` usa o mesmo view-model de catalogo da web:
 
 ```text
 frontend/client/shared-core/view-models/cortes-catalog.view-model.ts
 ```
 
-`PedidoView.tsx` segue a mesma tree publica da web para Montar Box:
+`MontarBoxView.tsx` segue a mesma tree publica da web:
 
 ```text
-PedidoView
+MontarBoxView
   -> pedido/ModeSelector
   -> pedido/CheckoutStepTracker
   -> pedido/ProductCatalogStep
@@ -58,9 +54,9 @@ PedidoView
   -> pedido/ReviewStep
 ```
 
-A tela consome `useClientCheckout`, `checkout.config.ts`, `clientPtBR.pedido`
-e `checkout.view-model.ts`; dados atuais ainda entram pelo fallback mockado do
-shared-core ate a API mobile real substituir essa fonte.
+A tela consome `useClientCheckout`, `checkout.config.ts`, strings ativas e
+`checkout.view-model.ts`; erros de API permanecem como erro, sem fallback
+demonstrativo local.
 
 ## Contrato De Nomes
 
@@ -72,7 +68,7 @@ web Text -> mobile Text
 web Surface -> mobile Surface
 web Layout -> mobile Layout
 web AppShell -> mobile AppShell
-web ProductItemCard -> mobile ProductItemCard
+ProductItemCard web/native -> product-components/ecommerce
 ```
 
 Nada de prefixo `Native` em componente de produto ou UI.
@@ -81,5 +77,6 @@ Nada de prefixo `Native` em componente de produto ou UI.
 
 Quando o Expo/React Native entrar, os hosts reais `View`, `Text`,
 `Pressable`, listas e inputs serao injetados no `App`. As telas continuam
-consumindo `Button`, `Text`, `Surface`, `Layout`, `Icon` e `AppShell` locais.
+consumindo `Button`, `Text`, `Surface`, `Layout`, `Icon` e AppShell da
+Foundation Native.
 Trocas de navegacao e intencao de icone continuam vindo de manifest/navigation.

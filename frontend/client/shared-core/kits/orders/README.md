@@ -34,9 +34,9 @@ view-models/orders.view-model.ts
 Screens consumidoras:
 
 ```text
-frontend/client/web/src/screens/portal/tabs/PedidoView.tsx
-frontend/client/web/src/screens/portal/tabs/MeusPedidosView.tsx
-frontend/client/web/src/screens/portal/tabs/MinhaContaView.tsx
+frontend/client/web/src/screens/portal/MontarBox/MontarBoxView.tsx
+frontend/client/web/src/screens/portal/MeusPedidos/MeusPedidosView.tsx
+frontend/client/web/src/screens/portal/Perfil/PerfilView.tsx
 ```
 
 Regra:

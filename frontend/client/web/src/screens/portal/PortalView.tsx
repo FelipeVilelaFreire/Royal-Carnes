@@ -15,11 +15,11 @@ import type { PortalScreenKey } from "@royalprime/client/manifest/portal/routes.
 import { clientPortalAccessShellConfig } from "@/manifest/portal/access-shell.config";
 import { clientAuthStorage, readStoredClientSession } from "../../auth/clientAuthStorage";
 import styles from "./PortalView.module.css";
-import { HomeVitrineView } from "./tabs/HomeVitrineView";
-import { CortesView } from "./tabs/CortesView";
-import { PedidoView } from "./tabs/PedidoView";
-import { MinhaContaView } from "./tabs/MinhaContaView";
-import { MeusPedidosView } from "./tabs/MeusPedidosView";
+import { HomeView } from "./Home/HomeView";
+import { CortesView } from "./Cortes/CortesView";
+import { MontarBoxView } from "./MontarBox/MontarBoxView";
+import { PerfilView } from "./Perfil/PerfilView";
+import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
 import { usePortalRuntime } from "./usePortalRuntime";
 
 export interface PortalViewProps {
@@ -111,14 +111,14 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
       case "cortes":
         return <CortesView />;
       case "produtos":
-        return <PedidoView isAuthenticated={isAuthenticated} onRequestAccess={() => setIsAuthModalOpen(true)} />;
+        return <MontarBoxView isAuthenticated={isAuthenticated} onRequestAccess={() => setIsAuthModalOpen(true)} />;
       case "meusPedidos":
         return <MeusPedidosView onNavigate={navigate} showShell={false} />;
       case "minhaConta":
-        return <MinhaContaView onNavigate={navigate} showShell={false} />;
+        return <PerfilView onNavigate={navigate} showShell={false} />;
       case "home":
       default:
-        return <HomeVitrineView isAuthenticated={isAuthenticated} onNavigate={navigate} />;
+        return <HomeView isAuthenticated={isAuthenticated} onNavigate={navigate} />;
     }
   };
 
@@ -170,7 +170,7 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     <AppShell
       activePath={activeRoutePath}
       brandLogo="/assets/brand/royal-prime-logo.jpg"
-      config={portalShellConfig}
+      config={{ ...portalShellConfig, strings: strings.appShell }}
       navItems={visiblePortalNavigation as any}
       onNavigate={navigate}
       rightSlot={renderHeaderActions()}

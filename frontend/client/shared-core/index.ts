@@ -40,6 +40,7 @@ export * from "./runtime/ClientApiProvider";
 export * from "./hooks/useClientCheckout";
 export * from "./hooks/useClientCustomer";
 export * from "./hooks/useClientStrings";
+export * from "./locales";
 export * from "./hooks/useClientProductDetail";
 export * from "./hooks/useClientDeliveries";
 export * from "./hooks/useClientDeliveryDetail";

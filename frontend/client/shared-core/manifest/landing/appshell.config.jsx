@@ -1,5 +1,4 @@
 import { clientThemeManifest } from "../theme.manifest";
-import { clientPtBR } from "../../locales/pt-BR";
 
 export const landingAppShellConfig = {
   mode: "client",
@@ -8,7 +7,7 @@ export const landingAppShellConfig = {
     modeStorageKey: "royal_prime_theme",
     modeChangeEvent: "royal_theme_changed"
   },
-  strings: clientPtBR.appShell,
+  strings: {},
   navigationPlacements: {
     bottomTabBar: {
       enabled: false

@@ -1,10 +1,9 @@
 import { clientThemeManifest } from "../theme.manifest";
-import { clientPtBR } from "../../locales/pt-BR";
 
 export const portalAppShellConfig = {
   mode: "client",
   theme: clientThemeManifest,
-  strings: clientPtBR.appShell,
+  strings: {},
   navigationGroups: [
     { key: "shop", labelKey: "navigationGroups.shop", order: 0 },
     { key: "account", labelKey: "navigationGroups.account", order: 1 },
@@ -76,8 +75,6 @@ export const portalAppShellConfig = {
     brandLogo: "/assets/brand/royal-prime-logo.jpg"
   },
   auth: {
-    mockAuthenticated: false,
-    mobileMockAuthenticated: false,
     publicNavKeys: ["home", "cortes", "produtos"],
     protectedNavKeys: ["meusPedidos", "minhaConta"]
   },
