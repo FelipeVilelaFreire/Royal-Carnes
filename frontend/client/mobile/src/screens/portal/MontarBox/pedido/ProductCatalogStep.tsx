@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "@foundation/native/client-ui/Button";
-import { Input } from "@foundation/native/client-ui/Input";
-import { Stack } from "@foundation/native/client-ui/Layout";
-import { Surface } from "@foundation/native/client-ui/Surface";
-import { Text } from "@foundation/native/client-ui/Text";
+import { Button } from "@foundation/ui/native/Button";
+import { Input } from "@foundation/ui/native/Input";
+import { Stack } from "@foundation/ui/native/Layout";
+import { Surface } from "@foundation/ui/native/Surface";
+import { Text } from "@foundation/ui/native/Text";
 import { ProductItemCard } from "@royalprime/product-components/ecommerce/native/ProductItemCard";
 import type {
   ClientCheckoutProduct,

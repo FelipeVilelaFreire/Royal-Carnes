@@ -9,7 +9,7 @@ import {
   resolveSelectRecipe,
   resolveSurfaceUiConfig,
   type SurfaceUiConfig,
-} from "../ui/core";
+} from "../ui/shared/core";
 import {
   resolveNativeSemiComposedDescriptor,
   toNativeIconStyle,

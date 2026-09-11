@@ -1,8 +1,8 @@
 import React from "react";
-import { Button } from "@foundation/ui/Button";
-import { ScrollToAppear } from "@foundation/ui/ScrollToAppear/ScrollToAppear";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
+import { Button } from "@foundation/ui/web/Button";
+import { ScrollToAppear } from "@foundation/ui/web/ScrollToAppear/ScrollToAppear";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import { sharedAssets } from "@royalprime/client/manifest/assets";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./GiftSection.module.css";

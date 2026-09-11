@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Badge } from "@foundation/ui/Badge";
-import { Grid, Inline, Stack } from "@foundation/ui/Layout";
-import { ScrollToAppear } from "@foundation/ui/ScrollToAppear/ScrollToAppear";
-import { Text } from "@foundation/ui/Text";
+import { Badge } from "@foundation/ui/web/Badge";
+import { Grid, Inline, Stack } from "@foundation/ui/web/Layout";
+import { ScrollToAppear } from "@foundation/ui/web/ScrollToAppear/ScrollToAppear";
+import { Text } from "@foundation/ui/web/Text";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { PlanCard, type PlanCardData } from "./PlanCard";
 import styles from "./PlansSection.module.css";

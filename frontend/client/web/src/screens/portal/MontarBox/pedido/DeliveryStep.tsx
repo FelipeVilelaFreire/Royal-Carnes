@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Grid, Inline, Input, Stack, Surface, Text, TextArea } from "@foundation/ui";
-import { CheckIcon, StoreIcon } from "@foundation/ui/Icon/AppIcons";
+import { CheckIcon, StoreIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   ClientCheckoutAddress,
   ClientCheckoutFreightOptionKey,

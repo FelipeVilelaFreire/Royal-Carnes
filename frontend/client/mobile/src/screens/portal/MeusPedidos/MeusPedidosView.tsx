@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useClientOrders } from "../../../../../shared-core/hooks/useClientOrders";
 import { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
-import { Button, Container, Inline, Modal, Stack, Surface, Text } from "@foundation/native/client-ui";
+import { Button, Container, Inline, Modal, Stack, Surface, Text } from "@foundation/ui/native";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 
 export interface MeusPedidosViewProps {

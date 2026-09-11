@@ -1,9 +1,9 @@
 import React from "react";
-import { Inline, Stack } from "@foundation/ui/Layout";
-import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
-import { TrashIcon } from "@foundation/ui/Icon/AppIcons";
+import { Inline, Stack } from "@foundation/ui/web/Layout";
+import { SectionContainer } from "@foundation/ui/web/SectionContainer";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
+import { TrashIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { adminPtBR } from "@/locales/pt-BR";
 import { trashConfig } from "@/manifest/pages/trash.config";
 import styles from "./TrashPage.module.css";

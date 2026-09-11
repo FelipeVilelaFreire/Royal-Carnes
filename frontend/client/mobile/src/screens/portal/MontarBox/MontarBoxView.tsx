@@ -1,8 +1,8 @@
 import React from "react";
-import { Button } from "@foundation/native/client-ui/Button";
-import { Container, Stack } from "@foundation/native/client-ui/Layout";
-import { Surface } from "@foundation/native/client-ui/Surface";
-import { Text } from "@foundation/native/client-ui/Text";
+import { Button } from "@foundation/ui/native/Button";
+import { Container, Stack } from "@foundation/ui/native/Layout";
+import { Surface } from "@foundation/ui/native/Surface";
+import { Text } from "@foundation/ui/native/Text";
 import { useClientCheckout } from "../../../../../shared-core/hooks/useClientCheckout";
 import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
 import { formatClientCheckoutMoney } from "../../../../../shared-core/utils/checkout.formatters";

@@ -1,3 +1,3 @@
-export { ProductItemCard } from "./ProductItemCard";
-export type { ProductItemCardProps } from "./ProductItemCard";
-export { productItemCardManifest } from "./product-item-card.manifest";
+export { ProductItemCard } from "./web/ProductItemCard";
+export type { ProductItemCardProps } from "./web/ProductItemCard";
+export { productItemCardManifest } from "./web/product-item-card.manifest";

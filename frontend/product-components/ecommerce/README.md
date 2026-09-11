@@ -27,9 +27,10 @@ callbacks do fluxo consumidor.
 Arquivos:
 
 ```text
-frontend/product-components/ecommerce/ProductItemCard.tsx
-frontend/product-components/ecommerce/ProductItemCard.module.css
-frontend/product-components/ecommerce/product-item-card.manifest.ts
+frontend/product-components/ecommerce/web/ProductItemCard.tsx
+frontend/product-components/ecommerce/web/ProductItemCard.module.css
+frontend/product-components/ecommerce/web/product-item-card.manifest.ts
+frontend/product-components/ecommerce/native/ProductItemCard.tsx
 ```
 
 Responsabilidade:
@@ -60,5 +61,5 @@ Icon
 Layout
 ```
 
-Os caminhos antigos em `frontend/client/web/src/product-components/ecommerce`
-continuam como facade de compatibilidade enquanto as telas migram.
+As render surfaces importam o card pela variante da propria plataforma;
+nenhuma delas mantem uma copia local do componente.

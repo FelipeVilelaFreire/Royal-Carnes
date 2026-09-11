@@ -14,7 +14,7 @@ import { AppShellFooter } from "./AppShellFooter";
 import { AppShellHeader } from "./AppShellHeader";
 import { AppShellSidebar } from "./AppShellSidebar";
 import { ScreenContent } from "./ScreenContent";
-import { Background, UiProvider } from "../../../ui";
+import { Background, UiProvider } from "../../../ui/web";
 import styles from "../AppShell.module.css";
 
 export interface AppShellRuntimeProps {

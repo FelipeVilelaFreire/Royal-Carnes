@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Button } from "../../../ui/Button";
-import { Container, Grid, Inline, Stack, type ContainerProps } from "../../../ui/Layout";
-import { Text } from "../../../ui/Text";
-import { ArrowForwardIcon } from "../../../ui/Icon/AppIcons";
-import { Surface } from "../../../ui/Surface";
+import { Button } from "../../../ui/web/Button";
+import { Container, Grid, Inline, Stack, type ContainerProps } from "../../../ui/web/Layout";
+import { Text } from "../../../ui/web/Text";
+import { ArrowForwardIcon } from "../../../ui/web/Icon/AppIcons";
+import { Surface } from "../../../ui/web/Surface";
 import { handleAppShellNavigation } from "./navigation";
 import styles from "../AppShell.module.css";
 import type { AppShellNavigationItem, ResolvedAppShellModel } from "../foundation";

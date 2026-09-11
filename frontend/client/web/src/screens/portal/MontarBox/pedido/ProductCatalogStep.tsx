@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Grid, Inline, Input, Stack, Surface, Text } from "@foundation/ui";
-import { FlameIcon as CutMeatIcon, SearchIcon, SettingsIcon } from "@foundation/ui/Icon/AppIcons";
+import { FlameIcon as CutMeatIcon, SearchIcon, SettingsIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   ClientCheckoutProduct,
   ClientCheckoutProductCategory,

@@ -1,10 +1,10 @@
 import React from "react";
-import { Badge } from "@foundation/ui/Badge";
-import { Button } from "@foundation/ui/Button";
-import { CheckIcon } from "@foundation/ui/Icon/AppIcons";
-import { Inline, Stack } from "@foundation/ui/Layout";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
+import { Badge } from "@foundation/ui/web/Badge";
+import { Button } from "@foundation/ui/web/Button";
+import { CheckIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { Inline, Stack } from "@foundation/ui/web/Layout";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import styles from "./PlansSection.module.css";
 
 export type PlanCardData = {

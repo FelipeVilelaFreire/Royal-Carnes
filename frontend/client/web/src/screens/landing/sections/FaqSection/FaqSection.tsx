@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { ChevronRightIcon } from "@foundation/ui/Icon/AppIcons";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
+import { ChevronRightIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./FaqSection.module.css";
 

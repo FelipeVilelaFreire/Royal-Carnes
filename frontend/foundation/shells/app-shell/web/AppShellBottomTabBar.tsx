@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Button } from "../../../ui/Button";
-import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/Layout";
-import { Surface } from "../../../ui/Surface";
+import { Button } from "../../../ui/web/Button";
+import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/web/Layout";
+import { Surface } from "../../../ui/web/Surface";
 import { renderAppShellIcon } from "../iconResolver";
 import styles from "../AppShell.module.css";
 import type { ResolvedAppShellModel } from "../foundation";

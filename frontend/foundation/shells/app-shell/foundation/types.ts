@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { UiBackgroundConfig, UiBackgroundCursorConfig } from "../../../ui/core";
+import type { UiBackgroundConfig, UiBackgroundCursorConfig } from "../../../ui/shared/core";
 
 export type AppShellMode = "client" | "admin";
 export type AppShellPlacement = "header" | "sidebar" | "drawer" | "bottomTabBar" | "nativeTabBar" | "footer";

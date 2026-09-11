@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Button } from "../../../ui/Button";
-import { MenuIcon, MoonIcon, SunIcon } from "../../../ui/Icon/AppIcons";
-import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/Layout";
-import { Surface } from "../../../ui/Surface";
+import { Button } from "../../../ui/web/Button";
+import { MenuIcon, MoonIcon, SunIcon } from "../../../ui/web/Icon/AppIcons";
+import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/web/Layout";
+import { Surface } from "../../../ui/web/Surface";
 import { AppShellBrand } from "./AppShellBrand";
 import { handleAppShellNavigation } from "./navigation";
 import styles from "../AppShell.module.css";

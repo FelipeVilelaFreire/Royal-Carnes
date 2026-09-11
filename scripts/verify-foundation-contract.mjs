@@ -31,16 +31,16 @@ const mustContain = (path, pattern, label) => {
   "frontend/foundation/shells/app-shell/foundation/types.ts",
   "frontend/foundation/shells/app-shell/web/index.ts",
   "frontend/foundation/shells/app-shell/web/AppShellRuntime.tsx",
-  "frontend/foundation/ui/Layout/Layout.tsx",
-  "frontend/foundation/ui/Modal/Modal.tsx",
-  "frontend/foundation/ui/Modal/BottomModal.tsx",
-  "frontend/foundation/ui/Modal/ModalFrame.tsx",
-  "frontend/foundation/ui/Modal/Modal.module.css",
-  "frontend/foundation/ui/Modal/types.ts",
-  "frontend/foundation/ui/TextArea/TextArea.tsx",
-  "frontend/foundation/ui/TextArea/TextArea.module.css",
-  "frontend/foundation/ui/TextArea/index.ts",
-  "frontend/foundation/ui/core/layout.ts",
+  "frontend/foundation/ui/web/Layout/Layout.tsx",
+  "frontend/foundation/ui/web/Modal/Modal.tsx",
+  "frontend/foundation/ui/web/Modal/BottomModal.tsx",
+  "frontend/foundation/ui/web/Modal/ModalFrame.tsx",
+  "frontend/foundation/ui/web/Modal/Modal.module.css",
+  "frontend/foundation/ui/web/Modal/types.ts",
+  "frontend/foundation/ui/web/TextArea/TextArea.tsx",
+  "frontend/foundation/ui/web/TextArea/TextArea.module.css",
+  "frontend/foundation/ui/web/TextArea/index.ts",
+  "frontend/foundation/ui/shared/core/layout.ts",
   "frontend/foundation/shells/app-shell/native/index.ts",
   "frontend/foundation/shells/app-shell/native/components.tsx",
   "frontend/foundation/shells/app-shell/native/resolver.ts",
@@ -57,17 +57,17 @@ mustContain("frontend/foundation/tokens/resolver.ts", /prefix\.startsWith\("opac
 mustContain("frontend/foundation/tokens/resolver.ts", /prefix === "motion"[\s\S]*key\.startsWith\("duration"\)[\s\S]*`\$\{value\}ms`/, "Theme resolver emits motion-duration tokens in milliseconds");
 mustContain("frontend/foundation/tokens/resolver.ts", /setScaleVariables\(root, "z-index", tokens\.zIndex\)/, "Theme resolver injects z-index tokens");
 mustContain("frontend/foundation/tokens/resolver.ts", /setScaleVariables\(root, "opacity", tokens\.opacity\)/, "Theme resolver injects opacity tokens");
-mustContain("frontend/foundation/ui/core/layout.ts", /resolveLayoutConfig/, "UI Layout core exposes ServiceOS-style config resolver");
-mustContain("frontend/foundation/ui/core/layout.ts", /gridTemplates/, "UI Layout core supports responsive grid template recipes");
-mustContain("frontend/foundation/ui/Layout/Layout.tsx", /useUiConfig/, "Web Layout consumes resolved UI config");
-mustContain("frontend/foundation/ui/Layout/index.ts", /Layout/, "Web Layout exports Layout compatibility wrapper");
-mustContain("frontend/foundation/ui/index.ts", /export \* from "\.\/Modal";/, "Web UI exports Modal");
-mustContain("frontend/foundation/ui/Modal/index.ts", /export \* from "\.\/BottomModal";/, "Web UI exports BottomModal entrypoint");
-mustContain("frontend/foundation/ui/Modal/BottomModal.tsx", /export const BottomModal[\s\S]*variant="bottom"/, "BottomModal is an explicit bottom-sheet primitive");
-mustContain("frontend/foundation/ui/Modal/Modal.tsx", /variant = "auto"/, "Modal defaults to auto viewport presentation");
-mustContain("frontend/foundation/ui/Modal/Modal.module.css", /max-width: 48em[\s\S]*data-variant="auto"[\s\S]*align-items: flex-end/, "Modal auto variant becomes bottom sheet on mobile");
-mustContain("frontend/foundation/ui/index.ts", /export \* from "\.\/TextArea";/, "Web UI exports TextArea");
-mustContain("frontend/foundation/ui/TextArea/TextArea.module.css", /var\(--theme--color-surface-container\)/, "TextArea consumes theme tokens");
+mustContain("frontend/foundation/ui/shared/core/layout.ts", /resolveLayoutConfig/, "UI Layout core exposes ServiceOS-style config resolver");
+mustContain("frontend/foundation/ui/shared/core/layout.ts", /gridTemplates/, "UI Layout core supports responsive grid template recipes");
+mustContain("frontend/foundation/ui/web/Layout/Layout.tsx", /useUiConfig/, "Web Layout consumes resolved UI config");
+mustContain("frontend/foundation/ui/web/Layout/index.ts", /Layout/, "Web Layout exports Layout compatibility wrapper");
+mustContain("frontend/foundation/ui/web/index.ts", /export \* from "\.\/Modal";/, "Web UI exports Modal");
+mustContain("frontend/foundation/ui/web/Modal/index.ts", /export \* from "\.\/BottomModal";/, "Web UI exports BottomModal entrypoint");
+mustContain("frontend/foundation/ui/web/Modal/BottomModal.tsx", /export const BottomModal[\s\S]*variant="bottom"/, "BottomModal is an explicit bottom-sheet primitive");
+mustContain("frontend/foundation/ui/web/Modal/Modal.tsx", /variant = "auto"/, "Modal defaults to auto viewport presentation");
+mustContain("frontend/foundation/ui/web/Modal/Modal.module.css", /max-width: 48em[\s\S]*data-variant="auto"[\s\S]*align-items: flex-end/, "Modal auto variant becomes bottom sheet on mobile");
+mustContain("frontend/foundation/ui/web/index.ts", /export \* from "\.\/TextArea";/, "Web UI exports TextArea");
+mustContain("frontend/foundation/ui/web/TextArea/TextArea.module.css", /var\(--theme--color-surface-container\)/, "TextArea consumes theme tokens");
 mustContain("frontend/foundation/shells/app-shell/foundation/types.ts", /currentLayout/, "AppShell model exposes resolved layout");
 mustContain("frontend/foundation/shells/app-shell/foundation/resolver.ts", /resolveAppShellViewportLayout/, "AppShell resolver supports viewport layout");
 mustContain("frontend/foundation/shells/app-shell/foundation/resolver.ts", /headerEnabled[\s\S]*currentLayout\.header\?\.enabled !== false/, "AppShell header activation respects viewport layout");

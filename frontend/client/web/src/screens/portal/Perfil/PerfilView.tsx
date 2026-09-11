@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Container, Stack } from "@foundation/ui/Layout";
+import { Container, Stack } from "@foundation/ui/web/Layout";
 import { useClientCustomer, type ClientCustomerTabKey } from "@royalprime/client/hooks/useClientCustomer";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import {

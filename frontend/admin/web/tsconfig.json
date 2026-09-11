@@ -27,6 +27,11 @@
       "@/navigation/*": ["../shared-core/navigation/*"],
       "@/*": ["src/*"],
       "@foundation/*": ["../../foundation/*"],
+      "@foundation/ui": ["../../foundation/ui/web"],
+      "@foundation/ui/core": ["../../foundation/ui/shared/core"],
+      "@foundation/ui/web": ["../../foundation/ui/web"],
+      "@foundation/ui/web/*": ["../../foundation/ui/web/*"],
+      "@foundation/ui/*": ["../../foundation/ui/web/*"],
       "@shared-core/*": ["../../shared-core/*"]
     }
   },

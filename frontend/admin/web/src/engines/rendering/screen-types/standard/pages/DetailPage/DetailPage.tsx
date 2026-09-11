@@ -1,20 +1,20 @@
 import React from "react";
-import { AvatarCell } from "@foundation/ui/Avatar";
-import { AssetPicker } from "@foundation/ui/AssetPicker";
-import { Button } from "@foundation/ui/Button";
-import { Card } from "@foundation/ui/Card";
-import { CurrencyInput } from "@foundation/ui/CurrencyInput";
-import { DataField } from "@foundation/ui/DataField";
-import { FieldGrid, FieldGridItem } from "@foundation/ui/FieldGrid";
-import { Inline, Stack } from "@foundation/ui/Layout";
-import { Input } from "@foundation/ui/Input";
-import { MultiSelect } from "@foundation/ui/MultiSelect";
-import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { SegmentedControl } from "@foundation/ui/SegmentedControl";
-import { Select } from "@foundation/ui/Select";
-import { Text } from "@foundation/ui/Text";
-import { TextArea } from "@foundation/ui/TextArea";
-import { ArrowBackIcon, CheckIcon, CloseIcon, EditIcon } from "@foundation/ui/Icon/AppIcons";
+import { AvatarCell } from "@foundation/ui/web/Avatar";
+import { AssetPicker } from "@foundation/ui/web/AssetPicker";
+import { Button } from "@foundation/ui/web/Button";
+import { Card } from "@foundation/ui/web/Card";
+import { CurrencyInput } from "@foundation/ui/web/CurrencyInput";
+import { DataField } from "@foundation/ui/web/DataField";
+import { FieldGrid, FieldGridItem } from "@foundation/ui/web/FieldGrid";
+import { Inline, Stack } from "@foundation/ui/web/Layout";
+import { Input } from "@foundation/ui/web/Input";
+import { MultiSelect } from "@foundation/ui/web/MultiSelect";
+import { SectionContainer } from "@foundation/ui/web/SectionContainer";
+import { SegmentedControl } from "@foundation/ui/web/SegmentedControl";
+import { Select } from "@foundation/ui/web/Select";
+import { Text } from "@foundation/ui/web/Text";
+import { TextArea } from "@foundation/ui/web/TextArea";
+import { ArrowBackIcon, CheckIcon, CloseIcon, EditIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminTranslate } from "@/locales/i18n";
 import type {
   AdminStandardDetailViewModel,

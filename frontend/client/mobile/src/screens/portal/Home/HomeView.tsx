@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useClientCatalog } from "../../../../../shared-core/hooks/useClientCatalog";
 import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
-import { Button } from "@foundation/native/client-ui/Button";
-import { Container, Stack } from "@foundation/native/client-ui/Layout";
-import { Surface } from "@foundation/native/client-ui/Surface";
-import { Text } from "@foundation/native/client-ui/Text";
+import { Button } from "@foundation/ui/native/Button";
+import { Container, Stack } from "@foundation/ui/native/Layout";
+import { Surface } from "@foundation/ui/native/Surface";
+import { Text } from "@foundation/ui/native/Text";
 
 export interface HomeViewProps {
   onNavigate: (path: string) => void;

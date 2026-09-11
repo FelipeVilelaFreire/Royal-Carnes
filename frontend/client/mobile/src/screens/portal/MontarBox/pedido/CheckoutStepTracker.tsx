@@ -1,7 +1,7 @@
 import React from "react";
-import { Stack } from "@foundation/native/client-ui/Layout";
-import { Surface } from "@foundation/native/client-ui/Surface";
-import { Text } from "@foundation/native/client-ui/Text";
+import { Stack } from "@foundation/ui/native/Layout";
+import { Surface } from "@foundation/ui/native/Surface";
+import { Text } from "@foundation/ui/native/Text";
 import type { ClientCheckoutStepKey } from "../../../../../../shared-core/manifest/checkout.config";
 import { createPedidoStyles } from "./styles";
 

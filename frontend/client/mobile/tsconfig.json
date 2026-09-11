@@ -16,6 +16,13 @@
     "paths": {
       "@/*": ["src/*"],
       "@foundation/*": ["../../foundation/*"],
+      "@foundation/ui": ["../../foundation/ui/web"],
+      "@foundation/ui/core": ["../../foundation/ui/shared/core"],
+      "@foundation/ui/web": ["../../foundation/ui/web"],
+      "@foundation/ui/web/*": ["../../foundation/ui/web/*"],
+      "@foundation/ui/*": ["../../foundation/ui/web/*"],
+      "@foundation/ui/native": ["../../foundation/ui/native"],
+      "@foundation/ui/native/*": ["../../foundation/ui/native/*"],
       "@royalprime/product-components/*": ["../../product-components/*"],
       "@royalprime/client/*": ["../shared-core/*"],
       "@shared-core/*": ["../../shared-core/*"]

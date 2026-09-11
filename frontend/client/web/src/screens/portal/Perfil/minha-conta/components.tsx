@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { Button } from "@foundation/ui/Button";
-import { Card } from "@foundation/ui/Card";
-import { Input } from "@foundation/ui/Input";
-import { Inline, Stack } from "@foundation/ui/Layout";
-import { Modal } from "@foundation/ui/Modal";
-import { Text } from "@foundation/ui/Text";
-import { CartIcon, CheckIcon, EditIcon, TruckIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
+import { Button } from "@foundation/ui/web/Button";
+import { Card } from "@foundation/ui/web/Card";
+import { Input } from "@foundation/ui/web/Input";
+import { Inline, Stack } from "@foundation/ui/web/Layout";
+import { Modal } from "@foundation/ui/web/Modal";
+import { Text } from "@foundation/ui/web/Text";
+import { CartIcon, CheckIcon, EditIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   ClientCustomerAccountViewModel,
   ClientCustomerUsageMetric,

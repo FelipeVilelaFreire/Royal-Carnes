@@ -1,8 +1,8 @@
 import React from "react";
-import { CheckIcon, FlameIcon, SnowflakeIcon } from "@foundation/ui/Icon/AppIcons";
-import { ScrollToAppear } from "@foundation/ui/ScrollToAppear/ScrollToAppear";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
+import { CheckIcon, FlameIcon, SnowflakeIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { ScrollToAppear } from "@foundation/ui/web/ScrollToAppear/ScrollToAppear";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./DifferentialsSection.module.css";
 

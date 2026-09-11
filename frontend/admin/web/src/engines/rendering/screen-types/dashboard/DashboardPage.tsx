@@ -1,11 +1,11 @@
 import React from "react";
-import { Badge } from "@foundation/ui/Badge";
-import { Button } from "@foundation/ui/Button";
-import { Card } from "@foundation/ui/Card";
-import { Grid, Inline, Stack } from "@foundation/ui/Layout";
-import { SectionContainer } from "@foundation/ui/SectionContainer";
-import { Text } from "@foundation/ui/Text";
-import { BoxIcon, ChevronRightIcon, FlameIcon, StarIcon, TruckIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
+import { Badge } from "@foundation/ui/web/Badge";
+import { Button } from "@foundation/ui/web/Button";
+import { Card } from "@foundation/ui/web/Card";
+import { Grid, Inline, Stack } from "@foundation/ui/web/Layout";
+import { SectionContainer } from "@foundation/ui/web/SectionContainer";
+import { Text } from "@foundation/ui/web/Text";
+import { BoxIcon, ChevronRightIcon, FlameIcon, StarIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminDashboardViewModel, AdminDashboardWidgetKey } from "@/view-models/dashboard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { DashboardConfig } from "../config/types";

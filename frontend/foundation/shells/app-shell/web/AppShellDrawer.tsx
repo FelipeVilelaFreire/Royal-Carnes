@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Button } from "../../../ui/Button";
-import { Icon } from "../../../ui/Icon";
-import { CloseIcon } from "../../../ui/Icon/AppIcons";
-import { Inline, Stack } from "../../../ui/Layout";
-import { Surface } from "../../../ui/Surface";
+import { Button } from "../../../ui/web/Button";
+import { Icon } from "../../../ui/web/Icon";
+import { CloseIcon } from "../../../ui/web/Icon/AppIcons";
+import { Inline, Stack } from "../../../ui/web/Layout";
+import { Surface } from "../../../ui/web/Surface";
 import { renderAppShellIcon } from "../iconResolver";
 import { AppShellBrand } from "./AppShellBrand";
 import { handleAppShellNavigation } from "./navigation";

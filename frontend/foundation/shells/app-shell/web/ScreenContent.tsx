@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Container, type ContainerProps } from "../../../ui/Layout";
+import { Container, type ContainerProps } from "../../../ui/web/Layout";
 import styles from "../AppShell.module.css";
 import type { AppShellLayoutRegion } from "../foundation";
 

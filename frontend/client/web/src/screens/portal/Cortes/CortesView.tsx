@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { SearchIcon } from "@foundation/ui/Icon/AppIcons";
-import { Button } from "@foundation/ui/Button";
-import { DropdownPicker } from "@foundation/ui/DropdownPicker";
-import { EmptyState } from "@foundation/ui/EmptyState";
-import { Input } from "@foundation/ui/Input";
-import { Container, Grid, Inline, Stack } from "@foundation/ui/Layout";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
+import { SearchIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { Button } from "@foundation/ui/web/Button";
+import { DropdownPicker } from "@foundation/ui/web/DropdownPicker";
+import { EmptyState } from "@foundation/ui/web/EmptyState";
+import { Input } from "@foundation/ui/web/Input";
+import { Container, Grid, Inline, Stack } from "@foundation/ui/web/Layout";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import {
   createCortesCatalogViewModel,
   type CortesCatalogSortKey,

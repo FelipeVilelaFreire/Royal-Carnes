@@ -13,7 +13,7 @@ import {
   StoreIcon,
   TruckIcon,
   UserIcon,
-} from "../../ui/Icon/AppIcons";
+} from "../../ui/web/Icon/AppIcons";
 import type { AppShellNavigationItem } from "./types";
 
 const normalizeIconName = (item: Pick<AppShellNavigationItem, "iconIntent" | "iconName" | "key">) => {

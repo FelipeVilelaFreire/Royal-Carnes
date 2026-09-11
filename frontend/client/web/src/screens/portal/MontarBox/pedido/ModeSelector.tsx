@@ -1,7 +1,7 @@
 import React from "react";
 import type { ClientCheckoutProductExperience } from "@/view-models/checkout.view-model";
 import { Button } from "@foundation/ui";
-import { BoxIcon, CheckIcon, StarIcon as OfferTagIcon, TruckIcon } from "@foundation/ui/Icon/AppIcons";
+import { BoxIcon, CheckIcon, StarIcon as OfferTagIcon, TruckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import styles from "../MontarBoxView.module.css";
 
 const modeIcons = {

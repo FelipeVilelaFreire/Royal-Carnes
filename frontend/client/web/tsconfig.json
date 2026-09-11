@@ -64,8 +64,23 @@
       "@foundation/*": [
         "../../foundation/*"
       ],
+      "@foundation/ui": [
+        "../../foundation/ui/web"
+      ],
+      "@foundation/ui/core": [
+        "../../foundation/ui/shared/core"
+      ],
+      "@foundation/ui/web": [
+        "../../foundation/ui/web"
+      ],
+      "@foundation/ui/web/*": [
+        "../../foundation/ui/web/*"
+      ],
+      "@foundation/ui/*": [
+        "../../foundation/ui/web/*"
+      ],
       "@serviceos/ui-core": [
-        "../../foundation/ui/core"
+        "../../foundation/ui/shared/core"
       ],
       "@serviceos/semi-composed-core": [
         "../../foundation/semi-composed/core"

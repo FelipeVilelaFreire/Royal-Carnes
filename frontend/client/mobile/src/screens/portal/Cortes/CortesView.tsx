@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button } from "@foundation/native/client-ui/Button";
-import { DropdownPicker } from "@foundation/native/client-ui/DropdownPicker";
-import { Input } from "@foundation/native/client-ui/Input";
-import { Container, Inline, Stack } from "@foundation/native/client-ui/Layout";
-import { Surface } from "@foundation/native/client-ui/Surface";
-import { Text } from "@foundation/native/client-ui/Text";
+import { Button } from "@foundation/ui/native/Button";
+import { DropdownPicker } from "@foundation/ui/native/DropdownPicker";
+import { Input } from "@foundation/ui/native/Input";
+import { Container, Inline, Stack } from "@foundation/ui/native/Layout";
+import { Surface } from "@foundation/ui/native/Surface";
+import { Text } from "@foundation/ui/native/Text";
 import { ProductItemCard } from "@royalprime/product-components/ecommerce/native/ProductItemCard";
 import { useClientApiConfig } from "../../../../../shared-core/runtime/ClientApiProvider";
 import { useClientCatalog } from "../../../../../shared-core/hooks/useClientCatalog";

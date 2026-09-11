@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SectionContainer } from "@foundation/ui/SectionContainer/SectionContainer";
+import { SectionContainer } from "@foundation/ui/web/SectionContainer/SectionContainer";
 import { sharedAssets } from "@royalprime/client/manifest/assets";
 import {
   DifferentialsSection,

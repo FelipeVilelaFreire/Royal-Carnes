@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Button } from "@foundation/ui/Button";
-import { Card } from "@foundation/ui/Card";
-import { Icon } from "@foundation/ui/Icon";
-import { Box, Grid, GridItem, Inline, Stack } from "@foundation/ui/Layout";
-import { Surface } from "@foundation/ui/Surface";
-import { Text } from "@foundation/ui/Text";
+import { Button } from "@foundation/ui/web/Button";
+import { Card } from "@foundation/ui/web/Card";
+import { Icon } from "@foundation/ui/web/Icon";
+import { Box, Grid, GridItem, Inline, Stack } from "@foundation/ui/web/Layout";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import {
   BoxIcon,
   CartIcon,
@@ -14,7 +14,7 @@ import {
   StoreIcon,
   TruckIcon,
   UserIcon,
-} from "@foundation/ui/Icon/AppIcons";
+} from "@foundation/ui/web/Icon/AppIcons";
 import { useClientCatalog } from "@/hooks/useClientCatalog";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { sharedAssets } from "@royalprime/client/manifest/assets";

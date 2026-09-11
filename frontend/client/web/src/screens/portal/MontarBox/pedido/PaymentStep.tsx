@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Grid, Inline, Stack, Surface, Text } from "@foundation/ui";
-import { CartIcon as CreditCardIcon, CheckIcon } from "@foundation/ui/Icon/AppIcons";
+import { CartIcon as CreditCardIcon, CheckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   ClientCheckoutPaymentMethodKey,
   ClientCheckoutProductExperience,

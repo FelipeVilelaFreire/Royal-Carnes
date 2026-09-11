@@ -15,13 +15,24 @@ try {
   const tracked = (all ? git('ls-files', '-z') : git('diff', '--name-only', '-z', base, '--', 'frontend')).split('\0').filter(Boolean);
   const untracked = git('ls-files', '--others', '--exclude-standard', '-z').split('\0').filter(Boolean);
   const baseFiles = new Set(git('ls-tree', '-r', '--name-only', '-z', base).split('\0'));
+  const renameTokens = all ? [] : git('diff', '--name-status', '-M', '-z', base, '--', 'frontend').split('\0').filter(Boolean);
+  const renamedFrom = new Map();
+  for (let index = 0; index < renameTokens.length; index += 1) {
+    const status = renameTokens[index];
+    if (!status.startsWith('R')) continue;
+    const previousPath = renameTokens[index + 1];
+    const currentPath = renameTokens[index + 2];
+    if (previousPath && currentPath) renamedFrom.set(currentPath, previousPath);
+    index += 2;
+  }
   const files = [...new Set([...tracked, ...untracked])].filter((file) => file.startsWith('frontend/') && /\.(?:[cm]?[jt]sx?|css)$/.test(file) && existsSync(path.join(root, file)));
   const errors = [];
   let checked = 0;
   let legacy = 0;
   for (const file of files) {
     const source = readFileSync(path.join(root, file), 'utf8');
-    const previous = !all && baseFiles.has(file) ? git('show', `${base}:${file}`) : '';
+    const previousPath = baseFiles.has(file) ? file : renamedFrom.get(file);
+    const previous = !all && previousPath ? git('show', `${base}:${previousPath}`) : '';
     if (!all && source.replaceAll('\r\n', '\n') === previous.replaceAll('\r\n', '\n')) continue;
     checked++;
     const current = analyze(file, source);

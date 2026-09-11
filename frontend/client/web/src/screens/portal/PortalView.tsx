@@ -3,9 +3,9 @@
 import React, { useEffect, useMemo } from "react";
 import { AccessShell } from "@foundation/shells/access-shell";
 import { AppShell } from "@foundation/shells/app-shell";
-import { Button } from "@foundation/ui/Button";
-import { EmptyState } from "@foundation/ui/EmptyState";
-import { MoonIcon, SunIcon, UserIcon } from "@foundation/ui/Icon/AppIcons";
+import { Button } from "@foundation/ui/web/Button";
+import { EmptyState } from "@foundation/ui/web/EmptyState";
+import { MoonIcon, SunIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { clientRoutes } from "@/manifest/routes";
 import { useClientPortalAuthSession } from "@royalprime/client/hooks/useClientPortalAuthSession";
 import { ClientApiProvider } from "@royalprime/client/runtime/ClientApiProvider";

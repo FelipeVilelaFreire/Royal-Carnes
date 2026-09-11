@@ -8,7 +8,7 @@ export const adminAppShellConfig = {
   visual: {
     background: {
       enabled: true,
-      pattern: "glassFlow"
+      pattern: "glass"
     },
     cursor: {
       disabledBelow: 900,

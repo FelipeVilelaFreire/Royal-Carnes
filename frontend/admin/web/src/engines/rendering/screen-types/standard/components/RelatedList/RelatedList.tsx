@@ -1,6 +1,6 @@
 import React from "react";
-import { AvatarCell } from "@foundation/ui/Avatar";
-import { Text } from "@foundation/ui/Text";
+import { AvatarCell } from "@foundation/ui/web/Avatar";
+import { Text } from "@foundation/ui/web/Text";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { AdminStandardRelatedListColumnViewModel } from "@/view-models/standard.view-model";
 import styles from "./RelatedList.module.css";

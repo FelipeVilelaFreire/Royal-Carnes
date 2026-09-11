@@ -5,6 +5,46 @@
 > Trees, exemplos, proximos passos e instrucoes antigas abaixo devem ser
 > confrontados com os contratos ativos e o codigo; nao autorizam excecoes.
 
+## Tree Canonica Atual
+
+As entradas de plataforma sao explicitas. `shared` nao renderiza DOM nem
+host native; guarda somente contratos, resolvers e tipos comuns.
+
+```text
+frontend/
+  foundation/
+    tokens/
+    semi-composed/
+    native/                         # bridge de tokens/recipes para host native
+    shells/
+      app-shell/
+        foundation/                 # contrato compartilhado da casca
+        web/
+        native/
+      access-shell/
+        web/
+        native/
+    ui/
+      shared/
+        core/                       # contratos e resolvers sem host
+      web/                          # primitives React/DOM e CSS
+      native/                       # primitives para host native
+
+  product-components/
+    ecommerce/
+      index.ts                      # facade semantica do dominio
+      web/
+      native/
+
+  client/
+    web/src/screens/{landing,portal/...}
+    mobile/src/screens/{landing,portal/...}
+```
+
+Imports de UI tambem declaram a plataforma: `@foundation/ui/web/*` ou
+`@foundation/ui/native/*`. Um produto so usa `product-components/ecommerce`;
+primitives continuam exclusivas da Foundation.
+
 ## Objetivo
 
 Este documento define o corte inicial do Design System V1 do RoyalPrime antes da

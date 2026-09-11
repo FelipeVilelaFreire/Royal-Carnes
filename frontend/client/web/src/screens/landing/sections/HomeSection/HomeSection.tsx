@@ -1,8 +1,8 @@
 import React from "react";
-import { Button } from "@foundation/ui/Button";
-import { ArrowForwardIcon, StarIcon } from "@foundation/ui/Icon/AppIcons";
-import { Grid, Inline, Stack } from "@foundation/ui/Layout";
-import { Text } from "@foundation/ui/Text";
+import { Button } from "@foundation/ui/web/Button";
+import { ArrowForwardIcon, StarIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { Grid, Inline, Stack } from "@foundation/ui/web/Layout";
+import { Text } from "@foundation/ui/web/Text";
 import { sharedAssets } from "@royalprime/client/manifest/assets";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./HomeSection.module.css";

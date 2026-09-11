@@ -10,7 +10,7 @@ import { clientPortalAccessShellConfig } from "../../../../shared-core/manifest/
 import type { useClientStrings } from "../../../../shared-core/hooks/useClientStrings";
 import { clientRoutes } from "../../../../shared-core/manifest/routes";
 import { portalNavigation } from "../../../../shared-core/navigation/client.navigation";
-import { UiProvider } from "@foundation/native/client-ui";
+import { UiProvider } from "@foundation/ui/native";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 import { CortesView } from "./Cortes/CortesView";
 import { HomeView } from "./Home/HomeView";

@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "@foundation/ui/Button";
-import { Input } from "@foundation/ui/Input";
-import { Select } from "@foundation/ui/Select";
-import { Text } from "@foundation/ui/Text";
-import { CloseIcon } from "@foundation/ui/Icon/AppIcons";
+import { Button } from "@foundation/ui/web/Button";
+import { Input } from "@foundation/ui/web/Input";
+import { Select } from "@foundation/ui/web/Select";
+import { Text } from "@foundation/ui/web/Text";
+import { CloseIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   AdminStandardFieldOption,
   AdminStandardLineItemColumnViewModel,

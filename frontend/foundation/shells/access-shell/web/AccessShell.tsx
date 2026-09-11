@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { BottomModal, Button, Input, Modal, Stack, Surface, Text } from "@foundation/ui";
-import { UserIcon } from "@foundation/ui/Icon/AppIcons";
+import { UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   AccessShellConfig,
   AccessShellFieldKey,

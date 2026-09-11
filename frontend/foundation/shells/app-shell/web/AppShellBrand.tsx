@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Button } from "../../../ui/Button";
-import { Text } from "../../../ui/Text";
+import { Button } from "../../../ui/web/Button";
+import { Text } from "../../../ui/web/Text";
 import styles from "../AppShell.module.css";
 import type { AppShellBrand as AppShellBrandModel } from "../foundation";
 
