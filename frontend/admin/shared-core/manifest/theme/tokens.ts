@@ -17,9 +17,14 @@ export const adminThemeTokens = {
   colors: adminResolvedThemeModes.admin,
   modes: adminResolvedThemeModes,
   defaultMode: "admin",
-  typography: {
-    headingFont: "'Playfair Display', serif",
-    bodyFont: "'Plus Jakarta Sans', sans-serif",
+  tokens: {
+    ...royalPrimeThemeTokens.tokens,
+    typography: {
+      ...royalPrimeThemeTokens.tokens.typography,
+      bodyFamily: "'Plus Jakarta Sans', sans-serif",
+      headingFamily: "'Plus Jakarta Sans', sans-serif",
+      monoFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+    },
   },
   layout: {
     ...royalPrimeThemeTokens.tokens.layout,

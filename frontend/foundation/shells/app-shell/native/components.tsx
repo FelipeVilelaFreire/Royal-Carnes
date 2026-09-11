@@ -16,6 +16,7 @@ export type NativeHostComponent = React.ComponentType<NativeHostComponentProps>;
 export interface NativeAppShellHostComponents {
   Pressable: NativeHostComponent;
   SafeAreaView?: NativeHostComponent;
+  ScrollView?: NativeHostComponent;
   Text: NativeHostComponent;
   View: NativeHostComponent;
 }

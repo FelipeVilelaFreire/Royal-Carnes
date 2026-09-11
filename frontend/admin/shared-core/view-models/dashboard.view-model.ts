@@ -27,11 +27,25 @@ export interface AdminDashboardRecentOrderViewModel {
   plan: string;
   statusKey: string;
   statusLabel: string;
+  statusColor: string;
+  statusTone: AdminDashboardTone;
+}
+
+export interface AdminDashboardPlanViewModel {
+  activeSubscribers: string;
+  billingIntervalKey: string;
+  entitlementCount: string;
+  id: string;
+  name: string;
+  price: string;
+  statusKey: string;
+  statusColor: string;
   statusTone: AdminDashboardTone;
 }
 
 export interface AdminDashboardViewModel {
   metrics: Record<AdminDashboardMetricKey, string>;
+  plans: AdminDashboardPlanViewModel[];
   recentOrders: AdminDashboardRecentOrderViewModel[];
   widgets: AdminDashboardWidgetViewModel[];
 }
@@ -94,6 +108,14 @@ function resolveStatusTone(statusKey: string): AdminDashboardTone {
   return "neutral";
 }
 
+function resolveStatusColor(statusKey: string): string {
+  if (statusKey === "received") return "received";
+  if (statusKey === "ready") return "ready";
+  if (statusKey === "delivered" || statusKey === "completed" || statusKey === "approved") return "active";
+  if (statusKey === "cancelled" || statusKey === "canceled") return "canceled";
+  return "paused";
+}
+
 function resolveOrderPlan(summary: AdminDashboardSummaryView, subscriptionId?: string | number | null): string | null {
   if (!subscriptionId) return null;
   return summary.subscriptions.find((subscription) => subscription.id === subscriptionId)?.plan.name || null;
@@ -102,6 +124,12 @@ function resolveOrderPlan(summary: AdminDashboardSummaryView, subscriptionId?: s
 function resolveOrderBox(summary: AdminDashboardSummaryView, orderId: string | number): string | null {
   const delivery = summary.deliveries.find((item) => item.orderId === orderId);
   return delivery?.code || delivery?.orderCode || null;
+}
+
+function resolvePlanPriceCents(plan: AdminDashboardSummaryView["subscriptions"][number]["plan"]): number {
+  return plan.prices.find(
+    (price) => price.priceType === "recurring" && price.billingInterval === plan.billingInterval,
+  )?.amountCents || 0;
 }
 
 function isDeliveryTerminal(summary: AdminDashboardSummaryView, statusKey: string): boolean {
@@ -173,6 +201,30 @@ export function createAdminDashboardViewModel(
         value: `${retentionRate.toFixed(1)}%`,
       },
     ],
+    plans: Array.from(
+      summary.subscriptions.reduce((plans, subscription) => {
+        const existing = plans.get(subscription.plan.key);
+        const isActive = subscription.status === "active";
+        plans.set(subscription.plan.key, {
+          activeSubscribers: (existing?.activeSubscribers || 0) + (isActive ? 1 : 0),
+          plan: subscription.plan,
+        });
+        return plans;
+      }, new Map<string, { activeSubscribers: number; plan: AdminDashboardSummaryView["subscriptions"][number]["plan"] }>()),
+    )
+      .map(([key, { activeSubscribers, plan }]) => ({
+        activeSubscribers: String(activeSubscribers),
+        billingIntervalKey: `dashboard.billingIntervals.${plan.billingInterval}`,
+        entitlementCount: String(plan.entitlements.length),
+        id: String(key),
+        name: plan.name,
+        price: formatMoney(resolvePlanPriceCents(plan)),
+        statusKey: `dashboard.planStatuses.${plan.status}`,
+        statusColor: plan.status === "active" ? "active" : plan.status === "draft" ? "paused" : "canceled",
+        statusTone: plan.status === "active" ? "success" : plan.status === "draft" ? "warning" : "neutral",
+      }))
+      .sort((first, second) => second.activeSubscribers.localeCompare(first.activeSubscribers, "pt-BR", { numeric: true }))
+      .slice(0, 3),
     recentOrders: summary.orders
       .slice()
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -185,6 +237,7 @@ export function createAdminDashboardViewModel(
         plan: resolveOrderPlan(summary, order.subscriptionId) || resolveKindLabel(summary, order.kindKey),
         statusKey: order.statusKey,
         statusLabel: resolveStatusLabel(summary, order.statusKey),
+        statusColor: resolveStatusColor(order.statusKey),
         statusTone: resolveStatusTone(order.statusKey),
       })),
   };

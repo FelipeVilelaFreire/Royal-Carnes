@@ -86,6 +86,20 @@
   transform: translateY(0) scale(var(--ui-button-pressed-scale));
 }
 
+.button:not(:disabled)[data-appearance="transparent"] {
+  box-shadow: none;
+  transition: transform var(--ui-button-duration) var(--ui-button-easing), color var(--ui-button-duration) var(--ui-button-easing);
+}
+
+.button:not(:disabled)[data-appearance="transparent"]:hover {
+  box-shadow: none;
+}
+
+.button:not(:disabled)[data-appearance="transparent"]:hover::before,
+.button:not(:disabled)[data-appearance="transparent"]:hover::after {
+  opacity: 0;
+}
+
 .icon {
   align-items: center;
   display: inline-flex;

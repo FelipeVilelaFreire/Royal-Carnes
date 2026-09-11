@@ -5,7 +5,10 @@ import { Input } from "@foundation/ui/native/Input";
 import { Container, Inline, Stack } from "@foundation/ui/native/Layout";
 import { Surface } from "@foundation/ui/native/Surface";
 import { Text } from "@foundation/ui/native/Text";
+import { useUi } from "@foundation/ui/native/context";
 import { ProductItemCard } from "@royalprime/product-components/ecommerce/native/ProductItemCard";
+import { ScreenHeader } from "@foundation/product-components/screens/native/ScreenHeader";
+import { normalizeScreenHeaderScrollProgress } from "@foundation/product-components/screens/shared";
 import { useClientApiConfig } from "../../../../../shared-core/runtime/ClientApiProvider";
 import { useClientCatalog } from "../../../../../shared-core/hooks/useClientCatalog";
 import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
@@ -17,12 +20,24 @@ export interface CortesViewProps {
   strings: ReturnType<typeof useClientStrings>;
 }
 
+type NativeScrollEvent = {
+  nativeEvent?: {
+    contentOffset?: {
+      y?: number;
+    };
+  };
+};
+
 const moneyFormatter = new Intl.NumberFormat("pt-BR", { currency: "BRL", style: "currency" });
 
 export const CortesView: React.FC<CortesViewProps> = ({ onProductAction, strings: clientStrings }) => {
   const [activeCategoryId, setActiveCategoryId] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<CortesCatalogSortKey>("relevance");
+  const [headerScrollProgress, setHeaderScrollProgress] = useState(0);
+  const { designSystem, hosts } = useUi();
+  const ScrollContainer = hosts.ScrollView || hosts.View;
+  const screenHeaderScrollRange = Math.max(Number(designSystem.theme.tokens.spacing?.space3xl || 0), 1);
   const apiConfig = useClientApiConfig();
   const catalog = useClientCatalog({ apiConfig });
   const strings = clientStrings.cortes.catalogPage;
@@ -53,77 +68,91 @@ export const CortesView: React.FC<CortesViewProps> = ({ onProductAction, strings
   );
 
   return (
-    <Container>
-      <Stack gap="lg">
-        <Text variant="h1">{strings.title}</Text>
-        <Text tone="muted">{strings.description}</Text>
-        <Input
-          accessibilityLabel={strings.searchAriaLabel}
-          iconIntent="search"
-          onChangeText={setSearchQuery}
-          placeholder={strings.searchPlaceholder}
-          value={searchQuery}
-        />
-        <DropdownPicker
-          accessibilityLabel={strings.sortAriaLabel}
-          onChange={(next) => setSortBy(next as CortesCatalogSortKey)}
-          options={sortOptions}
-          value={sortBy}
-        />
-        <Inline gap="xs">
-          {catalogViewModel.categories.map((category) => (
-            <Button
-              key={category.id}
-              onAction={() => setActiveCategoryId(category.id)}
-              tone={category.id === activeCategoryId ? "primary" : "neutral"}
-            >
-              {category.name}
-            </Button>
-          ))}
-        </Inline>
-        {catalog.isLoading ? (
-          <Surface appearance="soft">
-            <Stack gap="sm">
-              <Text variant="h3">{strings.loadingTitle}</Text>
-              <Text tone="muted">{strings.loadingDescription}</Text>
-            </Stack>
-          </Surface>
-        ) : catalog.error ? (
-          <Surface appearance="soft" tone="danger">
-            <Stack gap="sm">
-              <Text variant="h3">{strings.errorTitle}</Text>
-              <Text tone="muted">{strings.errorDescription}</Text>
-              <Button onAction={() => void catalog.load()}>{strings.retry}</Button>
-            </Stack>
-          </Surface>
-        ) : catalogViewModel.filteredProducts.length > 0 ? (
-          <Stack gap="md">
-            {catalogViewModel.filteredProducts.map((product) => (
-              <ProductItemCard
-                actionLabel={onProductAction ? clientStrings.cortes.ctaBuy : undefined}
-                description={product.subtitle}
-                formattedPrice={moneyFormatter.format(product.price)}
-                image={product.image}
-                key={product.id}
-                name={product.name}
-                onAction={() => onProductAction?.(product.id)}
-              />
+    <ScrollContainer
+      onScroll={hosts.ScrollView ? (event: NativeScrollEvent) => setHeaderScrollProgress(
+        normalizeScreenHeaderScrollProgress((event.nativeEvent?.contentOffset?.y || 0) / screenHeaderScrollRange),
+      ) : undefined}
+      scrollEventThrottle={hosts.ScrollView ? 16 : undefined}
+      stickyHeaderIndices={hosts.ScrollView ? [0] : undefined}
+    >
+      <ScreenHeader
+        description={strings.description}
+        eyebrow={strings.badge}
+        mobileMode="collapsible"
+        mobileTitle={strings.mobileTitle}
+        scrollProgress={headerScrollProgress}
+        title={strings.title}
+      />
+      <Container>
+        <Stack gap="lg">
+          <Input
+            accessibilityLabel={strings.searchAriaLabel}
+            iconIntent="search"
+            onChangeText={setSearchQuery}
+            placeholder={strings.searchPlaceholder}
+            value={searchQuery}
+          />
+          <DropdownPicker
+            accessibilityLabel={strings.sortAriaLabel}
+            onChange={(next) => setSortBy(next as CortesCatalogSortKey)}
+            options={sortOptions}
+            value={sortBy}
+          />
+          <Inline gap="xs">
+            {catalogViewModel.categories.map((category) => (
+              <Button
+                key={category.id}
+                onAction={() => setActiveCategoryId(category.id)}
+                tone={category.id === activeCategoryId ? "primary" : "neutral"}
+              >
+                {category.name}
+              </Button>
             ))}
-          </Stack>
-        ) : (
-          <Surface appearance="soft">
-            <Stack gap="sm">
-              <Text variant="h3">{strings.emptyTitle}</Text>
-              <Text tone="muted">{strings.emptyDescription}</Text>
-              <Button onAction={() => {
-                setActiveCategoryId("all");
-                setSearchQuery("");
-                setSortBy("relevance");
-              }}>{strings.clearFilters}</Button>
+          </Inline>
+          {catalog.isLoading ? (
+            <Surface appearance="soft">
+              <Stack gap="sm">
+                <Text variant="h3">{strings.loadingTitle}</Text>
+                <Text tone="muted">{strings.loadingDescription}</Text>
+              </Stack>
+            </Surface>
+          ) : catalog.error ? (
+            <Surface appearance="soft" tone="danger">
+              <Stack gap="sm">
+                <Text variant="h3">{strings.errorTitle}</Text>
+                <Text tone="muted">{strings.errorDescription}</Text>
+                <Button onAction={() => void catalog.load()}>{strings.retry}</Button>
+              </Stack>
+            </Surface>
+          ) : catalogViewModel.filteredProducts.length > 0 ? (
+            <Stack gap="md">
+              {catalogViewModel.filteredProducts.map((product) => (
+                <ProductItemCard
+                  actionLabel={onProductAction ? clientStrings.cortes.ctaBuy : undefined}
+                  description={product.subtitle}
+                  formattedPrice={moneyFormatter.format(product.price)}
+                  image={product.image}
+                  key={product.id}
+                  name={product.name}
+                  onAction={() => onProductAction?.(product.id)}
+                />
+              ))}
             </Stack>
-          </Surface>
-        )}
-      </Stack>
-    </Container>
+          ) : (
+            <Surface appearance="soft">
+              <Stack gap="sm">
+                <Text variant="h3">{strings.emptyTitle}</Text>
+                <Text tone="muted">{strings.emptyDescription}</Text>
+                <Button onAction={() => {
+                  setActiveCategoryId("all");
+                  setSearchQuery("");
+                  setSortBy("relevance");
+                }}>{strings.clearFilters}</Button>
+              </Stack>
+            </Surface>
+          )}
+        </Stack>
+      </Container>
+    </ScrollContainer>
   );
 };

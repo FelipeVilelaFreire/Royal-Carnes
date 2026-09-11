@@ -12,7 +12,7 @@ export const dashboardConfig = {
     key: "dashboard",
   },
   layout: {
-    atmosphere: "solid",
+    atmosphere: "transparent",
     attention: { columns: 3, gap: "sm" },
     kpis: { columns: 4, gap: "md" },
     panels: { columns: 3, gap: "md" },
@@ -22,25 +22,25 @@ export const dashboardConfig = {
     {
       iconKey: "revenue",
       key: "mrr",
-      surface: { appearance: "solid", tone: "neutral" },
+      surface: { appearance: "glass", tone: "neutral" },
       titleKey: "dashboard.kpis.mrr",
     },
     {
       iconKey: "subscribers",
       key: "subscribers",
-      surface: { appearance: "solid", tone: "neutral" },
+      surface: { appearance: "glass", tone: "neutral" },
       titleKey: "dashboard.kpis.activeSubscribers",
     },
     {
       iconKey: "deliveries",
       key: "deliveries",
-      surface: { appearance: "solid", tone: "neutral" },
+      surface: { appearance: "glass", tone: "neutral" },
       titleKey: "dashboard.kpis.pendingDeliveries",
     },
     {
       iconKey: "retention",
       key: "retention",
-      surface: { appearance: "solid", tone: "neutral" },
+      surface: { appearance: "glass", tone: "neutral" },
       titleKey: "dashboard.kpis.retentionRate",
     },
   ],
@@ -109,7 +109,7 @@ export const dashboardConfig = {
         tone: "primary",
       },
     ],
-    surface: { appearance: "solid", tone: "neutral" },
+    surface: { appearance: "glass", tone: "neutral" },
     titleKey: "dashboard.attention.title",
   },
   recentOrders: {
@@ -123,7 +123,19 @@ export const dashboardConfig = {
       { key: "date", labelKey: "dashboard.tableHeaders.date" },
     ],
     iconKey: "boxes",
-    surface: { appearance: "solid", tone: "neutral" },
+    surface: { appearance: "glass", tone: "neutral" },
     titleKey: "dashboard.tableTitle",
+  },
+  plans: {
+    columns: [
+      { key: "plan", labelKey: "dashboard.planTableHeaders.plan" },
+      { key: "price", labelKey: "dashboard.planTableHeaders.price" },
+      { key: "recurrence", labelKey: "dashboard.planTableHeaders.recurrence" },
+      { key: "items", labelKey: "dashboard.planTableHeaders.items" },
+      { key: "subscribers", labelKey: "dashboard.planTableHeaders.subscribers" },
+      { key: "status", labelKey: "dashboard.planTableHeaders.status" },
+    ],
+    surface: { appearance: "glass", tone: "neutral" },
+    titleKey: "dashboard.plansTableTitle",
   },
 };

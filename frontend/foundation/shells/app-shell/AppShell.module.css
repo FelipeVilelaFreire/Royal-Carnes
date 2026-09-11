@@ -37,6 +37,9 @@
   --ui-background-blur-xs: var(--theme--blur-xs);
   --ui-background-color: var(--app-shell-color);
   --ui-background-cursor-offscreen: calc(var(--theme--dimensions-minWidth-4xl) * -1);
+  --ui-background-cursor-size-medium: var(--theme--dimensions-minWidth-3xl);
+  --ui-background-cursor-size-soft: var(--theme--dimensions-minWidth-2xl);
+  --ui-background-cursor-size-strong: var(--theme--dimensions-minWidth-4xl);
   --ui-background-duration: var(--theme--motion-duration2xl);
   --ui-background-easing: var(--theme--motion-easingStandard);
   --ui-background-grid-size: var(--theme--dimensions-minWidth-xs);
@@ -72,6 +75,10 @@
 /* The Admin keeps the active-route light on the trailing edge of the sidebar item. */
 :global([data-theme-surface="admin"]) .shell[data-app-shell-material="glass"] {
   --app-shell-sidebar-button-bg-active: linear-gradient(270deg, color-mix(in srgb, var(--app-shell-accent) 22%, transparent), transparent 74%), linear-gradient(225deg, color-mix(in srgb, var(--app-shell-accent) 10%, transparent), color-mix(in srgb, var(--app-shell-panel-bg) 42%, transparent));
+  --ui-background-color: var(--app-shell-surface-bg);
+  --ui-background-highlight-opacity: var(--theme--opacity-10);
+  --ui-background-opacity-line: var(--theme--opacity-75);
+  --ui-background-tint-opacity: var(--theme--opacity-15);
 }
 
 .shellWithSidebar[data-sidebar-collapsed="true"] {
@@ -1180,11 +1187,15 @@
   justify-content: center;
   padding-inline: var(--app-shell-space-none) !important;
   transform: none;
+  transition:
+    background var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing),
+    color var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing),
+    transform var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing);
   width: 100%;
 }
 
 .sidebarCollapsed .verticalLink:hover {
-  transform: none;
+  transform: translateY(calc(var(--theme--spacing-space2xs) / -2));
 }
 
 .sidebarCollapsed .verticalLink > span {
@@ -1223,6 +1234,14 @@
 
 .sidebarCollapsed .verticalLinkIcon {
   background: transparent;
+  transition:
+    background var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing),
+    transform var(--app-shell-motion-feedback-duration) var(--app-shell-motion-feedback-easing);
+}
+
+.sidebarCollapsed .verticalLink:hover .verticalLinkIcon {
+  background: color-mix(in srgb, var(--app-shell-accent) 8%, transparent);
+  transform: scale(1.06);
 }
 
 .sidebarCollapsed .brandLogoFrame {

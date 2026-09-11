@@ -20,7 +20,10 @@
     "frontend/admin/web"
   ],
   "devDependencies": {
+    "@react-three/fiber": "^9.6.1",
+    "@types/three": "^0.185.0",
     "postcss": "8.5.23",
+    "three": "^0.185.0",
     "typescript": "5.9.3"
   }
 }

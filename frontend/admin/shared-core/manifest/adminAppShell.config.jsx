@@ -12,8 +12,8 @@ export const adminAppShellConfig = {
     },
     cursor: {
       disabledBelow: 900,
-      enabled: true,
-      intensity: "soft",
+      enabled: false,
+      intensity: "medium",
       mode: "glass"
     },
     material: "glass"

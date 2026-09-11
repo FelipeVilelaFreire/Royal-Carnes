@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { BottomModal, Button, Input, Modal, Stack, Surface, Text } from "@foundation/ui";
+import { Button } from "@foundation/ui/web/Button";
+import { Input } from "@foundation/ui/web/Input";
+import { Stack } from "@foundation/ui/web/Layout";
+import { BottomModal, Modal } from "@foundation/ui/web/Modal";
+import { Surface } from "@foundation/ui/web/Surface";
+import { Text } from "@foundation/ui/web/Text";
 import { UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   AccessShellConfig,

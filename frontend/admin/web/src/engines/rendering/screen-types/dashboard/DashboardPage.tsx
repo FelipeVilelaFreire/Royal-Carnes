@@ -1,11 +1,11 @@
 import React from "react";
 import { Badge } from "@foundation/ui/web/Badge";
 import { Button } from "@foundation/ui/web/Button";
-import { Card } from "@foundation/ui/web/Card";
 import { Grid, Inline, Stack } from "@foundation/ui/web/Layout";
 import { SectionContainer } from "@foundation/ui/web/SectionContainer";
+import { Surface } from "@foundation/ui/web/Surface";
 import { Text } from "@foundation/ui/web/Text";
-import { BoxIcon, ChevronRightIcon, FlameIcon, StarIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { ChevronRightIcon, FlameIcon, StarIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminDashboardViewModel, AdminDashboardWidgetKey } from "@/view-models/dashboard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { DashboardConfig } from "../config/types";
@@ -32,15 +32,25 @@ function toBadgeTone(tone: string | undefined) {
   return "neutral";
 }
 
+function renderMetricHelper(text: string, tone: string | undefined) {
+  return (
+    <span className={styles.metricHelper} data-tone={toBadgeTone(tone)}>
+      <span aria-hidden="true" className={styles.metricHelperDot} />
+      <Text as="span" tone="muted" variant="caption">{text}</Text>
+    </span>
+  );
+}
+
 export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading = false, onViewOrders, t, viewModel }) => {
   const widgetsByKey = new Map(viewModel.widgets.map((widget) => [widget.key, widget]));
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere={config.layout.atmosphere} usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Inline align="start" justify="between" wrap>
             <Stack className={styles.heading} gap="xs">
+              {config.headerBadge ? <span className={styles.headerEyebrow}><span aria-hidden="true" className={styles.headerEyebrowDot} /><Text as="span" tone="muted" variant="caption" weight="bold">{t(config.headerBadge.labelKey)}</Text></span> : null}
               <Text as="h1" variant="h1">{t(config.titleKey)}</Text>
               <Text tone="muted" variant="body">{t(config.subtitleKey)}</Text>
             </Stack>
@@ -49,45 +59,66 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading 
             </Inline>
           </Inline>
 
-          <Grid className={styles.kpiGrid} columns={4} gap="md">
+          <Grid className={styles.kpiGrid} columns={config.layout.kpis.columns} gap={config.layout.kpis.gap}>
             {config.widgets.map((widget) => {
               const widgetView = widgetsByKey.get(widget.key as AdminDashboardWidgetKey);
               return (
-                <Card className={styles.kpiCard} key={widget.key} size="md">
+                <Surface appearance={widget.surface.appearance} className={styles.kpiCard} key={widget.key} tone={widget.surface.tone}>
                   <Inline justify="between" wrap={false}>
                     <Text as="span" className={styles.kpiLabel} tone="muted" variant="caption" weight="bold">{t(widget.titleKey)}</Text>
                     <span className={styles.kpiIcon}>{renderWidgetIcon(widget.iconKey, widget.key)}</span>
                   </Inline>
-                  <Text as="strong" className={styles.kpiValue} variant="h2">{widgetView?.value || widget.value || "-"}</Text>
-                  <Badge appearance="soft" className={styles.kpiHelper} tone={toBadgeTone(widgetView?.tone)}>
-                    {widgetView ? t(widgetView.helperKey, widget.helper, widgetView.helperVariables) : widget.helper || "-"}
-                  </Badge>
-                </Card>
+                  <Text as="strong" className={styles.kpiValue} font="var(--theme--typography-monoFamily)" variant="h2">{widgetView?.value || widget.value || "-"}</Text>
+                  {renderMetricHelper(widgetView ? t(widgetView.helperKey, widget.helper, widgetView.helperVariables) : widget.helper || "-", widgetView?.tone)}
+                </Surface>
               );
             })}
           </Grid>
 
-          <Card className={styles.tableCard} size="lg">
-            <Inline justify="between" wrap>
+          <Stack className={styles.tableSection} gap="sm">
+            <Inline className={styles.tableHeader} justify="between" wrap>
               <Inline gap="sm" wrap={false}>
-                <span className={styles.tableIcon}><BoxIcon aria-hidden="true" /></span>
-                <Text as="h2" variant="h3">{t("dashboard.tableTitle")}</Text>
+                <Text as="h2" variant="h3">{t(config.recentOrders.titleKey)}</Text>
+                <Badge appearance="soft" level="2xs" tone="neutral">{t("dashboard.recordCount", undefined, { count: viewModel.recentOrders.length })}</Badge>
               </Inline>
               <Button appearance="transparent" icon={<ChevronRightIcon aria-hidden="true" />} iconPosition="end" onClick={onViewOrders} size="sm">
-                {t("dashboard.viewAllBoxes")}
+                {t(config.recentOrders.action.labelKey)}
               </Button>
             </Inline>
+            <Surface appearance={config.recentOrders.surface.appearance} className={styles.tableCard} tone={config.recentOrders.surface.tone}>
             <div className={styles.tableScroller}>
               <table className={styles.table}>
-                <thead><tr>
-                  <th>{t("dashboard.tableHeaders.order")}</th><th>{t("dashboard.tableHeaders.member")}</th><th>{t("dashboard.tableHeaders.plan")}</th><th>{t("dashboard.tableHeaders.box")}</th><th>{t("dashboard.tableHeaders.status")}</th><th>{t("dashboard.tableHeaders.date")}</th>
-                </tr></thead>
+                <thead><tr>{config.recentOrders.columns.map((column) => <th key={column.key}>{t(column.labelKey)}</th>)}</tr></thead>
                 <tbody>{viewModel.recentOrders.length ? viewModel.recentOrders.map((order) => (
-                  <tr key={order.id}><td className={styles.orderCode}>{order.id}</td><td>{order.member}</td><td>{order.plan}</td><td>{order.box}</td><td><Badge appearance="soft" tone={toBadgeTone(order.statusTone)}>{order.statusLabel}</Badge></td><td>{order.date}</td></tr>
-                )) : <tr><td className={styles.emptyCell} colSpan={6}>{t("dashboard.emptyRecentOrders")}</td></tr>}</tbody>
+                  <tr key={order.id}>{config.recentOrders.columns.map((column) => {
+                    if (column.key === "order") return <td className={styles.orderCode} key={column.key}>{order.id}</td>;
+                    if (column.key === "status") return <td key={column.key}><Badge appearance="soft" indicator statusColor={order.statusColor} tone={toBadgeTone(order.statusTone)}>{order.statusLabel}</Badge></td>;
+                    return <td className={column.key === "member" ? styles.primaryCell : styles.secondaryCell} key={column.key}>{order[column.key as "member" | "plan" | "box" | "date"]}</td>;
+                  })}</tr>
+                )) : <tr><td className={styles.emptyCell} colSpan={config.recentOrders.columns.length}>{t("dashboard.emptyRecentOrders")}</td></tr>}</tbody>
               </table>
             </div>
-          </Card>
+            </Surface>
+          </Stack>
+
+          <Stack className={styles.tableSection} gap="sm">
+            <Inline className={styles.tableHeader} justify="between" wrap>
+              <Inline gap="sm" wrap={false}>
+                <Text as="h2" variant="h3">{t(config.plans.titleKey)}</Text>
+                <Badge appearance="soft" level="2xs" tone="neutral">{t("dashboard.planCount", undefined, { count: viewModel.plans.length })}</Badge>
+              </Inline>
+            </Inline>
+            <Surface appearance={config.plans.surface.appearance} className={styles.tableCard} tone={config.plans.surface.tone}>
+            <div className={styles.tableScroller}>
+              <table className={styles.table}>
+                <thead><tr>{config.plans.columns.map((column) => <th key={column.key}>{t(column.labelKey)}</th>)}</tr></thead>
+                <tbody>{viewModel.plans.length ? viewModel.plans.map((plan) => (
+                  <tr key={plan.id}><td className={styles.planName}>{plan.name}</td><td className={styles.moneyValue}>{plan.price}</td><td className={styles.secondaryCell}>{t(plan.billingIntervalKey)}</td><td>{plan.entitlementCount}</td><td>{plan.activeSubscribers}</td><td><Badge appearance="soft" indicator statusColor={plan.statusColor} tone={toBadgeTone(plan.statusTone)}>{t(plan.statusKey)}</Badge></td></tr>
+                )) : <tr><td className={styles.emptyCell} colSpan={config.plans.columns.length}>{t("dashboard.emptyPlans")}</td></tr>}</tbody>
+              </table>
+            </div>
+            </Surface>
+          </Stack>
         </Stack>
       </SectionContainer>
     </div>

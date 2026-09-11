@@ -1,0 +1,12 @@
+.root {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+}
+
+.canvas {
+  height: 100% !important;
+  mix-blend-mode: screen;
+  width: 100% !important;
+}

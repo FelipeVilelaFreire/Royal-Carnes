@@ -43,7 +43,7 @@
   background:
     linear-gradient(138deg, color-mix(in srgb, var(--ui-background-color) var(--ui-background-highlight-opacity), transparent), transparent 34%),
     linear-gradient(180deg, color-mix(in srgb, var(--ui-background-accent) var(--ui-background-tint-opacity), transparent), transparent 82%),
-    radial-gradient(ellipse at 0 0, color-mix(in srgb, var(--ui-background-accent) 52%, transparent), transparent 54%),
+    radial-gradient(ellipse at 0 0, color-mix(in srgb, var(--ui-background-accent) var(--ui-background-tint-opacity), transparent), transparent 54%),
     radial-gradient(ellipse at 88% 18%, color-mix(in srgb, var(--ui-background-surface-bg) 58%, transparent), transparent 44%),
     radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--ui-background-color) 18%, transparent), transparent 38%),
     linear-gradient(145deg, color-mix(in srgb, var(--ui-background-surface-bg) 82%, transparent), color-mix(in srgb, var(--ui-background-bg) 80%, transparent)),
@@ -64,7 +64,7 @@
 .background[data-pattern="glass"] .atmosphere::before,
 .background[data-pattern="glassFlow"] .atmosphere::before {
   background:
-    linear-gradient(112deg, transparent 0%, color-mix(in srgb, var(--ui-background-color) 18%, transparent) 12%, transparent 28%, transparent 40%, color-mix(in srgb, var(--ui-background-accent) 28%, transparent) 58%, transparent 78%),
+    linear-gradient(112deg, transparent 0%, color-mix(in srgb, var(--ui-background-color) 18%, transparent) 12%, transparent 28%, transparent 40%, color-mix(in srgb, var(--ui-background-accent) var(--ui-background-tint-opacity), transparent) 58%, transparent 78%),
     repeating-linear-gradient(
       105deg,
       transparent 0,
@@ -85,7 +85,7 @@
 .background[data-pattern="glassFlow"] .atmosphere::after {
   background:
     linear-gradient(145deg, color-mix(in srgb, var(--ui-background-color) 11%, transparent), transparent 42%),
-    radial-gradient(ellipse at 34% 22%, color-mix(in srgb, var(--ui-background-accent) 38%, transparent), transparent 58%),
+    radial-gradient(ellipse at 34% 22%, color-mix(in srgb, var(--ui-background-accent) var(--ui-background-tint-opacity), transparent), transparent 58%),
     radial-gradient(ellipse at 78% 8%, color-mix(in srgb, var(--ui-background-surface-bg) 62%, transparent), transparent 50%),
     linear-gradient(180deg, transparent, color-mix(in srgb, var(--ui-background-bg) 22%, transparent));
   backdrop-filter: blur(var(--ui-background-blur-sm));
@@ -94,20 +94,43 @@
 .background[data-cursor="glass"] .cursor {
   background:
     radial-gradient(
-      circle at var(--ui-background-cursor-x, var(--ui-background-cursor-offscreen)) var(--ui-background-cursor-y, var(--ui-background-cursor-offscreen)),
-      color-mix(in srgb, var(--ui-background-accent) 22%, transparent) 0,
-      color-mix(in srgb, var(--ui-background-accent) 13%, transparent) var(--ui-background-spotlight-sm),
-      transparent var(--ui-background-spotlight-xl)
+      circle at 34% 28%,
+      color-mix(in srgb, var(--ui-background-surface-bg) 44%, transparent) 0,
+      color-mix(in srgb, var(--ui-background-surface-bg) 18%, transparent) 28%,
+      transparent 66%
     ),
     radial-gradient(
-      circle at var(--ui-background-cursor-x, var(--ui-background-cursor-offscreen)) var(--ui-background-cursor-y, var(--ui-background-cursor-offscreen)),
-      color-mix(in srgb, currentColor 16%, transparent) 0,
-      transparent var(--ui-background-spotlight-sm)
+      circle at center,
+      color-mix(in srgb, var(--ui-background-accent) 18%, transparent) 0,
+      color-mix(in srgb, var(--ui-background-accent) 8%, transparent) 46%,
+      transparent 78%
     );
   display: block;
   filter: blur(var(--ui-background-blur-sm));
+  height: var(--ui-background-cursor-size, var(--ui-background-spotlight-xl));
+  inset: auto;
+  left: 0;
   opacity: 0;
+  top: 0;
   transition: opacity var(--ui-background-duration) var(--ui-background-easing);
+  transform: translate3d(
+    calc(var(--ui-background-cursor-x, var(--ui-background-cursor-offscreen)) - var(--ui-background-cursor-size, var(--ui-background-spotlight-xl)) / 2),
+    calc(var(--ui-background-cursor-y, var(--ui-background-cursor-offscreen)) - var(--ui-background-cursor-size, var(--ui-background-spotlight-xl)) / 2),
+    0
+  );
+  width: var(--ui-background-cursor-size, var(--ui-background-spotlight-xl));
+}
+
+.background[data-cursor="glass"][data-cursor-intensity="soft"] .cursor {
+  --ui-background-cursor-size: var(--ui-background-cursor-size-soft);
+}
+
+.background[data-cursor="glass"][data-cursor-intensity="medium"] .cursor {
+  --ui-background-cursor-size: var(--ui-background-cursor-size-medium);
+}
+
+.background[data-cursor="glass"][data-cursor-intensity="strong"] .cursor {
+  --ui-background-cursor-size: var(--ui-background-cursor-size-strong);
 }
 
 .background[data-cursor="glass"][data-cursor-active="true"] .cursor {

@@ -696,7 +696,8 @@ export const clientPtBR = {
     subtitle: "Explore toda a curadoria de carnes nobres do clube.",
     catalogPage: {
       badge: "CATÁLOGO COMPLETO ROYAL CARNES",
-      title: "Produtos & Seleções Especiais",
+      title: "Catálogo de Produtos",
+      mobileTitle: "Catálogo",
       description: "Explore carnes, linguiças, frango, suínos, espetinhos, temperos, carvão, utensílios e combos para churrasco.",
       categoryNavigationLabel: "Categorias de produtos",
       searchAriaLabel: "Buscar produtos no catalogo",

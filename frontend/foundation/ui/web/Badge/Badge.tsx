@@ -20,8 +20,10 @@ export type BadgeAppearance = SurfaceAppearance;
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
   appearance?: BadgeAppearance;
   children: ReactNode;
+  indicator?: boolean;
   level?: BadgeLevel;
   shape?: BadgeShape;
+  statusColor?: string;
   tone?: BadgeTone;
   width?: BadgeWidth;
 };
@@ -46,8 +48,18 @@ const semanticToneToken = (tone: BadgeTone | undefined) => {
   return undefined;
 };
 
-const semanticSoftSurface = (tone: BadgeTone | undefined, appearance: BadgeAppearance | undefined) => {
-  const token = semanticToneToken(tone);
+const semanticStatusToken = (statusColor: string | undefined, tone: BadgeTone | undefined) => {
+  if (!statusColor) return semanticToneToken(tone);
+  const tokenName = statusColor.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+  return `var(--theme--status-${tokenName}, ${semanticToneToken(tone) || "var(--theme--color-accent)"})`;
+};
+
+const semanticSoftSurface = (
+  tone: BadgeTone | undefined,
+  appearance: BadgeAppearance | undefined,
+  statusColor: string | undefined,
+) => {
+  const token = semanticStatusToken(statusColor, tone);
   if (!token || appearance !== "soft") return {};
   return {
     "--ui-surface-bg": `color-mix(in srgb, ${token} 14%, var(--theme--color-surface))`,
@@ -57,7 +69,7 @@ const semanticSoftSurface = (tone: BadgeTone | undefined, appearance: BadgeAppea
 };
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
-  { appearance, children, className, level, shape, style, tone, width, ...props },
+  { appearance, children, className, indicator, level, shape, statusColor, style, tone, width, ...props },
   ref,
 ) {
   const ui = useUiConfig();
@@ -71,10 +83,13 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
     width,
   });
   const badgeStyle = {
-    ...semanticSoftSurface(tone || resolved.tone, appearance || resolved.appearance),
+    ...semanticSoftSurface(tone || resolved.tone, appearance || resolved.appearance, statusColor),
     "--ui-badge-font-family": resolved.textRecipe.fontFamily,
     "--ui-badge-font-size": `${resolved.textRecipe.fontSize}px`,
     "--ui-badge-font-weight": String(resolved.textRecipe.fontWeight),
+    "--ui-badge-gap": `${resolved.paddingY}px`,
+    "--ui-badge-indicator-color": semanticStatusToken(statusColor, tone || resolved.tone),
+    "--ui-badge-indicator-size": `${resolved.paddingY}px`,
     "--ui-badge-inline-size": resolved.inlineSize ? `${resolved.inlineSize}px` : "auto",
     "--ui-badge-letter-spacing": `${resolved.textRecipe.letterSpacing}px`,
     "--ui-badge-line-height": `${resolved.textRecipe.lineHeight}px`,
@@ -91,6 +106,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
       as="span"
       appearance={resolved.appearance as any}
       className={[styles.badge, className].filter(Boolean).join(" ")}
+      data-indicator={indicator || (resolved.appearance === "soft" && ["success", "warning", "danger"].includes(resolved.tone)) || undefined}
       data-shape={resolved.shape}
       data-width={resolved.width}
       geometry={{

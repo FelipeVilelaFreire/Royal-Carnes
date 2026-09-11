@@ -158,8 +158,12 @@ export const adminPtBR = {
     ctaBatchDispatch: "Iniciar despacho em lote",
     loading: "Atualizando indicadores",
     tableTitle: "Últimos pedidos em esteira",
+    plansTableTitle: "Planos em operação",
     viewAllBoxes: "Ver todas as caixas",
     emptyRecentOrders: "Nenhum pedido recente encontrado.",
+    emptyPlans: "Nenhum plano em operação encontrado.",
+    recordCount: "{count} registros",
+    planCount: "{count} planos",
     panels: {
       revenue: {
         title: "Receita e pedidos",
@@ -216,7 +220,7 @@ export const adminPtBR = {
     kpiHelpers: {
       mrr: "{orders} pedidos no painel",
       activeSubscribers: "{total} assinaturas cadastradas",
-      pendingDeliveries: "{total} entregas em acompanhamento",
+      pendingDeliveries: "{total} caixas em operação",
       retentionRate: "Churn estimado de {churn}"
     },
     tableHeaders: {
@@ -226,6 +230,25 @@ export const adminPtBR = {
       box: "Caixa",
       status: "Status",
       date: "Data"
+    },
+    planTableHeaders: {
+      plan: "Plano",
+      price: "Preço",
+      recurrence: "Recorrência",
+      items: "Itens inclusos",
+      subscribers: "Assinantes ativos",
+      status: "Status"
+    },
+    billingIntervals: {
+      day: "Diário",
+      week: "Semanal",
+      month: "Mensal",
+      year: "Anual"
+    },
+    planStatuses: {
+      active: "Ativo",
+      draft: "Rascunho",
+      archived: "Arquivado"
     }
   },
   standard: {

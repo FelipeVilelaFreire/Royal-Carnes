@@ -1,0 +1,91 @@
+.root {
+  --screen-header-scroll-progress: 0;
+  padding-block-start: var(--theme--spacing-space2xl);
+  width: 100%;
+}
+
+.surface {
+  max-width: var(--theme--layout-container-sm);
+}
+
+.desktopContent,
+.mobileContent {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.eyebrow {
+  font-weight: var(--theme--typography-bold);
+  letter-spacing: var(--theme--typography-letterSpacingMd);
+  text-transform: uppercase;
+}
+
+.description,
+.mobileDescription {
+  max-width: var(--theme--layout-container-sm);
+}
+
+.mobileContent {
+  display: none;
+}
+
+@media (max-width: 48em) {
+  .desktopContent {
+    display: none;
+  }
+
+  .mobileContent {
+    display: grid;
+  }
+
+  .root[data-mobile-mode="collapsible"] {
+    min-block-size: calc(
+      var(--theme--dimensions-height-2xl) +
+      (var(--theme--spacing-spaceMd) * 2)
+    );
+    padding-block-start: 0;
+  }
+
+  .root[data-mobile-mode="collapsible"] .container {
+    inset-inline: 0;
+    inset-block-start: 0;
+    position: fixed;
+    z-index: var(--theme--z-index-sticky);
+  }
+
+  .root[data-mobile-mode="collapsible"] .surface {
+    max-width: none;
+    padding-block: calc(
+      var(--theme--spacing-spaceMd) -
+      (
+        (var(--theme--spacing-spaceMd) - var(--theme--spacing-spaceSm)) *
+        var(--screen-header-scroll-progress)
+      )
+    );
+    position: relative;
+  }
+
+  .root[data-mobile-mode="collapsible"] .surface::after {
+    background: var(--theme--color-border);
+    content: "";
+    inset-block-end: 0;
+    inset-inline: 0;
+    block-size: var(--theme--borders-medium);
+    opacity: var(--screen-header-scroll-progress);
+    position: absolute;
+    transition: opacity var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+  }
+
+  .root[data-mobile-mode="collapsible"] .mobileTitle {
+    transform: scale(calc(1 - (var(--screen-header-scroll-progress) * 0.15)));
+    transform-origin: left center;
+  }
+
+  .root[data-mobile-gutter="none"] .container {
+    padding-inline: 0;
+  }
+
+  .root[data-mobile-gutter="none"] .surface {
+    padding-inline: var(--ui-layout-page-gutter);
+  }
+}

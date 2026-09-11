@@ -15,11 +15,34 @@
 }
 
 .content {
-  padding-block: var(--theme--spacing-spaceLg);
+  padding-block: var(--theme--spacing-spaceLg) var(--theme--spacing-space2xl);
 }
 
 .heading {
   max-inline-size: var(--theme--layout-container-md);
+}
+
+.headerEyebrow,
+.metricHelper {
+  align-items: center;
+  display: inline-flex;
+}
+
+.headerEyebrow {
+  gap: var(--theme--spacing-spaceXs);
+  text-transform: uppercase;
+}
+
+.headerEyebrowDot,
+.metricHelperDot {
+  background: var(--theme--color-accent);
+  border-radius: var(--theme--radius-full);
+  flex: 0 0 auto;
+}
+
+.headerEyebrowDot {
+  block-size: var(--theme--spacing-spaceXs);
+  inline-size: var(--theme--spacing-spaceXs);
 }
 
 .stateBar {
@@ -37,10 +60,13 @@
   block-size: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--theme--spacing-spaceMd);
+  gap: var(--theme--spacing-spaceSm);
+  min-block-size: var(--theme--dimensions-height-3xl);
+  padding: var(--theme--spacing-spaceLg);
 }
 
 .kpiLabel {
+  letter-spacing: var(--theme--typography-letterSpacingLg);
   text-transform: uppercase;
 }
 
@@ -56,8 +82,11 @@
 }
 
 .kpiIcon {
-  block-size: var(--theme--dimensions-height-md);
-  inline-size: var(--theme--dimensions-height-md);
+  background: color-mix(in srgb, var(--theme--color-accent) var(--theme--opacity-10), transparent);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-accent) var(--theme--opacity-15), transparent);
+  border-radius: var(--theme--radius-md);
+  block-size: var(--theme--dimensions-height-lg);
+  inline-size: var(--theme--dimensions-height-lg);
 }
 
 .panelIcon,
@@ -77,11 +106,30 @@
 
 .kpiValue {
   color: var(--theme--color-text);
+  letter-spacing: var(--theme--typography-letterSpacing2xs);
 }
 
-.kpiHelper {
+.metricHelper {
   align-self: flex-start;
+  gap: var(--theme--spacing-space2xs);
   max-inline-size: 100%;
+}
+
+.metricHelperDot {
+  block-size: var(--theme--spacing-space3xs);
+  inline-size: var(--theme--spacing-space3xs);
+}
+
+.metricHelper[data-tone="success"] .metricHelperDot {
+  background: var(--theme--status-active, var(--theme--color-success, var(--theme--color-accent)));
+}
+
+.metricHelper[data-tone="warning"] .metricHelperDot {
+  background: var(--theme--status-paused, var(--theme--color-warning, var(--theme--color-accent)));
+}
+
+.metricHelper[data-tone="danger"] .metricHelperDot {
+  background: var(--theme--status-canceled, var(--theme--color-danger, var(--theme--color-accent)));
 }
 
 .panelGrid,
@@ -125,11 +173,24 @@
   overflow-x: auto;
 }
 
+.tableCard {
+  padding-block: var(--theme--spacing-spaceXs);
+}
+
+.tableHeader {
+  min-block-size: var(--theme--dimensions-height-md);
+  padding-inline: var(--theme--spacing-spaceLg);
+}
+
 .table {
   border-collapse: collapse;
   min-inline-size: var(--theme--layout-container-md);
   text-align: start;
   width: 100%;
+}
+
+.table thead {
+  background: color-mix(in srgb, var(--theme--color-text) var(--theme--opacity-5), transparent);
 }
 
 .table th {
@@ -138,7 +199,8 @@
   font-family: var(--theme--typography-bodyFamily);
   font-size: var(--theme--typography-sizeXs);
   font-weight: var(--theme--typography-bold);
-  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
+  letter-spacing: var(--theme--typography-letterSpacingLg);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg);
   text-transform: uppercase;
 }
 
@@ -147,8 +209,16 @@
   color: var(--theme--color-muted);
   font-family: var(--theme--typography-bodyFamily);
   font-size: var(--theme--typography-sizeSm);
-  padding: var(--theme--spacing-spaceMd);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg);
   vertical-align: middle;
+}
+
+.table tbody tr {
+  transition: background var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--theme--color-text) var(--theme--opacity-5), transparent);
 }
 
 .table tbody tr:last-child td {
@@ -157,6 +227,27 @@
 
 .orderCode {
   color: var(--theme--color-accent);
+  font-family: var(--theme--typography-monoFamily);
+  font-weight: var(--theme--typography-bold);
+}
+
+.table .planName {
+  color: var(--theme--color-text);
+  font-weight: var(--theme--typography-bold);
+}
+
+.table .primaryCell {
+  color: var(--theme--color-text);
+  font-weight: var(--theme--typography-medium);
+}
+
+.table .secondaryCell {
+  color: var(--theme--color-muted);
+}
+
+.table .moneyValue {
+  color: var(--theme--color-accent);
+  font-family: var(--theme--typography-monoFamily);
   font-weight: var(--theme--typography-bold);
 }
 
@@ -183,10 +274,6 @@
 }
 
 @media (min-width: 761px) and (max-width: 1100px) {
-  .kpiGrid {
-    --ui-layout-columns: 2 !important;
-  }
-
   .panelGrid,
   .attentionGrid {
     --ui-layout-columns: 1 !important;

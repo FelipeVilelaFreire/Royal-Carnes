@@ -15,6 +15,7 @@ import {
 } from "@/view-models/cortes-catalog.view-model";
 import { useClientCatalog } from "@/hooks/useClientCatalog";
 import { ProductItemCard } from "@royalprime/product-components/ecommerce";
+import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenHeader";
 import { useClientApiConfig } from "@royalprime/client/runtime/ClientApiProvider";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import styles from "./CortesView.module.css";
@@ -89,22 +90,16 @@ export const CortesView: React.FC = () => {
 
   return (
     <main className={styles.root}>
+      <ScreenHeader
+        description={strings.description}
+        eyebrow={strings.badge}
+        mobileGutter="none"
+        mobileMode="collapsible"
+        mobileTitle={strings.mobileTitle}
+        title={strings.title}
+      />
       <Container className={styles.main} width="wide" gutter="page">
         <Stack gap="2xl">
-          <header className={styles.hero}>
-            <Stack gap="sm">
-              <Text className={styles.eyebrow} as="span" tone="inherit" variant="caption">
-                {strings.badge}
-              </Text>
-              <Text className={styles.title} as="h1" tone="inherit" variant="h1">
-                {strings.title}
-              </Text>
-              <Text className={styles.description} tone="inherit">
-                {strings.description}
-              </Text>
-            </Stack>
-          </header>
-
           <nav className={styles.categoryScroller} aria-label={strings.categoryNavigationLabel}>
             <ul className={styles.categoryList}>
               {catalogViewModel.categories.map((cat) => {

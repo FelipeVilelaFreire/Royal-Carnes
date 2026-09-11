@@ -1,19 +1,29 @@
 .badge {
   align-items: center;
   box-sizing: border-box;
-  color: var(--ui-badge-text-color, var(--ui-surface-color, var(--theme--color-text)));
+  color: var(--ui-badge-text-color, var(--ui-surface-color));
   display: inline-flex;
   font-family: var(--ui-badge-font-family);
   font-size: var(--ui-badge-font-size);
   font-weight: var(--ui-badge-font-weight);
+  gap: var(--ui-badge-gap);
   inline-size: var(--ui-badge-inline-size, auto);
   justify-content: center;
   letter-spacing: var(--ui-badge-letter-spacing);
   line-height: var(--ui-badge-line-height);
   min-block-size: var(--ui-badge-min-block-size, auto);
   padding: var(--ui-badge-padding-y) var(--ui-badge-padding-x);
-  text-transform: uppercase;
+  text-transform: none;
   white-space: nowrap;
+}
+
+.badge[data-indicator="true"]::before {
+  background: var(--ui-badge-indicator-color, currentColor);
+  border-radius: var(--ui-surface-radius);
+  content: "";
+  flex: 0 0 auto;
+  inline-size: var(--ui-badge-indicator-size);
+  block-size: var(--ui-badge-indicator-size);
 }
 
 .badge[data-width="full"] {

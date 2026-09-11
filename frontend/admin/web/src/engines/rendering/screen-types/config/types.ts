@@ -150,6 +150,11 @@ export type DashboardConfig = {
     surface: DashboardSurfaceConfig;
     titleKey: string;
   };
+  plans: {
+    columns: Array<{ key: string; labelKey: string }>;
+    surface: DashboardSurfaceConfig;
+    titleKey: string;
+  };
 };
 
 export type EntityColumnConfig = {
