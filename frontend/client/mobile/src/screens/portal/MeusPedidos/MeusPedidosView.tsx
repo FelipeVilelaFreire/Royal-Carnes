@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useClientOrders } from "../../../../../shared-core/hooks/useClientOrders";
 import { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
 import { Button, Container, Inline, Modal, Stack, Surface, Text } from "@foundation/ui/native";
+import { useUi } from "@foundation/ui/native/context";
+import { ScreenHeader } from "@foundation/product-components/screens/native/ScreenHeader";
+import { normalizeScreenHeaderScrollProgress } from "@foundation/product-components/screens/shared";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 
 export interface MeusPedidosViewProps {
@@ -9,10 +12,20 @@ export interface MeusPedidosViewProps {
   themeMode?: AppThemeMode;
 }
 
+type NativeScrollEvent = {
+  nativeEvent?: {
+    contentOffset?: {
+      y?: number;
+    };
+  };
+};
+
 export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "dark" }) => {
   const strings = useClientStrings().meusPedidos;
   const mobileConfig = createMobileAppShellConfig(themeMode) as any;
   const theme = mobileConfig.theme;
+  const { designSystem, hosts } = useUi();
+  const ScrollContainer = hosts.ScrollView || hosts.View;
   const orders = useClientOrders();
   const rows = orders.viewModel.orders;
   const [selectedOrderId, setSelectedOrderId] = useState<string | number | null>(null);
@@ -22,6 +35,8 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
   );
   const currentOrder = orders.viewModel.currentOrder;
   const nextBox = orders.viewModel.nextSubscriptionOrder;
+  const [headerScrollProgress, setHeaderScrollProgress] = useState(0);
+  const screenHeaderScrollRange = Math.max(Number(designSystem.theme.tokens.spacing?.space3xl || 0), 1);
   const cardStyle = {
     backgroundColor: theme.surface,
     borderColor: theme.border,
@@ -42,18 +57,30 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
   }, [orders.load]);
 
   return (
-    <Container
-      style={{
-        backgroundColor: theme.background,
-        minHeight: "100%",
-        padding: 20,
-      }}
+    <ScrollContainer
+      onScroll={hosts.ScrollView ? (event: NativeScrollEvent) => setHeaderScrollProgress(
+        normalizeScreenHeaderScrollProgress((event.nativeEvent?.contentOffset?.y || 0) / screenHeaderScrollRange),
+      ) : undefined}
+      scrollEventThrottle={hosts.ScrollView ? 16 : undefined}
+      stickyHeaderIndices={hosts.ScrollView ? [0] : undefined}
     >
-      <Stack gap="md">
-        <Stack gap="sm">
-          <Text variant="h1" weight="bold">{strings.title}</Text>
-          <Text tone="muted">{strings.subtitle}</Text>
-        </Stack>
+      <ScreenHeader
+        description={strings.subtitle}
+        eyebrow={strings.header.eyebrow}
+        mobileMode="collapsible"
+        mobileTitle={strings.header.mobileTitle}
+        scrollProgress={headerScrollProgress}
+        showScrollBorder={false}
+        title={strings.title}
+      />
+      <Container
+        style={{
+          backgroundColor: theme.background,
+          minHeight: "100%",
+          padding: 20,
+        }}
+      >
+        <Stack gap="md">
 
         <Surface
           appearance="outline"
@@ -168,42 +195,43 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
             </Surface>
           )}
         </Stack>
-      </Stack>
-      <Modal
-        closeLabel={strings.detail.close}
-        description={selectedOrder ? `${selectedOrder.code} - ${selectedOrder.kindLabel}` : undefined}
-        onClose={() => setSelectedOrderId(null)}
-        open={Boolean(selectedOrder)}
-        title={selectedOrder?.title || strings.detail.title}
-      >
-        {selectedOrder ? (
-          <Stack gap="sm">
-            <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
-              <Text tone="muted" variant="caption">{selectedOrder.statusLabel}</Text>
-              <Text tone="primary" weight="bold">{selectedOrder.totalLabel}</Text>
-            </Inline>
-            <Text tone="muted">{selectedOrder.summary}</Text>
-            <Surface appearance="outline" tone="neutral" style={nestedCardStyle}>
-              <Stack gap="xs">
-                <Text tone="muted" variant="caption" weight="bold">
-                  {strings.detail.payment}
-                </Text>
-                <Text weight="bold">
-                  {selectedOrder.paymentMethodLabel}
-                </Text>
-              </Stack>
-            </Surface>
+        </Stack>
+        <Modal
+          closeLabel={strings.detail.close}
+          description={selectedOrder ? `${selectedOrder.code} - ${selectedOrder.kindLabel}` : undefined}
+          onClose={() => setSelectedOrderId(null)}
+          open={Boolean(selectedOrder)}
+          title={selectedOrder?.title || strings.detail.title}
+        >
+          {selectedOrder ? (
             <Stack gap="sm">
-              {selectedOrder.items.map((item) => (
-                <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
-                  <Text weight="bold">{item.name}</Text>
-                  <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
-                </Inline>
-              ))}
+              <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+                <Text tone="muted" variant="caption">{selectedOrder.statusLabel}</Text>
+                <Text tone="primary" weight="bold">{selectedOrder.totalLabel}</Text>
+              </Inline>
+              <Text tone="muted">{selectedOrder.summary}</Text>
+              <Surface appearance="outline" tone="neutral" style={nestedCardStyle}>
+                <Stack gap="xs">
+                  <Text tone="muted" variant="caption" weight="bold">
+                    {strings.detail.payment}
+                  </Text>
+                  <Text weight="bold">
+                    {selectedOrder.paymentMethodLabel}
+                  </Text>
+                </Stack>
+              </Surface>
+              <Stack gap="sm">
+                {selectedOrder.items.map((item) => (
+                  <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
+                    <Text weight="bold">{item.name}</Text>
+                    <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
+                  </Inline>
+                ))}
+              </Stack>
             </Stack>
-          </Stack>
-        ) : null}
-      </Modal>
-    </Container>
+          ) : null}
+        </Modal>
+      </Container>
+    </ScrollContainer>
   );
 };

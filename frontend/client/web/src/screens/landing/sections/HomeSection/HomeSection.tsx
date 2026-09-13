@@ -46,7 +46,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onRouteClick }) => {
           <Button
             appearance="outline"
             className={styles.secondaryAction}
-            onClick={() => onRouteClick("cortes")}
+            onClick={() => onRouteClick("catalogo")}
             size="lg"
             tone="neutral"
           >

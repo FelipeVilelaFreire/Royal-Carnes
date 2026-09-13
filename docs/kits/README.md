@@ -78,6 +78,25 @@ frontend web/native/admin-web
 
 ## Contrato Tela Por Tela
 
+### Gramatica de pagina reutilizavel
+
+Todo kit que aponta uma screen tambem deve declarar como ela entra na casca.
+O padrao compartilhado e:
+
+```text
+Web desktop
+  AppShell Header fixo -> ScreenHeader -> conteudo -> Footer configuravel
+
+Portal mobile/native
+  ScreenHeader fixo/recolhivel -> conteudo -> BottomTabBar configuravel
+```
+
+AppShell continua dono de Header, Footer e BottomTabBar; `ScreenHeader` e dono
+do contexto da rota; a screen e dona somente do conteudo. O kit deve registrar
+qual manifest ativa cada capacidade e qualquer excecao declarada de Landing ou
+Access. Nunca documentar ou copiar header/footer/tabbar local como receita de
+uma screen.
+
 Todo proximo corte deve escolher uma tela real e provar a vertical completa
 antes de polir outra area. A ordem padrao e:
 
@@ -251,6 +270,20 @@ continuacao.md explica somente o estado do corte atual
 ```
 Eles nao substituem os kits gerais; eles explicam o recorte operacional do
 Admin para cada capacidade.
+
+## Kits Client
+
+Os kits em `docs/kits/client/` registram composicao e referencias visuais do
+Portal Client sem transformar uma referencia externa em runtime:
+
+```text
+docs/kits/client/cortes-stitch-reference.md
+  -> referencia visual e regra de traducao segura para /cortes
+```
+
+Para cada nova screen Client, registrar o mesmo mapa: AppShell/config,
+ScreenHeader, conteudo real, estados da API e comportamento de BottomTabBar no
+mobile.
 
 ```text
 docs/kits/admin/README.md

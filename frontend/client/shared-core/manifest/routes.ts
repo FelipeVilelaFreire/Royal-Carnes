@@ -1,6 +1,6 @@
 export const clientRoutes = {
   home: "/home",
-  cortes: "/cortes",
+  catalogo: "/catalogo",
   produtos: "/montar-box",
   meusPedidos: "/meus-pedidos",
   minhaConta: "/perfil"

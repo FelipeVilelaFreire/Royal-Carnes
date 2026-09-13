@@ -1,0 +1,6 @@
+.card { overflow: hidden; width: 100%; }
+.scroller { margin-block-start: calc(var(--ui-surface-padding-y) * -1); margin-inline: calc(var(--ui-surface-padding-x) * -1); overflow: hidden; width: calc(100% + (var(--ui-surface-padding-x) * 2)); }
+.table { border-collapse: collapse; min-inline-size: var(--theme--layout-container-md); width: 100%; }
+.table th, .table td { border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border); padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd); text-align: start; }
+.table th { background: color-mix(in srgb, var(--theme--color-surface) 76%, var(--theme--color-background)); }
+.footer { align-items: center; display: flex; justify-content: space-between; margin-block-start: calc(var(--ui-card-gap) * -1); margin-inline: calc(var(--ui-surface-padding-x) * -1); padding: var(--theme--spacing-spaceSm) var(--ui-surface-padding-x); width: calc(100% + (var(--ui-surface-padding-x) * 2)); }

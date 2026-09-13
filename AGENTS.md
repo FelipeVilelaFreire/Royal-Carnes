@@ -62,6 +62,12 @@ Nao percorra todos os roadmaps, auditorias e handoffs antes de uma tarefa pequen
   nao criar biblioteca paralela.
 - Admin e client declaram manifest e consomem o mesmo AppShell da Foundation.
   Nao implementar Header, Sidebar, Drawer, Footer ou BottomTabBar por surface.
+- Toda screen oficial segue a gramatica de pagina da Foundation: no desktop,
+  AppShell Header fixo -> ScreenHeader da rota -> conteudo -> Footer por
+  configuracao; no Portal mobile, ScreenHeader fixo/recolhivel -> conteudo ->
+  BottomTabBar por configuracao. ScreenHeader fica fora de wrappers com
+  `transform` como `appear-on-scroll`. Landing, Access e modais sao excecoes
+  declaradas por manifest, nunca shells locais improvisados.
 - webIsMobile compartilha contrato e comportamento com mobile native.
 - Uma rota Client so e considerada migrada sem mock depois da revisao e
   eliminacao de fallback tanto no Web quanto no Mobile; a revisao de uma

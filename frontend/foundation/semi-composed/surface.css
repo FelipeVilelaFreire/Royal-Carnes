@@ -27,6 +27,39 @@
   --semicomposed--button-bg-outline: transparent;
   --semicomposed--button-color-outline: var(--theme--color-text);
   --semicomposed--button-border-outline: var(--theme--borders-hairline) solid var(--theme--color-text-muted);
+
+  /* Camada de sobreposicao do DropdownPicker */
+  --semicomposed--dropdown-picker--layer: var(--theme--z-index-top-layer);
+
+  /* Navegacao segmentada com indicador inferior */
+  --semicomposed--segmented-control--underline-active: var(--theme--color-primary);
+  --semicomposed--segmented-control--underline-border: var(--theme--color-border);
+  --semicomposed--segmented-control--underline-text: var(--theme--color-text-muted);
+  --semicomposed--segmented-control--underline-active-text: var(--theme--color-primary);
+  --semicomposed--segmented-control--underline-active-weight: var(--theme--typography-semibold);
+  --semicomposed--segmented-control--underline-thickness: var(--theme--borders-medium);
+  --semicomposed--segmented-control--underline-option-border: var(--theme--borders-none);
+  --semicomposed--segmented-control--underline-active-bg: linear-gradient(to top, color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-20), transparent), transparent);
+  --semicomposed--segmented-control--underline-active-shadow: inset 0 calc(var(--theme--spacing-spaceSm) * -1) var(--theme--spacing-spaceMd) color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-25), transparent);
+
+  /* Receita de Skeleton */
+  --semicomposed--skeleton--border: var(--theme--borders-none);
+  --semicomposed--skeleton--radius-circle: var(--theme--radius-full);
+  --semicomposed--skeleton--radius-text: var(--theme--radius-sm);
+  --semicomposed--skeleton--shimmer: color-mix(in srgb, currentColor var(--theme--opacity-10), transparent);
+  --semicomposed--skeleton--pulse-duration: var(--theme--motion-durationLg);
+  --semicomposed--skeleton--sweep-duration: var(--theme--motion-duration2xl);
+  --semicomposed--skeleton--easing: var(--theme--motion-easingStandard);
+  --semicomposed--skeleton--pulse-opacity: var(--theme--opacity-muted);
+  --semicomposed--skeleton--size-xs: var(--theme--spacing-space2xs);
+  --semicomposed--skeleton--size-sm: var(--theme--spacing-spaceXs);
+  --semicomposed--skeleton--size-md: var(--theme--spacing-spaceSm);
+  --semicomposed--skeleton--size-lg: var(--theme--spacing-spaceLg);
+  --semicomposed--skeleton--size-xl: var(--theme--spacing-space3xl);
+  --semicomposed--skeleton--width-lg: var(--theme--layout-container-xs);
+  --semicomposed--skeleton--width-md: var(--theme--sizing-control-xl);
+  --semicomposed--skeleton--width-sm: var(--theme--sizing-control-lg);
+  --semicomposed--skeleton--width-xs: var(--theme--sizing-control-md);
 }
 
 .surface-solid {

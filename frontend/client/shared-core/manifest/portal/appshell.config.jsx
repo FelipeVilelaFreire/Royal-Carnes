@@ -11,7 +11,7 @@ export const portalAppShellConfig = {
   ],
   navigationPlacements: {
     bottomTabBar: {
-      routeKeys: ["home", "cortes", "produtos", "meusPedidos", "minhaConta"]
+      routeKeys: ["home", "catalogo", "produtos", "meusPedidos", "minhaConta"]
     },
     nativeTabBar: {
       inheritFrom: "bottomTabBar"
@@ -75,7 +75,7 @@ export const portalAppShellConfig = {
     brandLogo: "/assets/brand/royal-prime-logo.jpg"
   },
   auth: {
-    publicNavKeys: ["home", "cortes", "produtos"],
+    publicNavKeys: ["home", "catalogo", "produtos"],
     protectedNavKeys: ["meusPedidos", "minhaConta"]
   },
   bottomTabBar: {

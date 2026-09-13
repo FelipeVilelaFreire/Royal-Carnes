@@ -12,7 +12,7 @@ src/screens/
   landing/
   portal/
     Home/
-    Cortes/
+    Catalogo/
     MontarBox/
     MeusPedidos/
     Perfil/
@@ -27,3 +27,18 @@ plataforma sem uma justificativa de host documentada.
 Landing tambem e uma surface Client. A implementacao Native nasce em
 `mobile/src/screens/landing`, com a mesma composicao declarada do shared-core;
 nao criar uma segunda origem de dados ou copy.
+
+## Gramatica de pagina Client
+
+Antes de alterar uma rota Client, preservar a ordem da casca:
+
+```text
+web desktop: AppShell Header fixo -> ScreenHeader -> conteudo -> Footer por config
+portal mobile: ScreenHeader fixo/recolhivel -> conteudo -> BottomTabBar por config
+```
+
+`ScreenHeader` e o primeiro filho real da screen. Conteudo com animacao de
+entrada fica abaixo dele; nao colocar o header dentro de ancestral com
+`transform`. Header global, Footer e BottomTabBar pertencem ao AppShell e sao
+ativados por manifest. Landing e Access sao excecoes declaradas, nunca shells
+locais.

@@ -12,7 +12,7 @@ import { SectionContainer } from "@foundation/ui/web/SectionContainer";
 import { Select } from "@foundation/ui/web/Select";
 import { Text } from "@foundation/ui/web/Text";
 import { TextArea } from "@foundation/ui/web/TextArea";
-import { ArrowBackIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { ArrowBackIcon, CheckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { AdminStandardFormViewModel } from "@/view-models/standard.view-model";
 import { LineItemsEditor } from "../../components/LineItemsEditor";
@@ -35,14 +35,15 @@ function renderFormField(
   onFieldChange: AddPageProps["onFieldChange"],
   t: AdminTranslate,
 ) {
-  const label = t(field.labelKey, field.key);
+  const fieldLabel = t(field.labelKey, field.key);
+  const label = field.required ? <>{fieldLabel} <span aria-hidden className={styles.requiredMarker} /></> : fieldLabel;
   const placeholder = field.placeholderKey
     ? t(field.placeholderKey)
-    : t("forms.typePlaceholderFor", "", { field: label.toLowerCase() }) ||
-      `${t("forms.typePlaceholder")} ${label.toLowerCase()}`;
+    : t("forms.typePlaceholderFor", "", { field: fieldLabel.toLowerCase() }) ||
+      `${t("forms.typePlaceholder")} ${fieldLabel.toLowerCase()}`;
 
   return (
-    <Field description={field.helperKey ? t(field.helperKey) : undefined} label={label} required={field.required}>
+    <Field description={field.helperKey ? t(field.helperKey) : undefined} label={label}>
       {field.type === "asset" ? (
         <AssetPicker
           cancelRemoveLabel={t("common.cancel")}
@@ -52,7 +53,7 @@ function renderFormField(
           confirmRemoveTitle={t("forms.confirmRemoveImageTitle")}
           dropzoneLabel={t("forms.assetDropzone")}
           onChange={(value) => onFieldChange(field.key, value)}
-          previewAlt={label}
+          previewAlt={fieldLabel}
           removeModalCloseLabel={t("forms.closeConfirmation")}
           removeLabel={t("forms.assetRemove")}
           urlPlaceholder={t("forms.assetUrlPlaceholder")}
@@ -136,33 +137,35 @@ export const AddPage: React.FC<AddPageProps> = ({
     <div className={styles.page}>
       <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
-          <Inline align="center" gap="md" wrap>
-            <Button
-              appearance="outline"
-              icon={<ArrowBackIcon aria-hidden="true" />}
-              onClick={onBack}
-              size="sm"
-              tone="neutral"
-            >
-              {t("common.back")}
-            </Button>
-            <Text as="h1" variant="h1">
-              {viewModel.titleKey ? t(viewModel.titleKey) : `${t("forms.addTitle")} ${entityName}`}
-            </Text>
+          <Inline align="center" className={styles.pageHeader} justify="between" wrap>
+            <Inline align="center" gap="md" wrap>
+              <Button
+                aria-label={t("common.back")}
+                appearance="transparent"
+                icon={<ArrowBackIcon aria-hidden="true" />}
+                iconPosition="only"
+                onClick={onBack}
+                size="sm"
+                tone="neutral"
+              >{t("common.back")}</Button>
+              <Text as="h1" variant="h1">
+                {viewModel.titleKey ? t(viewModel.titleKey) : `${t("forms.addTitle")} ${entityName}`}
+              </Text>
+            </Inline>
           </Inline>
 
           <Card className={styles.formCard} size="lg">
             <form className={styles.form} onSubmit={onSubmit}>
-              <Stack gap="lg">
+              <Stack className={styles.formSections} gap="sm">
                 {(viewModel.sections.length ? viewModel.sections : [{ key: "default", fields: viewModel.fields }]).map((section) => (
                   <Stack className={styles.formSection} gap="md" key={section.key}>
                     {section.titleKey ? (
-                      <Text as="h2" variant="h3">
+                      <Text as="h2" className={styles.sectionTitle} variant="h3">
                         {t(section.titleKey)}
                       </Text>
                     ) : null}
 
-                    <FieldGrid columns="auto" gap="md">
+                    <FieldGrid className={styles.fieldGrid} columns={2} density="comfortable" gap="lg">
                       {section.fields.map((field) => (
                         <FieldGridItem key={field.key} span={field.layout === "full" ? "full" : 1}>
                           {renderFormField(field, onFieldChange, t)}
@@ -174,10 +177,10 @@ export const AddPage: React.FC<AddPageProps> = ({
               </Stack>
 
               <Inline className={styles.formActions} gap="md" wrap>
-                <Button appearance="outline" onClick={onBack} size="md" tone="neutral" type="button">
+                <Button appearance="solid" onClick={onBack} size="md" tone="neutral" type="button">
                   {t("common.cancel")}
                 </Button>
-                <Button appearance="solid" disabled={isSubmitting || !viewModel.canSubmit} size="md" tone="neutral" type="submit">
+                <Button className={styles.submitButton} appearance="glass" disabled={isSubmitting || !viewModel.canSubmit} icon={<CheckIcon aria-hidden="true" />} size="md" tone="primary" type="submit">
                   {isSubmitting ? t("standard.saving") : t(viewModel.submitLabelKey || "common.save")} {entityName}
                 </Button>
               </Inline>

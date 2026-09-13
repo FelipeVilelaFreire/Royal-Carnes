@@ -153,6 +153,10 @@ export const clientPtBR = {
     format: {
       dashSeparated: "{first} - {second}",
     },
+    header: {
+      eyebrow: "Acompanhamento",
+      mobileTitle: "Meus Pedidos"
+    },
     title: "Meus Pedidos",
     subtitle: "Acompanhe suas compras, caixas e entregas Royal Delivery.",
     source: {
@@ -692,7 +696,7 @@ export const clientPtBR = {
       trust: ["Cortes brasileiros", "Preparo escolhido", "Temperos e carvão", "Curadoria Royal", "Complementos"]
     }
   },
-  cortes: {
+  catalogo: {
     title: "Catálogo de Cortes",
     subtitle: "Explore toda a curadoria de carnes nobres do clube.",
     catalogPage: {
@@ -714,6 +718,12 @@ export const clientPtBR = {
       },
       resultPrefix: "Exibindo",
       resultSuffix: "produtos disponíveis",
+      approximateLabel: "Aprox.",
+      addToCart: "Adicionar ao carrinho",
+      addedToCart: "Adicionado ao carrinho",
+      decreaseQuantity: "Diminuir quantidade",
+      increaseQuantity: "Aumentar quantidade",
+      pricePieceLabel: "Preço da peça",
       originLabel: "Origem",
       defaultLineLabel: "Catalogo Royal",
       allCategoriesLabel: "Todos",
@@ -814,11 +824,11 @@ export const clientPtBR = {
         badge: "Qualidade Prime Certificada",
         cutsTitle: "Cortes Nobres",
         cuts: [
-          { label: "Picanha & Ancho Angus Prime", path: "/cortes" },
-          { label: "Wagyu A5 BMS 10+ Japao", path: "/cortes" },
-          { label: "Tomahawk & Prime Rib Dry Aged", path: "/cortes" },
-          { label: "Suinos Duroc & Aves Selecionadas", path: "/cortes" },
-          { label: "Kits Master de Churrasco", path: "/cortes" }
+          { label: "Picanha & Ancho Angus Prime", path: "/catalogo" },
+          { label: "Wagyu A5 BMS 10+ Japao", path: "/catalogo" },
+          { label: "Tomahawk & Prime Rib Dry Aged", path: "/catalogo" },
+          { label: "Suinos Duroc & Aves Selecionadas", path: "/catalogo" },
+          { label: "Kits Master de Churrasco", path: "/catalogo" }
         ],
         clubTitle: "Clube do Socio",
         club: [

@@ -9,6 +9,7 @@ import { CheckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { BottomModal, Modal } from "@foundation/ui/web/Modal";
 import { Container, Grid, Inline, Stack } from "@foundation/ui/web/Layout";
 import { Text } from "@foundation/ui/web/Text";
+import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenHeader";
 import { useClientOrders } from "@royalprime/client/hooks/useClientOrders";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import type { ClientOrderRowViewModel } from "@royalprime/client/view-models/orders.view-model";
@@ -190,13 +191,18 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
 
   return (
     <div className={styles.page}>
-      <Container className={styles.content} gutter="page" width="wide">
-        <section className={styles.hero}>
-          <Stack gap="sm">
-            <Text as="h1" variant="h1">{strings.title}</Text>
-            <Text tone="text-muted">{strings.subtitle}</Text>
-            {orders.error ? <Text tone="text-muted">{strings.states.error}</Text> : null}
-          </Stack>
+      <ScreenHeader
+        description={strings.subtitle}
+        eyebrow={strings.header.eyebrow}
+        mobileGutter="none"
+        mobileMode="collapsible"
+        mobileTitle={strings.header.mobileTitle}
+        showScrollBorder={false}
+        title={strings.title}
+      />
+      <main className="appear-on-scroll">
+        <Container className={styles.content} gutter="page" width="wide">
+        <section className={styles.summary}>
           <Grid className={styles.statsGrid}>
             <Card className={styles.statCard} size="sm">
               <Stack gap="xs">
@@ -218,6 +224,8 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
             </Card>
           </Grid>
         </section>
+
+        {orders.error ? <Text tone="text-muted">{strings.states.error}</Text> : null}
 
         {orders.viewModel.orders.length === 0 ? (
           <EmptyState
@@ -330,7 +338,8 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
             </div>
           </Stack>
         </Card>
-      </Container>
+        </Container>
+      </main>
 
       <OrderDetailDialog
         isMobile={isMobile}

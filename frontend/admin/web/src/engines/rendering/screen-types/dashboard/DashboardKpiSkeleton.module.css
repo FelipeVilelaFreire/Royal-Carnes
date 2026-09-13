@@ -1,0 +1,3 @@
+.grid { width: 100%; }
+.card { display: flex; flex-direction: column; gap: var(--theme--spacing-spaceMd); min-block-size: var(--theme--dimensions-height-3xl); padding: var(--theme--spacing-spaceLg); }
+@media (max-width: 760px) { .grid { --ui-layout-columns: 1 !important; } }

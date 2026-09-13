@@ -2,14 +2,14 @@ import { clientRoutes } from "../routes";
 
 export type PortalScreenKey =
   | "home"
-  | "cortes"
+  | "catalogo"
   | "produtos"
   | "meusPedidos"
   | "minhaConta";
 
 export const portalRouteAliases: Record<PortalScreenKey, string[]> = {
   home: [clientRoutes.home],
-  cortes: [clientRoutes.cortes],
+  catalogo: [clientRoutes.catalogo, "/cortes"],
   produtos: [clientRoutes.produtos],
   meusPedidos: [clientRoutes.meusPedidos],
   minhaConta: [clientRoutes.minhaConta],

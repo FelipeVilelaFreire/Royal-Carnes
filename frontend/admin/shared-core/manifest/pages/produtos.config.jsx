@@ -13,11 +13,8 @@ export const produtosConfig = {
     searchPlaceholderKey: "produtos.searchPlaceholder",
     columns: [
       { key: "name", labelKey: "produtos.tableHeaders.name", showMedia: true },
-      { key: "key", labelKey: "produtos.tableHeaders.key" },
       { key: "categoryLabel", labelKey: "produtos.tableHeaders.category" },
-      { key: "collectionLabel", labelKey: "produtos.tableHeaders.collection" },
       { key: "unit", labelKey: "produtos.tableHeaders.unit" },
-      { key: "variantCount", labelKey: "produtos.tableHeaders.variants" },
       { key: "priceFormatted", labelKey: "produtos.tableHeaders.price" },
       { key: "commercialModeLabel", labelKey: "produtos.tableHeaders.commercialModes" },
       { key: "statusLabelKey", labelKey: "produtos.tableHeaders.status", valueType: "translationKey" }
@@ -37,6 +34,11 @@ export const produtosConfig = {
   detailPage: {
     titleKey: "produtos.detail.title",
     displayNameKey: "name",
+    deleteAction: {
+      confirmKey: "produtos.detail.delete.confirm",
+      descriptionKey: "produtos.detail.delete.description",
+      titleKey: "produtos.detail.delete.title"
+    },
     tabs: [
       {
         id: "dados",
@@ -45,11 +47,12 @@ export const produtosConfig = {
         sections: [
           {
             key: "identity",
+            iconIntent: "identity",
             titleKey: "produtos.detail.sections.identity",
             fields: [
               { key: "name", labelKey: "produtos.fields.name", editable: true },
               { key: "key", labelKey: "produtos.fields.key", editable: true },
-              { key: "description", labelKey: "produtos.fields.description", type: "textarea", editable: true },
+              { key: "description", labelKey: "produtos.fields.description", type: "textarea", layout: "full", editable: true },
               {
                 key: "status",
                 displayKey: "statusLabelKey",
@@ -68,12 +71,14 @@ export const produtosConfig = {
           },
           {
             key: "catalog",
+            iconIntent: "catalog",
             titleKey: "produtos.detail.sections.catalog",
             fields: [
               {
                 key: "categoryKeys",
                 displayKey: "allCategoryLabel",
                 labelKey: "produtos.fields.categories",
+                layout: "full",
                 type: "multiSelect",
                 source: "categorias",
                 editable: true
@@ -82,6 +87,7 @@ export const produtosConfig = {
                 key: "collectionKeys",
                 displayKey: "collectionLabel",
                 labelKey: "produtos.fields.collections",
+                layout: "full",
                 type: "multiSelect",
                 source: "colecoes",
                 editable: true
@@ -90,6 +96,7 @@ export const produtosConfig = {
                 key: "commercialModeKeys",
                 displayKey: "commercialModeLabel",
                 labelKey: "produtos.fields.commercialModes",
+                layout: "full",
                 type: "multiSelect",
                 source: "commercialModes",
                 editable: true
@@ -98,9 +105,10 @@ export const produtosConfig = {
           },
           {
             key: "variants",
+            iconIntent: "box",
             titleKey: "produtos.detail.sections.variants",
             fields: [
-              { key: "variantCount", labelKey: "produtos.fields.variantCount" }
+              { key: "variantCount", labelKey: "produtos.fields.variantCount", layout: "full" }
             ]
           }
         ]
@@ -109,15 +117,22 @@ export const produtosConfig = {
         id: "precos",
         labelKey: "produtos.detail.tabs.prices",
         emptyKey: "produtos.detail.emptyPrices",
-        fields: [
+        sections: [
           {
-            key: "priceCents",
-            displayKey: "priceFormatted",
-            labelKey: "produtos.fields.price",
-            type: "currency",
-            currency: "BRL",
-            locale: "pt-BR",
-            editable: true
+            key: "prices",
+            iconIntent: "commerce",
+            titleKey: "produtos.detail.tabs.prices",
+            fields: [
+              {
+                key: "priceCents",
+                displayKey: "priceFormatted",
+                labelKey: "produtos.fields.price",
+                type: "currency",
+                currency: "BRL",
+                locale: "pt-BR",
+                editable: true
+              }
+            ]
           }
         ]
       },
@@ -125,8 +140,15 @@ export const produtosConfig = {
         id: "midia",
         labelKey: "produtos.detail.tabs.media",
         emptyKey: "produtos.detail.emptyMedia",
-        fields: [
-          { key: "image", labelKey: "produtos.fields.primaryImage", type: "asset", editable: true }
+        sections: [
+          {
+            key: "media",
+            iconIntent: "box",
+            titleKey: "produtos.detail.tabs.media",
+            fields: [
+              { key: "image", labelKey: "produtos.fields.primaryImage", type: "asset", editable: true }
+            ]
+          }
         ]
       }
     ]

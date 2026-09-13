@@ -10,6 +10,61 @@
 Este arquivo e o ponto de entrada rapido para o proximo chat continuar o
 trabalho atual no RoyalPrime.
 
+## Checkpoint Atual - 2026-09-13
+
+O responsivo do Admin agora separa navegacao frequente de navegacao secundaria
+sem criar uma segunda lista de rotas:
+
+```text
+BottomTabBar mobile
+  -> Dashboard, Clientes, Produtos e Pedidos
+  -> Mais
+
+Mais
+  -> abre o Drawer como bottom sheet
+  -> Entregas, Planos, Assinaturas, Pagamentos, Categorias, Colecoes e Configuracoes
+  -> conserva os grupos declarados da navegacao administrativa
+  -> entra e sai com fade do backdrop e slide vertical pelos tokens de motion
+```
+
+O AppShell Foundation ganhou a capacidade configuravel `bottomTabBar.more` e o
+Drawer aceita `mobilePresentation: "bottomSheet"`. O Admin a ativa apenas em
+`frontend/admin/shared-core/manifest/adminAppShell.config.jsx`; labels e titulo
+do sheet vivem em `frontend/admin/shared-core/locales/pt-BR.ts`. Desktop segue
+com Sidebar e nao ganha um shell paralelo.
+
+O breakpoint da casca tambem e configuravel por `layout.mobileBreakpoint`.
+Para o Admin ele e `64em`: nessa largura ou abaixo, o runtime seleciona o
+layout mobile, remove a margem da Sidebar e mostra a BottomTabBar. Isso evita
+que um viewport estreito ainda fique preso ao layout desktop de tres colunas.
+
+Foi feita tambem a vistoria responsiva das telas administrativas reutilizaveis:
+Dashboard ja reduz os grids e preserva tabelas rolaveis; `ListPage` empilha
+busca, filtros e acao de criar no mobile e mantem as colunas da tabela legiveis
+por rolagem horizontal; `DetailPage` e `AddPage` usam espacamento menor nos
+cards, com acoes de formulario em largura completa; Settings reduz a superficie
+e organiza as acoes e estados verticalmente. Todas continuam no mesmo runtime
+de telas standard, sem uma versao mobile paralela.
+
+Os scrollers de tabelas do Dashboard, listas, historico e lixeira tambem foram
+limitados ao card e a largura disponivel: em mobile, a pagina nao alarga; apenas
+as colunas da tabela rolam horizontalmente quando necessario.
+
+Validado neste corte:
+
+```text
+npm run verify:foundation -> passou, 94 checks
+npm run verify:rules -> 0 violacoes novas; 11 achados legados inalterados
+npm run build:admin -> passou
+git diff --check -> passou
+```
+
+Ainda falta abrir o Admin no navegador e testar visualmente o toque em `Mais`,
+fechamento pelo backdrop/fechar e navegacao de cada item. A automacao de browser
+nao estava disponivel nesta sessao. O build do Client e o typecheck mobile
+continuam bloqueados pela ausencia local de `react` e `react-dom`, sem erro
+atribuido a este corte.
+
 Leia tambem, nesta ordem, os arquivos obrigatorios do projeto:
 
 ```text

@@ -1,0 +1,57 @@
+.categoryRail {
+  position: relative;
+  width: 100%;
+}
+
+.categoryViewport {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding-block: var(--theme--spacing-space2xs);
+  scroll-behavior: smooth;
+  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.categoryViewport::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryList {
+  display: flex;
+  gap: var(--theme--spacing-spaceXs);
+  list-style: none;
+  margin: 0;
+  min-width: max-content;
+  padding: 0;
+}
+
+.categoryButton {
+  --ui-button-font-family: var(--theme--typography-bodyFamily);
+  --ui-button-font-size: var(--theme--typography-size2xs);
+  --ui-button-font-weight: var(--theme--typography-semibold);
+  --ui-button-height: var(--theme--dimensions-height-xs);
+  --ui-button-letter-spacing: var(--theme--typography-letterSpacingMd);
+  --ui-button-line-height: var(--theme--typography-lineHeight2xs);
+  --ui-button-min-width: auto;
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
+  --ui-button-padding-y: var(--theme--spacing-space2xs);
+  --ui-surface-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
+  --ui-surface-border: transparent;
+  --ui-surface-color: var(--theme--color-text);
+  --ui-surface-radius: var(--theme--radius-full);
+  scroll-snap-align: start;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.categoryButton[data-active="true"] {
+  --ui-button-font-weight: var(--theme--typography-bold);
+  --ui-surface-bg: var(--theme--color-accent);
+  --ui-surface-border: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  --ui-surface-color: var(--theme--color-accent-contrast, var(--theme--color-accentContrast, var(--theme--color-background)));
+}
+
+.categoryButton:not(:disabled) {
+  color: var(--ui-surface-color) !important;
+}

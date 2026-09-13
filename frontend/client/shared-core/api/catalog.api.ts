@@ -4,6 +4,8 @@ import {
   type ApiClientConfig,
 } from "../../../shared-core";
 import type {
+  ClientCategoryDto,
+  ClientCategoryView,
   ClientCollectionDto,
   ClientCollectionView,
   ClientCommercialModeDto,
@@ -12,6 +14,7 @@ import type {
   ClientProductView,
 } from "../contracts/catalog.contract";
 import {
+  mapClientCategoryDto,
   mapClientCollectionDto,
   mapClientCommercialModeDto,
   mapClientProductDto,
@@ -25,6 +28,14 @@ export function createClientCatalogApi(config: ApiClientConfig = {}) {
   const fetcher = config.fetcher || fetch;
 
   return {
+    async listCategories(): Promise<ClientCategoryView[]> {
+      const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/catalog/categories/"), {
+        headers: buildApiHeaders({ organizationSlug: config.organizationSlug }),
+      });
+
+      await throwIfApiError(response);
+      return ((await response.json()) as ClientCategoryDto[]).map(mapClientCategoryDto);
+    },
     async listCollections(): Promise<ClientCollectionView[]> {
       const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/catalog/collections/"), {
         headers: buildApiHeaders({ organizationSlug: config.organizationSlug }),

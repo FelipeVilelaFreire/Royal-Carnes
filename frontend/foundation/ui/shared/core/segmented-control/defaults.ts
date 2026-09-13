@@ -55,5 +55,25 @@ export const DEFAULT_SEGMENTED_CONTROL_CONFIG: SegmentedControlConfig = {
         width: "content",
       },
     },
+    underline: {
+      track: {
+        appearance: "transparent",
+        gapToken: "sm",
+        paddingToken: "2xs",
+        surfaceLevel: "2xs",
+        tone: "neutral",
+      },
+      option: {
+        appearance: "transparent",
+        minWidthToken: "xl",
+        width: "content",
+      },
+      activeOption: {
+        appearance: "transparent",
+        minWidthToken: "xl",
+        tone: "primary",
+        width: "content",
+      },
+    },
   },
 };

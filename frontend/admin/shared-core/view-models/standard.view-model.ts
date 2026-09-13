@@ -14,19 +14,26 @@ export interface AdminStandardColumnViewModel {
   locale?: string;
   showAvatar?: boolean;
   showMedia?: boolean;
-  valueType?: "currency" | "text" | "translationKey";
+  sortable?: boolean;
+  valueType?: "currency" | "status" | "text" | "translationKey";
   render?: (row: any) => React.ReactNode;
 }
 
 export interface AdminStandardListViewModel {
+  activeFilterCount: number;
   actionLabelKey?: string;
   columns: AdminStandardColumnViewModel[];
   emptyColSpan: number;
   filters: AdminStandardFilterViewModel[];
+  filteredRowsTotal: number;
+  page: number;
+  pageCount: number;
   rows: any[];
   rowsTotal: number;
   searchPlaceholderKey?: string;
   showActions: boolean;
+  sortDirection: "asc" | "desc";
+  sortKey: string;
   subtitleKey?: string;
   titleKey?: string;
 }
@@ -86,6 +93,7 @@ export interface AdminStandardDetailEntryViewModel {
 
 export interface AdminStandardDetailSectionViewModel {
   entries: AdminStandardDetailEntryViewModel[];
+  iconIntent?: string;
   key: string;
   titleKey?: string;
 }
@@ -101,6 +109,9 @@ export interface AdminStandardDetailViewModel {
   displayName: string;
   entries: AdminStandardDetailEntryViewModel[];
   emptyKey?: string;
+  headerMeta: AdminStandardDetailEntryViewModel[];
+  headerStatus?: AdminStandardDetailEntryViewModel;
+  quickInfo: AdminStandardDetailEntryViewModel[];
   sections: AdminStandardDetailSectionViewModel[];
   tabs: AdminStandardDetailTabViewModel[];
   titleKey?: string;
@@ -251,15 +262,22 @@ export function createAdminStandardListViewModel(
   search: string,
   filterValues: Record<string, string>,
   rowsOverride?: any[] | null,
+  page = 1,
+  pageSize = 10,
+  sortKey = "",
+  sortDirection: "asc" | "desc" = "asc",
 ): AdminStandardListViewModel {
   const config = entityConfig?.listPage || entityConfig || {};
-  const columns = config.columns || [];
+  const columns = (config.columns || []).map((column: any) => ({
+    ...column,
+    sortable: column.sortable !== false,
+  }));
   const rowsSource = rowsOverride || config.rows || [];
   const filters = config.filters || [];
-  const showActions = false;
+  const showActions = Boolean(config.showActions);
   const normalizedSearch = search.trim().toLowerCase();
 
-  const rows = rowsSource.filter((row: any) => {
+  const filteredRows = rowsSource.filter((row: any) => {
     const rowValuesString = Object.values(row).join(" ").toLowerCase();
     const matchesSearch = !normalizedSearch || rowValuesString.includes(normalizedSearch);
     const matchesFilters = Object.entries(filterValues).every(([key, value]) => {
@@ -269,8 +287,28 @@ export function createAdminStandardListViewModel(
     });
     return matchesSearch && matchesFilters;
   });
+  const sortedRows = [...filteredRows].sort((left: any, right: any) => {
+    if (!sortKey) return 0;
+    const leftValue = left[sortKey];
+    const rightValue = right[sortKey];
+    const direction = sortDirection === "desc" ? -1 : 1;
+    if (typeof leftValue === "number" && typeof rightValue === "number") {
+      return (leftValue - rightValue) * direction;
+    }
+    return String(leftValue ?? "").localeCompare(String(rightValue ?? ""), "pt-BR", {
+      numeric: true,
+      sensitivity: "base",
+    }) * direction;
+  });
+  const normalizedPageSize = Math.max(1, pageSize);
+  const pageCount = Math.max(1, Math.ceil(sortedRows.length / normalizedPageSize));
+  const currentPage = Math.min(Math.max(1, page), pageCount);
+  const firstRowIndex = (currentPage - 1) * normalizedPageSize;
+  const rows = sortedRows.slice(firstRowIndex, firstRowIndex + normalizedPageSize);
+  const activeFilterCount = Object.values(filterValues).filter((value) => value !== "all").length;
 
   return {
+    activeFilterCount,
     actionLabelKey: config.actionLabelKey,
     columns,
     emptyColSpan: Math.max(1, columns.length + (showActions ? 1 : 0)),
@@ -280,10 +318,15 @@ export function createAdminStandardListViewModel(
       options: filter.options || [],
       value: filterValues[filter.key] || "all",
     })),
+    filteredRowsTotal: filteredRows.length,
+    page: currentPage,
+    pageCount,
     rows,
     rowsTotal: rowsSource.length,
     searchPlaceholderKey: config.searchPlaceholderKey,
     showActions,
+    sortDirection,
+    sortKey,
     subtitleKey: config.subtitleKey,
     titleKey: config.titleKey,
   };
@@ -343,6 +386,7 @@ export function createAdminStandardFormViewModel(
         value: resolveFormFieldValue(values, field),
       })),
       key: section.key,
+      iconIntent: section.iconIntent,
       titleKey: section.titleKey,
     })),
     submitLabelKey: formConfig?.submitLabelKey,
@@ -371,10 +415,20 @@ export function createAdminStandardDetailViewModel(
         .map((field: any) => createDetailEntry(field, row, optionSources))
         .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable),
       key: section.key,
+      iconIntent: section.iconIntent,
       titleKey: section.titleKey,
     }))
     .filter((section: AdminStandardDetailSectionViewModel) => section.entries.length > 0);
   const fields = currentTab?.fields || [];
+  const headerMeta = (detailConfig?.header?.meta || [])
+    .map((field: any) => createDetailEntry(field, row, optionSources))
+    .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "");
+  const headerStatus = detailConfig?.header?.status
+    ? createDetailEntry(detailConfig.header.status, row, optionSources)
+    : undefined;
+  const quickInfo = (detailConfig?.quickInfo || [])
+    .map((field: any) => createDetailEntry(field, row, optionSources))
+    .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "");
   const entries = sections.length
     ? sections.flatMap((section: AdminStandardDetailSectionViewModel) => section.entries)
     : fields.length
@@ -396,6 +450,9 @@ export function createAdminStandardDetailViewModel(
     displayName,
     entries,
     emptyKey: currentTab?.emptyKey,
+    headerMeta,
+    headerStatus,
+    quickInfo,
     sections,
     tabs,
     titleKey: detailConfig?.titleKey,

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import type { ApiClientConfig, ApiErrorEnvelope } from "../../../shared-core";
 import {
   createAdminStandardRow,
+  deleteAdminStandardRow,
   loadAdminStandardOptionSources,
   loadAdminStandardRow,
   loadAdminStandardRows,
@@ -15,6 +16,7 @@ import {
   createAdminStandardListViewModel,
   type AdminStandardOptionSources,
 } from "../view-models/standard.view-model";
+import { readAdminSessionCache, writeAdminSessionCache } from "../state/adminSessionCache";
 
 export interface UseAdminStandardScreenOptions {
   entityConfig: any;
@@ -51,21 +53,28 @@ export function useAdminStandardScreen({
   onSubmit,
 }: UseAdminStandardScreenOptions) {
   const config = entityConfig?.listPage || entityConfig || {};
+  const dataSource = entityConfig?.dataSource as AdminStandardDataSourceConfig | undefined;
+  const rowsCacheKey = dataSource?.key ? `standard-rows:${dataSource.key}` : null;
+  const cachedRows = rowsCacheKey ? readAdminSessionCache<any[]>(rowsCacheKey) : null;
   const [search, setSearch] = useState("");
   const [filterValues, setFilterValues] = useState<Record<string, string>>(() =>
     createAdminStandardInitialFilters(config.filters || []),
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(config.pagination?.pageSize || 10);
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [activeTab, setActiveTab] = useState("summary");
-  const [rowsOverride, setRowsOverride] = useState<any[] | null>(null);
+  const [rowsOverride, setRowsOverride] = useState<any[] | null>(cachedRows);
   const [optionSources, setOptionSources] = useState<AdminStandardOptionSources>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(!cachedRows && Boolean(dataSource?.key));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeletingDetail, setIsDeletingDetail] = useState(false);
   const [isEditingDetail, setIsEditingDetail] = useState(false);
   const [isFallback, setIsFallback] = useState(false);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
   const [selectedRowOverride, setSelectedRowOverride] = useState<Record<string, any> | null>(null);
-  const dataSource = entityConfig?.dataSource as AdminStandardDataSourceConfig | undefined;
   const detailRow = selectedRowOverride || initialSelectedRow || {};
   const detailConfig = entityConfig?.detailPage;
   const formConfig = entityConfig?.addPage || entityConfig?.form;
@@ -104,6 +113,9 @@ export function useAdminStandardScreen({
       if (!isActive) return;
 
       setRowsOverride(result.rows);
+      if (!result.error && rowsCacheKey && Array.isArray(result.rows)) {
+        writeAdminSessionCache(rowsCacheKey, result.rows);
+      }
       setIsFallback(result.isFallback);
       setError(result.error);
       setIsLoading(false);
@@ -142,6 +154,30 @@ export function useAdminStandardScreen({
 
   const setFilterValue = useCallback((key: string, value: string) => {
     setFilterValues((current) => ({ ...current, [key]: value }));
+    setCurrentPage(1);
+  }, []);
+
+  const setSearchValue = useCallback((value: string) => {
+    setSearch(value);
+    setCurrentPage(1);
+  }, []);
+
+  const resetListFilters = useCallback(() => {
+    setSearch("");
+    setFilterValues(createAdminStandardInitialFilters(config.filters || []));
+    setCurrentPage(1);
+  }, [config.filters]);
+
+  const setListSort = useCallback((key: string) => {
+    setSortKey((currentKey) => {
+      if (currentKey === key) {
+        setSortDirection((currentDirection) => (currentDirection === "asc" ? "desc" : "asc"));
+        return currentKey;
+      }
+      setSortDirection("asc");
+      return key;
+    });
+    setCurrentPage(1);
   }, []);
 
   const setFormValue = useCallback((key: string, value: any) => {
@@ -210,11 +246,28 @@ export function useAdminStandardScreen({
     setIsEditingDetail(false);
   }, [apiConfig, dataSource, detailRow, formValues]);
 
+  const deleteDetail = useCallback(async () => {
+    const rowId = detailRow?.id;
+    if (!dataSource?.key || rowId === undefined) return;
+
+    setIsDeletingDetail(true);
+    const result = await deleteAdminStandardRow(dataSource, rowId, apiConfig);
+    setIsDeletingDetail(false);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    setRowsOverride((current) => current?.filter((row) => row.id !== rowId) || current);
+    onBack?.();
+  }, [apiConfig, dataSource, detailRow, onBack]);
+
   return useMemo(
     () => ({
       activeTab,
       beginDetailEdit,
       cancelDetailEdit,
+      deleteDetail,
       detailViewModel: createAdminStandardDetailViewModel(
         entityConfig?.detailPage,
         entityConfig?.entityNameKey || entityConfig?.entityName || "",
@@ -226,7 +279,9 @@ export function useAdminStandardScreen({
       formViewModel: createAdminStandardFormViewModel(formConfig, formValues, optionSources),
       formValues,
       isEditingDetail,
+      isDeletingDetail,
       isFallback,
+      isInitialLoading: isLoading && rowsOverride === null,
       isLoading,
       isSubmitting,
       listViewModel: createAdminStandardListViewModel(
@@ -234,14 +289,21 @@ export function useAdminStandardScreen({
         search,
         filterValues,
         rowsOverride,
+        currentPage,
+        pageSize,
+        sortKey,
+        sortDirection,
       ),
       onBack,
       optionSources,
+      resetListFilters,
       search,
       setActiveTab,
+      setCurrentPage,
       setFilterValue,
       setFormValue,
-      setSearch,
+      setListSort,
+      setSearch: setSearchValue,
       submitDetailEdit,
       submitForm,
     }),
@@ -249,6 +311,8 @@ export function useAdminStandardScreen({
       activeTab,
       beginDetailEdit,
       cancelDetailEdit,
+      deleteDetail,
+      currentPage,
       entityConfig,
       filterValues,
       formValues,
@@ -256,15 +320,23 @@ export function useAdminStandardScreen({
       error,
       formConfig,
       isEditingDetail,
+      isDeletingDetail,
       isFallback,
       isLoading,
       isSubmitting,
       onBack,
       optionSources,
+      pageSize,
+      resetListFilters,
       rowsOverride,
+      rowsCacheKey,
       search,
+      setListSort,
       setFilterValue,
       setFormValue,
+      setSearchValue,
+      sortDirection,
+      sortKey,
       submitDetailEdit,
       submitForm,
     ],

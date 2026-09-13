@@ -1,13 +1,13 @@
 import React from "react";
 import { Badge } from "@foundation/ui/web/Badge";
-import { Button } from "@foundation/ui/web/Button";
+import { Card } from "@foundation/ui/web/Card";
+import { DataField } from "@foundation/ui/web/DataField";
+import { FieldGrid, FieldGridItem } from "@foundation/ui/web/FieldGrid";
 import { Inline, Stack } from "@foundation/ui/web/Layout";
 import { SectionContainer } from "@foundation/ui/web/SectionContainer";
 import { SegmentedControl } from "@foundation/ui/web/SegmentedControl";
-import { Surface } from "@foundation/ui/web/Surface";
 import { Text } from "@foundation/ui/web/Text";
-import { CheckIcon, SettingsIcon } from "@foundation/ui/web/Icon/AppIcons";
-import { adminPtBR } from "@/locales/pt-BR";
+import { useAdminI18n } from "@/locales/i18n";
 import { settingsConfig } from "@/manifest/pages/settings.config";
 import styles from "./SettingsPage.module.css";
 
@@ -16,28 +16,26 @@ export interface SettingsPageProps {
 }
 
 type SettingsTab = NonNullable<typeof settingsConfig.tabs>[number];
-type SettingsField = SettingsTab["sections"][number]["fields"][number];
+type SettingsField = SettingsTab["sections"][number]["fields"][number] & {
+  layout?: "default" | "full";
+  statusTone?: "success" | "warning" | "neutral" | "primary";
+};
 
-function readLocale(path: string, fallback = ""): string {
-  return path.split(".").reduce<unknown>((current, part) => {
-    if (!current || typeof current !== "object") return undefined;
-    return (current as Record<string, unknown>)[part];
-  }, adminPtBR) as string || fallback || path;
-}
-
-function resolveFieldValue(field: SettingsField): string {
-  if ("valueKey" in field && field.valueKey) return readLocale(field.valueKey, field.valueKey);
+function resolveFieldValue(field: SettingsField, t: (key: string, fallback?: string) => string): string {
+  if ("valueKey" in field && field.valueKey) return t(field.valueKey, field.valueKey);
   return "value" in field ? String(field.value || "") : "";
 }
 
-function resolveBadgeTone(statusKey?: string): "success" | "warning" | "neutral" | "primary" {
-  if (!statusKey) return "neutral";
-  if (statusKey.endsWith(".review") || statusKey.endsWith(".pendingManifestSync")) return "warning";
-  if (statusKey.endsWith(".connected") || statusKey.endsWith(".monitoring")) return "primary";
-  return "success";
+function resolveBadgeTone(field: SettingsField): "success" | "warning" | "neutral" | "primary" {
+  return field.statusTone || "neutral";
+}
+
+function resolveFieldSpan(field: SettingsField) {
+  return field.layout === "full" ? "full" : 1;
 }
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({ config = settingsConfig }) => {
+  const { t } = useAdminI18n();
   const tabs = config.tabs || [];
   const [activeTab, setActiveTab] = React.useState(tabs[0]?.id || "");
   const selectedTab = tabs.find((tab) => tab.id === activeTab) || tabs[0];
@@ -48,79 +46,73 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ config = settingsCon
         <Stack className={styles.content} gap="lg">
           <Inline align="start" className={styles.header} justify="between" wrap>
             <Stack gap="xs">
-              <Inline align="center" className={styles.titleLine} gap="sm" wrap={false}>
-                <SettingsIcon aria-hidden="true" size={32} />
+              <Stack className={styles.titleLine} gap="2xs">
                 <Text as="h1" variant="h1">
-                  {readLocale(config.titleKey, adminPtBR.configuracoes.title)}
+                  {t(config.titleKey)}
                 </Text>
-              </Inline>
+              </Stack>
               <Text tone="muted" variant="body">
-                {readLocale(config.subtitleKey, adminPtBR.configuracoes.subtitle)}
+                {t(config.subtitleKey)}
               </Text>
             </Stack>
-
-            <Inline align="center" gap="sm" wrap>
-              {(config.actions || []).map((action) => (
-                <Button
-                  appearance={action.variant === "primary" ? "solid" : "outline"}
-                  disabled={action.disabled}
-                  icon={action.variant === "primary" ? <CheckIcon aria-hidden="true" /> : undefined}
-                  key={action.key}
-                  size="md"
-                  tone="neutral"
-                >
-                  {readLocale(action.labelKey, action.key)}
-                </Button>
-              ))}
-            </Inline>
+            <Badge appearance="soft" indicator tone="primary">
+              {t(config.readOnlyBadgeKey)}
+            </Badge>
           </Inline>
 
-          <SegmentedControl
-            items={tabs.map((tab) => ({
-              key: tab.id,
-              label: readLocale(tab.labelKey, tab.id),
-            }))}
-            onChange={setActiveTab}
-            value={selectedTab?.id}
-            width="content"
-          />
+          <Stack className={styles.tabbedContent} gap="2xs">
+            <SegmentedControl
+              items={tabs.map((tab) => ({
+                key: tab.id,
+                label: t(tab.labelKey, tab.id),
+              }))}
+              level="md"
+              onChange={setActiveTab}
+              value={selectedTab?.id}
+              variant="underline"
+              width="full"
+            />
 
-          <Stack gap="lg">
-            {(selectedTab?.sections || []).map((section) => (
-              <Surface className={styles.surface} key={section.key}>
-                <Inline align="start" justify="between" wrap>
-                  <Stack className={styles.sectionHeading} gap="xs">
-                    <Text as="h2" variant="h2">
-                      {readLocale(section.titleKey, section.key)}
-                    </Text>
-                    <Text tone="muted" variant="body">
-                      {readLocale(section.descriptionKey, "")}
-                    </Text>
+            <Card className={styles.settingsCard} size="lg">
+              <Stack className={styles.settingsSections} gap="xl">
+                {(selectedTab?.sections || []).map((section) => (
+                  <Stack className={styles.settingsSection} gap="lg" key={section.key}>
+                    <Stack className={styles.sectionHeading} gap="2xs">
+                      <Text as="h2" variant="h3">
+                        {t(section.titleKey, section.key)}
+                      </Text>
+                      <Text tone="muted" variant="body">
+                        {t(section.descriptionKey, "")}
+                      </Text>
+                    </Stack>
+
+                    <FieldGrid className={styles.settingsGrid} columns={2} density="comfortable" gap="lg">
+                      {section.fields.map((field) => (
+                        <FieldGridItem key={field.key} span={resolveFieldSpan(field)}>
+                          <DataField
+                            className={styles.settingField}
+                            label={t(field.labelKey, field.key)}
+                            level="sm"
+                            value={(
+                              <Inline align="center" className={styles.fieldValue} gap="sm" wrap>
+                                <Text as="span" variant="body" weight="semibold">
+                                  {resolveFieldValue(field, t)}
+                                </Text>
+                                {field.statusKey ? (
+                                  <Badge appearance="soft" tone={resolveBadgeTone(field)}>
+                                    {t(field.statusKey)}
+                                  </Badge>
+                                ) : null}
+                              </Inline>
+                            )}
+                          />
+                        </FieldGridItem>
+                      ))}
+                    </FieldGrid>
                   </Stack>
-                  <Badge appearance="soft" tone="neutral">
-                    {readLocale("configuracoes.badges.manifestReady")}
-                  </Badge>
-                </Inline>
-
-                <div className={styles.settingList}>
-                  {section.fields.map((field) => (
-                    <div className={styles.settingItem} key={field.key}>
-                      <Stack className={styles.settingText} gap="xs">
-                        <Text as="span" className={styles.fieldLabel} tone="muted" variant="caption" weight="bold">
-                          {readLocale(field.labelKey, field.key)}
-                        </Text>
-                        <Text as="strong" className={styles.fieldValue} variant="body" weight="semibold">
-                          {resolveFieldValue(field)}
-                        </Text>
-                      </Stack>
-                      <Badge appearance="soft" tone={resolveBadgeTone(field.statusKey)}>
-                        {readLocale(field.statusKey || "configuracoes.status.active")}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </Surface>
-            ))}
+                ))}
+              </Stack>
+            </Card>
           </Stack>
         </Stack>
       </SectionContainer>

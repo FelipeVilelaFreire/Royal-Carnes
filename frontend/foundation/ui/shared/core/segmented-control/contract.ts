@@ -2,7 +2,7 @@ import type { ResolvedSurfaceRecipe, SemiLevel, SurfaceAppearance, SurfaceTone }
 import type { ButtonAppearance, ButtonLevel, ButtonTone, ButtonWidth } from "../button";
 
 export const SEGMENTED_CONTROL_LEVELS = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"] as const;
-export const SEGMENTED_CONTROL_VARIANTS = ["panel", "inline"] as const;
+export const SEGMENTED_CONTROL_VARIANTS = ["panel", "inline", "underline"] as const;
 export type SegmentedControlLevel = (typeof SEGMENTED_CONTROL_LEVELS)[number];
 export type SegmentedControlVariant = (typeof SEGMENTED_CONTROL_VARIANTS)[number];
 export type SegmentedControlWidth = "content" | "full";

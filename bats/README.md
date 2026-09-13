@@ -31,13 +31,19 @@ environment.yml
 dev-all.bat
 ```
 
-Abre em janelas separadas:
+Abre uma unica janela do Windows Terminal com tres abas independentes:
+Backend, Client e Admin. Cada aba preserva seus proprios logs e pode ser
+encerrada individualmente:
 
 ```text
 backend -> http://127.0.0.1:8000
 client  -> http://localhost:3000
 admin   -> http://localhost:3001
 ```
+
+Use `Ctrl+C` na aba do servico que deseja encerrar. `dev-web.bat` inicia somente
+o Client Web na porta 3000, no terminal atual. Antes de iniciar, ele encerra
+somente o processo local que estiver escutando a porta 3000.
 
 ## Scripts separados
 

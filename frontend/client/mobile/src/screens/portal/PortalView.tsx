@@ -12,7 +12,7 @@ import { clientRoutes } from "../../../../shared-core/manifest/routes";
 import { portalNavigation } from "../../../../shared-core/navigation/client.navigation";
 import { UiProvider } from "@foundation/ui/native";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
-import { CortesView } from "./Cortes/CortesView";
+import { CatalogoView } from "./Catalogo/CatalogoView/CatalogoView";
 import { HomeView } from "./Home/HomeView";
 import { PerfilView } from "./Perfil/PerfilView";
 import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
@@ -22,7 +22,7 @@ export interface PortalViewProps {
   authApiConfig?: ApiClientConfig;
   authStorage?: ClientAuthStorage;
   hosts: NativeAppShellHostComponents;
-  initialTab?: "cortes" | "home" | "meusPedidos" | "minhaConta" | "produtos";
+  initialTab?: "catalogo" | "home" | "meusPedidos" | "minhaConta" | "produtos";
   strings: ReturnType<typeof useClientStrings>;
   themeMode?: AppThemeMode;
 }
@@ -70,8 +70,8 @@ export const PortalView: React.FC<PortalViewProps> = ({
     tabs: strings.accessShell.tabs,
   };
   const activePath =
-    activeScreenKey === "cortes"
-      ? clientRoutes.cortes
+    activeScreenKey === "catalogo"
+      ? clientRoutes.catalogo
       : activeScreenKey === "produtos"
         ? clientRoutes.produtos
         : activeScreenKey === "meusPedidos"
@@ -95,8 +95,8 @@ export const PortalView: React.FC<PortalViewProps> = ({
           return;
         }
         setActiveScreenKey(
-          item.key === "cortes"
-            ? "cortes"
+          item.key === "catalogo"
+            ? "catalogo"
             : item.key === "produtos"
               ? "produtos"
               : item.key === "meusPedidos"
@@ -127,8 +127,8 @@ export const PortalView: React.FC<PortalViewProps> = ({
           strings={accessStrings}
           themeMode={themeMode}
         />
-      ) : activeScreenKey === "cortes" ? (
-        <CortesView strings={strings} />
+      ) : activeScreenKey === "catalogo" ? (
+        <CatalogoView strings={strings} />
       ) : activeScreenKey === "produtos" ? (
         <MontarBoxView
           activePath={activePath}
@@ -148,7 +148,7 @@ export const PortalView: React.FC<PortalViewProps> = ({
               setIsAccessOpen(true);
               return;
             }
-            setActiveScreenKey(item?.key === "cortes" ? "cortes" : item?.key === "produtos" ? "produtos" : item?.key === "meusPedidos" ? "meusPedidos" : item?.key === "minhaConta" ? "minhaConta" : "home");
+            setActiveScreenKey(item?.key === "catalogo" ? "catalogo" : item?.key === "produtos" ? "produtos" : item?.key === "meusPedidos" ? "meusPedidos" : item?.key === "minhaConta" ? "minhaConta" : "home");
           }}
           strings={strings}
         />

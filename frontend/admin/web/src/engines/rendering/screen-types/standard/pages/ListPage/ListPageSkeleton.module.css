@@ -1,0 +1,4 @@
+.page { min-block-size: 100%; padding-block-end: var(--theme--spacing-space3xl); width: 100%; }
+.content, .header { width: 100%; }
+.heading { min-inline-size: var(--theme--sizing-control-xl); }
+@media (max-width: 760px) { .page { padding-block-end: var(--theme--spacing-spaceXl); } .header { align-items: flex-start; flex-direction: column; } .header > :last-child { inline-size: 100%; } }

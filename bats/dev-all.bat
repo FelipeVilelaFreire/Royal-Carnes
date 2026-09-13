@@ -1,22 +1,37 @@
 @echo off
 setlocal EnableExtensions
-title RoyalPrime - Dev all
 
-set "SCRIPT_DIR=%~dp0"
+set "ROOT_DIR=%~dp0.."
+set "WT_EXE="
 
-echo.
-echo ============================================================
-echo RoyalPrime - iniciando ambiente local
-echo ============================================================
-echo Backend: http://127.0.0.1:8000
-echo Client:  http://localhost:3000
-echo Admin:   http://localhost:3001
-echo ============================================================
-echo.
+where wt.exe >nul 2>nul
+if not errorlevel 1 set "WT_EXE=wt.exe"
+if "%WT_EXE%"=="" if exist "%LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe" set "WT_EXE=%LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe"
 
-start "RoyalPrime Backend 8000" "%SCRIPT_DIR%start-backend.bat"
-start "RoyalPrime Client 3000" "%SCRIPT_DIR%client.bat"
-start "RoyalPrime Admin 3001" "%SCRIPT_DIR%admin.bat"
+if "%WT_EXE%"=="" (
+  echo.
+  echo ERRO: Windows Terminal ^(wt.exe^) nao encontrado no PATH.
+  echo Instale o Windows Terminal ou adicione wt.exe ao PATH.
+  pause
+  exit /b 1
+)
 
-echo Janelas iniciadas. Aguarde os servidores compilarem.
-pause
+echo Abrindo RoyalPrime em abas no Windows Terminal.
+call :open_tab "RoyalPrime Backend" "%ROOT_DIR%" "call bats\start-backend.bat"
+call :open_tab "RoyalPrime Client" "%ROOT_DIR%" "call bats\client.bat"
+call :open_tab "RoyalPrime Admin" "%ROOT_DIR%" "call bats\admin.bat"
+exit /b 0
+
+:open_tab
+set "TAB_TITLE=%~1"
+set "TAB_PATH=%~2"
+set "TAB_COMMAND=%~3"
+
+if not exist "%TAB_PATH%" (
+  echo [skip] %TAB_TITLE% nao encontrado: "%TAB_PATH%"
+  exit /b 0
+)
+
+start "" "%WT_EXE%" -w 0 new-tab --title "%TAB_TITLE%" -d "%TAB_PATH%" cmd.exe /d /k "%TAB_COMMAND%"
+timeout /t 1 /nobreak >nul
+exit /b 0

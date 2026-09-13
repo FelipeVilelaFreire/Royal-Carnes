@@ -8,6 +8,7 @@ import { useUiConfig } from "@foundation/ui/web/UiProvider";
 import {
   resolveScreenHeaderMobileTitle,
   normalizeScreenHeaderScrollProgress,
+  shouldRenderScreenHeaderDescription,
   type ScreenHeaderContent,
   type ScreenHeaderMobileGutter,
   type ScreenHeaderMobileMode,
@@ -91,7 +92,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
             <Text as="h1" className={styles.mobileTitle} variant="h2">
               {resolveScreenHeaderMobileTitle({ mobileTitle, title })}
             </Text>
-            {resolvedMobileMode === "full" && description ? (
+            {description && shouldRenderScreenHeaderDescription(resolvedMobileMode) ? (
               <Text className={styles.mobileDescription} tone="textMuted">
                 {description}
               </Text>

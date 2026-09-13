@@ -3,6 +3,7 @@ import { normalizeApiError, type ApiErrorEnvelope } from "../../../shared-core";
 import { adminDashboardApi, type createAdminDashboardApi } from "../api/dashboard.api";
 import type { AdminDashboardSummaryView } from "../contracts/dashboard.contract";
 import { createAdminDashboardViewModel } from "../view-models/dashboard.view-model";
+import { readAdminSessionCache, writeAdminSessionCache } from "../state/adminSessionCache";
 
 type AdminDashboardApi = ReturnType<typeof createAdminDashboardApi>;
 
@@ -13,6 +14,7 @@ const emptyDashboardSummary: AdminDashboardSummaryView = {
   orders: [],
   subscriptions: [],
 };
+const dashboardCacheKey = "dashboard-summary";
 
 export interface UseAdminDashboardOptions {
   api?: AdminDashboardApi;
@@ -24,11 +26,12 @@ export interface UseAdminDashboardOptions {
 export function useAdminDashboard(options: UseAdminDashboardOptions = {}) {
   const api = options.api || adminDashboardApi;
   const fallbackOnError = options.fallbackOnError ?? false;
+  const cachedSummary = options.initialSummary || readAdminSessionCache<AdminDashboardSummaryView>(dashboardCacheKey);
   const [summary, setSummary] = useState<AdminDashboardSummaryView | null>(
-    options.initialSummary || null,
+    cachedSummary,
   );
   const [isFallback, setIsFallback] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(!cachedSummary);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
 
   const load = useCallback(async () => {
@@ -37,6 +40,7 @@ export function useAdminDashboard(options: UseAdminDashboardOptions = {}) {
     try {
       const nextSummary = await api.summary();
       setSummary(nextSummary);
+      writeAdminSessionCache(dashboardCacheKey, nextSummary);
       setIsFallback(false);
       return nextSummary;
     } catch (err) {
@@ -69,6 +73,7 @@ export function useAdminDashboard(options: UseAdminDashboardOptions = {}) {
       viewModel: createAdminDashboardViewModel(summary || emptyDashboardSummary, {
         recentOrdersLimit: options.recentOrdersLimit,
       }),
+      isInitialLoading: isLoading && !summary,
     }),
     [error, isFallback, isLoading, load, options.recentOrdersLimit, summary],
   );

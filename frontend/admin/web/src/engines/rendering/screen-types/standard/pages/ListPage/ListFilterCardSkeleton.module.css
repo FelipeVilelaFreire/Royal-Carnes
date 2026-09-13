@@ -1,0 +1,3 @@
+.card { width: 100%; }
+.toolbar { display: grid; gap: var(--theme--spacing-spaceSm); grid-template-columns: minmax(0, 1fr) minmax(0, var(--theme--layout-container-xs)); }
+@media (max-width: 760px) { .toolbar { grid-template-columns: minmax(0, 1fr); } }

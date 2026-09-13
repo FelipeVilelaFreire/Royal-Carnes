@@ -1,0 +1,5 @@
+.grid { width: 100%; }
+.card { min-inline-size: 0; padding: var(--theme--spacing-spaceMd); }
+.label { letter-spacing: var(--theme--typography-letterSpacingWide); text-transform: uppercase; }
+.value { overflow-wrap: anywhere; }
+@media (max-width: 760px) { .grid { --ui-layout-columns: 1 !important; } }

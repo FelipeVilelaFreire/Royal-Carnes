@@ -23,3 +23,34 @@
 .root[data-width="full"] .option {
   flex: 1 1 0;
 }
+
+.root[data-variant="underline"] {
+  gap: 0;
+  border-block-end: var(--semicomposed--segmented-control--underline-thickness) solid var(--semicomposed--segmented-control--underline-border);
+  overflow-x: auto;
+  padding: 0;
+  scrollbar-width: none;
+}
+
+.root[data-variant="underline"] .option {
+  align-self: stretch;
+  background: transparent !important;
+  border: var(--semicomposed--segmented-control--underline-option-border) !important;
+  border-block-end: var(--semicomposed--segmented-control--underline-thickness) solid transparent !important;
+  box-shadow: none !important;
+  color: var(--semicomposed--segmented-control--underline-text) !important;
+  margin-block-end: calc(var(--semicomposed--segmented-control--underline-thickness) * -1);
+  position: relative;
+}
+
+.root[data-variant="underline"] .option[data-active="true"] {
+  background: var(--semicomposed--segmented-control--underline-active-bg) !important;
+  border-block-end-color: var(--semicomposed--segmented-control--underline-active) !important;
+  box-shadow: var(--semicomposed--segmented-control--underline-active-shadow) !important;
+  color: var(--semicomposed--segmented-control--underline-active-text) !important;
+  --ui-button-font-weight: var(--semicomposed--segmented-control--underline-active-weight);
+}
+
+.root[data-variant="underline"][data-width="full"] .option {
+  flex: 0 0 auto;
+}

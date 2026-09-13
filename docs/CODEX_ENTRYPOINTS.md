@@ -61,9 +61,24 @@ Estas leituras sao condicionais; nao sao outra lista obrigatoria.
 | Client routes | frontend/client/shared-core/manifest/routes.ts |
 | Idiomas | frontend/client/shared-core/locales e frontend/admin/shared-core/locales |
 | AppShell compartilhado | frontend/foundation/shells/app-shell |
+| Gramatica de pagina | [AppShell e screen types](../ROYALPRIME_ARCHITECTURE_CONTRACT.md#appshell-e-screen-types) |
 | Componentes ecommerce compartilhados | frontend/product-components/ecommerce |
 
 Caminhos sao pontos de inspecao, nao promessa de que todo fluxo esta concluido.
+
+## Composicao obrigatoria da screen
+
+Antes de alterar visual de uma rota oficial, confirme a composicao abaixo e o
+manifest que ativa a casca:
+
+```text
+web desktop: AppShell Header fixo -> ScreenHeader -> conteudo -> Footer opcional
+portal mobile: ScreenHeader fixo/recolhivel -> conteudo -> BottomTabBar opcional
+```
+
+`ScreenHeader` e o primeiro filho real da screen; conteudo animado fica abaixo
+dele. Header global, Footer e BottomTabBar nunca sao implementados dentro da
+rota. As excecoes Landing/Access precisam estar declaradas por config.
 
 ## Protocolo de execucao
 

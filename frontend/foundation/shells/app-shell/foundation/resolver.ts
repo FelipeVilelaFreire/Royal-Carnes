@@ -263,10 +263,20 @@ export const resolveAppShellModel = ({
     "nativeTabBar",
     config
   );
+  const bottomMoreConfig = config?.bottomTabBar?.more;
+  const bottomMore = bottomMoreConfig?.enabled
+    ? {
+      iconIntent: bottomMoreConfig.iconIntent || "more",
+      label: bottomMoreConfig.label || resolveStringPath(strings, bottomMoreConfig.labelKey) || "Menu",
+      title: bottomMoreConfig.title || resolveStringPath(strings, bottomMoreConfig.titleKey) || "Menu",
+    }
+    : undefined;
 
   return {
     activePath,
     bottomItems,
+    bottomMore,
+    bottomTabPresentation: config?.bottomTabBar?.presentation === "floating" ? "floating" : "docked",
     bottomTabEnabled,
     brand: {
       name:
@@ -291,7 +301,7 @@ export const resolveAppShellModel = ({
       "--app-shell-accent": themeColors.accent || themeColors.primary || "var(--theme--color-accent)",
       "--app-shell-accent-contrast": themeColors.accentContrast || themeColors.background || "var(--theme--color-accent-contrast)",
       "--app-shell-active-bg": themeColors.activeBg || "color-mix(in srgb, var(--app-shell-accent) 15%, transparent)",
-      "--app-shell-bottom-count": String(Math.max(bottomItems.length, 1)),
+      "--app-shell-bottom-count": String(Math.max(bottomItems.length + (bottomMore ? 1 : 0), 1)),
       "--app-shell-background": themeColors.background || themeColors.bg || "var(--theme--color-background)",
       "--app-shell-border": themeColors.border || "var(--theme--color-border)",
       "--app-shell-brand-bg": headerConfig.brandSurface === "none" ? "transparent" : themeColors.surfaceContainer || themeColors.surface || "transparent",

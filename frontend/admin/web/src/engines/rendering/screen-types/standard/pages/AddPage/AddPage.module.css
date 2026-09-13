@@ -1,37 +1,99 @@
 .page {
   background: transparent;
   min-block-size: 100%;
-  padding-block-end: var(--theme--spacing-3xl);
+  padding-block-end: var(--theme--spacing-space3xl);
   width: 100%;
 }
 
 .content {
-  padding-block-start: var(--theme--spacing-lg);
+  padding-block-start: var(--theme--spacing-spaceMd);
   width: 100%;
 }
 
 .formCard {
-  max-inline-size: var(--theme--layout-container-sm);
   width: 100%;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--theme--spacing-lg);
+  gap: var(--theme--spacing-space2xl);
+}
+
+.pageHeader {
+  border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
+  padding-block-end: var(--theme--spacing-spaceMd);
+  width: 100%;
 }
 
 .formSection {
   width: 100%;
 }
 
+.formSection + .formSection {
+  border-block-start: var(--theme--border-width-sm) solid var(--theme--color-border);
+  padding-block-start: var(--theme--spacing-spaceMd);
+}
+
+.sectionTitle {
+  color: var(--theme--color-text);
+  letter-spacing: var(--theme--typography-letterSpacingTight);
+}
+
 .formActions {
   border-block-start: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
+  justify-content: flex-end;
   padding-block-start: var(--theme--spacing-md);
+  width: 100%;
+}
+
+.submitButton {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-background) 78%, var(--theme--color-primary));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-primary) 68%, transparent);
+  --ui-surface-color: var(--theme--color-primary);
+  --ui-surface-highlight-opacity: 14%;
+  --ui-surface-tint-opacity: 28%;
+}
+
+.formActions .submitButton:disabled {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-background) 82%, var(--theme--color-surfaceContainer));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 58%, transparent);
+  --ui-surface-highlight-opacity: 0%;
+  --ui-surface-tint-opacity: 0%;
+  color: var(--theme--color-primaryText) !important;
+  opacity: 0.56;
+}
+
+.fieldGrid[data-gap="lg"] {
+  gap: var(--theme--spacing-spaceXl);
+}
+
+.requiredMarker {
+  color: var(--theme--color-required);
+}
+
+.requiredMarker::after {
+  content: "*";
 }
 
 @media (max-width: 760px) {
   .page {
-    padding-block-end: var(--theme--spacing-xl);
+    padding-block-end: var(--theme--spacing-spaceXl);
+  }
+
+  .formCard {
+    padding: var(--theme--spacing-spaceLg);
+  }
+
+  .pageHeader {
+    align-items: flex-start;
+  }
+
+  .formCard .fieldGrid[data-columns="2"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .formActions > * {
+    flex: 1 1 100%;
   }
 }

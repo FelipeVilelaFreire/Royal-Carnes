@@ -74,7 +74,8 @@ export function analyze(file, source) {
     if (isWeb(file) && ts.isJsxSpreadAttribute(node) && spreadsStyle(node.expression)) report('inline-style', node, 'A local props spread contains style; use CSS Modules or semantic props.');
     if (isWeb(file) && (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node))) {
       const tag = node.tagName.getText(ast);
-      if (tag === 'style' || tag === 'svg') report('inline-visual', node, 'Use CSS Modules and Foundation icons, not local style/SVG tags.');
+      const isFoundationIconCatalog = file.endsWith('/foundation/ui/web/Icon/AppIcons.tsx');
+      if (tag === 'style' || (tag === 'svg' && !isFoundationIconCatalog)) report('inline-visual', node, 'Use CSS Modules and Foundation icons, not local style/SVG tags.');
       if (!file.endsWith('.tsx')) report('tsx-component', node, 'New web JSX components must use .tsx.');
     }
     if (ts.isJsxText(node) && node.text.trim()) report('ui-copy', node, 'UI text must come from active locale keys.');

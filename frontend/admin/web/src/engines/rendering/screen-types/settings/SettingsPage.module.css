@@ -1,68 +1,76 @@
 .page {
   background: transparent;
   min-block-size: 100%;
-  padding-block-end: var(--theme--spacing-3xl);
+  padding-block-end: var(--theme--spacing-space3xl);
   width: 100%;
 }
 
 .content {
-  padding-block-start: var(--theme--spacing-lg);
+  padding-block-start: var(--theme--spacing-spaceLg);
   width: 100%;
 }
 
 .header {
+  border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
+  padding-block-end: var(--theme--spacing-spaceMd);
   width: 100%;
 }
 
 .titleLine {
-  color: var(--theme--color-primary);
-}
-
-.surface {
-  display: flex;
-  flex-direction: column;
-  gap: var(--theme--spacing-lg);
-  padding: var(--theme--spacing-xl);
-  width: 100%;
-}
-
-.settingList {
-  display: grid;
-  gap: var(--theme--spacing-sm);
-  width: 100%;
-}
-
-.settingItem {
-  align-items: center;
-  border: var(--theme--border-width-sm) solid var(--theme--color-border-subtle);
-  border-radius: var(--theme--radius-lg);
-  display: flex;
-  gap: var(--theme--spacing-md);
-  justify-content: space-between;
-  min-width: 0;
-  padding: var(--theme--spacing-md);
-}
-
-.settingText {
   min-width: 0;
 }
 
-.fieldLabel {
-  min-inline-size: 0;
+.tabbedContent,
+.settingsCard,
+.settingsSections,
+.settingsSection,
+.settingsGrid {
+  width: 100%;
+}
+
+.settingsSection {
+  border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
+  padding-block-end: var(--theme--spacing-spaceXl);
+}
+
+.settingsSection:last-child {
+  border-block-end: 0;
+  padding-block-end: 0;
+}
+
+.sectionHeading,
+.settingField,
+.fieldValue {
+  min-width: 0;
+}
+
+.sectionHeading {
+  border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border-subtle);
+  padding-block-end: var(--theme--spacing-sm);
+}
+
+.settingField {
+  min-block-size: var(--theme--dimensions-height-md);
 }
 
 .fieldValue {
-  min-width: 0;
   overflow-wrap: anywhere;
 }
 
 @media (max-width: 760px) {
   .page {
-    padding-block-end: var(--theme--spacing-xl);
+    padding-block-end: var(--theme--spacing-spaceXl);
   }
 
-  .settingItem {
+  .settingsCard {
+    padding: var(--theme--spacing-spaceLg);
+  }
+
+  .settingsCard .settingsGrid[data-columns="2"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fieldValue {
     align-items: flex-start;
-    flex-direction: column;
   }
 }

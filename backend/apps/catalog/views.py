@@ -108,7 +108,7 @@ def admin_categories(request):
     return Response(CategorySerializer(queryset, many=True).data)
 
 
-@api_view(["GET", "PATCH"])
+@api_view(["GET", "PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
 def admin_category(request, category_id):
     organization = get_request_organization(request)
@@ -168,7 +168,7 @@ def admin_products(request):
     return Response(ProductSerializer(product_obj).data, status=status.HTTP_201_CREATED)
 
 
-@api_view(["GET", "PATCH"])
+@api_view(["GET", "PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
 def admin_product(request, product_id):
     organization = get_request_organization(request)
@@ -177,6 +177,10 @@ def admin_product(request, product_id):
 
     if request.method == "GET":
         return Response(ProductSerializer(product_obj).data)
+
+    if request.method == "DELETE":
+        product_obj.soft_delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     serializer = ProductUpdateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

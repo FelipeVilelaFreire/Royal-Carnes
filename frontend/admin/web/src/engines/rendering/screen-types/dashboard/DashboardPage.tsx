@@ -5,11 +5,12 @@ import { Grid, Inline, Stack } from "@foundation/ui/web/Layout";
 import { SectionContainer } from "@foundation/ui/web/SectionContainer";
 import { Surface } from "@foundation/ui/web/Surface";
 import { Text } from "@foundation/ui/web/Text";
-import { ChevronRightIcon, FlameIcon, StarIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { ArrowForwardIcon, ChevronRightIcon, FlameIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminDashboardViewModel, AdminDashboardWidgetKey } from "@/view-models/dashboard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { DashboardConfig } from "../config/types";
 import styles from "./DashboardPage.module.css";
+import { DashboardPageSkeleton } from "./DashboardPageSkeleton";
 
 export interface DashboardPageProps {
   config: DashboardConfig;
@@ -23,7 +24,7 @@ function renderWidgetIcon(key: string | undefined, widgetKey: string) {
   const iconKey = key || widgetKey;
   if (iconKey === "subscribers") return <UserIcon aria-hidden="true" />;
   if (iconKey === "deliveries") return <TruckIcon aria-hidden="true" />;
-  if (iconKey === "retention") return <StarIcon aria-hidden="true" />;
+  if (iconKey === "retention") return <ArrowForwardIcon aria-hidden="true" />;
   return <FlameIcon aria-hidden="true" />;
 }
 
@@ -42,6 +43,8 @@ function renderMetricHelper(text: string, tone: string | undefined) {
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading = false, onViewOrders, t, viewModel }) => {
+  if (isLoading) return <DashboardPageSkeleton config={config} />;
+
   const widgetsByKey = new Map(viewModel.widgets.map((widget) => [widget.key, widget]));
 
   return (
@@ -63,7 +66,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading 
             {config.widgets.map((widget) => {
               const widgetView = widgetsByKey.get(widget.key as AdminDashboardWidgetKey);
               return (
-                <Surface appearance={widget.surface.appearance} className={styles.kpiCard} key={widget.key} tone={widget.surface.tone}>
+                <Surface appearance={widget.surface.appearance} className={styles.kpiCard} data-metric={widget.key} key={widget.key} tone={widget.surface.tone}>
                   <Inline justify="between" wrap={false}>
                     <Text as="span" className={styles.kpiLabel} tone="muted" variant="caption" weight="bold">{t(widget.titleKey)}</Text>
                     <span className={styles.kpiIcon}>{renderWidgetIcon(widget.iconKey, widget.key)}</span>

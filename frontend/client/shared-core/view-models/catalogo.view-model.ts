@@ -1,13 +1,16 @@
-import type { ClientProductView } from "../contracts/catalog.contract";
+import type {
+  ClientCategoryView,
+  ClientProductView,
+} from "../contracts/catalog.contract";
 
-export type CortesCatalogSortKey = "relevance" | "best_sellers" | "price_asc" | "price_desc";
+export type CatalogoSortKey = "relevance" | "best_sellers" | "price_asc" | "price_desc";
 
-export interface CortesCatalogCategoryOption {
+export interface CatalogoCategoryOption {
   id: string;
   name: string;
 }
 
-export interface CortesCatalogDisplayProduct {
+export interface CatalogoDisplayProduct {
   id: string;
   name: string;
   subtitle: string;
@@ -22,26 +25,27 @@ export interface CortesCatalogDisplayProduct {
   origin?: string;
 }
 
-export interface CortesCatalogViewModelInput {
+export interface CatalogoViewModelInput {
+  apiCategories: ClientCategoryView[];
   apiProducts: ClientProductView[];
   activeCategoryId: string;
   allCategoriesLabel: string;
   defaultLineLabel: string;
   searchQuery: string;
-  sortBy: CortesCatalogSortKey;
+  sortBy: CatalogoSortKey;
 }
 
-export interface CortesCatalogViewModel {
-  categories: CortesCatalogCategoryOption[];
-  filteredProducts: CortesCatalogDisplayProduct[];
-  products: CortesCatalogDisplayProduct[];
+export interface CatalogoViewModel {
+  categories: CatalogoCategoryOption[];
+  filteredProducts: CatalogoDisplayProduct[];
+  products: CatalogoDisplayProduct[];
   total: number;
 }
 
 const mapProductToDisplayProduct = (
   product: ClientProductView,
   defaultLineLabel: string,
-): CortesCatalogDisplayProduct => {
+): CatalogoDisplayProduct => {
   const price = product.prices[0];
   const variant = product.variants.find((item) => item.isActive) || product.variants[0];
   const primaryCategory =
@@ -61,27 +65,21 @@ const mapProductToDisplayProduct = (
 };
 
 const createCategoryOptions = (
-  products: ClientProductView[],
+  categories: ClientCategoryView[],
   allCategoriesLabel: string,
-): CortesCatalogCategoryOption[] => {
-  const categories = new Map<string, string>();
-  products.forEach((product) => {
-    product.categories.forEach((category) => {
-      if (category.isActive) {
-        categories.set(category.key, category.name);
-      }
-    });
-  });
-
+): CatalogoCategoryOption[] => {
   return [
     { id: "all", name: allCategoriesLabel },
-    ...Array.from(categories, ([id, name]) => ({ id, name })),
+    ...categories
+      .filter((category) => category.isActive)
+      .sort((left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name))
+      .map((category) => ({ id: category.key, name: category.name })),
   ];
 };
 
 const sortProducts = (
-  products: CortesCatalogDisplayProduct[],
-  sortBy: CortesCatalogSortKey,
+  products: CatalogoDisplayProduct[],
+  sortBy: CatalogoSortKey,
 ) => [...products].sort((a, b) => {
   if (sortBy === "price_asc") return a.price - b.price;
   if (sortBy === "price_desc") return b.price - a.price;
@@ -93,16 +91,17 @@ const sortProducts = (
   return a.name.localeCompare(b.name);
 });
 
-export const createCortesCatalogViewModel = ({
+export const createCatalogoViewModel = ({
   activeCategoryId,
   allCategoriesLabel,
+  apiCategories,
   apiProducts,
   defaultLineLabel,
   searchQuery,
   sortBy,
-}: CortesCatalogViewModelInput): CortesCatalogViewModel => {
+}: CatalogoViewModelInput): CatalogoViewModel => {
   const products = apiProducts.map((product) => mapProductToDisplayProduct(product, defaultLineLabel));
-  const categories = createCategoryOptions(apiProducts, allCategoriesLabel);
+  const categories = createCategoryOptions(apiCategories, allCategoriesLabel);
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const filtered = products.filter((item) => {
     const matchesCategory = activeCategoryId === "all" || item.category === activeCategoryId;

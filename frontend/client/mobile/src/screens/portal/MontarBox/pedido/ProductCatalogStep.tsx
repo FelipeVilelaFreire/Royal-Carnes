@@ -76,10 +76,14 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
             <ProductItemCard
               key={product.id}
               actionLabel={canAdd ? strings.productCard.add : strings.productCard.limitReached}
+              categoryLabel={category?.name || strings.productCard.categoryLabel}
               description={`${product.description} ${category?.name || strings.productCard.categoryLabel}`}
+              detailLabel={product.weightLabel || product.unit}
               formattedPrice={selectedMode === "subscription" ? undefined : formatMoney(product.price)}
               name={product.name}
               onAction={canAdd ? () => onProductSelect(product) : undefined}
+              preset="montarBox"
+              showPrice={selectedMode !== "subscription"}
             />
           );
         })}

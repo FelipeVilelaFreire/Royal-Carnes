@@ -22,3 +22,4 @@ export * from "./Text";
 export * from "./TextArea";
 export * from "./UiProvider";
 export * from "./SectionContainer";
+export * from "./Skeleton";

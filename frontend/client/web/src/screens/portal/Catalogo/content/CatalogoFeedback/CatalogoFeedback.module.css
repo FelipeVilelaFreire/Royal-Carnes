@@ -1,0 +1,38 @@
+.emptyPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface-container, var(--theme--color-surfaceContainer)) 90%, var(--theme--color-background));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 84%, transparent);
+  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-color: var(--theme--color-text);
+  --ui-surface-padding-x: var(--theme--spacing-space2xl);
+  --ui-surface-padding-y: var(--theme--spacing-space2xl);
+  --ui-surface-radius: var(--theme--radius-xl);
+  text-align: center;
+}
+
+.emptyIcon {
+  align-items: center;
+  background: color-mix(in srgb, var(--theme--color-accent) 14%, var(--theme--color-surface-container, var(--theme--color-surfaceContainer)));
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-accent) 36%, transparent);
+  border-radius: var(--theme--radius-lg);
+  color: var(--theme--color-accent);
+  display: inline-flex;
+  height: var(--theme--dimensions-height-xl);
+  justify-content: center;
+  width: var(--theme--dimensions-height-xl);
+}
+
+.emptyTitle {
+  color: var(--theme--color-text);
+}
+
+.emptyDescription {
+  color: var(--theme--color-text-muted, var(--theme--color-textMuted));
+  max-width: var(--theme--layout-container-sm);
+}
+
+@media (max-width: 48em) {
+  .emptyPanel {
+    --ui-surface-padding-x: var(--theme--spacing-spaceMd);
+    --ui-surface-padding-y: var(--theme--spacing-spaceMd);
+  }
+}

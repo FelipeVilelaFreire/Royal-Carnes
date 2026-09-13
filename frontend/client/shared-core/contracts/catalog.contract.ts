@@ -94,6 +94,7 @@ export interface ClientCatalogQuery {
 }
 
 export interface ClientCatalogSnapshot {
+  categories: CategoryBase[];
   collections: CollectionBase[];
   commercialModes: CommercialModeBase[];
   products: ProductBase[];

@@ -21,7 +21,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onNavigate }) => {
             <Text variant="h3">{strings.hero.title}</Text>
             <Text tone="muted">{strings.hero.subtitle}</Text>
             <Button onAction={() => onNavigate("/montar-box")}>{strings.hero.ctaPlans}</Button>
-            <Button appearance="outline" tone="neutral" onAction={() => onNavigate("/cortes")}>
+            <Button appearance="outline" tone="neutral" onAction={() => onNavigate("/catalogo")}>
               {strings.hero.ctaShowcase}
             </Button>
           </Stack>

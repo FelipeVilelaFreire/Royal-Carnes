@@ -27,14 +27,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, strings: allStri
           <Text variant="h3">{strings.hero.guestTitle}</Text>
           <Text tone="muted">{strings.hero.guestDescription}</Text>
         </Stack>
-        <Button onAction={() => onNavigate("/cortes")}>{strings.hero.primaryAction}</Button>
+        <Button onAction={() => onNavigate("/catalogo")}>{strings.hero.primaryAction}</Button>
         <Button appearance="outline" tone="neutral" onAction={() => onNavigate("/montar-box")}>{strings.hero.secondaryAction}</Button>
         <Stack gap="sm">
           <Text variant="h3">{strings.products.title}</Text>
-          {catalog.isLoading ? <Text tone="muted">{allStrings.cortes.catalogPage.loadingDescription}</Text> : null}
-          {catalog.error ? <Text tone="danger">{allStrings.cortes.catalogPage.errorDescription}</Text> : null}
+          {catalog.isLoading ? <Text tone="muted">{allStrings.catalogo.catalogPage.loadingDescription}</Text> : null}
+          {catalog.error ? <Text tone="danger">{allStrings.catalogo.catalogPage.errorDescription}</Text> : null}
           {!catalog.isLoading && !catalog.error && catalog.viewModel.products.length === 0 ? (
-            <Text tone="muted">{allStrings.cortes.catalogPage.emptyDescription}</Text>
+            <Text tone="muted">{allStrings.catalogo.catalogPage.emptyDescription}</Text>
           ) : null}
           {catalog.viewModel.products.slice(0, 3).map((product) => (
             <Surface key={product.id} appearance="soft" padding="md">
@@ -42,7 +42,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, strings: allStri
                 <Text variant="h3">{product.name}</Text>
                 {product.description ? <Text tone="muted">{product.description}</Text> : null}
                 {product.priceLabel ? <Text tone="primary">{product.priceLabel}</Text> : null}
-                <Button appearance="outline" tone="neutral" onAction={() => onNavigate("/cortes")}>
+                <Button appearance="outline" tone="neutral" onAction={() => onNavigate("/catalogo")}>
                   {strings.products.cardAction}
                 </Button>
               </Stack>

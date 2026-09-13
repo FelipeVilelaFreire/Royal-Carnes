@@ -24,7 +24,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ apiConfig, con
   return (
     <DashboardPage
       config={config}
-      isLoading={dashboard.isLoading}
+      isLoading={dashboard.isInitialLoading}
       onViewOrders={() => onNavigate?.(adminRoutes.pedidos)}
       t={t}
       viewModel={dashboard.viewModel}

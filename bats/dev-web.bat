@@ -2,19 +2,12 @@
 setlocal EnableExtensions
 title RoyalPrime - Dev web
 
-set "SCRIPT_DIR=%~dp0"
-
-echo.
-echo ============================================================
-echo RoyalPrime - iniciando client e admin
-echo ============================================================
-echo Client: http://localhost:3000
-echo Admin:  http://localhost:3001
-echo ============================================================
-echo.
-
-start "RoyalPrime Client 3000" "%SCRIPT_DIR%client.bat"
-start "RoyalPrime Admin 3001" "%SCRIPT_DIR%admin.bat"
-
-echo Janelas iniciadas.
-pause
+cd /d "%~dp0.."
+call node scripts\dev-local.mjs client
+if errorlevel 1 (
+  echo.
+  echo O Client Web nao iniciou. Verifique a mensagem acima.
+  echo Se a porta 3000 estiver em uso, feche o servidor anterior e tente de novo.
+  pause
+  exit /b 1
+)

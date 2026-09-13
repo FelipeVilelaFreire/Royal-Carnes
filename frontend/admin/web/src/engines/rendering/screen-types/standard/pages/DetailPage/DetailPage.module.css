@@ -1,16 +1,54 @@
 .page {
   background: transparent;
   min-block-size: 100%;
-  padding-block-end: var(--theme--spacing-3xl);
+  padding-block-end: var(--theme--spacing-space3xl);
   width: 100%;
 }
 
 .content {
-  padding-block-start: var(--theme--spacing-lg);
+  padding-block-start: var(--theme--spacing-spaceLg);
   width: 100%;
 }
 
+.detailHeader {
+  border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
+  padding-block-end: var(--theme--spacing-spaceMd);
+  width: 100%;
+}
+
+.identity {
+  min-inline-size: 0;
+}
+
+.identityCopy {
+  min-inline-size: 0;
+}
+
+.identityCopy h1 {
+  overflow-wrap: anywhere;
+}
+
+.headerMeta {
+  align-items: center;
+}
+
+.headerActions {
+  flex: 0 0 auto;
+}
+
+.primaryAction {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-background) 78%, var(--theme--color-primary));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-primary) 68%, transparent);
+  --ui-surface-color: var(--theme--color-primary);
+  --ui-surface-highlight-opacity: 14%;
+  --ui-surface-tint-opacity: 28%;
+}
+
 .detailCard {
+  width: 100%;
+}
+
+.tabbedContent {
   width: 100%;
 }
 
@@ -23,9 +61,31 @@
   width: 100%;
 }
 
-.sectionTitle {
+.detailSectionCard {
+  width: 100%;
+}
+
+.sectionHeader {
+  background: color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-10), transparent);
   border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
-  padding-block-end: var(--theme--spacing-sm);
+  padding: var(--theme--spacing-spaceMd);
+}
+
+.sectionIcon {
+  color: var(--theme--color-primary);
+  flex: 0 0 auto;
+}
+
+.sectionContent {
+  width: 100%;
+}
+
+.detailField {
+  min-block-size: var(--theme--dimensions-height-md);
+}
+
+.sectionTitle {
+  color: var(--theme--color-text);
 }
 
 .assetPreview {
@@ -39,6 +99,27 @@
 
 @media (max-width: 760px) {
   .page {
-    padding-block-end: var(--theme--spacing-xl);
+    padding-block-end: var(--theme--spacing-spaceXl);
+  }
+
+  .detailCard {
+    padding: var(--theme--spacing-spaceLg);
+  }
+
+  .detailHeader,
+  .identity {
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    flex: 1 1 100%;
+  }
+
+  .headerActions > * {
+    flex: 1 1 0;
+  }
+
+  .detailCard .detailGrid[data-columns="2"] {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

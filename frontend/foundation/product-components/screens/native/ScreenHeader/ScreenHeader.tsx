@@ -44,6 +44,8 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   const expandedTitleLineHeight = Number(typography?.lineHeightXl || 0);
   const collapsedTitleLineHeight = Number(typography?.lineHeightLg || expandedTitleLineHeight);
   const interpolate = (from: number, to: number) => from + ((to - from) * resolvedScrollProgress);
+  const descriptionVisibility = 1 - resolvedScrollProgress;
+  const descriptionLineHeight = Number(typography?.lineHeightMd || typography?.lineHeightLg || 0);
   const headerStyle = {
     borderBottomColor: showScrollBorder ? colors?.border : undefined,
     borderBottomWidth: showScrollBorder ? Number(borders?.medium || 0) * resolvedScrollProgress : Number(borders?.none || 0),
@@ -55,6 +57,13 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     fontSize: interpolate(expandedTitleSize, collapsedTitleSize),
     lineHeight: interpolate(expandedTitleLineHeight, collapsedTitleLineHeight),
   };
+  const descriptionStyle = resolvedMobileMode === "collapsible"
+    ? {
+      maxHeight: descriptionLineHeight * 2 * descriptionVisibility,
+      opacity: descriptionVisibility,
+      overflow: "hidden" as const,
+    }
+    : undefined;
 
   return (
     <Surface appearance={resolvedMobileMode === "collapsible" ? "soft" : "transparent"} style={headerStyle}>
@@ -63,7 +72,9 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
         <Text style={titleStyle} variant="h2" weight="bold">
           {resolveScreenHeaderMobileTitle({ mobileTitle, title })}
         </Text>
-        {description && shouldRenderScreenHeaderDescription(resolvedMobileMode) ? <Text tone="muted">{description}</Text> : null}
+        {description && shouldRenderScreenHeaderDescription(resolvedMobileMode) ? (
+          <Text style={descriptionStyle} tone="muted">{description}</Text>
+        ) : null}
       </Stack>
     </Surface>
   );

@@ -334,6 +334,19 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(public_response.data["name"], "Picanha suina")
         self.assertEqual([category["key"] for category in public_response.data["categories"]], ["suinos"])
 
+    def test_admin_can_soft_delete_product(self):
+        self.authenticate()
+        product = Product.objects.get(key="picanha")
+
+        response = self.client.delete(
+            f"/api/v1/catalog/admin/products/{product.id}/",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 204, response.data)
+        self.assertFalse(Product.objects.filter(id=product.id).exists())
+        self.assertIsNotNone(Product.all_objects.get(id=product.id).deleted_at)
+
     def test_variant_sku_is_unique_per_organization(self):
         product = Product.objects.get(key="maminha")
         existing = ProductVariant.objects.get(sku="PICANHA-1KG")

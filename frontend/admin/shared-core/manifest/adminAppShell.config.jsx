@@ -72,10 +72,10 @@ export const adminAppShellConfig = {
       routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes"]
     },
     drawer: {
-      inheritFrom: "sidebar"
+      routeKeys: ["deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes"]
     },
     bottomTabBar: {
-      routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries"]
+      routeKeys: ["dashboard", "clientes", "produtos", "pedidos"]
     },
     nativeTabBar: {
       inheritFrom: "bottomTabBar"
@@ -87,6 +87,7 @@ export const adminAppShellConfig = {
   layout: {
     desktop: "sidebar",
     mobile: "bottomTabBar",
+    mobileBreakpoint: "64em",
     totalCols: 20,
     viewports: {
       desktop: {
@@ -134,13 +135,21 @@ export const adminAppShellConfig = {
   },
   bottomTabBar: {
     enabled: true,
-    contentOffsetBottom: "var(--theme--dimensions-height-3xl)"
+    contentOffsetBottom: "calc(var(--theme--dimensions-height-3xl) + var(--theme--spacing-space2xl))",
+    presentation: "floating",
+    more: {
+      enabled: true,
+      iconIntent: "more",
+      labelKey: "moreNavigationLabel",
+      titleKey: "moreNavigationTitle"
+    }
   },
   nativeTabBar: {
     enabled: true
   },
   drawer: {
     enabled: true,
+    mobilePresentation: "bottomSheet",
     position: "left"
   },
   footer: {

@@ -48,7 +48,11 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
 }) => {
   const shellRef = useRef<HTMLDivElement>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const mobileBreakpoint = config?.layout?.mobileBreakpoint || "48em";
+  const mobileQuery = `(max-width: ${mobileBreakpoint})`;
+  const [isMobileScreen, setIsMobileScreen] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia(mobileQuery).matches
+  );
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(Boolean(config?.sidebar?.defaultCollapsed));
   const [themeMode, setThemeMode] = useState<string>(() => config?.theme?.defaultMode || "dark");
@@ -63,12 +67,12 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
   }, [config?.theme]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 48em)");
+    const mediaQuery = window.matchMedia(mobileQuery);
     const handleResize = () => setIsMobileScreen(mediaQuery.matches);
     handleResize();
     mediaQuery.addEventListener("change", handleResize);
     return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
+  }, [mobileQuery]);
 
   useEffect(() => {
     let frameId = 0;
@@ -179,6 +183,7 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
         className={[styles.shell, model.sidebarEnabled ? styles.shellWithSidebar : ""].filter(Boolean).join(" ")}
         data-app-shell-mode={model.effectiveMode}
         data-app-shell-material={resolvedConfig?.visual?.material}
+        data-mobile-screen={isMobileScreen ? "true" : "false"}
         data-sidebar-collapsed={model.sidebarEnabled && isSidebarCollapsed ? "true" : undefined}
         ref={shellRef}
       >
@@ -210,12 +215,13 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
       </div>
       <AppShellDrawer
         config={resolvedConfig}
+        isMobileScreen={isMobileScreen}
         isOpen={isDrawerOpen}
         model={model}
         onClose={() => setIsDrawerOpen(false)}
         onNavigate={handleNavigate}
       />
-      <AppShellBottomTabBar model={model} onNavigate={handleNavigate} />
+      <AppShellBottomTabBar model={model} onNavigate={handleNavigate} onOpenMore={() => setIsDrawerOpen(true)} />
       </div>
     </UiProvider>
   );

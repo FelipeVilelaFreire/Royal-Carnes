@@ -65,6 +65,28 @@ export interface AppShellHeaderAction {
   type: "route" | "scroll" | "themeToggle";
 }
 
+export interface AppShellBottomTabBarMoreConfig {
+  enabled?: boolean;
+  iconIntent?: string;
+  label?: string;
+  labelKey?: string;
+  title?: string;
+  titleKey?: string;
+}
+
+export interface AppShellBottomTabBarConfig {
+  contentOffsetBottom?: string;
+  enabled?: boolean;
+  more?: AppShellBottomTabBarMoreConfig;
+  presentation?: "docked" | "floating";
+}
+
+export interface AppShellDrawerConfig {
+  enabled?: boolean;
+  mobilePresentation?: "bottomSheet" | "side";
+  position?: "left" | "right";
+}
+
 export interface AppShellBrand {
   name?: string;
   logo?: string;
@@ -95,6 +117,7 @@ export interface AppShellViewportLayout {
 
 export interface AppShellLayoutConfig {
   desktop?: string;
+  mobileBreakpoint?: string;
   mobile?: string;
   native?: string;
   totalCols?: number;
@@ -104,8 +127,8 @@ export interface AppShellLayoutConfig {
 export interface AppShellConfig {
   auth?: any;
   background?: UiBackgroundConfig;
-  bottomTabBar?: any;
-  drawer?: any;
+  bottomTabBar?: AppShellBottomTabBarConfig;
+  drawer?: AppShellDrawerConfig;
   footer?: any;
   header?: any;
   layout?: AppShellLayoutConfig;
@@ -137,9 +160,17 @@ export interface ResolvedAppShellNavigationGroup {
   items: ResolvedAppShellNavigationItem[];
 }
 
+export interface ResolvedAppShellBottomTabBarMore {
+  iconIntent: string;
+  label: string;
+  title: string;
+}
+
 export interface ResolvedAppShellModel {
   activePath: string;
   bottomItems: ResolvedAppShellNavigationItem[];
+  bottomMore?: ResolvedAppShellBottomTabBarMore;
+  bottomTabPresentation: "docked" | "floating";
   bottomTabEnabled: boolean;
   brand: Required<AppShellBrand>;
   contentOffsetBottom: string;

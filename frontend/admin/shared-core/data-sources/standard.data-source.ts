@@ -668,3 +668,22 @@ export async function updateAdminStandardRow(
     return { error: normalizeApiError(err), row: null };
   }
 }
+
+export async function deleteAdminStandardRow(
+  dataSource: AdminStandardDataSourceConfig | undefined,
+  rowId: string | number | undefined,
+  apiConfig: ApiClientConfig = {},
+): Promise<AdminStandardMutationResult> {
+  if (!dataSource?.key || rowId === undefined) {
+    return { error: null, row: null };
+  }
+
+  try {
+    if (dataSource.key === "produtos") {
+      await createAdminCatalogApi(apiConfig).remove(rowId);
+    }
+    return { error: null, row: null };
+  } catch (err) {
+    return { error: normalizeApiError(err), row: null };
+  }
+}

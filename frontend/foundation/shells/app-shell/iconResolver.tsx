@@ -30,7 +30,7 @@ export function renderAppShellIcon(item: AppShellNavigationItem, color: string, 
   if (["delivery", "deliveries", "truck", "royaldelivery", "tracking"].includes(name)) return <TruckIcon size={size} color={color} />;
   if (["settings", "configuracoes"].includes(name)) return <SettingsIcon size={size} color={color} />;
   if (["success", "check"].includes(name)) return <CheckIcon size={size} color={color} />;
-  if (["menu"].includes(name)) return <MenuIcon size={size} color={color} />;
+  if (["more", "ellipsis", "menu"].includes(name)) return <MenuIcon size={size} color={color} />;
   if (["search"].includes(name)) return <SearchIcon size={size} color={color} />;
   if (["account", "user", "usuarios", "clientes", "socios", "minhaconta", "myaccount"].includes(name)) return <UserIcon size={size} color={color} />;
   if (["chevron", "next"].includes(name)) return <ChevronRightIcon size={size} color={color} />;

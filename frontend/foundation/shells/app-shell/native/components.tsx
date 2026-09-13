@@ -14,6 +14,7 @@ export type NativeHostComponentProps = Record<string, any> & {
 export type NativeHostComponent = React.ComponentType<NativeHostComponentProps>;
 
 export interface NativeAppShellHostComponents {
+  Image?: NativeHostComponent;
   Pressable: NativeHostComponent;
   SafeAreaView?: NativeHostComponent;
   ScrollView?: NativeHostComponent;

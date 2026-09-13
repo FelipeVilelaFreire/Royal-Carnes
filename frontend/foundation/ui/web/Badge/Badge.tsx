@@ -96,7 +96,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
     "--ui-badge-min-block-size": resolved.blockSize ? `${resolved.blockSize}px` : "auto",
     "--ui-badge-padding-x": `${resolved.paddingX}px`,
     "--ui-badge-padding-y": `${resolved.paddingY}px`,
-    "--ui-badge-text-color": semanticToneToken(tone || resolved.tone) || `var(--theme--color-${toTextTone(tone || resolved.tone, appearance || resolved.appearance)}, var(--ui-surface-color, var(--theme--color-text)))`,
+    "--ui-badge-text-color": semanticStatusToken(statusColor, tone || resolved.tone) || semanticToneToken(tone || resolved.tone) || `var(--theme--color-${toTextTone(tone || resolved.tone, appearance || resolved.appearance)}, var(--ui-surface-color, var(--theme--color-text)))`,
     ...style,
   } as CSSProperties;
 

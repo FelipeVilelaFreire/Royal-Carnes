@@ -229,6 +229,20 @@ export function createAdminCatalogApi(config: ApiClientConfig = {}) {
       await throwIfApiError(response);
       return mapAdminProductDto((await response.json()) as AdminProductDto);
     },
+    async remove(productId: string | number): Promise<void> {
+      const response = await fetcher(
+        resolveUrl(config.baseUrl, `/api/v1/catalog/admin/products/${productId}/`),
+        {
+          method: "DELETE",
+          headers: buildApiHeaders({
+            token: config.getAccessToken?.(),
+            organizationSlug: config.organizationSlug,
+          }),
+        },
+      );
+
+      await throwIfApiError(response);
+    },
   };
 }
 

@@ -21,6 +21,8 @@ export const adminPtBR = {
   appShell: {
     closeDrawerAriaLabel: "Fechar navegação",
     collapseSidebar: "Recolher menu",
+    moreNavigationLabel: "Mais",
+    moreNavigationTitle: "Mais opções",
     openDrawerAriaLabel: "Abrir navegação",
     searchPlaceholder: "Buscar registros",
     navigation: {
@@ -99,6 +101,7 @@ export const adminPtBR = {
     save: "Salvar",
     edit: "Editar",
     delete: "Excluir",
+    remove: "Remover",
     restore: "Restaurar",
     actions: "Ações",
     searchPlaceholder: "Buscar registros...",
@@ -250,12 +253,20 @@ export const adminPtBR = {
     }
   },
   standard: {
+    clearFilters: "Limpar filtros",
+    emptyFiltered: "Nenhum registro corresponde aos filtros aplicados.",
     apiErrorStatus: "Status",
     apiErrorTitle: "Nao foi possivel carregar os dados reais do backend.",
     apiErrorUnknown: "Erro sem status HTTP.",
     loading: "Atualizando",
     loadingRows: "Atualizando registros...",
-    saving: "Salvando"
+    nextPage: "Proxima pagina",
+    paginationAriaLabel: "Paginacao da lista",
+    previousPage: "Pagina anterior",
+    resultsCount: "{count} registros",
+    saving: "Salvando",
+    searchLabel: "Buscar",
+    showingPage: "Exibindo {shown} de {total} registros"
   },
   pedidos: {
     title: "Pedidos",
@@ -418,6 +429,12 @@ export const adminPtBR = {
     },
     detail: {
       title: "Detalhe do produto",
+      delete: {
+        confirm: "Excluir produto",
+        description: "O produto será removido do catálogo.",
+        label: "Excluir produto",
+        title: "Excluir este produto?"
+      },
       tabs: {
         data: "Dados",
         collections: "Coleções",

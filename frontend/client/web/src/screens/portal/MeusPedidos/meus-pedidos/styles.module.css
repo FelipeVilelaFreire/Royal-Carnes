@@ -10,15 +10,10 @@
 }
 
 .content {
-  animation: orders-enter var(--theme--motion-durationSm) var(--theme--motion-easingStandard) both;
   padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
 }
 
-.hero {
-  align-items: end;
-  display: grid;
-  gap: var(--theme--spacing-spaceXl);
-  grid-template-columns: minmax(0, 12fr) minmax(0, 8fr);
+.summary {
   margin-bottom: var(--theme--spacing-spaceLg);
 }
 
@@ -230,24 +225,11 @@
   --ui-surface-border: var(--theme--color-border);
 }
 
-@keyframes orders-enter {
-  from {
-    opacity: 0;
-    transform: translateY(var(--theme--spacing-spaceSm));
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @media (max-width: 56em) {
   .content {
     padding-block: var(--theme--spacing-spaceLg) calc(var(--theme--spacing-space3xl) + env(safe-area-inset-bottom));
   }
 
-  .hero,
   .currentGrid,
   .historyRow,
   .statsGrid,

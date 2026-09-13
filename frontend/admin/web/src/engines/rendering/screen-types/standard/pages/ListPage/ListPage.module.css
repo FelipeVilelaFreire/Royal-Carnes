@@ -1,74 +1,185 @@
 .page {
   background: transparent;
   min-block-size: 100%;
-  padding-block-end: var(--theme--spacing-3xl);
+  padding-block-end: var(--theme--spacing-space3xl);
   width: 100%;
 }
 
 .content {
-  padding-block-start: var(--theme--spacing-lg);
+  padding-block-start: var(--theme--spacing-spaceMd);
+  width: 100%;
+}
+
+.header,
+.toolbarCard,
+.tableCard,
+.errorCard {
   width: 100%;
 }
 
 .heading {
+  flex: 1 1 0;
   max-inline-size: min(100%, var(--theme--layout-container-md));
+  min-inline-size: 0;
 }
 
 .toolbar {
-  width: 100%;
+  align-items: end;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--theme--spacing-spaceSm);
 }
 
 .searchInput {
-  flex: 1 1 min(100%, 320px);
+  flex: 1 1 var(--theme--layout-container-xs);
+  max-inline-size: var(--theme--layout-container-xs);
 }
 
-.filterSelect {
-  flex: 0 1 220px;
+.filterPicker {
+  flex: 0 1 var(--theme--dimensions-minWidth-xl);
+  min-inline-size: var(--theme--dimensions-minWidth-xl);
 }
 
-.tableCard {
-  width: 100%;
+.statusFilterPicker {
+  flex: 0 0 32%;
+}
+
+.statusFilterPicker {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.createIcon {
+  transform: rotate(45deg);
+}
+
+.createButton {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-background) 78%, var(--theme--color-primary));
+  --ui-surface-border: color-mix(in srgb, var(--theme--color-primary) 68%, transparent);
+  --ui-surface-color: var(--theme--color-primary);
+  --ui-surface-highlight-opacity: 14%;
+  --ui-surface-tint-opacity: 28%;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
 }
 
 .errorCard {
-  border-color: var(--theme--color-danger, var(--theme--color-border));
-  width: 100%;
+  border-color: var(--theme--color-danger);
+}
+
+.tableCard {
+  overflow: hidden;
 }
 
 .tableScroller {
+  margin-block-start: calc(var(--ui-surface-padding-y) * -1);
+  margin-inline: calc(var(--ui-surface-padding-x) * -1);
+  max-inline-size: none;
+  min-inline-size: 0;
   overflow-x: auto;
-  width: 100%;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--theme--color-border) transparent;
+  width: calc(100% + (var(--ui-surface-padding-x) * 2));
 }
 
 .table {
-  border-collapse: collapse;
-  min-inline-size: min(100%, 780px);
+  border-collapse: separate;
+  border-spacing: 0;
+  min-inline-size: 0;
+  table-layout: fixed;
   text-align: left;
   width: 100%;
 }
 
+.table thead {
+  background: color-mix(in srgb, var(--theme--color-surface) 76%, var(--theme--color-background));
+}
+
 .table th {
-  border-block-end: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
+  border-block-end: var(--theme--border-width-sm) solid color-mix(in srgb, var(--theme--color-accent) 48%, var(--theme--color-border));
   color: var(--theme--color-muted);
   font-family: var(--theme--typography-bodyFamily);
   font-size: var(--theme--typography-sizeXs);
   font-weight: var(--theme--typography-bold);
-  padding: var(--theme--spacing-sm) var(--theme--spacing-md);
+  letter-spacing: var(--theme--typography-letterSpacingWide);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sortButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  gap: var(--theme--spacing-spaceXs);
+  letter-spacing: inherit;
+  max-inline-size: 100%;
+  overflow: hidden;
+  padding: 0;
+  text-align: inherit;
+  text-transform: inherit;
+}
+
+.sortButton span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sortButton:hover,
+.sortButton:focus-visible {
+  color: var(--theme--color-accent);
+}
+
+.sortMark {
+  color: var(--theme--color-muted);
+  font-size: var(--theme--typography-sizeSm);
+  line-height: 1;
+  transform: rotate(90deg);
+}
+
+.sortButton[data-sorted] .sortMark {
+  color: var(--theme--color-accent);
+}
+
+.sortAscending {
+  transform: rotate(-90deg);
+}
+
+.sortDescending {
+  transform: rotate(90deg);
 }
 
 .table td {
-  border-block-end: var(--theme--border-width-sm, 1px) solid
-    color-mix(in srgb, var(--theme--color-border) 72%, transparent);
+  border-block-end: var(--theme--border-width-sm) solid color-mix(in srgb, var(--theme--color-border) 64%, transparent);
   color: var(--theme--color-text);
   font-family: var(--theme--typography-bodyFamily);
   font-size: var(--theme--typography-sizeSm);
-  padding: var(--theme--spacing-md);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
+  overflow: hidden;
+  text-overflow: ellipsis;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .table tbody tr {
+  block-size: calc(var(--theme--dimensions-height-md) + (var(--theme--spacing-spaceSm) * 2));
   cursor: pointer;
+  transition: background-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard), transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--theme--color-accent) 7%, transparent);
+  transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
+}
+
+.table tbody tr:hover td:first-child {
+  box-shadow: inset var(--theme--border-width-sm) 0 var(--theme--color-accent);
 }
 
 .table tbody tr:last-child td {
@@ -77,31 +188,75 @@
 
 .mediaThumb {
   aspect-ratio: 1;
-  border: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
+  block-size: var(--theme--dimensions-height-md);
+  border: var(--theme--border-width-sm) solid var(--theme--color-border);
   border-radius: var(--theme--radius-md);
+  display: block;
   flex: 0 0 auto;
-  inline-size: var(--theme--sizing-control-md, 40px);
+  inline-size: var(--theme--dimensions-height-md);
   object-fit: cover;
+  object-position: center;
+}
+
+.actionCell {
+  text-align: end;
 }
 
 .emptyCell {
   color: var(--theme--color-muted) !important;
-  padding-block: var(--theme--spacing-xl) !important;
+  padding-block: var(--theme--spacing-space2xl) !important;
   text-align: center;
 }
 
-.paginationText {
-  border-block-start: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
-  padding-block-start: var(--theme--spacing-md);
+.tableFooter {
+  align-items: center;
+  border-block-start: var(--theme--border-width-sm) solid var(--theme--color-border);
+  display: flex;
+  gap: var(--theme--spacing-spaceMd);
+  justify-content: space-between;
+  margin-block-start: calc(var(--ui-card-gap) * -1);
+  margin-inline: calc(var(--ui-surface-padding-x) * -1);
+  padding: var(--theme--spacing-spaceSm) var(--ui-surface-padding-x);
+  width: calc(100% + (var(--ui-surface-padding-x) * 2));
+}
+
+.tableFooter p {
+  margin: 0;
+}
+
+.footerPagination {
+  align-items: center;
+  display: flex;
+  gap: var(--theme--spacing-spaceSm);
 }
 
 @media (max-width: 760px) {
   .page {
-    padding-block-end: var(--theme--spacing-xl);
+    padding-block-end: var(--theme--spacing-spaceXl);
+  }
+
+  .searchInput,
+  .filterPicker {
+    flex: 1 1 100%;
+    inline-size: 100%;
+  }
+
+  .searchInput {
+    max-inline-size: none;
+  }
+
+  .toolbar {
+    align-items: stretch;
+    flex-wrap: wrap;
   }
 
   .table th,
   .table td {
-    padding: var(--theme--spacing-xs) var(--theme--spacing-sm);
+    padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
+  }
+
+  .tableFooter {
+    align-items: start;
+    flex-direction: column;
   }
 }

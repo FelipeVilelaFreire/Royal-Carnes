@@ -192,6 +192,36 @@ Admin: sidebar desktop e bottomTabBar mobile conforme manifest.
 Native usa o contrato mobile equivalente, sem assumir que adapter pronto prova
 render nativo funcionando.
 
+### Gramatica obrigatoria de pagina
+
+Toda rota oficial deve montar a casca uma unica vez e manter a mesma ordem
+fisica. A screen nao recria capacidade de navegacao ou de rodape:
+
+```text
+Web desktop
+  AppShell Header fixo
+    -> ScreenHeader da rota
+    -> conteudo da screen, secoes e estados
+    -> Footer, quando a config da surface o ativa
+
+Portal mobile/native
+  ScreenHeader fixo ou recolhivel
+    -> conteudo da screen, secoes e estados
+    -> BottomTabBar, quando a config do Portal o ativa
+```
+
+`ScreenHeader` e o dono do contexto da rota: eyebrow, titulo, descricao,
+gutter e transicao de scroll. Ele e o primeiro filho real da screen e fica
+fora de qualquer wrapper animado com `transform`, pois esse wrapper muda a
+referencia de filhos `position: fixed`. O conteudo pode usar
+`main.appear-on-scroll` somente abaixo dele.
+
+O Header global, Footer e BottomTabBar continuam pertencendo ao AppShell;
+cada surface apenas os ativa, oculta ou configura por manifest. A Landing pode
+usar Header + Footer sem BottomTabBar. Access, modal e telas utilitarias podem
+ter composicao propria quando declarada. Nenhuma excecao autoriza Header,
+Footer ou BottomTabBar local.
+
 O bootstrap importa config/navigation/routes e renderiza a screen ativa.
 Screen types existentes recebem configuracao, dados e callbacks; nao criar uma
 engine nova para substituir essa conexao simples.

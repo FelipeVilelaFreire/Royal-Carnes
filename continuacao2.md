@@ -42,7 +42,7 @@ screens/
   landing/
   portal/
     Home/
-    Cortes/
+    Catalogo/
     MontarBox/
     MeusPedidos/
     Perfil/
@@ -119,6 +119,24 @@ Se uma tela sabe demais, calcula regra de negocio, inventa dados comerciais ou
 desenha visual estatico inline, ela precisa ser corrigida.
 
 ## Estado Atual Do Client
+
+### Gramatica de pagina Client
+
+Este e o padrao para continuar Portal Client sem recriar casca local:
+
+```text
+Web desktop
+  AppShell Header fixo -> ScreenHeader -> conteudo -> Footer por config
+
+Portal mobile/native
+  ScreenHeader fixo/recolhivel -> conteudo -> BottomTabBar por config
+```
+
+`ScreenHeader` deve ser o primeiro filho real da screen e ficar fora de
+`main.appear-on-scroll` ou outro ancestral com `transform`. AppShell continua
+dono de Header, Footer e BottomTabBar; Landing e Access sao composicoes
+declaradas, nao excecoes locais. Antes de alterar uma nova aba, mapear essa
+ordem e o manifest que ativa a casca.
 
 Checkpoint anterior publicado:
 
@@ -665,7 +683,7 @@ CortesView
   -> catalogo seed/backend real
 ```
 
-`cortes-catalog.view-model.ts` nao importa mais `cuts.mock`,
+`catalogo.view-model.ts` nao importa mais `cuts.mock`,
 `mockCutsCatalog` ou `mockCutCategories`. Loading, vazio e erro sao estados
 reais da API; erro nao troca silenciosamente para dados demonstrativos.
 
@@ -1001,3 +1019,119 @@ fixacao no viewport e a transicao em desktop e mobile. O typecheck nao foi
 conclusivo neste ambiente porque `node_modules/react` estava ausente. Nao fazer
 commit, reset ou limpeza: este corte e parte da worktree compartilhada na branch
 `feature/shared-core-kit-reset`.
+
+## Atualizacao - Paridade de ScreenHeader nas screens Portal (2026-09-13)
+
+As tres screens principais do Portal agora consomem o mesmo contrato
+`ScreenHeader` em Web e Native:
+
+```text
+Cortes       -> Web + Native
+Montar Box   -> Web + Native
+Meus Pedidos -> Web + Native
+```
+
+No Native, `MeusPedidosView` segue a mesma composicao de `CortesView` e
+`MontarBoxView`: `ScreenHeader` como indice `0` de um `ScrollView` sticky,
+progresso normalizado de scroll e modo mobile `collapsible`. A copy de eyebrow
+e titulo mobile continua vindo de `shared-core/locales`, incluindo o titulo
+completo `Meus Pedidos`; nao criar uma cabeca local nesta tela.
+
+Validacao estrutural: `git diff --check` deve continuar limpo. O typecheck
+Native alcancou a tela sem erro proprio, mas o checkout ainda possui erros
+anteriores em `LandingView`, `HomeView` e na resolucao de `react-dom`; fazer QA
+em runtime Native quando o ambiente estiver disponivel.
+
+## Atualizacao - Conteudo Catalogo separado por responsabilidade (2026-09-13)
+
+`Catalogo` e a feature e rota publica. A screen deixou de concentrar filtros,
+estados e cards em um unico arquivo; a arvore atual e:
+
+```text
+client/shared-core/features/catalogo/
+  useCatalogoContent.ts        estado, carga real, busca, filtros e ordenacao
+
+client/web/src/screens/portal/Catalogo/
+  CatalogoView/
+    CatalogoView.tsx           ScreenHeader + Container + composicao
+    CatalogoView.module.css
+  content/
+    CatalogoContent/
+      CatalogoContent.tsx
+      CatalogoContent.module.css
+    CatalogoCategoryRail/
+      CatalogoCategoryRail.tsx
+      CatalogoCategoryRail.module.css
+    CatalogoToolbar/
+      CatalogoToolbar.tsx
+      CatalogoToolbar.module.css
+    CatalogoFeedback/
+      CatalogoFeedback.tsx
+      CatalogoFeedback.module.css
+    CatalogoProductGrid/
+      CatalogoProductGrid.tsx
+      CatalogoProductGrid.module.css
+
+client/mobile/src/screens/portal/Catalogo/
+  CatalogoView/
+    CatalogoView.tsx           Scroll sticky + ScreenHeader + composicao
+    styles.ts
+  content/
+    CatalogoContent/
+      CatalogoContent.tsx
+      styles.ts
+    CatalogoToolbar/
+      CatalogoToolbar.tsx
+      styles.ts
+    CatalogoFeedback/
+      CatalogoFeedback.tsx
+      styles.ts
+    CatalogoProductFeed/
+      CatalogoProductFeed.tsx
+      styles.ts
+```
+
+Web e Native consomem o mesmo controller de `shared-core`, portanto categoria,
+busca, ordenacao, carga, erro e vazio continuam com o mesmo fluxo real. Cada
+plataforma conserva somente sua composicao visual: grid no Web e feed no
+Native. `ProductItemCard` permanece o componente reutilizado para os cards.
+
+## Atualizacao - Catalogo como nome e rota canonicos (2026-09-13)
+
+`Catalogo` e o nome de feature, screen e rota para a vitrine inteira. `Cortes`
+permanece apenas como palavra de dominio dentro da copy e como alias legado de
+URL; nao usar esse nome para criar novos arquivos, imports ou route keys.
+
+```text
+Web screen:    frontend/client/web/src/screens/portal/Catalogo/CatalogoView/CatalogoView.tsx
+Native screen: frontend/client/mobile/src/screens/portal/Catalogo/CatalogoView/CatalogoView.tsx
+Shared model:  frontend/client/shared-core/view-models/catalogo.view-model.ts
+Feature state: frontend/client/shared-core/features/catalogo/
+Official URL:  /catalogo
+Legacy alias:  /cortes -> a mesma screen Catalogo
+```
+
+A chave `catalogo` e a usada por `clientRoutes`, navegacao Portal, AppShell,
+Home e Landing. A pagina Next de `/cortes` existe somente para compatibilidade;
+qualquer novo link deve usar `/catalogo`.
+
+### CatalogoCategoryRail - contrato Web e Native
+
+O trilho de categorias e um componente proprio nas duas plataformas, alimentado
+somente por `catalogo.categories` do controller real. Esse controller consulta
+`GET /api/v1/catalog/categories/` na organizacao ativa; portanto, nao deriva a
+lista a partir de cards nem mantem categorias hardcoded. Uma categoria ativa
+criada no Admin aparece no proximo carregamento do catalogo, inclusive se ainda
+nao possuir produtos. `Todos` e a unica opcao virtual de interface, fornecida
+pelas strings ativas. O rail fica antes de busca e ordenacao:
+
+```text
+Web:    content/CatalogoCategoryRail/CatalogoCategoryRail.tsx + .module.css
+Native: content/CatalogoCategoryRail/CatalogoCategoryRail.tsx + styles.ts
+```
+
+No Web, o rail oculta a barra do browser e preserva pills compactas, com estado
+ativo da Foundation em cobre. No Native, ele usa `ScrollView` horizontal sem
+indicador e um controle Foundation com icone semantico `next`; o controle avanca
+o carrossel e desaparece ao chegar ao fim. Nao voltar a colocar categorias
+dentro de `CatalogoToolbar` ou expor uma barra horizontal de rolagem.

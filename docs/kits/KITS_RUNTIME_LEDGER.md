@@ -40,7 +40,7 @@ entrega o view-model e qual endpoint/fallback ainda sustenta o dado.
 | Kit | Estado atual | Shared-core ativo | Render ja conectado | Gap principal |
 | --- | --- | --- | --- | --- |
 | 01 Auth & Users | local foundation | client auth/session, admin auth/users | Portal auth gate, AuthModal legado | reduzir app-shell/auth legado |
-| 02 Catalog | local foundation | catalog API/hooks/view-models, mocks temporarios | Cortes/Pedido parcialmente | eliminar regra de catalogo em TSX antigo |
+| 02 Catalog | local foundation | catalog API/hooks/view-models, mocks temporarios | Catalogo/Pedido parcialmente | eliminar regra de catalogo em TSX antigo |
 | 03 Subscriptions | local foundation + corte render-only | plans, subscription, current cycle, fallback, view-model | `MinhaCaixaView` web/mobile | backend real e fallbackOnError de producao |
 | 04 Inventory | local foundation | admin inventory API/hooks/view-models | admin ainda parcial | conectar telas admin render-only |
 | 05 Orders | local foundation + admin base real | config/me/detail/create, fallback, view-model, admin standard | `MeusPedidosView` web/mobile; Admin Pedidos com detalhe 360 | validar Pedidos no browser e expor acoes de status |
@@ -87,7 +87,7 @@ frontend/client/shared-core/api/catalog.api.ts
 frontend/client/shared-core/hooks/useClientCatalog.ts
 frontend/client/shared-core/hooks/useClientProductDetail.ts
 frontend/client/shared-core/view-models/catalog.view-model.ts
-frontend/client/shared-core/view-models/cortes-catalog.view-model.ts
+frontend/client/shared-core/view-models/catalogo.view-model.ts
 frontend/client/shared-core/mocks/catalog/
 ```
 

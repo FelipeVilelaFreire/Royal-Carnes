@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { normalizeApiError, type ApiErrorEnvelope } from "../../../shared-core";
 import {
   ensureAdminDevAuthBypassAccessToken,
+  readAdminDevAuthBypassAccessToken,
   type AdminDevAuthBypassOptions,
 } from "../api/dev-auth-bypass.api";
 
@@ -20,9 +21,9 @@ export function useAdminDevAuthBypassToken({
   enabled,
   options,
 }: UseAdminDevAuthBypassTokenOptions): UseAdminDevAuthBypassTokenResult {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(() => enabled ? readAdminDevAuthBypassAccessToken() : null);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
-  const [isLoading, setIsLoading] = useState(enabled);
+  const [isLoading, setIsLoading] = useState(() => enabled && !readAdminDevAuthBypassAccessToken());
   const stableOptions = useMemo(
     () => options,
     [options.baseUrl, options.credentials.email, options.credentials.password, options.organizationSlug],
@@ -35,6 +36,14 @@ export function useAdminDevAuthBypassToken({
       setIsLoading(false);
       setToken(null);
       setError(null);
+      return () => {
+        isActive = false;
+      };
+    }
+
+    if (readAdminDevAuthBypassAccessToken()) {
+      setToken(readAdminDevAuthBypassAccessToken());
+      setIsLoading(false);
       return () => {
         isActive = false;
       };

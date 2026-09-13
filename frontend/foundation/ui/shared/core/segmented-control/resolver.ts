@@ -47,6 +47,7 @@ export const resolveSegmentedControlConfig = (
   variants: {
     panel: mergeVariantRecipe(DEFAULT_SEGMENTED_CONTROL_CONFIG.variants.panel, overrides?.variants?.panel),
     inline: mergeVariantRecipe(DEFAULT_SEGMENTED_CONTROL_CONFIG.variants.inline, overrides?.variants?.inline),
+    underline: mergeVariantRecipe(DEFAULT_SEGMENTED_CONTROL_CONFIG.variants.underline, overrides?.variants?.underline),
   },
 });
 

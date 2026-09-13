@@ -70,7 +70,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         title: product.name,
         description: product.description,
         imageUrl: product.imageUrl,
-        routeKey: "cortes",
+        routeKey: "catalogo",
         meta: product.priceLabel || strings.products.defaultMeta,
       }));
 
@@ -167,7 +167,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <span className={styles.eyebrow}>{strings.products.badge}</span>
             <Text as="h2" variant="h2">{strings.products.title}</Text>
           </Stack>
-          <Button appearance="outline" tone="neutral" size="sm" onClick={() => navigateTo("cortes")}>
+          <Button appearance="outline" tone="neutral" size="sm" onClick={() => navigateTo("catalogo")}>
             {strings.products.action}
           </Button>
         </div>

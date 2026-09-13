@@ -86,7 +86,6 @@
 }
 
 .shell[data-app-shell-material="glass"] .body,
-.shell[data-app-shell-material="glass"] .bottomTabBar,
 .shell[data-app-shell-material="glass"] .drawerPanel {
   position: relative;
   z-index: 1;
@@ -99,6 +98,18 @@
 
 .shellWithSidebar .body {
   margin-inline-start: var(--app-shell-sidebar-rail-width);
+}
+
+.shell[data-mobile-screen="true"] .bottomTabBar {
+  display: flex;
+}
+
+.shell[data-mobile-screen="true"] .sidebar {
+  display: none;
+}
+
+.shellWithSidebar[data-mobile-screen="true"] .body {
+  margin-inline-start: 0;
 }
 
 .body {
@@ -469,6 +480,19 @@
   justify-content: flex-end;
 }
 
+.drawerLayerBottomSheet {
+  align-items: flex-end;
+  justify-content: stretch;
+}
+
+.drawerLayerBottomSheet .drawerBackdrop {
+  animation: app-shell-drawer-backdrop-enter var(--theme--motion-duration-md) var(--theme--motion-easingStandard) both;
+}
+
+.drawerLayerBottomSheet[data-state="closed"] .drawerBackdrop {
+  animation-name: app-shell-drawer-backdrop-exit;
+}
+
 .drawerBackdrop {
   background: var(--app-shell-drawer-backdrop-bg);
   backdrop-filter: blur(var(--theme--blur-sm));
@@ -495,6 +519,83 @@
   max-width: calc(100% - var(--theme--spacing-spaceMd));
   width: var(--app-shell-drawer-width, calc((var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-4xl)) / 2));
   z-index: var(--theme--z-index-appShellDrawer, 1400);
+}
+
+.drawerPanelBottomSheet {
+  animation: app-shell-bottom-sheet-enter var(--theme--motion-duration-lg) var(--theme--motion-easingStandard) both;
+  border-block-end: var(--theme--borders-none);
+  border-end-end-radius: var(--app-shell-space-none);
+  border-end-start-radius: var(--app-shell-space-none);
+  border-start-end-radius: var(--theme--radius-2xl);
+  border-start-start-radius: var(--theme--radius-2xl);
+  height: auto;
+  max-block-size: calc(100dvb - var(--theme--spacing-spaceMd));
+  max-width: 100%;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.drawerLayerBottomSheet[data-state="closed"] .drawerPanelBottomSheet {
+  animation-name: app-shell-bottom-sheet-exit;
+}
+
+.drawerSheetTitle {
+  color: var(--app-shell-color);
+  font-size: var(--theme--typography-sizeLg);
+  font-weight: var(--theme--typography-bold);
+}
+
+.drawerSheetHandle {
+  align-self: center;
+  background: color-mix(in srgb, var(--app-shell-color) 28%, transparent);
+  border-radius: var(--theme--radius-full);
+  block-size: var(--theme--borders-medium);
+  flex: 0 0 auto;
+  inline-size: var(--theme--dimensions-minWidth-sm);
+}
+
+@keyframes app-shell-drawer-backdrop-enter {
+  from {
+    opacity: var(--theme--opacity-0);
+  }
+
+  to {
+    opacity: var(--theme--opacity-100);
+  }
+}
+
+@keyframes app-shell-drawer-backdrop-exit {
+  from {
+    opacity: var(--theme--opacity-100);
+  }
+
+  to {
+    opacity: var(--theme--opacity-0);
+  }
+}
+
+@keyframes app-shell-bottom-sheet-enter {
+  from {
+    opacity: var(--theme--opacity-0);
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: var(--theme--opacity-100);
+    transform: translateY(0);
+  }
+}
+
+@keyframes app-shell-bottom-sheet-exit {
+  from {
+    opacity: var(--theme--opacity-100);
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: var(--theme--opacity-0);
+    transform: translateY(100%);
+  }
 }
 
 .shell[data-app-shell-material="glass"] .drawerPanel {
@@ -854,6 +955,36 @@
     color-mix(in srgb, var(--app-shell-panel-bg) 88%, var(--app-shell-background));
   backdrop-filter: blur(var(--theme--blur-lg));
   box-shadow: var(--app-shell-bottom-shadow), inset 0 var(--theme--borders-hairline) 0 color-mix(in srgb, var(--app-shell-color) 6%, transparent);
+}
+
+.bottomTabBar[data-presentation="floating"],
+.shell[data-app-shell-material="glass"] .bottomTabBar[data-presentation="floating"] {
+  background: transparent;
+  backdrop-filter: none;
+  border-block-start: var(--theme--borders-none) solid transparent;
+  bottom: var(--theme--spacing-spaceSm);
+  box-shadow: none;
+  padding: var(--app-shell-space-none) var(--theme--spacing-spaceSm) env(safe-area-inset-bottom);
+}
+
+.bottomTabBar[data-presentation="floating"] .bottomTabInner {
+  max-inline-size: var(--theme--layout-container-sm);
+}
+
+.bottomTabBar[data-presentation="floating"] .bottomTabItems {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--app-shell-color) 7%, transparent), transparent 64%),
+    color-mix(in srgb, var(--app-shell-panel-bg) 94%, var(--app-shell-background));
+  backdrop-filter: blur(var(--theme--blur-lg));
+  border: var(--app-shell-border-width) solid color-mix(in srgb, var(--app-shell-border) 84%, transparent);
+  border-radius: var(--theme--radius-2xl);
+  box-shadow: var(--app-shell-bottom-shadow), inset 0 var(--theme--borders-hairline) 0 color-mix(in srgb, var(--app-shell-color) 7%, transparent);
+  padding: var(--theme--spacing-space2xs);
+}
+
+.bottomTabBar[data-presentation="floating"] .bottomTabButton {
+  --ui-button-height: var(--theme--dimensions-height-lg);
+  min-height: var(--theme--dimensions-height-lg);
 }
 
 .bottomTabInner {

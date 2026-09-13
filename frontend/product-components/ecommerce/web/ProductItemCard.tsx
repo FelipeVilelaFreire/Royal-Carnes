@@ -3,19 +3,29 @@
 import React from "react";
 import { Button } from "../../../foundation/ui/web/Button";
 import { Card } from "../../../foundation/ui/web/Card";
-import { CheckIcon, StarIcon } from "../../../foundation/ui/web/Icon/AppIcons";
+import { CartIcon, CheckIcon, FlameIcon, HeartIcon, MinusIcon, PlusIcon, StarIcon } from "../../../foundation/ui/web/Icon/AppIcons";
 import { Icon } from "../../../foundation/ui/web/Icon";
 import { Box, Inline, Stack } from "../../../foundation/ui/web/Layout";
 import { Text } from "../../../foundation/ui/web/Text";
+import {
+  resolveProductItemCardComposition,
+  type ProductItemCardActionMode,
+  type ProductItemCardFavoriteMode,
+  type ProductItemCardMetaMode,
+  type ProductItemCardPreset,
+  type ProductItemCardPriceMode,
+  type ProductItemCardQuantityMode,
+} from "../product-item-card.config";
 import styles from "./ProductItemCard.module.css";
 
 export interface ProductItemCardProps {
-  style?: React.CSSProperties;
+  preset?: ProductItemCardPreset;
   name: string;
   description: string;
   image: string;
   categoryLabel: string;
   detailLabel?: string;
+  headerDetail?: string;
   price?: number;
   originalPrice?: number;
   priceLabel?: string;
@@ -31,11 +41,11 @@ export interface ProductItemCardProps {
   showBadge?: boolean;
   showFavorite?: boolean;
   showOriginalPrice?: boolean;
-  metaMode?: "category-detail" | "category-only" | "detail-only";
-  priceMode?: "unit" | "from" | "estimate" | "included" | "hidden";
-  actionMode?: "none" | "select" | "add" | "quantity" | "view-details" | "configure";
-  favoriteMode?: "none" | "toggle";
-  quantityMode?: "none" | "stepper" | "readonly";
+  metaMode?: ProductItemCardMetaMode;
+  priceMode?: ProductItemCardPriceMode;
+  actionMode?: ProductItemCardActionMode;
+  favoriteMode?: ProductItemCardFavoriteMode;
+  quantityMode?: ProductItemCardQuantityMode;
   selected?: boolean;
   quantity?: number;
   quantitySuffix?: string;
@@ -55,51 +65,44 @@ export interface ProductItemCardProps {
   increaseQuantityAriaLabel?: string;
   decreaseQuantityAriaLabel?: string;
   isDark?: boolean;
-  tokens?: {
-    background: string;
-    surfaceContainer: string;
-    border: string;
-    text: string;
-    textMuted: string;
-    copper: string;
-  };
 }
 
 const joinClassName = (...values: Array<string | undefined>) => values.filter(Boolean).join(" ");
 
 export const ProductItemCard: React.FC<ProductItemCardProps> = ({
-  style,
+  preset = "catalogo",
   name,
   description,
   image,
   categoryLabel,
   detailLabel,
+  headerDetail,
   price,
   originalPrice,
   priceLabel,
   formatPrice,
   badge,
   badgeTone = "offer",
-  showImage = true,
-  showName = true,
-  showDescription = true,
-  showMeta = true,
-  showCategory = true,
-  showDetail = true,
-  showBadge = true,
-  showFavorite = true,
-  showOriginalPrice = true,
-  metaMode = "category-detail",
-  priceMode = "unit",
-  actionMode = "add",
-  favoriteMode = "toggle",
-  quantityMode = "stepper",
+  showImage,
+  showName,
+  showDescription,
+  showMeta,
+  showCategory,
+  showDetail,
+  showBadge,
+  showFavorite,
+  showOriginalPrice,
+  metaMode,
+  priceMode,
+  actionMode,
+  favoriteMode,
+  quantityMode,
   selected = false,
   quantity = 0,
   quantitySuffix,
   favorite = false,
-  showPrice = true,
-  showAction = false,
+  showPrice,
+  showAction,
   actionLabel,
   selectedActionLabel,
   actionDisabled = false,
@@ -113,58 +116,185 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   increaseQuantityAriaLabel,
   decreaseQuantityAriaLabel,
   isDark = true,
-  tokens,
 }) => {
-  const hasPrice = showPrice && priceMode !== "hidden" && priceMode !== "included" && typeof price === "number";
-  const shouldShowCategory = showCategory && metaMode !== "detail-only";
-  const shouldShowDetail = showDetail && metaMode !== "category-only";
-  const hasMeta = showMeta && (shouldShowCategory || (shouldShowDetail && detailLabel));
+  const [isMediaUnavailable, setIsMediaUnavailable] = React.useState(false);
+  const composition = resolveProductItemCardComposition(preset, {
+    actionMode,
+    favoriteMode,
+    metaMode,
+    priceMode,
+    quantityMode,
+    showAction,
+    showBadge,
+    showCategory,
+    showDescription,
+    showDetail,
+    showFavorite,
+    showImage,
+    showMeta,
+    showName,
+    showOriginalPrice,
+    showPrice,
+  });
+  const {
+    actionMode: resolvedActionMode,
+    favoriteMode: resolvedFavoriteMode,
+    metaMode: resolvedMetaMode,
+    priceMode: resolvedPriceMode,
+    quantityMode: resolvedQuantityMode,
+    showAction: resolvedShowAction,
+    showBadge: resolvedShowBadge,
+    showCategory: resolvedShowCategory,
+    showDescription: resolvedShowDescription,
+    showDetail: resolvedShowDetail,
+    showFavorite: resolvedShowFavorite,
+    showImage: resolvedShowImage,
+    showMeta: resolvedShowMeta,
+    showName: resolvedShowName,
+    showOriginalPrice: resolvedShowOriginalPrice,
+    showPrice: resolvedShowPrice,
+  } = composition;
+  const hasPrice = resolvedShowPrice && resolvedPriceMode !== "hidden" && resolvedPriceMode !== "included" && typeof price === "number";
+  const shouldShowCategory = resolvedShowCategory && resolvedMetaMode !== "detail-only";
+  const shouldShowDetail = resolvedShowDetail && resolvedMetaMode !== "category-only";
+  const hasMeta = resolvedShowMeta && (shouldShowCategory || (shouldShowDetail && detailLabel));
   const metaLabel = [
     shouldShowCategory ? categoryLabel : null,
     shouldShowDetail && detailLabel ? detailLabel : null,
   ].filter(Boolean).join(" - ");
+  const detailMetaLabel = shouldShowDetail && detailLabel ? detailLabel : undefined;
   const hasQuantity = quantity > 0;
-  const canToggleFavorite = showFavorite && favoriteMode !== "none" && Boolean(onFavoriteToggle);
-  const canShowAction = showAction && actionMode !== "none" && Boolean(actionLabel);
-  const canUseStepper = canShowAction && quantityMode === "stepper" && actionMode !== "view-details" && actionMode !== "configure";
+  const canToggleFavorite = resolvedShowFavorite && resolvedFavoriteMode !== "none" && Boolean(onFavoriteToggle);
+  const canShowAction = resolvedShowAction && resolvedActionMode !== "none" && Boolean(actionLabel) && Boolean(onAction);
+  const canUseStepper = canShowAction && resolvedQuantityMode === "stepper" && resolvedActionMode !== "view-details" && resolvedActionMode !== "configure";
   const actionText = actionDisabled ? actionDisabledLabel || actionLabel : selected ? selectedActionLabel || actionLabel : actionLabel;
   const isCardDisabled = actionDisabled && !selected;
   const formatPriceValue = (value: number) => formatPrice ? formatPrice(value) : String(value);
-  const tokenStyle = {
-    "--product-card-bg": tokens?.surfaceContainer || "var(--theme--color-surfaceContainer, var(--theme--color-surface))",
-    "--product-card-surface": tokens?.background || "var(--theme--color-background)",
-    "--product-card-border": tokens?.border || "var(--theme--color-border)",
-    "--product-card-outer-border": selected
-      ? "var(--product-card-accent)"
-      : isDark
-        ? "color-mix(in srgb, var(--product-card-border) 56%, var(--product-card-accent))"
-        : "color-mix(in srgb, var(--product-card-border) 86%, var(--product-card-accent))",
-    "--product-card-text": tokens?.text || "var(--theme--color-text)",
-    "--product-card-muted": tokens?.textMuted || "var(--theme--color-textMuted, var(--theme--color-text-muted))",
-    "--product-card-accent": tokens?.copper || "var(--theme--color-accent, var(--app-shell-accent))",
-    "--product-card-accent-contrast": (isDark ? tokens?.background : tokens?.text) || "var(--theme--color-accentContrast, var(--app-shell-accent-contrast))",
-    "--ui-surface-bg": "var(--product-card-bg)",
-    "--ui-surface-border": "var(--product-card-outer-border)",
-    "--ui-surface-color": "var(--product-card-text)",
-    ...style,
-  } as React.CSSProperties;
+  const hasMediaImage = Boolean(image) && !isMediaUnavailable;
+  if (preset === "catalogo") {
+    return (
+      <Card
+        className={styles.card}
+        data-disabled={isCardDisabled || undefined}
+        data-mode={isDark ? "dark" : "light"}
+        data-preset={preset}
+        data-selected={selected || undefined}
+        data-with-image={resolvedShowImage || undefined}
+        size="md"
+      >
+        {resolvedShowImage ? (
+          <div className={styles.media}>
+            {hasMediaImage ? (
+              <img className={styles.mediaImage} src={image} alt="" aria-hidden="true" onError={() => setIsMediaUnavailable(true)} />
+            ) : (
+              <div className={styles.mediaFallback} aria-hidden="true"><FlameIcon size={28} /></div>
+            )}
+            {isCardDisabled ? <span className={styles.mediaScrim} aria-hidden="true" /> : null}
+            {resolvedShowBadge && badge ? (
+              <span className={styles.badge} data-tone={badgeTone}>{badge}</span>
+            ) : null}
+            {canToggleFavorite ? (
+              <Button
+                aria-label={favorite ? removeFavoriteAriaLabel : favoriteAriaLabel}
+                appearance="soft"
+                className={joinClassName(styles.favoriteButton, favorite ? styles.favoriteActive : undefined)}
+                icon={<HeartIcon fill={favorite ? "currentColor" : "none"} size={14} />}
+                iconPosition="only"
+                onClick={onFavoriteToggle}
+                size="sm"
+                tone="neutral"
+                type="button"
+              />
+            ) : null}
+          </div>
+        ) : null}
+        <div className={styles.catalogBody}>
+          {resolvedShowBadge && badge && !resolvedShowImage ? (
+            <span className={joinClassName(styles.badge, styles.badgeInline)} data-tone={badgeTone}>{badge}</span>
+          ) : null}
+          {shouldShowCategory || headerDetail ? (
+            <div className={styles.catalogMetaHeader}>
+              {shouldShowCategory ? <span className={styles.catalogCategory}>{categoryLabel}</span> : <span />}
+              {headerDetail ? <span className={styles.catalogHeaderDetail}>{headerDetail}</span> : null}
+            </div>
+          ) : null}
+          {resolvedShowName ? <Text as="h3" className={styles.catalogTitle} tone="inherit" variant="h3">{name}</Text> : null}
+          {resolvedShowDescription && description ? <Text className={styles.catalogDescription} tone="inherit" variant="caption">{description}</Text> : null}
+          {detailMetaLabel ? <span className={styles.catalogMeta}>{detailMetaLabel}</span> : null}
+          {(hasPrice || canShowAction) ? (
+            <div className={styles.catalogFooter}>
+              {hasPrice ? (
+                <div className={styles.priceBlock}>
+                  {priceLabel ? <span className={styles.priceLabel}>{priceLabel}</span> : null}
+                  {resolvedShowOriginalPrice && typeof originalPrice === "number" ? <span className={styles.originalPrice}>{formatPriceValue(originalPrice)}</span> : null}
+                  <strong className={styles.price}>{formatPriceValue(price)}</strong>
+                </div>
+              ) : null}
+              {canShowAction ? (
+                <div className={styles.catalogAction} data-expanded={canUseStepper && quantity > 0 || undefined}>
+                  <Button
+                    aria-label={actionText}
+                    appearance="solid"
+                    className={styles.catalogCartButton}
+                    disabled={actionDisabled}
+                    icon={<CartIcon />}
+                    iconPosition="only"
+                    onClick={onAction}
+                    size="sm"
+                    tone="primary"
+                    type="button"
+                  />
+                  {canUseStepper ? (
+                    <div className={styles.catalogQuantityControl} role="group">
+                      <button
+                        aria-label={decreaseQuantityAriaLabel}
+                        className={styles.catalogQuantityButton}
+                        onClick={onDecrease}
+                        type="button"
+                      >
+                        <MinusIcon aria-hidden="true" size={14} />
+                      </button>
+                      <span className={styles.catalogQuantityValue}>{quantity}</span>
+                      <button
+                        aria-label={increaseQuantityAriaLabel}
+                        className={styles.catalogQuantityButton}
+                        disabled={actionDisabled}
+                        onClick={onAction}
+                        type="button"
+                      >
+                        <PlusIcon aria-hidden="true" size={14} />
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card
       className={styles.card}
       data-disabled={isCardDisabled || undefined}
       data-mode={isDark ? "dark" : "light"}
+      data-preset={preset}
       data-selected={selected || undefined}
-      data-with-image={showImage || undefined}
+      data-with-image={resolvedShowImage || undefined}
       size="md"
-      style={tokenStyle}
     >
-      <Stack gap="md">
-        {showImage ? (
+      <Stack className={styles.main} gap="md">
+        {resolvedShowImage ? (
           <div className={styles.media}>
-            <img className={styles.mediaImage} src={image} alt="" aria-hidden="true" />
+            {hasMediaImage ? (
+              <img className={styles.mediaImage} src={image} alt="" aria-hidden="true" onError={() => setIsMediaUnavailable(true)} />
+            ) : (
+              <div className={styles.mediaFallback} aria-hidden="true"><FlameIcon size={28} /></div>
+            )}
             {isCardDisabled ? <span className={styles.mediaScrim} aria-hidden="true" /> : null}
-            {showBadge && badge ? (
+            {resolvedShowBadge && badge ? (
               <span className={styles.badge} data-tone={badgeTone}>
                 {badge}
               </span>
@@ -191,14 +321,14 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
         ) : null}
 
         <Stack className={styles.content} gap="sm">
-          {showBadge && badge && !showImage ? (
+          {resolvedShowBadge && badge && !resolvedShowImage ? (
             <Box>
               <span className={joinClassName(styles.badge, styles.badgeInline)} data-tone={badgeTone}>
                 {badge}
               </span>
             </Box>
           ) : null}
-          {canToggleFavorite && !showImage ? (
+          {canToggleFavorite && !resolvedShowImage ? (
             <Box>
               <Button
                 aria-label={favorite ? removeFavoriteAriaLabel : favoriteAriaLabel}
@@ -212,7 +342,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
               />
             </Box>
           ) : null}
-          {showName ? (
+          {resolvedShowName ? (
             <Text
               as="h3"
               className={styles.title}
@@ -225,7 +355,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
               {name}
             </Text>
           ) : null}
-          {showDescription ? (
+          {resolvedShowDescription ? (
             <Text className={styles.description} tone="inherit" variant="caption">
               {description}
             </Text>
@@ -243,7 +373,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
           {hasPrice ? (
             <div className={styles.priceBlock}>
               {priceLabel ? <span className={styles.priceLabel}>{priceLabel}</span> : null}
-              {showOriginalPrice && typeof originalPrice === "number" ? (
+              {resolvedShowOriginalPrice && typeof originalPrice === "number" ? (
                 <span className={styles.originalPrice}>{formatPriceValue(originalPrice)}</span>
               ) : null}
               <strong className={styles.price}>{formatPriceValue(price)}</strong>
@@ -261,9 +391,9 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                   size="sm"
                   tone="neutral"
                   type="button"
-                >
-                  -
-                </Button>
+                  icon={<MinusIcon size={14} />}
+                  iconPosition="only"
+                />
                 <span className={styles.quantityValue}>{quantity}</span>
                 <Button
                   aria-label={increaseQuantityAriaLabel}
@@ -274,9 +404,9 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                   size="sm"
                   tone="neutral"
                   type="button"
-                >
-                  +
-                </Button>
+                  icon={<PlusIcon size={14} />}
+                  iconPosition="only"
+                />
               </div>
             ) : quantityMode === "readonly" && quantity > 0 ? (
               <span className={styles.readonlyQuantity}>{quantity}</span>

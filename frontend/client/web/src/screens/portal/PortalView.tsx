@@ -16,7 +16,7 @@ import { clientPortalAccessShellConfig } from "@/manifest/portal/access-shell.co
 import { clientAuthStorage, readStoredClientSession } from "../../auth/clientAuthStorage";
 import styles from "./PortalView.module.css";
 import { HomeView } from "./Home/HomeView";
-import { CortesView } from "./Cortes/CortesView";
+import { CatalogoView } from "./Catalogo/CatalogoView/CatalogoView";
 import { MontarBoxView } from "./MontarBox/MontarBoxView";
 import { PerfilView } from "./Perfil/PerfilView";
 import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
@@ -108,8 +108,8 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     if (isProtectedScreen && !isAuthenticated) return renderProtectedGate();
 
     switch (activeScreenKey) {
-      case "cortes":
-        return <CortesView />;
+      case "catalogo":
+        return <CatalogoView />;
       case "produtos":
         return <MontarBoxView isAuthenticated={isAuthenticated} onRequestAccess={() => setIsAuthModalOpen(true)} />;
       case "meusPedidos":

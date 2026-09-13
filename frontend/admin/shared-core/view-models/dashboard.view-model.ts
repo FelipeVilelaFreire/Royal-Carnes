@@ -115,6 +115,10 @@ function resolveStatusTone(statusKey: string): AdminDashboardTone {
 function resolveStatusColor(statusKey: string): string {
   if (statusKey === "received") return "received";
   if (statusKey === "ready") return "ready";
+  if (statusKey === "preparing" || statusKey === "packing") return "preparing";
+  if (statusKey === "separating") return "separating";
+  if (statusKey === "outForDelivery") return "outForDelivery";
+  if (statusKey === "pending") return "pending";
   if (statusKey === "delivered" || statusKey === "completed" || statusKey === "approved") return "active";
   if (statusKey === "cancelled" || statusKey === "canceled") return "canceled";
   return "paused";

@@ -26,7 +26,7 @@ src/app/App.tsx
 src/screens/portal/PortalView.tsx
 src/screens/landing/LandingView.tsx
 src/screens/portal/Home/HomeView.tsx
-src/screens/portal/Cortes/CortesView.tsx
+src/screens/portal/Catalogo/CatalogoView/CatalogoView.tsx
 src/screens/portal/MontarBox/MontarBoxView.tsx
 src/screens/portal/MontarBox/pedido/*
 src/screens/portal/MeusPedidos/MeusPedidosView.tsx
@@ -36,10 +36,10 @@ src/screens/portal/Perfil/PerfilView.tsx
 `HomeView.tsx` consome o catalogo real via `useClientCatalog`, incluindo os
 estados de carregamento, vazio e erro.
 
-`CortesView.tsx` usa o mesmo view-model de catalogo da web:
+`CatalogoView.tsx` usa o mesmo view-model de catalogo da web:
 
 ```text
-frontend/client/shared-core/view-models/cortes-catalog.view-model.ts
+frontend/client/shared-core/view-models/catalogo.view-model.ts
 ```
 
 `MontarBoxView.tsx` segue a mesma tree publica da web:

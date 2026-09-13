@@ -131,7 +131,7 @@ export const landingAppShellConfig = {
         titleKey: "footer.columns.products",
         links: [
           { key: "footer-plans", labelKey: "navigation.products", targetId: "assinaturas", type: "scroll" },
-          { key: "footer-catalogs", labelKey: "navigation.cortes", path: "/cortes", type: "route" },
+          { key: "footer-catalogs", labelKey: "navigation.catalogo", path: "/catalogo", type: "route" },
           { key: "footer-box", labelKey: "navigation.royalBox", path: "/montar-box", type: "route" },
           { key: "footer-delivery", labelKey: "navigation.royalDelivery", path: "/montar-box", type: "route" }
         ]

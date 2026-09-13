@@ -121,8 +121,8 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
                   selected={isSelected}
                   quantity={selectedQuantity}
                   quantitySuffix={strings.productCard.quantitySuffix}
+                  preset="montarBox"
                   showPrice={selectedMode !== "subscription"}
-                  showAction
                   actionLabel={strings.productCard.add}
                   selectedActionLabel={strings.productCard.add}
                   actionDisabled={isActionDisabled}
@@ -132,7 +132,6 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
                   onDecrease={() => onDecreaseProduct(product.id)}
                   increaseQuantityAriaLabel={strings.productCard.increaseQuantity}
                   decreaseQuantityAriaLabel={strings.productCard.decreaseQuantity}
-                  tokens={tokens}
                 />
               );
             })}

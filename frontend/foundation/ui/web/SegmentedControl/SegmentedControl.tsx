@@ -60,7 +60,9 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         return (
           <Button
             appearance={option.appearance}
-            className={styles.option}
+            aria-pressed={isActive}
+            className={[styles.option, isActive ? styles.optionActive : ""].filter(Boolean).join(" ")}
+            data-active={isActive || undefined}
             disabled={item.disabled}
             key={item.key}
             onClick={() => onChange?.(item.key)}

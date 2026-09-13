@@ -57,12 +57,26 @@
 }
 
 .kpiCard {
+  --dashboard-kpi-accent: var(--theme--color-accent);
+
   block-size: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--theme--spacing-spaceSm);
   min-block-size: var(--theme--dimensions-height-3xl);
   padding: var(--theme--spacing-spaceLg);
+}
+
+.kpiCard[data-metric="subscribers"] {
+  --dashboard-kpi-accent: var(--theme--color-muted);
+}
+
+.kpiCard[data-metric="deliveries"] {
+  --dashboard-kpi-accent: var(--theme--status-received, var(--theme--color-accent));
+}
+
+.kpiCard[data-metric="retention"] {
+  --dashboard-kpi-accent: var(--theme--status-active, var(--theme--color-accent));
 }
 
 .kpiLabel {
@@ -82,8 +96,8 @@
 }
 
 .kpiIcon {
-  background: color-mix(in srgb, var(--theme--color-accent) var(--theme--opacity-10), transparent);
-  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-accent) var(--theme--opacity-15), transparent);
+  background: color-mix(in srgb, var(--dashboard-kpi-accent) var(--theme--opacity-10), transparent);
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--dashboard-kpi-accent) var(--theme--opacity-15), transparent);
   border-radius: var(--theme--radius-md);
   block-size: var(--theme--dimensions-height-lg);
   inline-size: var(--theme--dimensions-height-lg);
@@ -102,6 +116,14 @@
 .tableIcon svg {
   block-size: var(--theme--dimensions-icon-sm);
   inline-size: var(--theme--dimensions-icon-sm);
+}
+
+.kpiCard .kpiIcon {
+  color: var(--dashboard-kpi-accent);
+}
+
+.kpiCard[data-metric="retention"] .kpiIcon svg {
+  transform: rotate(-45deg);
 }
 
 .kpiValue {
@@ -170,6 +192,8 @@
 }
 
 .tableScroller {
+  max-inline-size: 100%;
+  min-inline-size: 0;
   overflow-x: auto;
 }
 

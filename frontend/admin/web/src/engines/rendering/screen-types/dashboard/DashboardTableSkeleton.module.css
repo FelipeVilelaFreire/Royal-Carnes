@@ -1,0 +1,9 @@
+.section, .header, .card { width: 100%; }
+.header { min-block-size: var(--theme--dimensions-height-md); }
+.card { overflow: hidden; padding-block: var(--theme--spacing-spaceXs); }
+.scroller { overflow: hidden; width: 100%; }
+.table { border-collapse: collapse; min-inline-size: var(--theme--layout-container-md); width: 100%; }
+.table th, .table td { border-block-end: var(--theme--borders-hairline) solid var(--theme--color-border); padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg); text-align: start; }
+.table th { background: color-mix(in srgb, var(--theme--color-text) var(--theme--opacity-5), transparent); }
+.table tr:last-child td { border-block-end: 0; }
+@media (max-width: 760px) { .table th, .table td { padding: var(--theme--spacing-spaceXs) var(--theme--spacing-spaceSm); } }

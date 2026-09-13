@@ -42,7 +42,6 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
   if (routeAction === "create") {
     return (
       <AddPage
-        entityName={entityName}
         isSubmitting={standard.isSubmitting}
         onBack={onBackToList}
         onFieldChange={standard.setFormValue}
@@ -56,13 +55,16 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
   if (routeAction === "detail" && selectedRow) {
     return (
       <DetailPage
+        deleteAction={entityConfig?.detailPage?.deleteAction}
         entityName={entityName}
         formValues={standard.formValues}
         image={selectedRow.image}
         isEditing={standard.isEditingDetail}
+        isDeleting={standard.isDeletingDetail}
         isSubmitting={standard.isSubmitting}
         onBack={onBackToList}
         onCancelEdit={standard.cancelDetailEdit}
+        onDelete={entityConfig?.detailPage?.deleteAction ? standard.deleteDetail : undefined}
         onEdit={standard.beginDetailEdit || onEditRow}
         onFieldChange={standard.setFormValue}
         onSaveEdit={standard.submitDetailEdit}
@@ -77,11 +79,13 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
     <ListPage
       entityName={entityName}
       error={standard.error}
-      isLoading={standard.isLoading}
+      isLoading={standard.isInitialLoading}
       onCreateRow={onCreateRow}
+      onPageChange={standard.setCurrentPage}
       onSearchChange={standard.setSearch}
       onSelectRow={onSelectRow}
       onSetFilter={standard.setFilterValue}
+      onSort={standard.setListSort}
       search={standard.search}
       t={t}
       viewModel={standard.listViewModel}

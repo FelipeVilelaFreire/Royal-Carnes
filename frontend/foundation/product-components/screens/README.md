@@ -59,7 +59,7 @@ copy exibida no mobile; nao cria uma segunda fonte de texto.
 
 - `full`: titulo, eyebrow e descricao.
 - `compact`: titulo reduzido.
-- `collapsible`: titulo e espacamento acompanham continuamente a rolagem.
+- `collapsible`: titulo, subtitulo e espacamento acompanham continuamente a rolagem; o subtitulo reduz e desaparece de forma progressiva, mantendo o contexto no inicio da tela sem ocupar a leitura durante o scroll.
 
 `showScrollBorder` controla a linha inferior progressiva. O padrao e `true`;
 telas que precisam de uma cabeca sem divisoria usam `false`.

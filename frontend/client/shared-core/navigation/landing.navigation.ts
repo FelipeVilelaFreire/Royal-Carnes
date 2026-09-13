@@ -32,10 +32,10 @@ export const landingNavigation = [
     placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   },
   {
-    key: "cortes",
-    labelKey: "navigation.cortes",
+    key: "catalogo",
+    labelKey: "navigation.catalogo",
     order: 4,
-    path: "/cortes",
+    path: "/catalogo",
     type: "route",
     placements: { header: true, sidebar: false, drawer: true, bottomBar: true, footer: true }
   }

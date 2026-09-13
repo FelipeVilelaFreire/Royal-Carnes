@@ -32,6 +32,18 @@ export const clientesConfig = {
   detailPage: {
     titleKey: "clientes.detail.title",
     displayNameKey: "name",
+    header: {
+      meta: [
+        { key: "document", labelKey: "clientes.fields.document" },
+        { key: "email", labelKey: "clientes.fields.email" }
+      ],
+      status: {
+        key: "status",
+        displayKey: "statusLabelKey",
+        labelKey: "clientes.fields.status",
+        valueType: "translationKey"
+      }
+    },
     tabs: [
       {
         id: "dados",

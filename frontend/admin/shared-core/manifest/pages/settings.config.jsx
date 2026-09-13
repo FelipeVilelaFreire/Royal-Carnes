@@ -2,20 +2,7 @@ export const settingsConfig = {
   screenKey: "configuracoes",
   titleKey: "configuracoes.title",
   subtitleKey: "configuracoes.subtitle",
-  actions: [
-    {
-      key: "saveDraft",
-      labelKey: "configuracoes.actions.saveDraft",
-      disabled: true,
-      variant: "primary"
-    },
-    {
-      key: "previewManifest",
-      labelKey: "configuracoes.actions.previewManifest",
-      disabled: true,
-      variant: "secondary"
-    }
-  ],
+  readOnlyBadgeKey: "configuracoes.badges.manifestReady",
   tabs: [
     {
       id: "identity",
@@ -30,11 +17,11 @@ export const settingsConfig = {
               key: "appName",
               labelKey: "configuracoes.fields.appName",
               value: "RoyalPrime",
-              statusKey: "configuracoes.status.active"
             },
             {
               key: "businessName",
               labelKey: "configuracoes.fields.businessName",
+              statusTone: "warning",
               value: "Royal Carnes",
               statusKey: "configuracoes.status.pendingManifestSync"
             },
@@ -42,13 +29,12 @@ export const settingsConfig = {
               key: "adminTitle",
               labelKey: "configuracoes.fields.adminTitle",
               value: "PRIME CUT ADMIN",
-              statusKey: "configuracoes.status.active"
             },
             {
               key: "adminTagline",
+              layout: "full",
               labelKey: "configuracoes.fields.adminTagline",
               value: "Painel de Gestao e Operacao do Clube",
-              statusKey: "configuracoes.status.active"
             }
           ]
         }
@@ -66,18 +52,18 @@ export const settingsConfig = {
             {
               key: "sidebarMode",
               labelKey: "configuracoes.fields.sidebarMode",
-              valueKey: "configuracoes.values.sidebarOperational",
-              statusKey: "configuracoes.status.active"
+              valueKey: "configuracoes.values.sidebarOperational"
             },
             {
               key: "mobileNavigation",
               labelKey: "configuracoes.fields.mobileNavigation",
-              valueKey: "configuracoes.values.mobileBottomTabs",
-              statusKey: "configuracoes.status.active"
+              valueKey: "configuracoes.values.mobileBottomTabs"
             },
             {
               key: "hiddenRoutes",
+              layout: "full",
               labelKey: "configuracoes.fields.hiddenRoutes",
+              statusTone: "warning",
               valueKey: "configuracoes.values.hiddenRoutes",
               statusKey: "configuracoes.status.review"
             }
@@ -97,20 +83,19 @@ export const settingsConfig = {
             {
               key: "fulfillmentWarehouse",
               labelKey: "configuracoes.fields.fulfillmentWarehouse",
-              value: "Central Gastronomica SP-01",
-              statusKey: "configuracoes.status.active"
+              value: "Central Gastronomica SP-01"
             },
             {
               key: "coldChainSensor",
               labelKey: "configuracoes.fields.coldChainSensor",
+              statusTone: "primary",
               value: "Sensor IoT -2C",
               statusKey: "configuracoes.status.monitoring"
             },
             {
               key: "defaultDeliveryWindow",
               labelKey: "configuracoes.fields.defaultDeliveryWindow",
-              valueKey: "configuracoes.values.businessHours",
-              statusKey: "configuracoes.status.active"
+              valueKey: "configuracoes.values.businessHours"
             }
           ]
         }
@@ -128,20 +113,19 @@ export const settingsConfig = {
             {
               key: "paymentProvider",
               labelKey: "configuracoes.fields.paymentProvider",
+              statusTone: "primary",
               value: "Stripe Subscriptions",
               statusKey: "configuracoes.status.connected"
             },
             {
               key: "currency",
               labelKey: "configuracoes.fields.currency",
-              value: "BRL",
-              statusKey: "configuracoes.status.active"
+              value: "BRL"
             },
             {
               key: "billingCyclePolicy",
               labelKey: "configuracoes.fields.billingCyclePolicy",
-              valueKey: "configuracoes.values.monthlyCycle",
-              statusKey: "configuracoes.status.active"
+              valueKey: "configuracoes.values.monthlyCycle"
             }
           ]
         }

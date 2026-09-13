@@ -17,7 +17,7 @@ export interface HomeVitrineNoticeConfig {
 
 export const homeVitrineConfig = {
   hero: {
-    primaryRouteKey: "cortes",
+    primaryRouteKey: "catalogo",
     secondaryRouteKey: "produtos",
   },
   actions: [
@@ -25,7 +25,7 @@ export const homeVitrineConfig = {
       key: "catalog",
       labelKey: "home.vitrine.actions.catalog.title",
       descriptionKey: "home.vitrine.actions.catalog.description",
-      routeKey: "cortes",
+      routeKey: "catalogo",
       iconIntent: "catalog",
       auth: "public",
     },

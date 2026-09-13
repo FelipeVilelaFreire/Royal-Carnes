@@ -71,6 +71,11 @@ export function injectThemeTokens(target: "client" | "admin" = "client", customM
     if (!value) return;
     root.style.setProperty(`--theme--color-${key}`, value);
     root.style.setProperty(`--theme--color-${toKebab(key)}`, value);
+
+    if (key.startsWith("status")) {
+      const statusName = toKebab(key.slice("status".length)).replace(/^-/, "");
+      root.style.setProperty(`--theme--status-${statusName}`, value);
+    }
   });
 
   setScaleVariables(root, "typography", tokens.typography);

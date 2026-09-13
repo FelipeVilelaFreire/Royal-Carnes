@@ -10,10 +10,11 @@ import type { ResolvedAppShellModel } from "../foundation";
 
 export interface AppShellBottomTabBarProps {
   model: ResolvedAppShellModel;
+  onOpenMore?: () => void;
   onNavigate?: (path: string) => void;
 }
 
-export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ model, onNavigate }) => {
+export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ model, onNavigate, onOpenMore }) => {
   if (!model.bottomTabEnabled || model.bottomItems.length === 0) return null;
 
   return (
@@ -21,6 +22,7 @@ export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ mode
       as="nav"
       appearance="solid"
       className={styles.bottomTabBar}
+      data-presentation={model.bottomTabPresentation}
     >
       <Container
         className={styles.bottomTabInner}
@@ -51,6 +53,21 @@ export const AppShellBottomTabBar: React.FC<AppShellBottomTabBarProps> = ({ mode
               </Button>
             );
           })}
+          {model.bottomMore ? (
+            <Button
+              aria-label={model.bottomMore.label}
+              appearance="transparent"
+              className={styles.bottomTabButton}
+              icon={renderAppShellIcon({ iconIntent: model.bottomMore.iconIntent, key: "more" }, "currentColor")}
+              iconPosition="start"
+              onClick={onOpenMore}
+              size="xs"
+              tone="neutral"
+              type="button"
+            >
+              <span className={styles.bottomTabLabel}>{model.bottomMore.label}</span>
+            </Button>
+          ) : null}
         </Inline>
       </Container>
     </Surface>

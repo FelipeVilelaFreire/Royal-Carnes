@@ -3,7 +3,7 @@
 }
 
 .root[data-open="true"] {
-  z-index: var(--theme--z-index-overlay);
+  z-index: var(--semicomposed--dropdown-picker--layer);
 }
 
 .root[data-width="full"] {
@@ -86,25 +86,27 @@
   display: flex;
   flex-direction: column;
   gap: var(--theme--spacing-space2xs);
-  inset-inline: 0;
+  inset-block-start: var(--ui-dropdown-picker-panel-block-start);
+  inset-inline-start: var(--ui-dropdown-picker-panel-inline-start);
   margin-block-start: var(--theme--spacing-spaceXs);
   max-height: calc(var(--theme--dimensions-height-lg) * 5);
-  min-width: 100%;
+  min-width: var(--ui-dropdown-picker-panel-width);
   opacity: 0;
   overflow: auto;
   pointer-events: none;
-  position: absolute;
+  position: fixed;
   transform: translateY(calc(var(--theme--spacing-spaceSm) * -1)) scale(0.975);
   transform-origin: top;
   transition:
     opacity var(--theme--motion-duration2xl) var(--theme--motion-easingStandard),
     transform var(--theme--motion-duration2xl) var(--theme--motion-easingStandard),
     visibility var(--theme--motion-duration2xl) var(--theme--motion-easingStandard);
-  visibility: hidden;
-  z-index: var(--theme--z-index-overlay);
+  visibility: visible;
+  width: var(--ui-dropdown-picker-panel-width);
+  z-index: var(--semicomposed--dropdown-picker--layer);
 }
 
-.root[data-open="true"] .panel {
+.panel[data-open="true"] {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);

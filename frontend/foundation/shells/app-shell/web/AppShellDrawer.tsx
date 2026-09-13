@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../../ui/web/Button";
 import { Icon } from "../../../ui/web/Icon";
 import { CloseIcon } from "../../../ui/web/Icon/AppIcons";
@@ -14,25 +14,40 @@ import type { AppShellConfig, ResolvedAppShellModel } from "../foundation";
 
 export interface AppShellDrawerProps {
   config?: AppShellConfig;
+  isMobileScreen?: boolean;
   isOpen: boolean;
   model: ResolvedAppShellModel;
   onClose: () => void;
   onNavigate?: (path: string) => void;
 }
 
-export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isOpen, model, onClose, onNavigate }) => {
-  if (!isOpen || config?.drawer?.enabled === false) return null;
+export const AppShellDrawer: React.FC<AppShellDrawerProps> = ({ config, isMobileScreen = false, isOpen, model, onClose, onNavigate }) => {
+  const [isMounted, setIsMounted] = useState(isOpen);
+
+  useEffect(() => {
+    if (isOpen) setIsMounted(true);
+  }, [isOpen]);
+
+  if (!isMounted || config?.drawer?.enabled === false) return null;
   const isRight = (config?.drawer?.position || "right") === "right";
+  const isBottomSheet = isMobileScreen && config?.drawer?.mobilePresentation === "bottomSheet";
 
   return (
-    <div className={[styles.drawerLayer, isRight ? styles.drawerLayerRight : ""].filter(Boolean).join(" ")}>
+    <div className={[styles.drawerLayer, isRight ? styles.drawerLayerRight : "", isBottomSheet ? styles.drawerLayerBottomSheet : ""].filter(Boolean).join(" ")} data-state={isOpen ? "open" : "closed"}>
       <Button aria-label={model.strings.closeDrawerAriaLabel} appearance="transparent" className={styles.drawerBackdrop} onClick={onClose} type="button" />
       <Surface
         appearance="solid"
-        className={styles.drawerPanel}
+        aria-label={isBottomSheet ? model.bottomMore?.title : undefined}
+        aria-modal="true"
+        className={[styles.drawerPanel, isBottomSheet ? styles.drawerPanelBottomSheet : ""].filter(Boolean).join(" ")}
+        onAnimationEnd={(event) => {
+          if (!isOpen && event.currentTarget === event.target) setIsMounted(false);
+        }}
+        role="dialog"
       >
+        {isBottomSheet ? <span aria-hidden="true" className={styles.drawerSheetHandle} /> : null}
         <Inline align="center" className={styles.drawerHeader} justify="between" wrap={false}>
-          <AppShellBrand brand={model.brand} onNavigate={onNavigate} />
+          {isBottomSheet ? <span className={styles.drawerSheetTitle}>{model.bottomMore?.title || model.brand.name}</span> : <AppShellBrand brand={model.brand} onNavigate={onNavigate} />}
           <Button
             aria-label={model.strings.closeDrawerAriaLabel}
             appearance="transparent"

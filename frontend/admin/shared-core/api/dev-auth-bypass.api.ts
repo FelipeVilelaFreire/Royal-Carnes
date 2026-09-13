@@ -8,6 +8,22 @@ export interface AdminDevAuthBypassOptions {
 
 let devAccessToken: string | null = null;
 let devLoginPromise: Promise<string | null> | null = null;
+const devAccessTokenStorageKey = "royalprime.admin.dev-access-token";
+
+function canUseSessionStorage() {
+  return typeof window !== "undefined" && Boolean(window.sessionStorage);
+}
+
+function readStoredDevAccessToken() {
+  if (!canUseSessionStorage()) return null;
+  return window.sessionStorage.getItem(devAccessTokenStorageKey);
+}
+
+function storeDevAccessToken(token: string | null) {
+  if (!canUseSessionStorage()) return;
+  if (token) window.sessionStorage.setItem(devAccessTokenStorageKey, token);
+  else window.sessionStorage.removeItem(devAccessTokenStorageKey);
+}
 
 function resolveUrl(baseUrl: string | undefined, path: string): string {
   return `${baseUrl || ""}${path}`;
@@ -18,13 +34,20 @@ function isAuthRequest(input: RequestInfo | URL): boolean {
 }
 
 export function readAdminDevAuthBypassAccessToken(): string | null {
+  if (!devAccessToken) devAccessToken = readStoredDevAccessToken();
   return devAccessToken;
+}
+
+export function clearAdminDevAuthBypassAccessToken() {
+  devAccessToken = null;
+  storeDevAccessToken(null);
 }
 
 export async function ensureAdminDevAuthBypassAccessToken(
   options: AdminDevAuthBypassOptions,
 ): Promise<string | null> {
-  if (devAccessToken) return devAccessToken;
+  const existingToken = readAdminDevAuthBypassAccessToken();
+  if (existingToken) return existingToken;
 
   if (!devLoginPromise) {
     devLoginPromise = fetch(resolveUrl(options.baseUrl, "/api/v1/auth/login/"), {
@@ -39,6 +62,7 @@ export async function ensureAdminDevAuthBypassAccessToken(
         if (!response.ok) return null;
         const payload = await response.json();
         devAccessToken = payload.access || null;
+        storeDevAccessToken(devAccessToken);
         return devAccessToken;
       })
       .finally(() => {
@@ -53,18 +77,25 @@ export function createAdminDevAuthBypassFetcher(options: AdminDevAuthBypassOptio
   return async (input, init = {}) => {
     if (isAuthRequest(input)) return fetch(input, init);
 
-    const token = await ensureAdminDevAuthBypassAccessToken(options);
-    const headers = new Headers(init.headers);
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-    if (!headers.has("X-Organization-Slug")) {
-      headers.set("X-Organization-Slug", options.organizationSlug);
-    }
+    const requestWithToken = async (token: string | null) => {
+      const headers = new Headers(init.headers);
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+      if (!headers.has("X-Organization-Slug")) headers.set("X-Organization-Slug", options.organizationSlug);
 
-    return fetch(input, {
-      ...init,
-      headers,
-    });
+      return fetch(input, {
+        ...init,
+        headers,
+      });
+    };
+
+    const token = await ensureAdminDevAuthBypassAccessToken(options);
+    const response = await requestWithToken(token);
+    if (response.status !== 401 || !token) return response;
+
+    clearAdminDevAuthBypassAccessToken();
+    const refreshedToken = await ensureAdminDevAuthBypassAccessToken(options);
+    if (!refreshedToken) return response;
+
+    return requestWithToken(refreshedToken);
   };
 }
