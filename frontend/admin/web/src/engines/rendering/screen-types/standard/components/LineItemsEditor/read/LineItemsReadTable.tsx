@@ -2,9 +2,9 @@ import React from "react";
 import { Text } from "@foundation/ui/web/Text";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
-import { resolveLineItemDisplayValue } from "./line-items.utils";
-import { LineItemsTable } from "./LineItemsTable";
-import styles from "./LineItemsEditor.module.css";
+import { resolveLineItemDisplayValue } from "../line-items.utils";
+import { LineItemsTable } from "../table/LineItemsTable";
+import styles from "../LineItemsEditor.module.css";
 
 interface LineItemsReadTableProps {
   columns: AdminStandardLineItemColumnViewModel[];

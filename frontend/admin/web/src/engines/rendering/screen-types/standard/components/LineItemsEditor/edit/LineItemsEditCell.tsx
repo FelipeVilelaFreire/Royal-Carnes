@@ -6,8 +6,8 @@ import { Select } from "@foundation/ui/web/Select";
 import { Text } from "@foundation/ui/web/Text";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
-import { resolveLineItemOptions, resolveLineItemSuffix } from "./line-items.utils";
-import styles from "./LineItemsEditor.module.css";
+import { resolveLineItemOptions, resolveLineItemSuffix } from "../line-items.utils";
+import styles from "../LineItemsEditor.module.css";
 
 interface LineItemsEditCellProps {
   column: AdminStandardLineItemColumnViewModel;

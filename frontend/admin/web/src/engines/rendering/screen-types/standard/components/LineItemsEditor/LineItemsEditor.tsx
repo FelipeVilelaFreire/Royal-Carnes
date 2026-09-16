@@ -3,9 +3,9 @@ import { Button } from "@foundation/ui/web/Button";
 import { Text } from "@foundation/ui/web/Text";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
-import { LineItemsEditorRow } from "./LineItemsEditorRow";
-import { LineItemsReadTable } from "./LineItemsReadTable";
-import { LineItemsTable } from "./LineItemsTable";
+import { LineItemsEditorRow } from "./edit/LineItemsEditorRow";
+import { LineItemsReadTable } from "./read/LineItemsReadTable";
+import { LineItemsTable } from "./table/LineItemsTable";
 import { createEmptyLineItem, resolveNextLineItem } from "./line-items.utils";
 import styles from "./LineItemsEditor.module.css";
 

@@ -27,6 +27,33 @@ No uso informal deste kit, `nivel 0` significa o estado visual `01.0`: a
 entrada neutra dentro do nivel funcional de selecao. Ele nao deve mostrar
 stepper, catalogo, resumo, total ou uma caixa vazia generica antes da escolha.
 
+## Atualizacao consolidada (2026-09-16)
+
+A rota publicada continua sendo `/montar-box`, mas a implementacao interna da
+screen passou a ser `screens/portal/Checkout/` em Web e Native. Isso separa o
+nome comercial da rota do dominio reutilizavel de checkout, sem mudar URLs.
+
+O nivel de selecao e composto por quatro partes que nao devem voltar a se
+misturar em um arquivo unico:
+
+```text
+1. acquisition/  -> modalidade de aquisicao
+2. cycle/ + catalog/ -> contexto do plano/ciclo e produtos disponiveis
+3. summary/      -> resumo persistente da selecao
+4. delivery/, payment/, review/ -> proximos niveis, ainda progressivos
+```
+
+O catalogo do Checkout usa o mesmo `ProductItemCard` do Catalogo, com
+`preset="catalogo"`. A diferenca fica na grade e na acao da screen:
+`CheckoutProductGrid` organiza o card em tres colunas no Web desktop e em uma
+coluna no Native, com adicionar e controle de quantidade. Nao criar um
+`MontarBoxProductCard` nem um preset comercial exclusivo.
+
+Categorias do filtro sao derivadas de todas as tags dos produtos. No modal, a
+categoria e uma escolha temporaria; somente `Aplicar` atualiza a consulta. A
+elegibilidade comercial definitiva por plano ainda depende de entitlement e
+saldo autoritativos vindos do backend/shared-core.
+
 ## Regra de leitura
 
 Cada nivel deve registrar:

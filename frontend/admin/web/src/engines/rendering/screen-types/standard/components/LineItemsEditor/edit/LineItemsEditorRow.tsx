@@ -4,7 +4,7 @@ import { CloseIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
 import { LineItemsEditCell } from "./LineItemsEditCell";
-import styles from "./LineItemsEditor.module.css";
+import styles from "../LineItemsEditor.module.css";
 
 interface LineItemsEditorRowProps {
   columns: AdminStandardLineItemColumnViewModel[];

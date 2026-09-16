@@ -1,7 +1,7 @@
 import React, { type ReactNode } from "react";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
-import styles from "./LineItemsEditor.module.css";
+import styles from "../LineItemsEditor.module.css";
 
 interface LineItemsTableProps {
   actionLabel?: string;
