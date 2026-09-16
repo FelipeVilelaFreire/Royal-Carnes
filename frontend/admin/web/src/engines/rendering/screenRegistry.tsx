@@ -68,7 +68,6 @@ export function renderAdminScreen({
         entityConfig={activeConfig}
         onBackToList={backToList}
         onCreateRow={createNew}
-        onEditRow={createNew}
         onSelectRow={selectRow}
         onSubmit={backToList}
         routeAction={routeAction}

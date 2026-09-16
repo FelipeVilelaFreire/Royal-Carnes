@@ -18,6 +18,8 @@ export interface ClientCheckoutProductCategory {
 
 export interface ClientCheckoutProduct {
   id: string;
+  productKey: string;
+  variantSku?: string;
   sku: string;
   name: string;
   kind: ClientCheckoutProductKind;

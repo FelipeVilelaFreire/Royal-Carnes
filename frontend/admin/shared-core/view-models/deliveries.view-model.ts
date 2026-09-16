@@ -13,6 +13,8 @@ export interface AdminDeliveryRowViewModel {
   customerName: string;
   statusKey: string;
   statusLabel: string;
+  statusColor?: string;
+  statusTone?: "danger" | "neutral" | "primary" | "success" | "warning";
   packageCount: number;
   hasConfirmation: boolean;
   createdAt: string;
@@ -53,10 +55,26 @@ function resolveStatusLabel(
   return config?.statuses.find((status) => status.key === statusKey)?.label || statusKey;
 }
 
+function resolveStatusPresentation(
+  config: AdminDeliveryConfigView | null,
+  statusKey: string,
+) {
+  const presentation = config?.statuses.find((status) => status.key === statusKey)?.metadata?.ui;
+  if (!presentation || typeof presentation !== "object") return {};
+  const { statusColor, statusTone } = presentation as Record<string, unknown>;
+  return {
+    statusColor: typeof statusColor === "string" ? statusColor : undefined,
+    statusTone: statusTone === "danger" || statusTone === "neutral" || statusTone === "primary" || statusTone === "success" || statusTone === "warning"
+      ? statusTone
+      : undefined,
+  };
+}
+
 export function createAdminDeliveryRowViewModel(
   delivery: AdminDeliveryView,
   config: AdminDeliveryConfigView | null = null,
 ): AdminDeliveryRowViewModel {
+  const statusPresentation = resolveStatusPresentation(config, delivery.statusKey);
   return {
     id: delivery.id,
     code: delivery.code,
@@ -64,6 +82,7 @@ export function createAdminDeliveryRowViewModel(
     customerName: delivery.customerName,
     statusKey: delivery.statusKey,
     statusLabel: resolveStatusLabel(config, delivery.statusKey),
+    ...statusPresentation,
     packageCount: delivery.packages.length,
     hasConfirmation: Boolean(delivery.confirmation),
     createdAt: delivery.createdAt,

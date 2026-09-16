@@ -16,7 +16,7 @@ import { CatalogoView } from "./Catalogo/CatalogoView/CatalogoView";
 import { HomeView } from "./Home/HomeView";
 import { PerfilView } from "./Perfil/PerfilView";
 import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
-import { MontarBoxView } from "./MontarBox/MontarBoxView";
+import { CheckoutView } from "./Checkout/CheckoutView";
 
 export interface PortalViewProps {
   authApiConfig?: ApiClientConfig;
@@ -130,9 +130,10 @@ export const PortalView: React.FC<PortalViewProps> = ({
       ) : activeScreenKey === "catalogo" ? (
         <CatalogoView strings={strings} />
       ) : activeScreenKey === "produtos" ? (
-        <MontarBoxView
+        <CheckoutView
           activePath={activePath}
           isAuthenticated={auth.isAuthenticated}
+          onRequestAccess={() => setIsAccessOpen(true)}
           strings={strings}
           themeMode={themeMode}
         />

@@ -33,6 +33,13 @@ function collectFormFields(formConfig: any): any[] {
     : formConfig?.fields || [];
 }
 
+function collectDetailFields(detailConfig: any): any[] {
+  return (detailConfig?.tabs || []).flatMap((tab: any) => [
+    ...(tab.fields || []),
+    ...(tab.sections || []).flatMap((section: any) => section.fields || []),
+  ]);
+}
+
 function applyFormDefaults(formConfig: any, values: Record<string, any>): Record<string, any> {
   return collectFormFields(formConfig).reduce((nextValues, field) => {
     if (
@@ -78,6 +85,7 @@ export function useAdminStandardScreen({
   const detailRow = selectedRowOverride || initialSelectedRow || {};
   const detailConfig = entityConfig?.detailPage;
   const formConfig = entityConfig?.addPage || entityConfig?.form;
+  const editableDetailFields = collectDetailFields(detailConfig).filter((field: any) => field.editable);
 
   useEffect(() => {
     let isActive = true;
@@ -209,17 +217,11 @@ export function useAdminStandardScreen({
   );
 
   const beginDetailEdit = useCallback(() => {
-    const editableFields = (detailConfig?.tabs || [])
-      .flatMap((tab: any) => [
-        ...(tab.fields || []),
-        ...(tab.sections || []).flatMap((section: any) => section.fields || []),
-      ])
-      .filter((field: any) => field.editable);
     setFormValues(
-      Object.fromEntries(editableFields.map((field: any) => [field.key, detailRow[field.key] ?? ""])),
+      Object.fromEntries(editableDetailFields.map((field: any) => [field.key, detailRow[field.key] ?? ""])),
     );
     setIsEditingDetail(true);
-  }, [detailConfig, detailRow]);
+  }, [detailRow, editableDetailFields]);
 
   const cancelDetailEdit = useCallback(() => {
     setFormValues({});

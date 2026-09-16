@@ -263,6 +263,8 @@ export const adminPtBR = {
     nextPage: "Proxima pagina",
     paginationAriaLabel: "Paginacao da lista",
     previousPage: "Pagina anterior",
+    removeUnavailableDescription: "A remocao deste registro ainda nao esta disponivel no contrato operacional.",
+    removeUnavailableTitle: "Remocao indisponivel",
     resultsCount: "{count} registros",
     saving: "Salvando",
     searchLabel: "Buscar",
@@ -341,7 +343,12 @@ export const adminPtBR = {
       quantity: "Quantidade",
       source: "Origem",
       sourceKey: "Chave da origem",
+      sourceTypes: {
+        delivery: "Entrega",
+      },
+      total: "Total",
       unit: "Unidade",
+      unitPrice: "Preco unitario",
       variant: "Variante"
     },
     history: {
@@ -749,6 +756,7 @@ export const adminPtBR = {
     },
     currentCycle: {
       item: "Item",
+      planItem: "Item do plano",
       product: "Produto",
       quantity: "Quantidade",
       remaining: "Saldo",
@@ -940,22 +948,26 @@ export const adminPtBR = {
   },
   configuracoes: {
     title: "Configurações gerais",
-    subtitle: "Manifesto operacional da aplicação, identidade, AppShell e parâmetros globais.",
+    subtitle: "Administre a identidade visual, a operação e os parâmetros comerciais do produto.",
+    navigationLabel: "Áreas de configuração",
     sectionOperation: "Parâmetros de operação",
     actions: {
       previewManifest: "Prévia do manifest",
       saveDraft: "Salvar rascunho"
     },
-    badges: {
-      manifestReady: "Manifest"
-    },
     tabs: {
-      appShell: "AppShell",
       commerce: "Comercial",
-      identity: "Identidade",
+      frontend: "Frontend",
       operation: "Operação"
     },
+    tabDescriptions: {
+      commerce: "Cobrança, moeda e ciclo comercial.",
+      frontend: "Marca, tema e aparência do produto.",
+      operation: "Expedição, entrega e cadeia de frio."
+    },
     sections: {
+      appearance: "Aparência",
+      appearanceDescription: "Referências ativas de tema e superfície para manter o produto visualmente consistente.",
       brand: "Identidade da aplicação",
       brandDescription: "Valores que nomeiam o produto e alimentam AppShell, títulos e superfícies publicadas.",
       fulfillment: "Operação e entrega",
@@ -978,7 +990,10 @@ export const adminPtBR = {
       hiddenRoutes: "Rotas ocultas",
       mobileNavigation: "Navegação mobile",
       paymentProvider: "Provedor de pagamento",
-      sidebarMode: "Sidebar"
+      primaryColor: "Cor principal",
+      sidebarMode: "Sidebar",
+      surfaceStyle: "Estilo das superfícies",
+      themeMode: "Tema ativo"
     },
     status: {
       active: "Ativo",
@@ -988,6 +1003,17 @@ export const adminPtBR = {
       review: "Revisar"
     },
     values: {
+      adminTagline: "Painel de Gestao e Operacao do Clube",
+      adminTitle: "PRIME CUT ADMIN",
+      appName: "RoyalPrime",
+      businessName: "Royal Carnes",
+      coldChainSensor: "Sensor IoT -2C",
+      currency: "BRL",
+      fulfillmentWarehouse: "Central Gastronomica SP-01",
+      paymentProvider: "Stripe Subscriptions",
+      primaryColor: "Royal Blue",
+      surfaceStyle: "Superfícies sólidas com contraste suave",
+      adminTheme: "Tema administrativo",
       businessHours: "Horário comercial",
       hiddenRoutes: "Usuários e Configurações podem sair do menu principal",
       mobileBottomTabs: "Bottom tabs operacionais",

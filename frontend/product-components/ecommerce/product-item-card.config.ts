@@ -1,4 +1,5 @@
-export type ProductItemCardPreset = "catalogo" | "montarBox" | "compact" | "readonly" | "includedInPlan";
+export type ProductItemCardPreset = "catalogo" | "compact" | "readonly" | "includedInPlan";
+export type ProductItemCardDensity = "showcase" | "selection" | "compact";
 
 export type ProductItemCardMetaMode = "category-detail" | "category-only" | "detail-only";
 export type ProductItemCardPriceMode = "unit" | "from" | "estimate" | "included" | "hidden";
@@ -13,6 +14,7 @@ export type ProductItemCardQuantityMode = "none" | "stepper" | "readonly";
  */
 export interface ProductItemCardComposition {
   actionMode: ProductItemCardActionMode;
+  density: ProductItemCardDensity;
   favoriteMode: ProductItemCardFavoriteMode;
   metaMode: ProductItemCardMetaMode;
   priceMode: ProductItemCardPriceMode;
@@ -32,6 +34,7 @@ export interface ProductItemCardComposition {
 
 const baseComposition: ProductItemCardComposition = {
   actionMode: "none",
+  density: "showcase",
   favoriteMode: "none",
   metaMode: "category-detail",
   priceMode: "unit",
@@ -55,15 +58,9 @@ export const productItemCardCompositions: Record<ProductItemCardPreset, ProductI
     favoriteMode: "toggle",
     showFavorite: true,
   },
-  montarBox: {
-    ...baseComposition,
-    actionMode: "quantity",
-    quantityMode: "stepper",
-    showAction: true,
-    showBadge: false,
-  },
   compact: {
     ...baseComposition,
+    density: "compact",
     showDescription: false,
     showImage: false,
     showOriginalPrice: false,
@@ -76,6 +73,7 @@ export const productItemCardCompositions: Record<ProductItemCardPreset, ProductI
   includedInPlan: {
     ...baseComposition,
     actionMode: "select",
+    density: "compact",
     priceMode: "included",
     quantityMode: "stepper",
     showAction: true,

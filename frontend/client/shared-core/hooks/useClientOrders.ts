@@ -38,11 +38,17 @@ export function useClientOrders(options: UseClientOrdersOptions = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      const [nextConfig, nextOrders] = await Promise.all([api.config(), api.listMine()]);
-      setConfig(nextConfig);
+      const nextOrders = await api.listMine();
       setOrders(nextOrders);
       setSource("api");
-      return { config: nextConfig, orders: nextOrders };
+
+      try {
+        const nextConfig = await api.config();
+        setConfig(nextConfig);
+        return { config: nextConfig, orders: nextOrders };
+      } catch {
+        return { config: null, orders: nextOrders };
+      }
     } catch (err) {
       const normalized = normalizeApiError(err);
       setError(normalized);

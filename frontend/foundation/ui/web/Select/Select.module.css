@@ -20,3 +20,9 @@
 .select:focus {
   border-color: var(--theme--color-copper);
 }
+
+.select:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: 0.5;
+}

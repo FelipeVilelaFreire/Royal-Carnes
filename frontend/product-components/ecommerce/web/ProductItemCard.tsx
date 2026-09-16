@@ -10,6 +10,7 @@ import { Text } from "../../../foundation/ui/web/Text";
 import {
   resolveProductItemCardComposition,
   type ProductItemCardActionMode,
+  type ProductItemCardDensity,
   type ProductItemCardFavoriteMode,
   type ProductItemCardMetaMode,
   type ProductItemCardPreset,
@@ -44,6 +45,8 @@ export interface ProductItemCardProps {
   metaMode?: ProductItemCardMetaMode;
   priceMode?: ProductItemCardPriceMode;
   actionMode?: ProductItemCardActionMode;
+  actionPresentation?: "icon" | "label";
+  density?: ProductItemCardDensity;
   favoriteMode?: ProductItemCardFavoriteMode;
   quantityMode?: ProductItemCardQuantityMode;
   selected?: boolean;
@@ -95,6 +98,8 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   metaMode,
   priceMode,
   actionMode,
+  actionPresentation = "icon",
+  density,
   favoriteMode,
   quantityMode,
   selected = false,
@@ -120,6 +125,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   const [isMediaUnavailable, setIsMediaUnavailable] = React.useState(false);
   const composition = resolveProductItemCardComposition(preset, {
     actionMode,
+    density,
     favoriteMode,
     metaMode,
     priceMode,
@@ -138,6 +144,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   });
   const {
     actionMode: resolvedActionMode,
+    density: resolvedDensity,
     favoriteMode: resolvedFavoriteMode,
     metaMode: resolvedMetaMode,
     priceMode: resolvedPriceMode,
@@ -171,11 +178,12 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   const isCardDisabled = actionDisabled && !selected;
   const formatPriceValue = (value: number) => formatPrice ? formatPrice(value) : String(value);
   const hasMediaImage = Boolean(image) && !isMediaUnavailable;
-  if (preset === "catalogo") {
+  if (preset === "catalogo" || resolvedDensity === "selection") {
     return (
       <Card
         className={styles.card}
         data-disabled={isCardDisabled || undefined}
+        data-density={resolvedDensity}
         data-mode={isDark ? "dark" : "light"}
         data-preset={preset}
         data-selected={selected || undefined}
@@ -231,19 +239,25 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                 </div>
               ) : null}
               {canShowAction ? (
-                <div className={styles.catalogAction} data-expanded={canUseStepper && quantity > 0 || undefined}>
+                <div
+                  className={styles.catalogAction}
+                  data-expanded={canUseStepper && quantity > 0 || undefined}
+                  data-presentation={actionPresentation}
+                >
                   <Button
                     aria-label={actionText}
                     appearance="solid"
                     className={styles.catalogCartButton}
                     disabled={actionDisabled}
                     icon={<CartIcon />}
-                    iconPosition="only"
+                    iconPosition={actionPresentation === "label" ? "start" : "only"}
                     onClick={onAction}
                     size="sm"
                     tone="primary"
                     type="button"
-                  />
+                  >
+                    {actionPresentation === "label" ? actionText : null}
+                  </Button>
                   {canUseStepper ? (
                     <div className={styles.catalogQuantityControl} role="group">
                       <button
@@ -279,6 +293,7 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
     <Card
       className={styles.card}
       data-disabled={isCardDisabled || undefined}
+      data-density={resolvedDensity}
       data-mode={isDark ? "dark" : "light"}
       data-preset={preset}
       data-selected={selected || undefined}

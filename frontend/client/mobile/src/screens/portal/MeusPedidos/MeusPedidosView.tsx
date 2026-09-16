@@ -5,7 +5,8 @@ import { Button, Container, Inline, Modal, Stack, Surface, Text } from "@foundat
 import { useUi } from "@foundation/ui/native/context";
 import { ScreenHeader } from "@foundation/product-components/screens/native/ScreenHeader";
 import { normalizeScreenHeaderScrollProgress } from "@foundation/product-components/screens/shared";
-import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
+import { type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
+import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen";
 
 export interface MeusPedidosViewProps {
   activePath?: string;
@@ -20,10 +21,8 @@ type NativeScrollEvent = {
   };
 };
 
-export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "dark" }) => {
+export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
   const strings = useClientStrings().meusPedidos;
-  const mobileConfig = createMobileAppShellConfig(themeMode) as any;
-  const theme = mobileConfig.theme;
   const { designSystem, hosts } = useUi();
   const ScrollContainer = hosts.ScrollView || hosts.View;
   const orders = useClientOrders();
@@ -35,26 +34,40 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
   );
   const currentOrder = orders.viewModel.currentOrder;
   const nextBox = orders.viewModel.nextSubscriptionOrder;
+  const hasOrders = rows.length > 0;
   const [headerScrollProgress, setHeaderScrollProgress] = useState(0);
   const screenHeaderScrollRange = Math.max(Number(designSystem.theme.tokens.spacing?.space3xl || 0), 1);
-  const cardStyle = {
-    backgroundColor: theme.surface,
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 14,
-    padding: 16,
-  };
-  const nestedCardStyle = {
-    backgroundColor: theme.surfaceContainer,
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 14,
-  };
 
   useEffect(() => {
     void orders.load().catch(() => undefined);
   }, [orders.load]);
+
+  if (!hasOrders) {
+    const isError = Boolean(orders.error);
+
+    return (
+      <ScrollContainer>
+        <EmptyStateScreen
+          actions={isError ? (
+            <Button appearance="outline" tone="neutral" onPress={() => void orders.load()}>
+              {strings.states.retry}
+            </Button>
+          ) : undefined}
+          description={orders.isLoading
+            ? strings.states.loadingDescription
+            : isError
+              ? strings.states.errorDescription
+              : strings.states.emptyDescription}
+          iconIntent="orders"
+          title={orders.isLoading
+            ? strings.states.loading
+            : isError
+              ? strings.states.error
+              : strings.states.empty}
+        />
+      </ScrollContainer>
+    );
+  }
 
   return (
     <ScrollContainer
@@ -73,89 +86,76 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
         showScrollBorder={false}
         title={strings.title}
       />
-      <Container
-        style={{
-          backgroundColor: theme.background,
-          minHeight: "100%",
-          padding: 20,
-        }}
-      >
+      <Container style={{ flex: 1, minHeight: "100%", padding: designSystem.theme.tokens.spacing?.spaceLg }}>
         <Stack gap="md">
-
-        <Surface
-          appearance="outline"
-          tone="neutral"
-          style={cardStyle}
-        >
-          <Inline gap="sm" style={{ alignItems: "center", justifyContent: "space-between" }}>
-            <Stack gap="xs">
-              <Text tone="muted" variant="caption" weight="bold">
-                {strings.stats.activeOrders}
-              </Text>
-              <Text variant="h2" weight="bold">{orders.viewModel.totals.activeOrders}</Text>
-            </Stack>
-            <Stack gap="xs">
-              <Text tone="muted" variant="caption" weight="bold">
-                {strings.stats.deliveredOrders}
-              </Text>
-              <Text variant="h2" weight="bold">{orders.viewModel.totals.deliveredOrders}</Text>
-            </Stack>
-            <Stack gap="xs">
-              <Text tone="muted" variant="caption" weight="bold">
-                {strings.history.title}
-              </Text>
-              <Text variant="h2" weight="bold">{orders.viewModel.totals.orders}</Text>
-            </Stack>
-          </Inline>
-        </Surface>
-
-        {currentOrder ? (
-          <Surface
-            appearance="outline"
-            tone="neutral"
-            style={cardStyle}
-          >
-            <Stack gap="sm">
-              <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
-                <Stack gap="xs">
-                  <Text tone="muted" variant="caption" weight="bold">
-                    {strings.currentOrder.badge}
-                  </Text>
-                  <Text variant="h3" weight="bold">{currentOrder.code}</Text>
-                  <Text tone="muted" variant="caption">{strings.format.dashSeparated.replace("{first}", currentOrder.kindLabel).replace("{second}", currentOrder.statusLabel)}</Text>
-                </Stack>
-                <Text tone="primary" weight="bold">
-                  {currentOrder.totalLabel}
+          <Surface appearance="outline" tone="neutral">
+            <Inline gap="sm" style={{ alignItems: "center", justifyContent: "space-between" }}>
+              <Stack gap="xs">
+                <Text tone="muted" variant="caption" weight="bold">
+                  {strings.stats.activeOrders}
                 </Text>
-              </Inline>
-              <Text tone="muted">{currentOrder.summary}</Text>
-              <Stack gap="sm">
-                {currentOrder.items.slice(0, 4).map((item) => (
-                  <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
-                    <Text weight="bold">{item.name}</Text>
-                    <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
-                  </Inline>
-                ))}
+                <Text variant="h2" weight="bold">{orders.viewModel.totals.activeOrders}</Text>
               </Stack>
-              <Button appearance="outline" tone="neutral" size="sm" onPress={() => setSelectedOrderId(currentOrder.id)}>
-                {strings.history.details}
-              </Button>
-            </Stack>
+              <Stack gap="xs">
+                <Text tone="muted" variant="caption" weight="bold">
+                  {strings.stats.deliveredOrders}
+                </Text>
+                <Text variant="h2" weight="bold">{orders.viewModel.totals.deliveredOrders}</Text>
+              </Stack>
+              <Stack gap="xs">
+                <Text tone="muted" variant="caption" weight="bold">
+                  {strings.history.title}
+                </Text>
+                <Text variant="h2" weight="bold">{orders.viewModel.totals.orders}</Text>
+              </Stack>
+            </Inline>
           </Surface>
-        ) : null}
 
-        {nextBox ? (
-          <Surface appearance="outline" tone="neutral" style={cardStyle}>
-            <Stack gap="sm">
-              <Text tone="primary" variant="caption" weight="bold">
-                {strings.nextBox.badge}
-              </Text>
-              <Text variant="h3" weight="bold">{strings.nextBox.title}</Text>
-              <Text weight="bold">{nextBox.deliveryEstimateLabel}</Text>
-              <Text tone="muted">{nextBox.summary}</Text>
-            </Stack>
-          </Surface>
-        ) : null}
+          {currentOrder ? (
+            <Surface appearance="outline" tone="neutral">
+              <Stack gap="sm">
+                <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+                  <Stack gap="xs">
+                    <Text tone="muted" variant="caption" weight="bold">
+                      {strings.currentOrder.badge}
+                    </Text>
+                    <Text variant="h3" weight="bold">{currentOrder.code}</Text>
+                    <Text tone="muted" variant="caption">
+                      {strings.format.dashSeparated
+                        .replace("{first}", currentOrder.kindLabel)
+                        .replace("{second}", currentOrder.statusLabel)}
+                    </Text>
+                  </Stack>
+                  <Text tone="primary" weight="bold">{currentOrder.totalLabel}</Text>
+                </Inline>
+                <Text tone="muted">{currentOrder.summary}</Text>
+                <Stack gap="sm">
+                  {currentOrder.items.slice(0, 4).map((item) => (
+                    <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
+                      <Text weight="bold">{item.name}</Text>
+                      <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
+                    </Inline>
+                  ))}
+                </Stack>
+                <Button appearance="outline" tone="neutral" size="sm" onPress={() => setSelectedOrderId(currentOrder.id)}>
+                  {strings.history.details}
+                </Button>
+              </Stack>
+            </Surface>
+          ) : null}
+
+          {nextBox ? (
+            <Surface appearance="outline" tone="neutral">
+              <Stack gap="sm">
+                <Text tone="primary" variant="caption" weight="bold">
+                  {strings.nextBox.badge}
+                </Text>
+                <Text variant="h3" weight="bold">{strings.nextBox.title}</Text>
+                <Text weight="bold">{nextBox.deliveryEstimateLabel}</Text>
+                <Text tone="muted">{nextBox.summary}</Text>
+              </Stack>
+            </Surface>
+          ) : null}
 
         <Stack gap="sm">
           <Text variant="h3" weight="bold">{strings.history.title}</Text>
@@ -165,9 +165,6 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
                 key={order.id}
                 appearance="outline"
                 tone="neutral"
-                style={{
-                  ...nestedCardStyle,
-                }}
               >
                 <Stack gap="sm">
                   <Inline gap="sm" style={{ justifyContent: "space-between" }}>
@@ -187,7 +184,6 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
             <Surface
               appearance="soft"
               tone="neutral"
-              style={nestedCardStyle}
             >
               <Text tone="muted">
                 {strings.states.empty}
@@ -210,7 +206,7 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = ({ themeMode = "d
                 <Text tone="primary" weight="bold">{selectedOrder.totalLabel}</Text>
               </Inline>
               <Text tone="muted">{selectedOrder.summary}</Text>
-              <Surface appearance="outline" tone="neutral" style={nestedCardStyle}>
+              <Surface appearance="outline" tone="neutral">
                 <Stack gap="xs">
                   <Text tone="muted" variant="caption" weight="bold">
                     {strings.detail.payment}

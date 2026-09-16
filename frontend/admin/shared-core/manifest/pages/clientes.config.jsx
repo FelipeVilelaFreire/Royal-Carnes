@@ -49,7 +49,13 @@ export const clientesConfig = {
         id: "dados",
         labelKey: "clientes.detail.tabs.data",
         emptyKey: "clientes.detail.emptyData",
-        fields: [
+        sections: [{
+          key: "identity",
+          type: "fields",
+          titleKey: "clientes.detail.tabs.data",
+          iconIntent: "identity",
+          grid: { desktop: 3, tablet: 2, mobile: 1 },
+          fields: [
           { key: "name", labelKey: "clientes.fields.name", editable: true },
           { key: "email", labelKey: "clientes.fields.email", editable: true },
           { key: "phone", labelKey: "clientes.fields.phone", editable: true },
@@ -68,25 +74,39 @@ export const clientesConfig = {
             ]
           },
           { key: "memberSince", labelKey: "clientes.fields.memberSince" }
-        ]
+          ]
+        }]
       },
       {
         id: "enderecos",
         labelKey: "clientes.detail.tabs.addresses",
         emptyKey: "clientes.detail.emptyAddresses",
-        fields: [
-          { key: "defaultAddress", labelKey: "clientes.fields.defaultAddress" },
-          { key: "addressCount", labelKey: "clientes.fields.addressCount" }
-        ]
+        sections: [{
+          key: "address",
+          type: "fields",
+          titleKey: "clientes.detail.tabs.addresses",
+          iconIntent: "delivery",
+          grid: { desktop: 2, tablet: 2, mobile: 1 },
+          fields: [
+          { key: "defaultAddress", labelKey: "clientes.fields.defaultAddress" }
+          ]
+        }]
       },
       {
         id: "historico",
         labelKey: "clientes.detail.tabs.history",
         emptyKey: "clientes.detail.emptyHistory",
-        fields: [
+        sections: [{
+          key: "history",
+          type: "fields",
+          titleKey: "clientes.detail.tabs.history",
+          iconIntent: "settings",
+          grid: { desktop: 2, tablet: 2, mobile: 1 },
+          fields: [
           { key: "createdAt", labelKey: "clientes.fields.createdAt" },
           { key: "updatedAt", labelKey: "clientes.fields.updatedAt" }
-        ]
+          ]
+        }]
       }
     ]
   },

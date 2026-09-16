@@ -45,30 +45,48 @@
 }
 
 .detailCard {
-  width: 100%;
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
 }
 
 .tabbedContent {
-  width: 100%;
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
 }
 
-.detailGrid {
-  width: 100%;
+.detailGrid.detailGrid {
+  column-gap: var(--theme--spacing-spaceLg);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  row-gap: var(--theme--spacing-space2xl);
 }
 
 .detailSections,
 .detailSection {
-  width: 100%;
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
 }
 
 .detailSectionCard {
-  width: 100%;
+  --ui-surface-padding-x: 0 !important;
+  --ui-surface-padding-y: 0 !important;
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow: hidden;
 }
 
 .sectionHeader {
-  background: color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-10), transparent);
+  background: color-mix(in srgb, var(--theme--color-surfaceContainer) 82%, var(--theme--color-background));
   border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
-  padding: var(--theme--spacing-spaceMd);
+  padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd);
 }
 
 .sectionIcon {
@@ -77,11 +95,29 @@
 }
 
 .sectionContent {
-  width: 100%;
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--theme--spacing-spaceLg);
+}
+
+.detailGrid[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .detailField {
-  min-block-size: var(--theme--dimensions-height-md);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.detailFieldValue {
+  color: var(--theme--color-text);
+  display: block;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  padding-block: var(--theme--spacing-spaceSm);
 }
 
 .sectionTitle {
@@ -102,8 +138,16 @@
     padding-block-end: var(--theme--spacing-spaceXl);
   }
 
-  .detailCard {
-    padding: var(--theme--spacing-spaceLg);
+  .sectionHeader {
+    padding: var(--theme--spacing-spaceSm);
+  }
+
+  .sectionContent {
+    padding: var(--theme--spacing-spaceMd);
+  }
+
+  .detailGrid {
+    row-gap: var(--theme--spacing-spaceXl);
   }
 
   .detailHeader,

@@ -35,7 +35,7 @@ export const assinaturasConfig = {
         id: "dados",
         labelKey: "assinaturas.detail.tabs.data",
         emptyKey: "assinaturas.detail.emptyData",
-        fields: [
+        sections: [{ key: "identity", type: "fields", titleKey: "assinaturas.detail.tabs.data", iconIntent: "identity", grid: { desktop: 3, tablet: 2, mobile: 1 }, fields: [
           { key: "customerName", labelKey: "assinaturas.fields.customer" },
           { key: "planKey", displayKey: "planName", labelKey: "assinaturas.fields.plan", type: "select", source: "planos", valueType: "optionLabel", editable: true },
           {
@@ -54,13 +54,13 @@ export const assinaturasConfig = {
           },
           { key: "startedAt", labelKey: "assinaturas.fields.startedAt" },
           { key: "currentCycleEndsAt", labelKey: "assinaturas.fields.currentCycleEndsAt" }
-        ]
+        ] }]
       },
       {
         id: "operacao",
         labelKey: "assinaturas.detail.tabs.operation",
         emptyKey: "assinaturas.detail.emptyOperation",
-        fields: [
+        sections: [{ key: "operation", type: "fields", titleKey: "assinaturas.detail.tabs.operation", iconIntent: "delivery", grid: { desktop: 3, tablet: 2, mobile: 1 }, fields: [
           { key: "startedAtInput", displayKey: "startedAt", labelKey: "assinaturas.fields.startedAt", type: "datetime", editable: true },
           { key: "endedAtInput", displayKey: "endedAt", labelKey: "assinaturas.fields.endedAt", type: "datetime", editable: true },
           { key: "cancelledAtInput", displayKey: "cancelledAt", labelKey: "assinaturas.fields.cancelledAt", type: "datetime", editable: true },
@@ -94,68 +94,18 @@ export const assinaturasConfig = {
           },
           { key: "deliveryPreferences", labelKey: "assinaturas.fields.deliveryPreferences", type: "textarea", layout: "full", editable: true },
           { key: "internalNotes", labelKey: "assinaturas.fields.internalNotes", type: "textarea", layout: "full", editable: true }
-        ]
+        ] }]
       },
       {
         id: "cicloAtual",
         labelKey: "assinaturas.detail.tabs.currentCycle",
         emptyKey: "assinaturas.detail.emptyCurrentCycle",
-        fields: [
+        sections: [{ key: "currentCycle", type: "fields", titleKey: "assinaturas.detail.tabs.currentCycle", iconIntent: "box", grid: { desktop: 2, tablet: 2, mobile: 1 }, fields: [
           { key: "currentCycleStartsAtInput", displayKey: "currentCycleStartsAt", labelKey: "assinaturas.fields.currentCycleStartsAt", type: "datetime", editable: true },
           { key: "currentCycleEndsAtInput", displayKey: "currentCycleEndsAt", labelKey: "assinaturas.fields.currentCycleEndsAt", type: "datetime", editable: true },
           { key: "currentCycleOrderSummary", labelKey: "assinaturas.fields.currentCycleOrders" },
-          {
-            key: "currentCycleUsageItems",
-            labelKey: "assinaturas.fields.currentCycleUsageItems",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "item", labelKey: "assinaturas.currentCycle.product" },
-              { key: "usedWithLimit", labelKey: "assinaturas.currentCycle.usedWithLimit" },
-              { key: "remainingWithUnit", labelKey: "assinaturas.currentCycle.remaining" },
-              { key: "selectedItems", labelKey: "assinaturas.currentCycle.selectedItems" }
-            ]
-          }
-        ]
+        ] }]
       },
-      {
-        id: "pedidos",
-        labelKey: "assinaturas.detail.tabs.orders",
-        emptyKey: "assinaturas.detail.emptyOrders",
-        fields: [
-          {
-            key: "orders",
-            labelKey: "assinaturas.fields.orders",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "code", labelKey: "assinaturas.orders.code" },
-              { key: "statusLabel", labelKey: "assinaturas.orders.status" },
-              { key: "totalLabel", labelKey: "assinaturas.orders.total" },
-              { key: "createdAt", labelKey: "assinaturas.orders.createdAt" }
-            ]
-          }
-        ]
-      },
-      {
-        id: "pagamentos",
-        labelKey: "assinaturas.detail.tabs.payments",
-        emptyKey: "assinaturas.detail.emptyPayments",
-        fields: [
-          {
-            key: "payments",
-            labelKey: "assinaturas.fields.payments",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "reference", labelKey: "assinaturas.payments.reference" },
-              { key: "statusLabelKey", labelKey: "assinaturas.payments.status", valueType: "translationKey" },
-              { key: "amountLabel", labelKey: "assinaturas.payments.amount" },
-              { key: "dueAt", labelKey: "assinaturas.payments.dueAt" }
-            ]
-          }
-        ]
-      }
     ]
   },
   addPage: {

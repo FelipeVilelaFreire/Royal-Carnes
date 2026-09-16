@@ -21,7 +21,7 @@ interface CatalogoToolbarProps {
 }
 
 export const CatalogoToolbar: React.FC<CatalogoToolbarProps> = ({ catalogo, strings }) => (
-  <Inline className={styles.toolbar} justify="between">
+  <section className={styles.toolbar}>
     <div className={styles.searchField}>
       <Input
         aria-label={strings.searchAriaLabel}
@@ -45,8 +45,9 @@ export const CatalogoToolbar: React.FC<CatalogoToolbarProps> = ({ catalogo, stri
           onChange={(next) => catalogo.setSortBy(next as CatalogoSortKey)}
           options={catalogo.sortOptions}
           value={catalogo.sortBy}
+          width="auto"
         />
       </div>
     </Inline>
-  </Inline>
+  </section>
 );

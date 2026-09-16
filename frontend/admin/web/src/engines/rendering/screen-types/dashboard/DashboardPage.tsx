@@ -11,6 +11,7 @@ import type { AdminTranslate } from "@/locales/i18n";
 import type { DashboardConfig } from "../config/types";
 import styles from "./DashboardPage.module.css";
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton";
+import { DashboardHeader } from "./DashboardHeader";
 
 export interface DashboardPageProps {
   config: DashboardConfig;
@@ -51,16 +52,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading 
     <div className={styles.page}>
       <SectionContainer atmosphere={config.layout.atmosphere} usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
-          <Inline align="start" justify="between" wrap>
-            <Stack className={styles.heading} gap="xs">
-              {config.headerBadge ? <span className={styles.headerEyebrow}><span aria-hidden="true" className={styles.headerEyebrowDot} /><Text as="span" tone="muted" variant="caption" weight="bold">{t(config.headerBadge.labelKey)}</Text></span> : null}
-              <Text as="h1" variant="h1">{t(config.titleKey)}</Text>
-              <Text tone="muted" variant="body">{t(config.subtitleKey)}</Text>
-            </Stack>
-            <Inline className={styles.stateBar} gap="sm">
-              {isLoading ? <Badge appearance="soft" tone="neutral">{t("dashboard.loading")}</Badge> : null}
-            </Inline>
-          </Inline>
+          <DashboardHeader config={config} t={t} />
 
           <Grid className={styles.kpiGrid} columns={config.layout.kpis.columns} gap={config.layout.kpis.gap}>
             {config.widgets.map((widget) => {

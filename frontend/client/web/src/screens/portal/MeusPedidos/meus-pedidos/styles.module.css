@@ -6,7 +6,18 @@
       var(--theme--color-background)
     );
   color: var(--theme--color-text);
-  min-height: 100%;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  inline-size: 100%;
+  min-height: 100dvh;
+  min-inline-size: 0;
+}
+
+.page > main {
+  display: flex;
+  flex: 1;
+  min-block-size: 0;
 }
 
 .content {

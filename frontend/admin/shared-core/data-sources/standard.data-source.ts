@@ -569,6 +569,33 @@ export async function updateAdminStandardRow(
   }
 
   try {
+    if (dataSource.key === "pedidos") {
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const deliveriesApi = createAdminDeliveriesApi(apiConfig);
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const order = await ordersApi.transition(rowId, { statusKey: values.statusKey, note: values.statusNote || "" });
+      const [config, deliveryConfig, deliveries, payments] = await Promise.all([
+        ordersApi.config(),
+        deliveriesApi.config(),
+        deliveriesApi.list(),
+        paymentsApi.list(),
+      ]);
+      return {
+        error: null,
+        row: mapOrderRows(createAdminOrdersViewModel([order], config, deliveries, deliveryConfig, payments).orders)[0],
+      };
+    }
+
+    if (dataSource.key === "deliveries") {
+      const api = createAdminDeliveriesApi(apiConfig);
+      const delivery = await api.transition(rowId, { statusKey: values.statusKey, note: values.statusNote || "" });
+      const config = await api.config();
+      return {
+        error: null,
+        row: mapDeliveryRows(createAdminDeliveriesViewModel([delivery], config).deliveries)[0],
+      };
+    }
+
     if (dataSource.key === "clientes") {
       const customer = await createAdminCustomersApi(apiConfig).update(rowId, {
         document: values.document,

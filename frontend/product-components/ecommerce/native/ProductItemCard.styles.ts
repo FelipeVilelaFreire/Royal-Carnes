@@ -1,13 +1,18 @@
 import type { NativeFoundationDesignSystem } from "../../../foundation/native";
+import type { ProductItemCardDensity } from "../product-item-card.config";
 
-export const createProductItemCardStyles = (designSystem: NativeFoundationDesignSystem) => {
+export const createProductItemCardStyles = (
+  designSystem: NativeFoundationDesignSystem,
+  density: ProductItemCardDensity = "showcase",
+) => {
   const { colors, tokens } = designSystem.theme;
   const spacing = tokens.spacing || {};
   const dimensions = tokens.dimensions?.height || {};
+  const isSelection = density === "selection";
 
   return {
     action: {
-      alignSelf: "flex-start",
+      alignSelf: "flex-end",
       minHeight: dimensions.md,
     },
     badge: {
@@ -16,8 +21,8 @@ export const createProductItemCardStyles = (designSystem: NativeFoundationDesign
       textTransform: "uppercase",
     },
     card: {
-      gap: spacing.spaceXs,
-      padding: spacing.spaceSm,
+      gap: isSelection ? spacing.space2xs : spacing.spaceXs,
+      padding: isSelection ? spacing.spaceMd : spacing.spaceSm,
     },
     category: {
       color: colors.primary,
@@ -35,7 +40,7 @@ export const createProductItemCardStyles = (designSystem: NativeFoundationDesign
       paddingTop: spacing.spaceSm,
     },
     media: {
-      aspectRatio: 16 / 10,
+      aspectRatio: 4 / 3,
       backgroundColor: colors.surfaceContainerHigh,
       borderRadius: tokens.radius?.lg,
       overflow: "hidden",
@@ -52,7 +57,19 @@ export const createProductItemCardStyles = (designSystem: NativeFoundationDesign
       letterSpacing: tokens.typography?.letterSpacingMd,
       textTransform: "uppercase",
     },
+    quantityControl: {
+      alignItems: "center",
+      alignSelf: "flex-end",
+      gap: spacing.spaceXs,
+    },
+    quantityValue: {
+      color: colors.text,
+      minWidth: dimensions.md,
+      textAlign: "center",
+    },
     surface: {
+      borderColor: isSelection ? colors.border : undefined,
+      borderWidth: isSelection ? tokens.borders?.hairline : undefined,
       overflow: "hidden",
     },
   };

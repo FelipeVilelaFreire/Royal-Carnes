@@ -47,12 +47,13 @@ export const produtosConfig = {
         sections: [
           {
             key: "identity",
+            type: "fields",
+            grid: { desktop: 4, tablet: 2, mobile: 1 },
             iconIntent: "identity",
             titleKey: "produtos.detail.sections.identity",
             fields: [
               { key: "name", labelKey: "produtos.fields.name", editable: true },
               { key: "key", labelKey: "produtos.fields.key", editable: true },
-              { key: "description", labelKey: "produtos.fields.description", type: "textarea", layout: "full", editable: true },
               {
                 key: "status",
                 displayKey: "statusLabelKey",
@@ -66,11 +67,14 @@ export const produtosConfig = {
                   { value: "archived", labelKey: "common.statusArchived" }
                 ]
               },
-              { key: "unit", labelKey: "produtos.fields.unit", type: "select", source: "unidades", editable: true }
+              { key: "unit", labelKey: "produtos.fields.unit", type: "select", source: "unidades", editable: true },
+              { key: "description", labelKey: "produtos.fields.description", type: "textarea", editable: true }
             ]
           },
           {
             key: "catalog",
+            type: "fields",
+            grid: { desktop: 3, tablet: 2, mobile: 1 },
             iconIntent: "catalog",
             titleKey: "produtos.detail.sections.catalog",
             fields: [
@@ -103,14 +107,6 @@ export const produtosConfig = {
               }
             ]
           },
-          {
-            key: "variants",
-            iconIntent: "box",
-            titleKey: "produtos.detail.sections.variants",
-            fields: [
-              { key: "variantCount", labelKey: "produtos.fields.variantCount", layout: "full" }
-            ]
-          }
         ]
       },
       {
@@ -120,6 +116,8 @@ export const produtosConfig = {
         sections: [
           {
             key: "prices",
+            type: "fields",
+            grid: { desktop: 1, tablet: 1, mobile: 1 },
             iconIntent: "commerce",
             titleKey: "produtos.detail.tabs.prices",
             fields: [
@@ -143,6 +141,8 @@ export const produtosConfig = {
         sections: [
           {
             key: "media",
+            type: "fields",
+            grid: { desktop: 1, tablet: 1, mobile: 1 },
             iconIntent: "box",
             titleKey: "produtos.detail.tabs.media",
             fields: [

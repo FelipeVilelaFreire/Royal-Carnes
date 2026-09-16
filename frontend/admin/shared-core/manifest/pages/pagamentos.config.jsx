@@ -49,7 +49,7 @@ export const pagamentosConfig = {
         id: "dados",
         labelKey: "pagamentos.detail.tabs.data",
         emptyKey: "pagamentos.detail.emptyData",
-        fields: [
+        sections: [{ key: "identity", type: "fields", titleKey: "pagamentos.detail.tabs.data", iconIntent: "identity", grid: { desktop: 3, tablet: 2, mobile: 1 }, fields: [
           { key: "reference", labelKey: "pagamentos.fields.reference", editable: true },
           { key: "customerName", labelKey: "pagamentos.fields.customer" },
           { key: "originLabelKey", labelKey: "pagamentos.fields.origin", valueType: "translationKey" },
@@ -70,75 +70,18 @@ export const pagamentosConfig = {
             ]
           },
           { key: "notes", labelKey: "pagamentos.fields.notes", type: "textarea", layout: "full", editable: true }
-        ]
+        ] }]
       },
       {
         id: "valores",
         labelKey: "pagamentos.detail.tabs.values",
         emptyKey: "pagamentos.detail.emptyValues",
-        fields: [
+        sections: [{ key: "values", type: "fields", titleKey: "pagamentos.detail.tabs.values", iconIntent: "commerce", grid: { desktop: 3, tablet: 2, mobile: 1 }, fields: [
           { key: "amountCents", displayKey: "amountLabel", labelKey: "pagamentos.fields.amount", type: "currency", currency: "BRL", locale: "pt-BR", editable: true },
           { key: "dueAtInput", displayKey: "dueAt", labelKey: "pagamentos.fields.dueAt", type: "datetime", editable: true },
           { key: "paidAtInput", displayKey: "paidAt", labelKey: "pagamentos.fields.paidAt", type: "datetime", editable: true }
-        ]
+        ] }]
       },
-      {
-        id: "pedido",
-        labelKey: "pagamentos.detail.tabs.order",
-        emptyKey: "pagamentos.detail.emptyOrder",
-        fields: [
-          {
-            key: "linkedOrders",
-            labelKey: "pagamentos.fields.order",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "code", labelKey: "pagamentos.orders.code" },
-              { key: "statusLabel", labelKey: "pagamentos.orders.status" },
-              { key: "totalLabel", labelKey: "pagamentos.orders.total" },
-              { key: "createdAt", labelKey: "pagamentos.orders.createdAt" }
-            ]
-          }
-        ]
-      },
-      {
-        id: "assinatura",
-        labelKey: "pagamentos.detail.tabs.subscription",
-        emptyKey: "pagamentos.detail.emptySubscription",
-        fields: [
-          {
-            key: "linkedSubscriptions",
-            labelKey: "pagamentos.fields.subscription",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "planName", labelKey: "pagamentos.subscriptions.plan" },
-              { key: "statusLabelKey", labelKey: "pagamentos.subscriptions.status", valueType: "translationKey" },
-              { key: "cycleNumber", labelKey: "pagamentos.subscriptions.cycle" },
-              { key: "cycleStatusLabelKey", labelKey: "pagamentos.subscriptions.cycleStatus", valueType: "translationKey" },
-              { key: "cycleWindow", labelKey: "pagamentos.subscriptions.cycleWindow" }
-            ]
-          }
-        ]
-      },
-      {
-        id: "historico",
-        labelKey: "pagamentos.detail.tabs.history",
-        emptyKey: "pagamentos.detail.emptyHistory",
-        fields: [
-          {
-            key: "events",
-            labelKey: "pagamentos.fields.history",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "eventLabelKey", labelKey: "pagamentos.events.event", valueType: "translationKey" },
-              { key: "statusLabelKey", labelKey: "pagamentos.events.status", valueType: "translationKey" },
-              { key: "date", labelKey: "pagamentos.events.date" }
-            ]
-          }
-        ]
-      }
     ]
   },
   addPage: {

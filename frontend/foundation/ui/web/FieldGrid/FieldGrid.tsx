@@ -3,13 +3,15 @@
 import React, { type HTMLAttributes } from "react";
 import styles from "./FieldGrid.module.css";
 
-export type FieldGridColumns = 1 | 2 | 3 | 4 | "auto";
+export type FieldGridColumns = 1 | 2 | 3 | 4 | 5 | 6 | "auto";
+export type FieldGridResponsiveColumns = Partial<Record<"desktop" | "tablet" | "mobile", FieldGridColumns>>;
 export type FieldGridDensity = "compact" | "regular" | "comfortable";
 export type FieldGridGap = "xs" | "sm" | "md" | "lg";
-export type FieldGridItemSpan = 1 | 2 | 3 | 4 | "full";
+export type FieldGridItemSpan = 1 | 2 | 3 | 4 | 5 | 6 | "full";
 
 export interface FieldGridProps extends HTMLAttributes<HTMLDivElement> {
   columns?: FieldGridColumns;
+  responsiveColumns?: FieldGridResponsiveColumns;
   density?: FieldGridDensity;
   gap?: FieldGridGap;
 }
@@ -24,6 +26,7 @@ export const FieldGrid: React.FC<FieldGridProps> = ({
   children,
   className,
   columns = 3,
+  responsiveColumns,
   density = "regular",
   gap = "md",
   ...props
@@ -32,6 +35,9 @@ export const FieldGrid: React.FC<FieldGridProps> = ({
     {...props}
     className={classNames(styles.fieldGrid, className)}
     data-columns={columns}
+    data-desktop-columns={responsiveColumns?.desktop}
+    data-tablet-columns={responsiveColumns?.tablet}
+    data-mobile-columns={responsiveColumns?.mobile}
     data-density={density}
     data-gap={gap}
   >

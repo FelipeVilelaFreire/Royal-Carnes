@@ -62,7 +62,10 @@ export const planosConfig = {
         sections: [
           {
             key: "identity",
+            type: "fields",
             titleKey: "planos.detail.sections.identity",
+            iconIntent: "identity",
+            grid: { desktop: 2, tablet: 2, mobile: 1 },
             fields: [
               { key: "name", labelKey: "planos.fields.name", editable: true },
               { key: "key", labelKey: "planos.fields.key" },
@@ -71,7 +74,10 @@ export const planosConfig = {
           },
           {
             key: "commercial",
+            type: "fields",
             titleKey: "planos.detail.sections.commercial",
+            iconIntent: "commerce",
+            grid: { desktop: 3, tablet: 2, mobile: 1 },
             fields: [
               {
                 key: "status",
@@ -111,36 +117,19 @@ export const planosConfig = {
         id: "itens",
         labelKey: "planos.detail.tabs.includedItems",
         emptyKey: "planos.detail.emptyIncludedItems",
-        fields: [
-          {
-            key: "entitlements",
-            labelKey: "planos.fields.includedItems",
-            type: "lineItems",
-            editable: true,
-            addLabelKey: "planos.fields.addIncludedItem",
-            columns: planEntitlementColumns
-          }
-        ]
+        sections: [{
+          key: "includedItems",
+          type: "lineItems",
+          titleKey: "planos.detail.tabs.includedItems",
+          iconIntent: "box",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          itemsKey: "entitlements",
+          labelKey: "planos.fields.includedItems",
+          editable: true,
+          addLabelKey: "planos.fields.addIncludedItem",
+          columns: planEntitlementColumns
+        }]
       },
-      {
-        id: "assinantes",
-        labelKey: "planos.detail.tabs.subscribers",
-        emptyKey: "planos.detail.emptySubscribers",
-        fields: [
-          {
-            key: "subscribers",
-            labelKey: "planos.fields.subscribers",
-            type: "relatedList",
-            layout: "full",
-            columns: [
-              { key: "customerName", labelKey: "planos.subscribers.customer", showAvatar: true },
-              { key: "statusLabelKey", labelKey: "planos.subscribers.status", valueType: "translationKey" },
-              { key: "startedAt", labelKey: "planos.subscribers.startedAt" },
-              { key: "currentCycleEndsAt", labelKey: "planos.subscribers.currentCycleEndsAt" }
-            ]
-          }
-        ]
-      }
     ]
   },
   addPage: {

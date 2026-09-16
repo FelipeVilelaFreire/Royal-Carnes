@@ -45,36 +45,42 @@
       "label": "Recebido",
       "isInitial": true,
       "allowedNextKeys": ["approved", "cancelled"],
+      "metadata": { "ui": { "statusColor": "received", "statusTone": "neutral" } },
       "sortOrder": 1
     },
     {
       "key": "approved",
       "label": "Aprovado",
       "allowedNextKeys": ["separating", "cancelled"],
+      "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
       "sortOrder": 2
     },
     {
       "key": "separating",
       "label": "Separando",
       "allowedNextKeys": ["ready"],
+      "metadata": { "ui": { "statusColor": "separating", "statusTone": "warning" } },
       "sortOrder": 3
     },
     {
       "key": "ready",
       "label": "Pronto",
       "allowedNextKeys": ["completed"],
+      "metadata": { "ui": { "statusColor": "ready", "statusTone": "neutral" } },
       "sortOrder": 4
     },
     {
       "key": "completed",
       "label": "Concluido",
       "isTerminal": true,
+      "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
       "sortOrder": 5
     },
     {
       "key": "cancelled",
       "label": "Cancelado",
       "isTerminal": true,
+      "metadata": { "ui": { "statusColor": "canceled", "statusTone": "danger" } },
       "sortOrder": 99
     }
   ],

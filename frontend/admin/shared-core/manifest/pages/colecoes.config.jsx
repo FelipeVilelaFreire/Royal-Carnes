@@ -37,15 +37,21 @@ export const colecoesConfig = {
         id: "dados",
         labelKey: "colecoes.detail.tabs.data",
         emptyKey: "colecoes.detail.emptyData",
-        fields: [
+        sections: [{
+          key: "identity",
+          type: "fields",
+          titleKey: "colecoes.detail.tabs.data",
+          iconIntent: "catalog",
+          grid: { desktop: 3, tablet: 2, mobile: 1 },
+          fields: [
           { key: "name", labelKey: "colecoes.fields.name" },
           { key: "key", labelKey: "colecoes.fields.key" },
           { key: "image", labelKey: "colecoes.fields.image" },
           { key: "description", labelKey: "colecoes.fields.description" },
-          { key: "productCount", labelKey: "colecoes.fields.productCount" },
           { key: "sortOrder", labelKey: "colecoes.fields.sortOrder" },
           { key: "statusLabelKey", labelKey: "colecoes.fields.status", valueType: "translationKey" }
-        ]
+          ]
+        }]
       }
     ]
   }

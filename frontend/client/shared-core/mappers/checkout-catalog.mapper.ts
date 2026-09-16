@@ -26,26 +26,31 @@ export function mapCheckoutCatalog(products: ProductBase[]) {
   const mappedProducts = products.map((product): ClientCheckoutProduct => {
     const primaryCategory = product.categories.find((category) => category.key === product.primaryCategoryKey) || product.categories[0];
     const categoryId = primaryCategory?.key || "all";
-    if (primaryCategory && !categories.has(categoryId)) {
-      categories.set(categoryId, {
-        id: categoryId,
-        name: primaryCategory.name,
+    product.categories.forEach((category) => {
+      if (categories.has(category.key)) return;
+      categories.set(category.key, {
+        id: category.key,
+        name: category.name,
         kind: resolveKind(product),
         description: "",
         image: "",
-        order: primaryCategory.sortOrder,
+        order: category.sortOrder,
       });
-    }
+    });
     const preferredPrice = product.prices.find((price) => price.commercialModeKey === "delivery") || product.prices[0];
     const primaryVariant = product.variants.find((variant) => variant.isActive) || product.variants[0];
     return {
       id: String(product.id),
+      productKey: product.key,
+      variantSku: primaryVariant?.sku,
       sku: primaryVariant?.sku || product.key,
       name: product.name,
       kind: resolveKind(product),
       categoryId,
       description: product.description || "",
-      image: product.primaryMediaUrl || "",
+      // Keep the checkout visual identity aligned with Catalogo: some products
+      // expose their photo only through the media collection, not primaryMediaUrl.
+      image: product.primaryMediaUrl || product.media[0]?.url || "",
       price: (preferredPrice?.amountCents || 0) / 100,
       unit: primaryVariant?.measurementUnit?.symbol || product.unit,
       weightLabel: primaryVariant?.weightGrams ? `${primaryVariant.weightGrams / 1000} kg` : undefined,

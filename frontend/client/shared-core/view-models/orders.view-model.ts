@@ -11,7 +11,7 @@ export interface ClientOrderRowViewModel {
   kindLabel: string;
   statusKey: string;
   statusLabel: string;
-  statusTone: "active" | "danger" | "pending" | "success";
+  statusTone: "danger" | "neutral" | "success" | "warning";
   title: string;
   summary: string;
   imageUrl: string;
@@ -87,11 +87,22 @@ function resolveKindLabel(config: ClientOrderConfigView | null, kindKey: string)
   return config?.kinds.find((kind) => kind.key === kindKey)?.label || kindKey;
 }
 
-function resolveStatusTone(statusKey: string): ClientOrderRowViewModel["statusTone"] {
-  if (statusKey === "delivered") return "success";
+function resolveStatusTone(
+  config: ClientOrderConfigView | null,
+  statusKey: string,
+): ClientOrderRowViewModel["statusTone"] {
+  const configuredTone = config?.statuses.find((status) => status.key === statusKey)?.metadata?.ui;
+  const statusTone = configuredTone && typeof configuredTone === "object"
+    ? (configuredTone as Record<string, unknown>).statusTone
+    : undefined;
+
+  if (statusTone === "danger" || statusTone === "neutral" || statusTone === "success" || statusTone === "warning") {
+    return statusTone;
+  }
+
+  if (statusKey === "completed" || statusKey === "delivered") return "success";
   if (statusKey === "cancelled" || statusKey === "canceled") return "danger";
-  if (statusKey === "sentToStore") return "pending";
-  return "active";
+  return "neutral";
 }
 
 function formatKg(value: number): string {
@@ -181,7 +192,7 @@ export function createClientOrderRowViewModel(
     kindLabel: resolveKindLabel(config, order.kindKey),
     statusKey: order.statusKey,
     statusLabel: resolveStatusLabel(config, order.statusKey),
-    statusTone: resolveStatusTone(order.statusKey),
+    statusTone: resolveStatusTone(config, order.statusKey),
     title,
     summary,
     imageUrl,
@@ -210,8 +221,13 @@ export function createClientOrdersViewModel(
   config: ClientOrderConfigView | null = null,
 ): ClientOrdersViewModel {
   const rows = orders.map((order) => createClientOrderRowViewModel(order, config));
-  const currentOrder = rows.find((order) => order.kindKey === "royalDelivery" && order.statusTone !== "success") || rows[0] || null;
-  const nextSubscriptionOrder = rows.find((order) => order.kindKey === "subscriptionCycle" && order.statusTone !== "success") || null;
+  const isTerminal = (row: ClientOrderRowViewModel) =>
+    config
+      ? Boolean(config.statuses.find((status) => status.key === row.statusKey)?.isTerminal)
+      : row.statusTone === "success" || row.statusTone === "danger";
+  const activeRows = rows.filter((row) => !isTerminal(row));
+  const currentOrder = activeRows.find((row) => !row.rawOrder.subscriptionId) || null;
+  const nextSubscriptionOrder = activeRows.find((row) => Boolean(row.rawOrder.subscriptionId)) || null;
 
   return {
     orders: rows,

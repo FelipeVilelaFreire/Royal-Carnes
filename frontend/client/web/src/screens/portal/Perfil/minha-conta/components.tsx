@@ -68,15 +68,6 @@ export function AccountSidebarNav({
   return (
     <aside className={styles.sidebar}>
       <Stack gap="lg">
-        <Stack gap="xs">
-          <Text as="span" variant="caption" tone="text" weight="var(--theme--typography-bold)">
-            {strings.eyebrow}
-          </Text>
-          <Text as="h1" variant="h2">{strings.title}</Text>
-          <Text tone="text-muted">
-            {strings.format.greeting.replace("{greeting}", strings.greetingPrefix).replace("{name}", viewModel.customer.name.split(" ")[0]).replace("{subtitle}", strings.subtitle)}
-          </Text>
-        </Stack>
         <Card className={styles.highlightCard} size="sm">
           <Stack gap="sm">
             <Inline justify="between" wrap={false}>
@@ -96,8 +87,8 @@ export function AccountSidebarNav({
               const isActive = item.key === activeTab;
               return (
                 <Button
-                  appearance={isActive ? "soft" : "transparent"}
-                  className={styles.tabButton}
+                  appearance="transparent"
+                  className={[styles.tabButton, isActive ? styles.tabButtonActive : ""].filter(Boolean).join(" ")}
                   key={item.key}
                   onClick={() => onSelect(item.key)}
                   size="sm"

@@ -11,7 +11,6 @@ export interface StandardScreenProps {
   entityConfig: any;
   onBackToList: () => void;
   onCreateRow?: () => void;
-  onEditRow?: () => void;
   onSelectRow?: (row: any) => void;
   onSubmit?: (values: Record<string, any>) => void;
   routeAction: "create" | "detail" | "list";
@@ -23,7 +22,6 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
   entityConfig,
   onBackToList,
   onCreateRow,
-  onEditRow,
   onSelectRow,
   onSubmit,
   routeAction,
@@ -65,7 +63,7 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
         onBack={onBackToList}
         onCancelEdit={standard.cancelDetailEdit}
         onDelete={entityConfig?.detailPage?.deleteAction ? standard.deleteDetail : undefined}
-        onEdit={standard.beginDetailEdit || onEditRow}
+        onEdit={standard.beginDetailEdit}
         onFieldChange={standard.setFormValue}
         onSaveEdit={standard.submitDetailEdit}
         onTabChange={standard.setActiveTab}

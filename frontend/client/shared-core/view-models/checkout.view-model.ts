@@ -163,7 +163,7 @@ export const createClientCheckoutViewModel = ({
         ? product.planTiers.some((tier) => currentSubscriptionPlan.allowedPlanTiers.includes(tier)) ||
           Boolean(isIncludedInSelectedPlan)
         : true;
-    const matchesCategory = selectedCategoryId === "all" || product.categoryId === selectedCategoryId;
+    const matchesCategory = selectedCategoryId === "all" || product.tags.includes(selectedCategoryId);
     const matchesQuery =
       !normalizedQuery ||
       product.name.toLowerCase().includes(normalizedQuery) ||

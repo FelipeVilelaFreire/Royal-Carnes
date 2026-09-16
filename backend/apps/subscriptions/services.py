@@ -291,3 +291,132 @@ def validate_cycle_item_selection(
         )
         if current_selections + 1 > int(max_selections):
             raise EntitlementValidationError("max_selections_exceeded", "Entitlement selections exceeded")
+
+
+def resolve_cycle_entitlement(
+    *,
+    cycle: SubscriptionCycle,
+    product: Product,
+    variant: ProductVariant | None,
+) -> PlanEntitlement:
+    """Resolve the entitlement that owns a product in this subscription cycle.
+
+    A plan can intentionally expose overlapping targets.  In that case the
+    narrowest target wins so a variant/product allowance is never silently
+    consumed from a broader category/collection allowance.
+    """
+    target_priority = {
+        PlanEntitlement.TargetType.VARIANT: 0,
+        PlanEntitlement.TargetType.PRODUCT: 1,
+        PlanEntitlement.TargetType.CATEGORY: 2,
+        PlanEntitlement.TargetType.COLLECTION: 3,
+    }
+    matches = [
+        entitlement
+        for entitlement in cycle.subscription.plan.entitlements.select_related(
+            "collection",
+            "category",
+            "product",
+            "variant",
+            "measurement_unit",
+        )
+        if product_matches_entitlement(product, variant, entitlement)
+    ]
+    if not matches:
+        raise EntitlementValidationError("product_not_in_plan", "Product is not included in the subscription plan")
+    return min(matches, key=lambda entitlement: (target_priority[entitlement.target_type], entitlement.sort_order, entitlement.key))
+
+
+@transaction.atomic
+def reserve_cycle_order_items(*, organization, cycle: SubscriptionCycle, items: list[dict]) -> None:
+    """Validate and reserve all subscription order items as one cycle mutation.
+
+    The order API calls this service instead of trusting quantities calculated
+    by a client.  The cycle row is locked so concurrent order requests cannot
+    both spend the same remaining entitlement balance.
+    """
+    locked_cycle = SubscriptionCycle.objects.select_for_update().select_related("subscription__plan").get(
+        organization=organization,
+        id=cycle.id,
+    )
+    if locked_cycle.status != SubscriptionCycle.Status.OPEN:
+        raise EntitlementValidationError("subscription_cycle_not_open", "Subscription cycle is not open for selection")
+
+    prepared: list[tuple[PlanEntitlement, dict]] = []
+    requested_by_entitlement: dict[int, Decimal] = {}
+    requested_selection_keys: dict[int, set[tuple[int, int | None]]] = {}
+
+    for item in items:
+        product = item["product"]
+        variant = item.get("variant")
+        quantity = Decimal(str(item["quantity"]))
+        entitlement = resolve_cycle_entitlement(cycle=locked_cycle, product=product, variant=variant)
+        measurement_unit = variant.measurement_unit if variant else None
+        validate_cycle_item_selection(
+            organization=organization,
+            cycle=locked_cycle,
+            entitlement=entitlement,
+            product=product,
+            variant=variant,
+            quantity=quantity,
+            measurement_unit=measurement_unit,
+        )
+        prepared.append((entitlement, item))
+        requested_by_entitlement[entitlement.id] = requested_by_entitlement.get(entitlement.id, Decimal("0")) + quantity
+        requested_selection_keys.setdefault(entitlement.id, set()).add((product.id, variant.id if variant else None))
+
+    for entitlement, _item in prepared:
+        if entitlement.id not in requested_by_entitlement:
+            continue
+        requested_quantity = requested_by_entitlement.pop(entitlement.id)
+        used_quantity = sum(
+            item.quantity
+            for item in locked_cycle.items.filter(
+                entitlement=entitlement,
+                status__in=[
+                    SubscriptionCycleItem.Status.PENDING,
+                    SubscriptionCycleItem.Status.SELECTED,
+                    SubscriptionCycleItem.Status.RESERVED,
+                    SubscriptionCycleItem.Status.FULFILLED,
+                ],
+            )
+        )
+        if used_quantity + requested_quantity > entitlement.quantity:
+            raise EntitlementValidationError("quantity_exceeded", "Entitlement quantity exceeded")
+
+        max_selections = (entitlement.constraints or {}).get("maxSelections")
+        if max_selections is not None:
+            current_selection_keys = set(
+                locked_cycle.items.filter(entitlement=entitlement)
+                .exclude(status=SubscriptionCycleItem.Status.CANCELLED)
+                .values_list("product_id", "variant_id")
+            )
+            next_selection_count = len(current_selection_keys | requested_selection_keys[entitlement.id])
+            if next_selection_count > int(max_selections):
+                raise EntitlementValidationError("max_selections_exceeded", "Entitlement selections exceeded")
+
+    for entitlement, item in prepared:
+        product = item["product"]
+        variant = item.get("variant")
+        quantity = Decimal(str(item["quantity"]))
+        existing = locked_cycle.items.select_for_update().filter(
+            entitlement=entitlement,
+            product=product,
+            variant=variant,
+        ).first()
+        if existing is None:
+            SubscriptionCycleItem.objects.create(
+                organization=organization,
+                cycle=locked_cycle,
+                entitlement=entitlement,
+                product=product,
+                variant=variant,
+                quantity=quantity,
+                measurement_unit=variant.measurement_unit if variant else None,
+                status=SubscriptionCycleItem.Status.RESERVED,
+            )
+            continue
+        existing.quantity += quantity
+        existing.measurement_unit = variant.measurement_unit if variant else existing.measurement_unit
+        existing.status = SubscriptionCycleItem.Status.RESERVED
+        existing.save(update_fields=["quantity", "measurement_unit", "status", "updated_at"])

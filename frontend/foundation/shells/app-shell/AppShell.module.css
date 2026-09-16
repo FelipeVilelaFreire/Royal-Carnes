@@ -932,19 +932,20 @@
 .bottomTabBar {
   --ui-surface-bg: var(--app-shell-panel-bg);
   --ui-surface-border: var(--app-shell-border);
+  --ui-surface-border-width: var(--theme--borders-medium);
   --ui-surface-color: var(--app-shell-color);
   --ui-surface-shadow: var(--app-shell-bottom-shadow, none);
   align-items: center;
   background: color-mix(in srgb, var(--app-shell-panel-bg) 94%, transparent);
   backdrop-filter: blur(var(--theme--blur-sm));
-  border-block-start: var(--app-shell-border-width) solid var(--app-shell-border);
+  border-block-start: var(--theme--borders-medium) solid var(--app-shell-border);
   bottom: 0;
   box-shadow: var(--app-shell-bottom-shadow);
   box-sizing: border-box;
   display: none;
   inset-inline: 0;
   justify-content: center;
-  padding: var(--theme--spacing-spaceXs) var(--theme--spacing-spaceXs) calc(var(--theme--spacing-spaceXs) + env(safe-area-inset-bottom));
+  padding: var(--theme--spacing-spaceXs) var(--app-shell-space-none) calc(var(--theme--spacing-spaceXs) + env(safe-area-inset-bottom));
   position: fixed;
   z-index: var(--theme--z-index-appShellBottomBar, 980);
 }
@@ -993,7 +994,7 @@
 
 .bottomTabItems {
   display: grid;
-  gap: var(--theme--spacing-spaceXs);
+  gap: var(--app-shell-space-none);
   grid-template-columns: repeat(var(--app-shell-bottom-count, 4), minmax(0, 1fr));
   width: 100%;
 }
@@ -1006,7 +1007,7 @@
   --ui-button-letter-spacing: var(--theme--typography-letterSpacingMd);
   --ui-button-line-height: var(--theme--typography-lineHeight2xs);
   --ui-button-min-width: 0;
-  --ui-button-padding-x: var(--theme--spacing-space2xs);
+  --ui-button-padding-x: var(--app-shell-space-none);
   --ui-button-padding-y: var(--theme--spacing-space2xs);
   --ui-surface-bg: transparent;
   --ui-surface-border: transparent;
@@ -1021,13 +1022,19 @@
   flex-direction: column;
   font-size: var(--theme--typography-size2xs);
   font-weight: var(--theme--typography-bold);
-  gap: var(--theme--spacing-space2xs);
+  font-size: calc(var(--theme--typography-size2xs) * 0.9);
+  gap: var(--app-shell-space-none);
   justify-content: center;
   max-width: none;
   min-height: var(--theme--dimensions-height-xl);
   min-width: 0;
-  padding: var(--theme--spacing-space2xs);
+  padding: var(--app-shell-space-none);
   width: 100%;
+}
+
+.bottomTabButton > span:first-child {
+  transform: scale(0.875);
+  transform-origin: center;
 }
 
 .bottomTabButtonActive {
@@ -1040,11 +1047,12 @@
 
 .bottomTabLabel {
   display: block;
-  line-height: var(--theme--typography-lineHeight2xs);
+  font-size: calc(var(--theme--typography-size2xs) * 0.9);
+  line-height: calc(var(--theme--typography-lineHeight2xs) * 0.9);
   max-height: var(--theme--dimensions-height-2xs);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: nowrap;
   width: 100%;
 }
 

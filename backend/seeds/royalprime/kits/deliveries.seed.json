@@ -16,18 +16,21 @@
       "label": "Pendente",
       "isInitial": true,
       "allowedNextKeys": ["packing", "cancelled"],
+      "metadata": { "ui": { "statusColor": "pending", "statusTone": "warning" } },
       "sortOrder": 1
     },
     {
       "key": "packing",
       "label": "Separando entrega",
       "allowedNextKeys": ["out-for-delivery", "cancelled"],
+      "metadata": { "ui": { "statusColor": "separating", "statusTone": "warning" } },
       "sortOrder": 2
     },
     {
       "key": "out-for-delivery",
       "label": "Saiu para entrega",
       "allowedNextKeys": ["delivered", "failed"],
+      "metadata": { "ui": { "statusColor": "outForDelivery", "statusTone": "primary" } },
       "sortOrder": 3
     },
     {
@@ -35,18 +38,21 @@
       "label": "Entregue",
       "isTerminal": true,
       "effects": { "confirmDelivery": true },
+      "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
       "sortOrder": 4
     },
     {
       "key": "failed",
       "label": "Falhou",
       "isTerminal": true,
+      "metadata": { "ui": { "statusColor": "canceled", "statusTone": "danger" } },
       "sortOrder": 98
     },
     {
       "key": "cancelled",
       "label": "Cancelada",
       "isTerminal": true,
+      "metadata": { "ui": { "statusColor": "canceled", "statusTone": "danger" } },
       "sortOrder": 99
     }
   ],

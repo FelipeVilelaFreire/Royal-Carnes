@@ -39,6 +39,16 @@
   border-color: color-mix(in srgb, var(--theme--color-copper) 42%, var(--theme--color-border));
 }
 
+.control:has(.textarea:disabled) {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.textarea:disabled {
+  cursor: not-allowed;
+}
+
 .control[data-invalid="true"] {
   border-color: var(--theme--status-canceled);
 }

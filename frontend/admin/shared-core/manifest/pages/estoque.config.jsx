@@ -1,14 +1,45 @@
 export const estoqueConfig = {
   screenKey: "estoque",
-  titleKey: "estoque.title",
-  subtitleKey: "estoque.subtitle",
+  screenType: "standard",
   entityNameKey: "entities.inventoryMovement",
-  actionLabelKey: "estoque.ctaAdd",
   dataSource: { key: "estoque", fallbackOnError: false },
-  columns: [],
-  filters: [],
-  form: {
-    fields: []
+  listPage: {
+    titleKey: "estoque.title",
+    subtitleKey: "estoque.subtitle",
+    searchPlaceholderKey: "common.searchPlaceholder",
+    columns: [
+      { key: "productName", labelKey: "estoque.title" },
+      { key: "variantName", labelKey: "estoque.subtitle" },
+      { key: "sellableQuantity", labelKey: "estoque.title" },
+      { key: "status", labelKey: "common.status" },
+      { key: "updatedAt", labelKey: "estoque.subtitle" },
+    ],
+    filters: [],
   },
-  rows: []
+  detailPage: {
+    titleKey: "estoque.title",
+    displayNameKey: "productName",
+    tabs: [{
+      id: "data",
+      labelKey: "estoque.title",
+      sections: [{
+        key: "inventory",
+        type: "fields",
+        titleKey: "estoque.title",
+        iconIntent: "catalog",
+        grid: { desktop: 3, tablet: 2, mobile: 1 },
+        fields: [
+          { key: "productName", labelKey: "estoque.title" },
+          { key: "variantName", labelKey: "estoque.subtitle" },
+          { key: "sku", labelKey: "estoque.title" },
+          { key: "availableQuantity", labelKey: "estoque.title" },
+          { key: "reservedQuantity", labelKey: "estoque.title" },
+          { key: "sellableQuantity", labelKey: "estoque.title" },
+          { key: "measurementUnitSymbol", labelKey: "estoque.subtitle" },
+          { key: "status", labelKey: "common.status" },
+          { key: "updatedAt", labelKey: "estoque.subtitle" },
+        ],
+      }],
+    }],
+  },
 };

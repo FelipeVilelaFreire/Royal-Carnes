@@ -37,7 +37,13 @@ export const categoriasConfig = {
         id: "data",
         labelKey: "categorias.detail.tabs.data",
         emptyKey: "categorias.detail.emptyData",
-        fields: [
+        sections: [{
+          key: "identity",
+          type: "fields",
+          titleKey: "categorias.detail.tabs.data",
+          iconIntent: "catalog",
+          grid: { desktop: 3, tablet: 2, mobile: 1 },
+          fields: [
           { key: "name", labelKey: "categorias.fields.name", editable: true },
           { key: "key", labelKey: "categorias.fields.key", editable: true },
           { key: "parentName", labelKey: "categorias.fields.parent" },
@@ -54,7 +60,8 @@ export const categoriasConfig = {
               { value: "false", labelKey: "common.statusInactive" }
             ]
           }
-        ]
+          ]
+        }]
       }
     ]
   },

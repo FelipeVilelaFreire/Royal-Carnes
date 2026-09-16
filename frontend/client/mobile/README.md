@@ -27,8 +27,8 @@ src/screens/portal/PortalView.tsx
 src/screens/landing/LandingView.tsx
 src/screens/portal/Home/HomeView.tsx
 src/screens/portal/Catalogo/CatalogoView/CatalogoView.tsx
-src/screens/portal/MontarBox/MontarBoxView.tsx
-src/screens/portal/MontarBox/pedido/*
+src/screens/portal/Checkout/CheckoutView.tsx
+src/screens/portal/Checkout/*
 src/screens/portal/MeusPedidos/MeusPedidosView.tsx
 src/screens/portal/Perfil/PerfilView.tsx
 ```
@@ -42,21 +42,26 @@ estados de carregamento, vazio e erro.
 frontend/client/shared-core/view-models/catalogo.view-model.ts
 ```
 
-`MontarBoxView.tsx` segue a mesma tree publica da web:
+`CheckoutView.tsx` segue a mesma tree publica da web:
 
 ```text
-MontarBoxView
-  -> pedido/ModeSelector
-  -> pedido/CheckoutStepTracker
-  -> pedido/ProductCatalogStep
-  -> pedido/DeliveryStep
-  -> pedido/PaymentStep
-  -> pedido/ReviewStep
+CheckoutView
+  -> acquisition/AcquisitionModeGrid
+  -> progress/CheckoutStepTracker
+  -> catalog/ProductCatalogStep
+  -> catalog/CheckoutProductGrid
+  -> delivery/DeliveryStep
+  -> payment/PaymentStep
+  -> review/ReviewStep
 ```
 
 A tela consome `useClientCheckout`, `checkout.config.ts`, strings ativas e
 `checkout.view-model.ts`; erros de API permanecem como erro, sem fallback
 demonstrativo local.
+
+No nivel de selecao, Web e Native consomem as mesmas categorias e regras do
+shared-core. O Native usa modal de categoria com rascunho e confirmacao, botao
+`Adicionar` e controle de quantidade no `ProductItemCard` compartilhado.
 
 ## Contrato De Nomes
 

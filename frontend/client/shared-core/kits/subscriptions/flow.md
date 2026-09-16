@@ -40,10 +40,20 @@ screen render-only
   -> backend validate_cycle_item_selection()
 ```
 
+Submit subscription order:
+
+```text
+screen render-only
+  -> POST /api/v1/orders/me/
+  -> backend reserve_cycle_order_items()
+  -> locks the cycle, resolves the entitlement and checks the remaining balance
+  -> reserves the selected quantities only when the complete request is valid
+```
+
 Backend authority:
 
 ```text
-backend decides entitlement, quantity, unit, attributes and availability
-client shared-core only maps DTO and exposes action state
-screen never calculates plan limits
+backend decides entitlement, quantity, unit, attributes, availability and remaining cycle balance
+client shared-core maps DTOs and may present a non-authoritative preview
+screen never grants access or confirms a plan limit
 ```

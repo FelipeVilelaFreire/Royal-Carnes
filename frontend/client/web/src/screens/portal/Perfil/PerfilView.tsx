@@ -2,21 +2,13 @@
 
 import React, { useMemo } from "react";
 import { Container, Stack } from "@foundation/ui/web/Layout";
-import { useClientCustomer, type ClientCustomerTabKey } from "@royalprime/client/hooks/useClientCustomer";
+import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenHeader";
+import { useClientCustomer } from "@royalprime/client/hooks/useClientCustomer";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
-import {
-  AccountHeroSummary,
-  AccountSidebarNav,
-  AddressListPanel,
-  CycleUsageGrid,
-  NotificationsPanel,
-  PaymentPanel,
-  PlanComparisonModal,
-  ProfileFormPanel,
-  RecentOrdersPanel,
-  SecurityPanel,
-  SubscriptionPanel,
-} from "./minha-conta/components";
+import { PlanComparisonModal } from "./minha-conta/components";
+import { AccountProfileSummary } from "./minha-conta/fixed/AccountProfileSummary";
+import { AccountSidebarNav } from "./minha-conta/fixed/AccountSidebarNav";
+import { ProfileModuleContent } from "./minha-conta/modules/ProfileModuleContent";
 import styles from "./minha-conta/styles.module.css";
 import type { AccountTabItem } from "./minha-conta/types";
 
@@ -40,93 +32,18 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
     { key: "security", label: strings.tabs.security },
   ], [strings]);
 
-  const renderActivePanel = (activeTab: ClientCustomerTabKey) => {
-    if (activeTab === "subscription") {
-      return (
-        <SubscriptionPanel
-          currentPlanKey={customer.selectedPlanKey}
-          onChangePlan={customer.actions.openPlansModal}
-          plans={customer.dataSource.plans}
-          strings={strings}
-          viewModel={customer.viewModel}
-        />
-      );
-    }
-
-    if (activeTab === "orders") {
-      return (
-        <RecentOrdersPanel
-          onNavigate={onNavigate}
-          orders={customer.dataSource.recentOrders}
-          strings={strings}
-        />
-      );
-    }
-
-    if (activeTab === "data") {
-      return (
-        <ProfileFormPanel
-          draft={customer.profileDraft}
-          onSave={customer.actions.saveProfileDraft}
-          onUpdate={customer.actions.updateProfileDraft}
-          saveState={customer.saveState}
-          strings={strings}
-        />
-      );
-    }
-
-    if (activeTab === "addresses") {
-      return (
-        <AddressListPanel
-          addresses={customer.dataSource.customer.addresses}
-          strings={strings}
-        />
-      );
-    }
-
-    if (activeTab === "payments") {
-      return (
-        <PaymentPanel
-          invoices={customer.dataSource.invoices}
-          paymentMethods={customer.dataSource.customer.paymentMethods}
-          strings={strings}
-        />
-      );
-    }
-
-    if (activeTab === "notifications") {
-      return (
-        <NotificationsPanel
-          notifications={customer.notifications}
-          onUpdate={customer.actions.updateNotification}
-          strings={strings}
-        />
-      );
-    }
-
-    if (activeTab === "security") {
-      return <SecurityPanel strings={strings} />;
-    }
-
-    return (
-      <Stack gap="lg">
-        <AccountHeroSummary
-          onChangePlan={customer.actions.openPlansModal}
-          strings={strings}
-          viewModel={customer.viewModel}
-        />
-        <CycleUsageGrid metrics={customer.viewModel.usageMetrics} strings={strings} />
-        <RecentOrdersPanel
-          onNavigate={onNavigate}
-          orders={customer.dataSource.recentOrders.slice(0, 2)}
-          strings={strings}
-        />
-      </Stack>
-    );
-  };
-
   return (
     <div className={styles.page}>
+      <div className={styles.mobileScreenHeader}>
+        <ScreenHeader
+          description={strings.subtitle}
+          eyebrow={strings.eyebrow}
+          mobileMode="collapsible"
+          mobileTitle={strings.title}
+          showScrollBorder={false}
+          title={strings.title}
+        />
+      </div>
       <Container className={styles.content} gutter="page" width="wide">
         <div className={styles.mainGrid}>
           <AccountSidebarNav
@@ -137,7 +54,12 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
             viewModel={customer.viewModel}
           />
           <Stack gap="lg">
-            {renderActivePanel(customer.activeTab)}
+            <AccountProfileSummary
+              onChangePlan={customer.actions.openPlansModal}
+              strings={strings}
+              viewModel={customer.viewModel}
+            />
+            <ProfileModuleContent customer={customer} onNavigate={onNavigate} strings={strings} />
           </Stack>
         </div>
       </Container>

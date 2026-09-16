@@ -1135,3 +1135,433 @@ ativo da Foundation em cobre. No Native, ele usa `ScrollView` horizontal sem
 indicador e um controle Foundation com icone semantico `next`; o controle avanca
 o carrossel e desaparece ao chegar ao fim. Nao voltar a colocar categorias
 dentro de `CatalogoToolbar` ou expor uma barra horizontal de rolagem.
+
+## Atualizacao Mais Recente - Catalogo, Toolbar e ScreenHeader (2026-09-14)
+
+Checkpoint publicado desta sequencia:
+
+```text
+3405b46 feat: consolidate catalog and local development flows
+branch: feature/shared-core-kit-reset
+remote: origin/feature/shared-core-kit-reset
+```
+
+O corte consolidou a rota e a composicao do Catalogo. A fonte de dados continua
+real e centralizada; esta etapa organizou e refinou somente a camada
+render-only de Web e Native.
+
+### Catalogo: contrato visual e responsabilidade
+
+```text
+API catalogo
+  -> client/shared-core/features/catalogo/useCatalogoContent.ts
+  -> categoria, busca, ordenacao, loading, vazio e erro
+  -> CatalogoContent Web ou Native
+  -> rail -> toolbar -> grid/feed -> feedback
+```
+
+`CatalogoCategoryRail` recebe as categorias do controller. `CatalogoToolbar`
+recebe a mesma instancia e apenas dispara `setSearchQuery` e `setSortBy`; nao
+filtra, ordena, cria categorias nem calcula preco localmente. No Web, o
+`DropdownPicker` da Foundation e o unico seletor de ordenacao: abre junto ao
+controle, fecha por clique externo ou Escape e destaca a opcao selecionada.
+Nao criar um segundo menu de ordenacao especifico do Catalogo.
+
+O visual do toolbar segue a referencia Stitch sem impor bordas pesadas:
+
+```text
+superficie externa baixa e discreta
+  -> campo de busca em superficie interna
+  -> contador compacto
+  -> seletor "Ordenar" com label e valor atual
+```
+
+Arquivos de composicao:
+
+```text
+Web
+  frontend/client/web/src/screens/portal/Catalogo/content/CatalogoToolbar/
+
+Native
+  frontend/client/mobile/src/screens/portal/Catalogo/content/CatalogoToolbar/
+```
+
+`ProductItemCard` foi configurado para aceitar os slots visuais que variam por
+produto (badge, categoria, detalhes, rotulo de preco, favorito e acao de
+carrinho), sem tornar preco, estoque ou regra de carrinho uma decisao do card.
+No Web, a foto ocupa o topo do card, badge e favorito ficam sobre a imagem, e
+a acao de carrinho vira um controle compacto de quantidade. O feed Native usa
+a mesma informacao de produto e a mesma tree de Catalogo, mas conserva o layout
+de uma coluna proprio do host.
+
+```text
+frontend/product-components/ecommerce/product-item-card.config.ts
+frontend/product-components/ecommerce/web/ProductItemCard.tsx
+frontend/product-components/ecommerce/web/ProductItemCard.module.css
+frontend/product-components/ecommerce/native/ProductItemCard.tsx
+frontend/product-components/ecommerce/native/ProductItemCard.styles.ts
+```
+
+### ScreenHeader: titulo e subtitulo durante o scroll
+
+O contrato compartilhado passou a tratar `collapsible` como cabeca contextual
+completa no inicio da tela:
+
+```text
+compact      -> somente titulo
+full         -> titulo e subtitulo estaticos
+collapsible  -> titulo e subtitulo; o subtitulo reduz, sobe e desaparece
+                progressivamente conforme a tela rola
+```
+
+Isso vale nos adaptadores Web e Native. As tres screens que usam o contrato
+no Portal ja fornecem titulo e subtitulo pelas strings ativas:
+
+```text
+Catalogo
+Montar Box
+Meus Pedidos
+```
+
+Arquivos que definem a capacidade:
+
+```text
+frontend/foundation/product-components/screens/shared/ScreenHeader.contract.ts
+frontend/foundation/product-components/screens/web/ScreenHeader/ScreenHeader.tsx
+frontend/foundation/product-components/screens/web/ScreenHeader/ScreenHeader.module.css
+frontend/foundation/product-components/screens/native/ScreenHeader/ScreenHeader.tsx
+frontend/foundation/product-components/screens/README.md
+```
+
+Nao adicionar titulo ou subtitulo hardcoded em uma screen. Quando uma nova rota
+usar `ScreenHeader`, ela deve fornecer `title`, `mobileTitle` quando necessario
+e `description` pelo locale ativo. A posicao estrutural continua inviolavel:
+primeiro filho real da screen e fora de ancestrais com `transform`.
+
+### Validacao deste checkpoint
+
+```text
+npm run verify:rules
+  -> passou: 136 arquivos verificados, 0 violacoes novas
+
+git diff --check
+  -> passou antes do commit; apenas avisos existentes de LF/CRLF
+
+tsc Native
+  -> Catalogo/ScreenHeader sem erro proprio
+  -> continua bloqueado por erros preexistentes em LandingView, HomeView
+     (prop padding de Surface) e por react-dom ausente em ModalFrame Web
+```
+
+Nao houve QA visual por screenshot nesta sessao. Portanto, o resultado deve
+ser visto em `/catalogo` antes de declarar fidelidade final ao Stitch, sobretudo
+em desktop, Web mobile e host Native real.
+
+### Proxima sequencia recomendada
+
+```text
+1. Abrir /catalogo e revisar visualmente rail, busca, ordenacao e cards
+   em desktop e mobile; ajustar por screenshot, nao por suposicao.
+2. Confirmar busca, categoria e ordenacao contra a API real com dados seed.
+3. Fazer o mesmo refinamento visual de conteudo para Meus Pedidos e Montar Box,
+   preservando o ScreenHeader compartilhado.
+4. Antes de ampliar renderer generico de icones Native, explicar os consumidores
+   reais e pedir aprovacao; nao improvisar icones locais nem emoji Unicode.
+```
+
+## Atualizacao - Kit Montar Box, niveis e separacao Web/Native (2026-09-16)
+
+Este corte organizou o Montar Box por responsabilidade e caso de uso antes da
+adaptacao visual do Stitch. O Catalogo nao foi alterado neste corte; mudancas
+de Catalogo que coexistem na worktree pertencem a outra sequencia.
+
+### Kit e referencias
+
+```text
+docs/kits/client/montar-box/
+  README.md
+  implementacao-atual.md
+  nivel-01-selecao/
+    README.md
+    stitch-desktop.md
+    stitch-mobile.md
+    stitch-mobile-selecao-vazia.md
+```
+
+As referencias existentes cobrem apenas o nivel 01, selecao. Elas descrevem a
+entrada, a modalidade escolhida e a selecao vazia/ativa; nao ha referencia
+propria para entrega, pagamento ou revisao.
+
+### Estado e ownership
+
+```text
+selectedMode
+  -> caso de uso: Assinatura, Royal Box ou Royal Delivery
+
+currentStep
+  -> progressao: montagem, entrega, pagamento e resumo
+
+shared-core
+  -> useClientCheckout, config, view-model, contratos, API, preco e regras
+
+Web/Native
+  -> somente composicao visual, interacao e callbacks do hook
+```
+
+Modalidade e etapa sao estados diferentes. Nenhuma screen calcula total,
+estoque, frete, elegibilidade ou cria pedido localmente.
+
+### Tree aplicada
+
+```text
+Web pedido/
+  flow/       ModeSelector, CheckoutStepTracker, usePedidoRuntime
+  selection/  ActivePlanPanel, ProductCatalogStep, ProductFilterModal
+  delivery/   DeliveryStep
+  payment/    PaymentStep
+  review/     ReviewStep
+  summary/    StickyOrderSummary, SummaryRow
+
+Native pedido/
+  flow/       ModeSelector, CheckoutStepTracker
+  selection/  ActivePlanPanel, ProductCatalogStep
+  delivery/   DeliveryStep
+  payment/    PaymentStep
+  review/     ReviewStep
+  summary/    MobileSelectionSummary
+```
+
+`MontarBoxView` permanece orquestrador de plataforma. ScreenHeader continua
+primeiro filho real e AppShell/BottomTabBar continuam donos da casca.
+
+### Paridade real e gap aberto
+
+Web e Native usam o mesmo `useClientCheckout`, mas a apresentacao ainda nao e
+equivalente:
+
+```text
+Web
+  -> resumo lateral sticky e composicao desktop existentes
+
+Native
+  -> modalidades e categorias em trilhos horizontais
+  -> tracker compacto rolavel
+  -> resumo mostra itens e estimativa reais
+  -> resumo fixo seguro ainda nao foi implementado: requer confirmar safe area
+     e BottomTabBar no host antes de criar overlay local
+```
+
+Inspecao do runtime Native: `NativeAppShell` hoje monta a tab bar como regiao
+flex ao fim da casca e ainda nao oferece slot/offset para um resumo fixo. Nao
+criar overlay local em `MontarBoxView`; se essa capacidade for necessaria em
+mais de um fluxo, ela deve nascer no AppShell/Foundation e ser ativada por
+config, com aprovacao previa para ampliar a capacidade compartilhada.
+
+Tambem foi criada a guarda `requestClientCheckoutStep` no shared-core. Web e
+Native agora solicitam acesso antes de avancar uma etapa protegida, em vez de
+divergirem no comportamento de sessao. O proximo corte e validar a mesma jornada
+em Web, webIsMobile e host Native real. Antes de criar a barra fixa, confirmar
+area segura, teclado e BottomTabBar no contrato do host.
+
+### Validacao
+
+```text
+npm run verify:rules -> passou, 0 violacoes novas
+git diff --check     -> passou; avisos LF/CRLF existentes
+tsc Mobile           -> Montar Box sem erro proprio
+```
+
+O TypeScript completo continua bloqueado por erros preexistentes em
+`LandingView`/`HomeView` (`Surface.padding`) e por `react-dom` ausente em
+`ModalFrame` Web. Ainda falta QA visual real; nao declarar fidelidade Stitch
+concluida sem testar desktop, Web mobile e Native.
+
+### Meus Pedidos: estado vazio como tela
+
+O estado sem pedidos nao usa mais o card de historico nem os cards de
+estatisticas. Web e Native agora bifurcam a composicao por `hasOrders`:
+
+```text
+sem pedidos
+  -> ScreenHeader
+  -> area util inteira centralizada
+  -> icone Foundation + titulo + descricao localizada
+
+com pedidos
+  -> metricas, pedido atual, proxima caixa e historico
+```
+
+No Web, `emptyViewport` ocupa a altura disponivel depois do AppShell usando
+`--app-shell-header-height`; o `EmptyState` e transparente, sem borda e sem
+container visual. No Native, a mesma ramificacao remove as superficies de
+metricas/historico e centraliza o feedback na area rolavel. Erro de
+sincronizacao continua visivel como descricao do estado, sem duplicar copy.
+
+Arquivos: `frontend/client/web/src/screens/portal/MeusPedidos/MeusPedidosView.tsx`,
+`frontend/client/web/src/screens/portal/MeusPedidos/meus-pedidos/styles.module.css`
+e `frontend/client/mobile/src/screens/portal/MeusPedidos/MeusPedidosView.tsx`.
+
+Quando a rota e protegida e a sessao ainda nao existe, quem aparece nao e essa
+screen: e o gate de autenticacao em `PortalView`. Ele tambem foi removido da
+superficie enquadrada (`framed`), ocupa a area util de forma transparente e a
+BottomTabBar e desativada pelo config ja suportado do AppShell durante esse
+gate. Assim, `Meus Pedidos` sem sessao nao deixa nem card nem barra inferior
+competindo com o feedback de acesso.
+
+### Feedback vazio: card versus tela
+
+O produto agora trata os dois casos como composicoes distintas, sem transformar
+o primitive da Foundation em uma condicional de pagina:
+
+```text
+Foundation
+  ui/web/EmptyState/
+    -> EmptyStateCard: vazio local, dentro de uma area que ainda possui contexto
+
+Client Web Portal
+  screens/portal/feedback/
+    EmptyStateScreen/
+      EmptyStateScreen.tsx
+      EmptyStateScreen.module.css
+    -> vazio de rota: area util inteira, sem Surface, borda ou raio
+```
+
+`CatalogoFeedback` continua usando o feedback em card porque busca, filtros e
+o restante da tela permanecem presentes. O gate de autenticacao em
+`PortalView` usa `EmptyStateScreen`, pois a rota protegida inteira foi
+substituida pelo acesso. Textos, icone e acao continuam sendo fornecidos pelo
+consumidor e pelas locales ativas; a composicao nao conhece regra de sessao.
+
+### Montar Box: nivel 01.0, entrada neutra da selecao
+
+O primeiro estado de `/montar-box` foi separado do Stitch que ja trazia Royal
+Box selecionada. A nomenclatura do kit agora e:
+
+```text
+nivel 01: selecao
+  -> 01.0: entrada neutra, selectedMode = null
+  -> 01.1: modalidade escolhida, sem itens
+  -> 01.2: selecao ativa, com produtos reais
+```
+
+Web e Native ganharam `pedido/flow/ModeSelectionIntro.tsx`; ele apresenta a
+copy localizada `pedido.modeSelection` e envolve o `ModeSelector`. Enquanto
+nao ha modalidade, nao se renderiza tracker, catalogo, resumo, total ou card
+generico vazio. As tres opcoes foram reduzidas ao essencial na entrada. Desktop
+mantem grade editorial; Web mobile e Native usam trilho horizontal tatil. O
+estado 01.1 e o proximo a comparar com a referencia Stitch mobile vazia; ele
+nao deve ser confundido com a entrada neutra.
+
+Revisao visual posterior: a primeira versao duplicava o titulo do
+`ScreenHeader` com um segundo titulo no intro de modalidades e deixava a leitura
+compactada. O `ModeSelectionIntro` agora e somente cabecalho de secao; o Web
+ganhou separacao vertical, cards mais altos e acao visual no rodape. A fonte de
+comparacao segue sendo `docs/kits/client/montar-box/nivel-01-selecao/stitch-desktop.md`.
+
+### Montar Box: autoridade de cota da assinatura
+
+O limite de uma assinatura deixou de depender apenas do preview do
+`useClientCheckout`. A criacao de `subscription-cycle` agora passa pelo mesmo
+dominio de ciclos no backend:
+
+```text
+POST /api/v1/orders/me/
+  -> create_order()
+  -> reserve_cycle_order_items()
+  -> lock no ciclo aberto
+  -> resolve o entitlement mais especifico do plano
+  -> valida produto, variante, unidade, disponibilidade e atributos
+  -> soma selecoes ja reservadas + lote inteiro enviado
+  -> somente entao reserva inventario e cria o pedido
+```
+
+Com isso, alterar a interface, repetir requests ou enviar dois itens que juntos
+ultrapassam a cota retorna `quantity_exceeded`; nao e possivel transformar uma
+cota de 1 kg em um pedido de 5 kg pelo cliente. Quando alvos de entitlement se
+sobrepoem, a prioridade e variante, produto, categoria e colecao, nesta ordem.
+
+O contrato de checkout tambem passou a preservar `productKey` e `variantSku`
+separadamente. O frontend nao envia mais o SKU da variante como chave do
+produto, permitindo ao backend aplicar a unidade correta.
+
+Validacao deste corte:
+
+```text
+py manage.py test apps.orders.tests.test_api apps.subscriptions.tests.test_api
+-> 26 testes, passou
+
+git diff --check
+-> passou; somente avisos LF/CRLF da worktree
+```
+
+O preview de saldo no cliente ainda deve ser remodelado para vir do resumo de
+ciclo calculado pelo backend, em vez de contar itens localmente. A seguranca da
+confirmacao do pedido ja esta no servidor; a proxima etapa e expor esse resumo
+autoritativo para Web e Native.
+
+### Montar Box: paridade de tree Web e Native
+
+As duas plataformas agora seguem a mesma arvore de casos de uso:
+
+```text
+pedido/
+  flow/       ModeSelectionIntro, ModeSelector, CheckoutStepTracker, usePedidoRuntime
+  selection/  ActivePlanPanel, ProductCatalogStep
+  delivery/   DeliveryStep
+  payment/    PaymentStep
+  review/     ReviewStep
+  summary/    resumo de selecao por plataforma
+  index.ts    exports da plataforma
+```
+
+`usePedidoRuntime` foi extraido tambem no Native. A guarda de acesso a etapas
+nao fica mais embutida em `MontarBoxView`; Web e Native solicitam a mesma regra
+do shared-core. O `ModeSelector` Native tambem recebe a assinatura/plano ativo
+e usa a mesma semantica do Web para distinguir uma assinatura existente da
+entrada de contratacao. O resumo permanece especificamente mobile, pois o
+AppShell Native ainda nao oferece um slot seguro para reproduzir o `sticky`
+desktop acima da BottomTabBar.
+
+### ProductItemCard: card unico e grids por screen
+
+`ProductItemCard` e o unico componente de item de produto para Catalogo e
+Checkout. Nao existe preset `montarBox`, card local ou JSX paralelo. As duas
+screens consomem `preset="catalogo"`; suas grades definem a densidade da tela.
+
+```text
+CatalogoProductGrid  -> ProductItemCard -> descoberta e carrinho
+CheckoutProductGrid  -> ProductItemCard -> adicionar, menos, quantidade, mais
+```
+
+No Checkout Web, `actionPresentation="label"` mostra `Adicionar` antes da
+primeira selecao e o stepper no canto inferior direito depois dela. O Native
+tem a mesma sequencia no adapter nativo. Preco pode ser ocultado na assinatura
+sem deslocar a acao. Elegibilidade, limite e estado desabilitado sao decisoes
+do shared-core/backend, nunca do card.
+
+### Montar Box: composicao de checkout (2026-09-16)
+
+O diretório local deixou de usar o nome especifico `pedido/`. As duas
+plataformas agora organizam a composicao sob `Checkout/`, com
+responsabilidades reutilizaveis por fluxo:
+
+```text
+acquisition/ -> modalidades de aquisicao
+cycle/       -> plano ativo e saldo do ciclo
+catalog/     -> busca, filtro, ProductCatalogStep e CheckoutProductGrid
+progress/    -> etapas do checkout
+runtime/     -> guarda de etapa do host
+summary/     -> resumo da selecao
+```
+
+Na montagem, aquisicao e uma regiao propria. Abaixo dela, ciclo e catalogo
+ocupam a coluna principal e o resumo permanece lateral no Web. O Native usa a
+mesma tree e callbacks, adaptados para uma coluna e o host mobile. O contrato
+completo esta em `docs/kits/client/montar-box/checkout-composicao.md`.
+
+Filtro atual: Web e Native usam rascunho de categoria e so alteram a lista ao
+aplicar. O mapper preserva todas as categorias associadas a cada produto e o
+view-model filtra por tags; nao reduz mais o seletor a `Carnes` e
+`Acompanhamentos`. A pendencia permanece no backend: entitlement de produto por
+plano ainda precisa chegar como dado autoritativo, pois o mapper atual ainda nao
+recebe essa matriz real.

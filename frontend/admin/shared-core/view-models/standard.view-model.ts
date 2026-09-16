@@ -15,6 +15,8 @@ export interface AdminStandardColumnViewModel {
   showAvatar?: boolean;
   showMedia?: boolean;
   sortable?: boolean;
+  statusColorKey?: string;
+  statusToneKey?: string;
   valueType?: "currency" | "status" | "text" | "translationKey";
   render?: (row: any) => React.ReactNode;
 }
@@ -40,7 +42,7 @@ export interface AdminStandardListViewModel {
 
 export interface AdminStandardFormFieldViewModel {
   addLabelKey?: string;
-  columns?: Array<AdminStandardLineItemColumnViewModel | AdminStandardRelatedListColumnViewModel>;
+  columns?: AdminStandardLineItemColumnViewModel[];
   currency?: string;
   defaultValue?: any;
   displayKey?: string;
@@ -53,7 +55,7 @@ export interface AdminStandardFormFieldViewModel {
   placeholderKey?: string;
   required?: boolean;
   source?: string;
-  type: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "relatedList" | "select" | "textarea" | "text";
+  type: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   value: any;
 }
 
@@ -75,28 +77,45 @@ export interface AdminStandardFormViewModel {
 
 export interface AdminStandardDetailEntryViewModel {
   addLabelKey?: string;
-  columns?: Array<AdminStandardLineItemColumnViewModel | AdminStandardRelatedListColumnViewModel>;
+  columns?: AdminStandardLineItemColumnViewModel[];
   currency?: string;
   displayKey?: string;
   editable?: boolean;
+  editType?: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   key: string;
   labelKey: string;
   locale?: string;
   layout?: "full";
   options?: AdminStandardFieldOption[];
   source?: string;
-  type?: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "relatedList" | "select" | "textarea" | "text";
+  span?: 1 | 2 | 3 | 4 | 5 | 6 | "full";
+  transitionOnly?: boolean;
+  type?: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   value: string;
   rawValue: any;
   valueType?: "optionLabel" | "text" | "translationKey";
 }
 
-export interface AdminStandardDetailSectionViewModel {
-  entries: AdminStandardDetailEntryViewModel[];
+interface AdminStandardDetailSectionBaseViewModel {
+  grid?: { desktop?: 1 | 2 | 3 | 4 | 5 | 6 | "auto"; mobile?: 1 | 2 | 3 | 4 | 5 | 6 | "auto"; tablet?: 1 | 2 | 3 | 4 | 5 | 6 | "auto"; };
   iconIntent?: string;
   key: string;
   titleKey?: string;
 }
+
+export interface AdminStandardDetailFieldsSectionViewModel extends AdminStandardDetailSectionBaseViewModel {
+  entries: AdminStandardDetailEntryViewModel[];
+  type: "fields";
+}
+
+export interface AdminStandardDetailLineItemsSectionViewModel extends AdminStandardDetailSectionBaseViewModel {
+  entry: AdminStandardDetailEntryViewModel;
+  type: "lineItems";
+}
+
+export type AdminStandardDetailSectionViewModel =
+  | AdminStandardDetailFieldsSectionViewModel
+  | AdminStandardDetailLineItemsSectionViewModel;
 
 export interface AdminStandardDetailTabViewModel {
   id: string;
@@ -140,8 +159,11 @@ export interface AdminStandardFieldOption {
 export type AdminStandardOptionSources = Record<string, AdminStandardFieldOption[]>;
 
 export interface AdminStandardLineItemColumnViewModel {
+  currency?: string;
   key: string;
   labelKey: string;
+  locale?: string;
+  presentation?: "media" | "text";
   options?: AdminStandardFieldOption[];
   required?: boolean;
   source?: string;
@@ -149,17 +171,9 @@ export interface AdminStandardLineItemColumnViewModel {
   sourceOptions?: Record<string, AdminStandardFieldOption[]>;
   sources?: Record<string, string>;
   suffixKey?: string;
-  type: "number" | "select" | "text";
+  type: "currency" | "number" | "select" | "text";
   writeOptionMeta?: Record<string, string>;
   writeValues?: Record<string, unknown>;
-}
-
-export interface AdminStandardRelatedListColumnViewModel {
-  displayKey?: string;
-  key: string;
-  labelKey: string;
-  showAvatar?: boolean;
-  valueType?: "text" | "translationKey";
 }
 
 function resolveLineItemColumns(
@@ -167,8 +181,11 @@ function resolveLineItemColumns(
   optionSources: AdminStandardOptionSources,
 ): AdminStandardLineItemColumnViewModel[] {
   return columns.map((column: any) => ({
+    currency: column.currency,
     key: column.key,
     labelKey: column.labelKey,
+    locale: column.locale,
+    presentation: column.presentation,
     options: resolveOptions(column, optionSources),
     required: column.required,
     source: column.source,
@@ -187,21 +204,10 @@ function resolveLineItemColumns(
   }));
 }
 
-function resolveRelatedListColumns(columns: any[] = []): AdminStandardRelatedListColumnViewModel[] {
-  return columns.map((column: any) => ({
-    displayKey: column.displayKey,
-    key: column.key,
-    labelKey: column.labelKey,
-    showAvatar: column.showAvatar,
-    valueType: column.valueType,
-  }));
-}
-
 function resolveEntryColumns(
   field: any,
   optionSources: AdminStandardOptionSources,
-): Array<AdminStandardLineItemColumnViewModel | AdminStandardRelatedListColumnViewModel> {
-  if (field.type === "relatedList") return resolveRelatedListColumns(field.columns);
+): AdminStandardLineItemColumnViewModel[] {
   return resolveLineItemColumns(field.columns, optionSources);
 }
 
@@ -229,27 +235,72 @@ function resolveFieldValue(row: Record<string, any>, field: any): string {
   return String(displayValue);
 }
 
+function resolveDetailFieldSpan(field: any): AdminStandardDetailEntryViewModel["span"] {
+  if (field.span) return field.span;
+  if (field.layout === "full" || ["asset", "lineItems", "textarea"].includes(field.type)) {
+    return "full";
+  }
+  return undefined;
+}
+
+function resolveDetailSectionIconIntent(tabId = "", sectionKey = ""): string {
+  const intentKey = `${tabId} ${sectionKey}`.toLocaleLowerCase("pt-BR");
+  if (/(dados|data|identity|summary|resumo|cliente|customer|perfil|profile)/.test(intentKey)) return "identity";
+  if (/(catalog|categoria|category|colec|collection)/.test(intentKey)) return "catalog";
+  if (/(preco|price|valor|value|pagamento|payment|commerc|commercial)/.test(intentKey)) return "commerce";
+  if (/(entrega|delivery|address|enderec|fulfillment)/.test(intentKey)) return "delivery";
+  if (/(midia|media|variant|variante|item|pedido|order|ciclo|cycle)/.test(intentKey)) return "box";
+  return "settings";
+}
+
+function hasVisibleDetailEntry(
+  tab: any,
+  row: Record<string, any>,
+  optionSources: AdminStandardOptionSources,
+): boolean {
+  const tabFields = tab.sections?.flatMap((section: any) => (
+    section.type === "lineItems"
+      ? [{ ...section, key: section.itemsKey, labelKey: section.labelKey || section.titleKey, type: "lineItems" }]
+      : section.fields || []
+  )) || tab.fields || [];
+  return tabFields
+    .map((field: any) => createDetailEntry(field, row, optionSources))
+    .some((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable);
+}
+
 function createDetailEntry(
   field: any,
   row: Record<string, any>,
   optionSources: AdminStandardOptionSources,
 ): AdminStandardDetailEntryViewModel {
+  const display = field.display && typeof field.display === "object" ? field.display : {};
+  const edit = field.edit && typeof field.edit === "object" ? field.edit : {};
+  const displayField = {
+    ...field,
+    displayKey: display.key || field.displayKey,
+    type: display.type || field.type || "text",
+    valueType: display.valueType || field.valueType,
+  };
+  const editorField = { ...field, ...edit };
   return {
-    addLabelKey: field.addLabelKey,
-    columns: resolveEntryColumns(field, optionSources),
-    currency: field.currency,
-    displayKey: field.displayKey,
-    editable: field.editable,
+    addLabelKey: editorField.addLabelKey,
+    columns: resolveEntryColumns(editorField, optionSources),
+    currency: editorField.currency || displayField.currency,
+    displayKey: displayField.displayKey,
+    editable: Boolean(field.edit || field.editable),
+    editType: editorField.type,
     key: field.key,
     labelKey: field.labelKey,
-    locale: field.locale,
-    layout: field.layout || (field.type === "lineItems" ? "full" : undefined),
-    options: resolveOptions(field, optionSources),
+    locale: editorField.locale || displayField.locale,
+    layout: displayField.layout || (displayField.type === "lineItems" ? "full" : undefined),
+    options: resolveOptions(editorField, optionSources),
     rawValue: row[field.key],
-    source: field.source,
-    type: field.type || "text",
-    value: resolveFieldValue(row, field),
-    valueType: field.valueType,
+    source: editorField.source,
+    span: resolveDetailFieldSpan(displayField),
+    transitionOnly: Boolean(editorField.transitionOnly),
+    type: displayField.type,
+    value: resolveFieldValue(row, displayField),
+    valueType: displayField.valueType,
   };
 }
 
@@ -387,6 +438,7 @@ export function createAdminStandardFormViewModel(
       })),
       key: section.key,
       iconIntent: section.iconIntent,
+      grid: section.grid,
       titleKey: section.titleKey,
     })),
     submitLabelKey: formConfig?.submitLabelKey,
@@ -404,22 +456,55 @@ export function createAdminStandardDetailViewModel(
 ): AdminStandardDetailViewModel {
   const displayNameKey = detailConfig?.displayNameKey;
   const displayName = (displayNameKey ? row[displayNameKey] : null) || row.name || row.customerName || row.title || row.code || entityName;
-  const tabs = detailConfig?.tabs || [
+  const configuredTabs = detailConfig?.tabs || [
     { id: "summary", labelKey: "details.tabs.summary" },
   ];
+  const visibleTabs = configuredTabs.filter(
+    (tab: any) => tab.hideWhenEmpty === false || hasVisibleDetailEntry(tab, row, optionSources),
+  );
+  const tabs = visibleTabs.length ? visibleTabs : configuredTabs;
   const currentTab = tabs.find((tab: any) => tab.id === activeTab) || tabs[0];
   const configuredSections = currentTab?.sections || [];
-  const sections = configuredSections
-    .map((section: any) => ({
-      entries: (section.fields || [])
+  const configuredDetailSections = configuredSections
+    .map((section: any): AdminStandardDetailSectionViewModel | null => {
+      const base = {
+        grid: section.grid,
+        iconIntent: section.iconIntent || resolveDetailSectionIconIntent(currentTab?.id, section.key),
+        key: section.key,
+        titleKey: section.titleKey || currentTab?.labelKey,
+      };
+
+      if (section.type === "lineItems") {
+        const entry = createDetailEntry({
+          ...section,
+          key: section.itemsKey,
+          labelKey: section.labelKey || section.titleKey,
+          type: "lineItems",
+        }, row, optionSources);
+        return entry.value !== "" || entry.editable ? { ...base, entry, type: "lineItems" } : null;
+      }
+
+      const entries = (section.fields || [])
         .map((field: any) => createDetailEntry(field, row, optionSources))
-        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable),
-      key: section.key,
-      iconIntent: section.iconIntent,
-      titleKey: section.titleKey,
-    }))
-    .filter((section: AdminStandardDetailSectionViewModel) => section.entries.length > 0);
+        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable);
+      return entries.length ? { ...base, entries, type: "fields" } : null;
+    })
+    .filter((section: AdminStandardDetailSectionViewModel | null): section is AdminStandardDetailSectionViewModel => Boolean(section));
   const fields = currentTab?.fields || [];
+  const directEntries = fields
+    .map((field: any) => createDetailEntry(field, row, optionSources))
+    .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable);
+  const sections = configuredDetailSections.length
+    ? configuredDetailSections
+    : directEntries.length
+    ? [{
+        entries: directEntries,
+        iconIntent: resolveDetailSectionIconIntent(currentTab?.id, currentTab?.id),
+        key: currentTab?.id || "default",
+        titleKey: currentTab?.labelKey,
+        type: "fields" as const,
+      }]
+    : [];
   const headerMeta = (detailConfig?.header?.meta || [])
     .map((field: any) => createDetailEntry(field, row, optionSources))
     .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "");
@@ -430,11 +515,11 @@ export function createAdminStandardDetailViewModel(
     .map((field: any) => createDetailEntry(field, row, optionSources))
     .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "");
   const entries = sections.length
-    ? sections.flatMap((section: AdminStandardDetailSectionViewModel) => section.entries)
+    ? sections.flatMap((section: AdminStandardDetailSectionViewModel) => (
+        section.type === "lineItems" ? [section.entry] : section.entries
+      ))
     : fields.length
-    ? fields
-        .map((field: any) => createDetailEntry(field, row, optionSources))
-        .filter((entry: AdminStandardDetailEntryViewModel) => entry.value !== "" || entry.editable)
+    ? directEntries
     : Object.entries(row)
         .filter(([key, value]) => !excludedSummaryKeys.has(key) && value !== undefined && value !== null && typeof value !== "object")
         .map(([key, value]) => ({

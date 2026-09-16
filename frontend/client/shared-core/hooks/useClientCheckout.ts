@@ -295,7 +295,8 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
       subscriptionCycleId: activeCycle?.id || null,
       notes: "",
       items: viewModel.selectedProductEntries.map(({ product, quantity }) => ({
-        productKey: product.sku || product.id,
+        productKey: product.productKey,
+        variantSku: product.variantSku,
         quantity: String(quantity),
         sourceType: selectedMode,
         sourceKey: product.id,

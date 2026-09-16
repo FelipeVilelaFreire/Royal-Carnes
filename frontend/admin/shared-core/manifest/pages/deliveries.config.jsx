@@ -1,33 +1,55 @@
 export const deliveriesConfig = {
   screenKey: "deliveries",
+  screenType: "standard",
   titleKey: "deliveries.title",
   subtitleKey: "deliveries.subtitle",
   entityNameKey: "entities.delivery",
-  actionLabelKey: "deliveries.ctaBatchDispatch",
   dataSource: { key: "deliveries", fallbackOnError: false },
-  columns: [
-    { key: "id", labelKey: "deliveries.tableHeaders.id" },
-    { key: "customerName", labelKey: "deliveries.tableHeaders.customerName" },
-    { key: "planName", labelKey: "deliveries.tableHeaders.planName" },
-    { key: "status", labelKey: "deliveries.tableHeaders.status" },
-    { key: "scheduledDate", labelKey: "deliveries.tableHeaders.scheduledDate" },
-  ],
-  filters: [
-    {
-      key: "status",
+  listPage: {
+    titleKey: "deliveries.title",
+    subtitleKey: "deliveries.subtitle",
+    searchPlaceholderKey: "common.searchPlaceholder",
+    columns: [
+      { key: "code", labelKey: "deliveries.tableHeaders.id" },
+      { key: "customerName", labelKey: "deliveries.tableHeaders.customerName", showAvatar: true },
+      { key: "orderCode", labelKey: "deliveries.tableHeaders.planName" },
+      { key: "statusLabel", labelKey: "deliveries.tableHeaders.status", valueType: "status", statusColorKey: "statusColor", statusToneKey: "statusTone" },
+      { key: "createdAt", labelKey: "deliveries.tableHeaders.scheduledDate" },
+    ],
+    filters: [{
+      key: "statusKey",
       labelKey: "deliveries.filters.status",
       options: [
         { value: "packing", labelKey: "common.statusPacking" },
         { value: "pending", labelKey: "common.statusPending" },
       ],
-    },
-  ],
-  form: {
-    fields: [
-      { key: "customerName", labelKey: "deliveries.form.customerName", required: true },
-      { key: "planName", labelKey: "deliveries.form.planName" },
-      { key: "scheduledDate", labelKey: "deliveries.form.scheduledDate" },
-      { key: "address", labelKey: "deliveries.form.address", type: "textarea" },
-    ],
+    }],
+  },
+  detailPage: {
+    titleKey: "deliveries.title",
+    displayNameKey: "code",
+    tabs: [{
+      id: "data",
+      labelKey: "deliveries.title",
+      sections: [{
+        key: "delivery",
+        type: "fields",
+        titleKey: "deliveries.title",
+        iconIntent: "delivery",
+        grid: { desktop: 3, tablet: 2, mobile: 1 },
+        fields: [
+          { key: "code", labelKey: "deliveries.tableHeaders.id" },
+          {
+            key: "statusKey",
+            labelKey: "deliveries.tableHeaders.status",
+            display: { key: "statusLabel", type: "text", valueType: "optionLabel" },
+            edit: { type: "select", source: "deliveryStatuses", transitionOnly: true },
+          },
+          { key: "customerName", labelKey: "deliveries.tableHeaders.customerName" },
+          { key: "orderCode", labelKey: "deliveries.tableHeaders.planName" },
+          { key: "createdAt", labelKey: "deliveries.tableHeaders.scheduledDate" },
+        ],
+      }],
+    }],
   },
 };

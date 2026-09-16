@@ -1,15 +1,16 @@
 .toolbar {
-  align-items: center;
   background: var(--theme--color-surface-container-low, var(--theme--color-surfaceContainerLow));
   border: 0;
   border-radius: var(--theme--radius-xl);
+  display: grid;
   gap: var(--theme--spacing-spaceMd);
   padding: var(--theme--spacing-spaceSm);
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .searchField {
-  flex: 1 1 calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-xl));
-  min-width: min(var(--theme--dimensions-minWidth-3xl), 100%);
+  min-width: 0;
+  width: 100%;
 }
 
 .searchInput > span {
@@ -27,17 +28,17 @@
 
 .metaControls {
   align-items: center;
-  flex: 0 0 auto;
   gap: var(--theme--spacing-spaceSm);
+  min-width: 0;
+  width: auto;
 }
 
 .sortGroup {
   flex: 0 0 auto;
-  min-width: var(--theme--dimensions-minWidth-xl);
 }
 
 .sortPicker {
-  width: 100%;
+  width: auto;
 }
 
 .sortPicker > button {
@@ -56,23 +57,14 @@
 }
 
 @media (max-width: 48em) {
-  .toolbar,
-  .searchField {
-    width: 100%;
-  }
-
   .toolbar {
-    align-items: stretch;
-    flex-wrap: wrap;
     gap: var(--theme--spacing-spaceSm);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .metaControls {
     align-items: center;
+    gap: var(--theme--spacing-spaceXs);
     width: 100%;
-  }
-
-  .sortGroup {
-    min-width: min(var(--theme--dimensions-minWidth-xl), 100%);
   }
 }

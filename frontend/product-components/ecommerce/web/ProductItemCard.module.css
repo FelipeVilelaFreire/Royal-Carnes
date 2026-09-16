@@ -52,6 +52,16 @@
   border-radius: var(--theme--radius-2xl) !important;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .card[data-preset="catalogo"] .mediaImage {
+    transition: transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+  }
+
+  .card[data-preset="catalogo"]:hover .mediaImage {
+    transform: scale(1.025);
+  }
+}
+
 .card[data-preset="catalogo"] .content {
   padding: var(--theme--spacing-spaceMd) var(--theme--spacing-spaceMd) 0;
 }
@@ -146,7 +156,23 @@
   width: var(--theme--dimensions-height-md);
 }
 
+/* Subscription selections can hide price; their action still belongs at the
+   lower-right edge of the shared catalog card. */
+.catalogFooter > .catalogAction:only-child {
+  margin-inline-start: auto;
+}
+
 .catalogAction[data-expanded="true"] {
+  width: var(--product-card-action-width);
+}
+
+.catalogAction[data-presentation="label"] {
+  overflow: visible;
+  width: auto;
+}
+
+.catalogAction[data-presentation="label"][data-expanded="true"] {
+  overflow: hidden;
   width: var(--product-card-action-width);
 }
 
@@ -167,6 +193,20 @@
   opacity: 0;
   pointer-events: none;
   transform: scale(0.84);
+}
+
+.catalogAction[data-presentation="label"] .catalogCartButton {
+  --ui-button-min-width: 0;
+  --ui-button-padding-x: var(--theme--spacing-spaceSm);
+  inset: auto;
+  max-width: none !important;
+  min-width: 0 !important;
+  position: relative;
+}
+
+.catalogAction[data-presentation="label"][data-expanded="true"] .catalogCartButton {
+  inset: 0;
+  position: absolute;
 }
 
 .catalogQuantityControl {
@@ -251,6 +291,11 @@
   border-block-start-color: transparent;
   margin-block-start: 0;
   padding: var(--theme--spacing-spaceMd);
+}
+
+/* Checkout changes density through the grid, never through a second card face. */
+.card[data-density="selection"] {
+  min-height: 0;
 }
 
 .mediaImage {

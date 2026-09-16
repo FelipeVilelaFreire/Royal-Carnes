@@ -105,6 +105,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function
                   appearance="transparent"
                   aria-label={removeLabel(option.label)}
                   className={styles.removeButton}
+                  disabled={disabled}
                   icon={<CloseIcon aria-hidden="true" />}
                   iconPosition="only"
                   onClick={() => requestRemove(option)}

@@ -59,6 +59,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({
   viewModel,
 }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = React.useState(false);
+  const canDelete = Boolean(deleteAction && onDelete);
   return (
     <div className={styles.page}>
       <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
@@ -70,7 +71,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({
             onBack={onBack}
             onCancelEdit={onCancelEdit}
             onEdit={onEdit}
-            onRequestDelete={deleteAction && onDelete ? () => setIsDeleteConfirmationOpen(true) : undefined}
+            onRequestDelete={() => setIsDeleteConfirmationOpen(true)}
             onSaveEdit={onSaveEdit}
             t={t}
             viewModel={viewModel}
@@ -83,18 +84,19 @@ export const DetailPage: React.FC<DetailPageProps> = ({
           </Stack>
         </Stack>
       </SectionContainer>
-      {deleteAction && onDelete ? (
+      {isDeleteConfirmationOpen ? (
         <ConfirmationModal
           cancelLabel={t("common.cancel")}
           closeLabel={t("forms.closeConfirmation")}
-          confirmLabel={t(deleteAction.confirmKey)}
-          description={t(deleteAction.descriptionKey)}
+          confirmLabel={t(canDelete ? deleteAction?.confirmKey || "common.remove" : "common.close")}
+          description={t(canDelete ? deleteAction?.descriptionKey || "" : "standard.removeUnavailableDescription")}
           onCancel={() => setIsDeleteConfirmationOpen(false)}
           onConfirm={() => {
-            if (!isDeleting) onDelete();
+            if (canDelete && !isDeleting) onDelete?.();
+            else setIsDeleteConfirmationOpen(false);
           }}
           open={isDeleteConfirmationOpen}
-          title={t(deleteAction.titleKey)}
+          title={t(canDelete ? deleteAction?.titleKey || "common.remove" : "standard.removeUnavailableTitle")}
         />
       ) : null}
     </div>

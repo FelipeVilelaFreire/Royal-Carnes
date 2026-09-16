@@ -1,19 +1,21 @@
 export const usuariosConfig = {
   screenKey: "usuarios",
-  titleKey: "usuarios.title",
-  subtitleKey: "usuarios.subtitle",
+  screenType: "standard",
   entityNameKey: "entities.userCustomer",
-  actionLabelKey: "usuarios.ctaAdd",
   dataSource: { key: "usuarios", fallbackOnError: false },
-  columns: [
+  listPage: {
+    titleKey: "usuarios.title",
+    subtitleKey: "usuarios.subtitle",
+    searchPlaceholderKey: "common.searchPlaceholder",
+    columns: [
     { key: "name", labelKey: "usuarios.tableHeaders.customerName", showAvatar: true },
     { key: "email", labelKey: "usuarios.tableHeaders.email" },
     { key: "phone", labelKey: "usuarios.tableHeaders.phone" },
     { key: "activePlan", labelKey: "usuarios.tableHeaders.planName" },
     { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey" },
     { key: "memberSince", labelKey: "usuarios.tableHeaders.joinedDate" },
-  ],
-  filters: [
+    ],
+    filters: [
     {
       key: "status",
       labelKey: "common.status",
@@ -22,13 +24,29 @@ export const usuariosConfig = {
         { value: "inactive", labelKey: "common.statusInactive" },
       ],
     },
-  ],
-  form: {
-    fields: [
-      { key: "name", labelKey: "usuarios.form.name", required: true },
-      { key: "email", labelKey: "usuarios.form.email", required: true },
-      { key: "phone", labelKey: "usuarios.form.phone" },
-      { key: "activePlan", labelKey: "usuarios.form.activePlan" },
     ],
+  },
+  detailPage: {
+    titleKey: "usuarios.title",
+    displayNameKey: "name",
+    tabs: [{
+      id: "data",
+      labelKey: "usuarios.title",
+      sections: [{
+        key: "identity",
+        type: "fields",
+        titleKey: "usuarios.title",
+        iconIntent: "identity",
+        grid: { desktop: 3, tablet: 2, mobile: 1 },
+        fields: [
+          { key: "name", labelKey: "usuarios.form.name" },
+          { key: "email", labelKey: "usuarios.form.email" },
+          { key: "phone", labelKey: "usuarios.form.phone" },
+          { key: "activePlan", labelKey: "usuarios.form.activePlan" },
+          { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey" },
+          { key: "memberSince", labelKey: "usuarios.tableHeaders.joinedDate" },
+        ],
+      }],
+    }],
   },
 };

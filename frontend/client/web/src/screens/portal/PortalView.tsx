@@ -4,7 +4,6 @@ import React, { useEffect, useMemo } from "react";
 import { AccessShell } from "@foundation/shells/access-shell";
 import { AppShell } from "@foundation/shells/app-shell";
 import { Button } from "@foundation/ui/web/Button";
-import { EmptyState } from "@foundation/ui/web/EmptyState";
 import { MoonIcon, SunIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { clientRoutes } from "@/manifest/routes";
 import { useClientPortalAuthSession } from "@royalprime/client/hooks/useClientPortalAuthSession";
@@ -15,9 +14,10 @@ import type { PortalScreenKey } from "@royalprime/client/manifest/portal/routes.
 import { clientPortalAccessShellConfig } from "@/manifest/portal/access-shell.config";
 import { clientAuthStorage, readStoredClientSession } from "../../auth/clientAuthStorage";
 import styles from "./PortalView.module.css";
+import { EmptyStateScreen } from "./feedback/EmptyStateScreen/EmptyStateScreen";
 import { HomeView } from "./Home/HomeView";
 import { CatalogoView } from "./Catalogo/CatalogoView/CatalogoView";
-import { MontarBoxView } from "./MontarBox/MontarBoxView";
+import { CheckoutView } from "./Checkout/CheckoutView";
 import { PerfilView } from "./Perfil/PerfilView";
 import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
 import { usePortalRuntime } from "./usePortalRuntime";
@@ -59,6 +59,7 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
   const profileName = auth.session?.user.name || strings.authSession.userName;
   const profileInitial = profileName.trim().slice(0, 1).toUpperCase();
   const isProfileActionActive = activeScreenKey === "minhaConta";
+  const isProtectedGate = isProtectedScreen && !isAuthenticated;
   const accessStrings = {
     callout: {
       badge: strings.accessShell.portal.badge,
@@ -83,10 +84,8 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
   }, []);
 
   const renderProtectedGate = () => (
-    <EmptyState
-      className={styles.portalEmptyState}
+    <EmptyStateScreen
       description={strings.authEmptyState.description}
-      framed
       icon={<UserIcon size={28} />}
       actions={
         <Button
@@ -99,19 +98,18 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
           {strings.navigation.entrar}
         </Button>
       }
-      size="spacious"
       title={strings.authEmptyState.title}
     />
   );
 
   const renderActiveScreenType = () => {
-    if (isProtectedScreen && !isAuthenticated) return renderProtectedGate();
+    if (isProtectedGate) return renderProtectedGate();
 
     switch (activeScreenKey) {
       case "catalogo":
         return <CatalogoView />;
       case "produtos":
-        return <MontarBoxView isAuthenticated={isAuthenticated} onRequestAccess={() => setIsAuthModalOpen(true)} />;
+        return <CheckoutView isAuthenticated={isAuthenticated} onRequestAccess={() => setIsAuthModalOpen(true)} />;
       case "meusPedidos":
         return <MeusPedidosView onNavigate={navigate} showShell={false} />;
       case "minhaConta":
@@ -170,7 +168,14 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     <AppShell
       activePath={activeRoutePath}
       brandLogo="/assets/brand/royal-prime-logo.jpg"
-      config={{ ...portalShellConfig, strings: strings.appShell }}
+      config={{
+        ...portalShellConfig,
+        bottomTabBar: {
+          ...portalShellConfig.bottomTabBar,
+          enabled: !isProtectedGate,
+        },
+        strings: strings.appShell,
+      }}
       navItems={visiblePortalNavigation as any}
       onNavigate={navigate}
       rightSlot={renderHeaderActions()}

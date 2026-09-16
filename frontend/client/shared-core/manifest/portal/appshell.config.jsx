@@ -32,12 +32,12 @@ export const portalAppShellConfig = {
         content: { width: "full", gutter: "none" },
         header: { enabled: false, width: "full", gutter: "page" },
         footer: { enabled: false, width: "full", gutter: "page" },
-        bottomTabBar: { enabled: true, width: "full", gutter: "page" }
+        bottomTabBar: { enabled: true, width: "full", gutter: "none" }
       },
       native: {
         inheritFrom: "mobile",
         content: { width: "full", gutter: "page" },
-        bottomTabBar: { enabled: true, width: "full", gutter: "page" }
+        bottomTabBar: { enabled: true, width: "full", gutter: "none" }
       }
     }
   },

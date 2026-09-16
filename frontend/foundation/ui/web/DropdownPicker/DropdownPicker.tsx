@@ -8,7 +8,10 @@ import { Surface } from "../Surface";
 import styles from "./DropdownPicker.module.css";
 
 export interface DropdownPickerOption {
+  description?: string;
   disabled?: boolean;
+  imageAlt?: string;
+  imageSrc?: string;
   label: string;
   value: string;
 }
@@ -120,6 +123,7 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
         type="button"
       >
         <span className={styles.value}>
+          {selected?.imageSrc ? <img alt={selected.imageAlt || ""} className={styles.triggerImage} src={selected.imageSrc} /> : null}
           {label ? <span className={styles.inlineLabel}>{label}</span> : null}
           <span>{selectedLabel}</span>
         </span>
@@ -129,7 +133,7 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
         <Surface
           appearance="solid"
           className={styles.panel}
-          data-open="true"
+                data-open="true"
           id={listboxId}
           ref={panelRef}
           role="listbox"
@@ -154,7 +158,11 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
                 tone={isSelected ? "primary" : "neutral"}
                 type="button"
               >
-                {option.label}
+                {option.imageSrc ? <img alt={option.imageAlt || ""} className={styles.optionImage} src={option.imageSrc} /> : null}
+                <span className={styles.optionCopy}>
+                  <span>{option.label}</span>
+                  {option.description ? <span className={styles.optionDescription}>{option.description}</span> : null}
+                </span>
               </Button>
             );
           })}

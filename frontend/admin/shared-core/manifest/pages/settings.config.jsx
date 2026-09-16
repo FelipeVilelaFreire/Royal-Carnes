@@ -2,70 +2,70 @@ export const settingsConfig = {
   screenKey: "configuracoes",
   titleKey: "configuracoes.title",
   subtitleKey: "configuracoes.subtitle",
-  readOnlyBadgeKey: "configuracoes.badges.manifestReady",
+  navigationLabelKey: "configuracoes.navigationLabel",
+  layout: {
+    navigation: "compact",
+    usefulColumns: 14,
+  },
   tabs: [
     {
-      id: "identity",
-      labelKey: "configuracoes.tabs.identity",
+      id: "frontend",
+      iconIntent: "frontend",
+      labelKey: "configuracoes.tabs.frontend",
+      descriptionKey: "configuracoes.tabDescriptions.frontend",
       sections: [
         {
           key: "brand",
+          grid: { columns: 2, density: "comfortable", gap: "lg" },
           titleKey: "configuracoes.sections.brand",
           descriptionKey: "configuracoes.sections.brandDescription",
           fields: [
             {
               key: "appName",
               labelKey: "configuracoes.fields.appName",
-              value: "RoyalPrime",
+              valueKey: "configuracoes.values.appName",
             },
             {
               key: "businessName",
               labelKey: "configuracoes.fields.businessName",
               statusTone: "warning",
-              value: "Royal Carnes",
+              valueKey: "configuracoes.values.businessName",
               statusKey: "configuracoes.status.pendingManifestSync"
             },
             {
               key: "adminTitle",
               labelKey: "configuracoes.fields.adminTitle",
-              value: "PRIME CUT ADMIN",
+              valueKey: "configuracoes.values.adminTitle",
             },
             {
               key: "adminTagline",
               layout: "full",
               labelKey: "configuracoes.fields.adminTagline",
-              value: "Painel de Gestao e Operacao do Clube",
+              valueKey: "configuracoes.values.adminTagline",
             }
           ]
-        }
-      ]
-    },
-    {
-      id: "appShell",
-      labelKey: "configuracoes.tabs.appShell",
-      sections: [
+        },
         {
-          key: "navigation",
-          titleKey: "configuracoes.sections.navigation",
-          descriptionKey: "configuracoes.sections.navigationDescription",
+          key: "appearance",
+          grid: { columns: 2, density: "comfortable", gap: "lg" },
+          titleKey: "configuracoes.sections.appearance",
+          descriptionKey: "configuracoes.sections.appearanceDescription",
           fields: [
             {
-              key: "sidebarMode",
-              labelKey: "configuracoes.fields.sidebarMode",
-              valueKey: "configuracoes.values.sidebarOperational"
+              key: "themeMode",
+              labelKey: "configuracoes.fields.themeMode",
+              valueKey: "configuracoes.values.adminTheme"
             },
             {
-              key: "mobileNavigation",
-              labelKey: "configuracoes.fields.mobileNavigation",
-              valueKey: "configuracoes.values.mobileBottomTabs"
+              key: "primaryColor",
+              labelKey: "configuracoes.fields.primaryColor",
+              valueKey: "configuracoes.values.primaryColor"
             },
             {
-              key: "hiddenRoutes",
+              key: "surfaceStyle",
               layout: "full",
-              labelKey: "configuracoes.fields.hiddenRoutes",
-              statusTone: "warning",
-              valueKey: "configuracoes.values.hiddenRoutes",
-              statusKey: "configuracoes.status.review"
+              labelKey: "configuracoes.fields.surfaceStyle",
+              valueKey: "configuracoes.values.surfaceStyle"
             }
           ]
         }
@@ -73,23 +73,26 @@ export const settingsConfig = {
     },
     {
       id: "operation",
+      iconIntent: "operation",
       labelKey: "configuracoes.tabs.operation",
+      descriptionKey: "configuracoes.tabDescriptions.operation",
       sections: [
         {
           key: "fulfillment",
+          grid: { columns: 2, density: "comfortable", gap: "lg" },
           titleKey: "configuracoes.sections.fulfillment",
           descriptionKey: "configuracoes.sections.fulfillmentDescription",
           fields: [
             {
               key: "fulfillmentWarehouse",
               labelKey: "configuracoes.fields.fulfillmentWarehouse",
-              value: "Central Gastronomica SP-01"
+              valueKey: "configuracoes.values.fulfillmentWarehouse"
             },
             {
               key: "coldChainSensor",
               labelKey: "configuracoes.fields.coldChainSensor",
               statusTone: "primary",
-              value: "Sensor IoT -2C",
+              valueKey: "configuracoes.values.coldChainSensor",
               statusKey: "configuracoes.status.monitoring"
             },
             {
@@ -103,10 +106,13 @@ export const settingsConfig = {
     },
     {
       id: "commerce",
+      iconIntent: "commerce",
       labelKey: "configuracoes.tabs.commerce",
+      descriptionKey: "configuracoes.tabDescriptions.commerce",
       sections: [
         {
           key: "payments",
+          grid: { columns: 2, density: "comfortable", gap: "lg" },
           titleKey: "configuracoes.sections.payments",
           descriptionKey: "configuracoes.sections.paymentsDescription",
           fields: [
@@ -114,13 +120,13 @@ export const settingsConfig = {
               key: "paymentProvider",
               labelKey: "configuracoes.fields.paymentProvider",
               statusTone: "primary",
-              value: "Stripe Subscriptions",
+              valueKey: "configuracoes.values.paymentProvider",
               statusKey: "configuracoes.status.connected"
             },
             {
               key: "currency",
               labelKey: "configuracoes.fields.currency",
-              value: "BRL"
+              valueKey: "configuracoes.values.currency"
             },
             {
               key: "billingCyclePolicy",

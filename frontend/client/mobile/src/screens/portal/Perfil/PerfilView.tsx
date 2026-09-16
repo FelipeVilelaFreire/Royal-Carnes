@@ -6,6 +6,8 @@ import { Text } from "@foundation/ui/native/Text";
 import { useClientCustomer, type ClientCustomerTabKey } from "../../../../../shared-core/hooks/useClientCustomer";
 import type { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
+import { ProfileScreenHeader } from "./minha-conta/fixed/ProfileScreenHeader";
+import { ProfileTabNavigation } from "./minha-conta/fixed/ProfileTabNavigation";
 
 export interface PerfilViewProps {
   activePath?: string;
@@ -44,27 +46,30 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
   const title = { color: theme.text, fontWeight: "800" };
   const accent = { color: theme.text, fontWeight: "800" };
 
+  const AccountProfileSummary = () => (
+    <Surface style={basePanel}>
+      <Stack style={stack}>
+        <Inline style={{ alignItems: "center", gap: theme.spacing?.sm }}>
+          <Surface appearance="outline" tone="neutral" style={{ borderRadius: theme.radius?.full, minHeight: 48, minWidth: 48, justifyContent: "center", alignItems: "center" }}>
+            <Text style={accent}>{customer.viewModel.initials}</Text>
+          </Surface>
+          <Stack style={compactStack}>
+            <Text style={title} variant="h1">{customer.viewModel.customer.name}</Text>
+            <Text style={muted}>{strings.headerGreeting}</Text>
+          </Stack>
+        </Inline>
+        <Inline style={{ gap: theme.spacing?.sm, flexWrap: "wrap" }}>
+          <SummaryPill label={strings.labels.plan} value={`${strings.planNamePrefix} ${customer.viewModel.activeSubscriptionLabel}`} />
+          <SummaryPill label={strings.renewLabel} value={customer.viewModel.nextBillingLabel} />
+          <SummaryPill label={strings.deliveryLabel} value={customer.viewModel.nextDeliveryLabel} />
+        </Inline>
+        <Button onAction={customer.actions.openPlansModal}>{strings.actions.changePlan}</Button>
+      </Stack>
+    </Surface>
+  );
+
   const renderOverview = () => (
     <Stack style={stack}>
-      <Surface style={basePanel}>
-        <Stack style={stack}>
-          <Inline style={{ alignItems: "center", gap: theme.spacing?.sm }}>
-            <Surface appearance="outline" tone="neutral" style={{ borderRadius: theme.radius?.full, minHeight: 48, minWidth: 48, justifyContent: "center", alignItems: "center" }}>
-              <Text style={accent}>{customer.viewModel.initials}</Text>
-            </Surface>
-            <Stack style={compactStack}>
-              <Text style={title} variant="h1">{customer.viewModel.customer.name}</Text>
-              <Text style={muted}>{strings.headerGreeting}</Text>
-            </Stack>
-          </Inline>
-          <Inline style={{ gap: theme.spacing?.sm, flexWrap: "wrap" }}>
-            <SummaryPill label={strings.labels.plan} value={`${strings.planNamePrefix} ${customer.viewModel.activeSubscriptionLabel}`} />
-            <SummaryPill label={strings.renewLabel} value={customer.viewModel.nextBillingLabel} />
-            <SummaryPill label={strings.deliveryLabel} value={customer.viewModel.nextDeliveryLabel} />
-          </Inline>
-          <Button onAction={customer.actions.openPlansModal}>{strings.actions.changePlan}</Button>
-        </Stack>
-      </Surface>
       <Surface style={basePanel}>
         <Stack style={stack}>
           <Text style={title}>{strings.sections.capacityTitle}</Text>
@@ -205,27 +210,20 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
   );
 
   return (
-    <Container style={{ padding: theme.spacing?.md }}>
-      <Stack style={stack}>
-        <Stack style={compactStack}>
-          <Text style={accent}>{strings.eyebrow}</Text>
-          <Text style={title} variant="h1">{strings.title}</Text>
-          <Text style={muted}>{strings.subtitle}</Text>
-        </Stack>
-        <Inline style={{ gap: theme.spacing?.xs, flexWrap: "wrap" }}>
-          {tabs.map((tab) => (
-            <Button
-              appearance={customer.activeTab === tab.key ? "soft" : "outline"}
-              key={tab.key}
-              onAction={() => customer.actions.setActiveTab(tab.key)}
-              tone="neutral"
-            >
-              {tab.label}
-            </Button>
-          ))}
-        </Inline>
+    <>
+      <ProfileScreenHeader strings={strings} />
+      <Container style={{ padding: theme.spacing?.md }}>
+        <Stack style={stack}>
+          <AccountProfileSummary />
+        <ProfileTabNavigation
+          activeTab={customer.activeTab}
+          items={tabs}
+          onSelect={customer.actions.setActiveTab}
+          spacing={theme.spacing?.xs}
+        />
         {renderPanel()}
-      </Stack>
-    </Container>
+        </Stack>
+      </Container>
+    </>
   );
 };

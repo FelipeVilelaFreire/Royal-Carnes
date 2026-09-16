@@ -41,9 +41,9 @@
 }
 
 .formActions {
-  border-block-start: var(--theme--border-width-sm, 1px) solid var(--theme--color-border);
+  border-block-start: var(--theme--border-width-sm) solid var(--theme--color-border);
   justify-content: flex-end;
-  padding-block-start: var(--theme--spacing-md);
+  padding-block-start: var(--theme--spacing-spaceMd);
   width: 100%;
 }
 

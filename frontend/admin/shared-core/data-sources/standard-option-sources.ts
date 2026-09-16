@@ -1,10 +1,25 @@
 import { normalizeApiError, type ApiClientConfig } from "../../../shared-core";
 import { createAdminCatalogApi } from "../api/catalog.api";
 import { createAdminCustomersApi } from "../api/customers.api";
+import { createAdminDeliveriesApi } from "../api/deliveries.api";
 import { createAdminOrdersApi } from "../api/orders.api";
 import { createAdminSubscriptionsApi } from "../api/subscriptions.api";
 import type { AdminStandardFieldOption } from "../view-models/standard.view-model";
 import type { AdminStandardOptionSourceResult } from "./standard-data-source.types";
+
+function resolveStatusOptionPresentation(metadata: unknown) {
+  const presentation = metadata && typeof metadata === "object"
+    ? (metadata as Record<string, unknown>).ui
+    : null;
+  if (!presentation || typeof presentation !== "object") return {};
+  const { statusColor, statusTone } = presentation as Record<string, unknown>;
+  return {
+    statusColor: typeof statusColor === "string" ? statusColor : undefined,
+    statusTone: statusTone === "danger" || statusTone === "neutral" || statusTone === "primary" || statusTone === "success" || statusTone === "warning"
+      ? statusTone
+      : undefined,
+  };
+}
 
 const adminStandardOptionSourceLoaders = {
   categorias: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
@@ -77,10 +92,25 @@ const adminStandardOptionSourceLoaders = {
       },
       value: kind.key,
     })),
+  orderStatuses: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
+    (await createAdminOrdersApi(apiConfig).config()).statuses.map((status) => ({
+      label: status.label,
+      meta: { ...resolveStatusOptionPresentation(status.metadata), allowedNextKeys: status.allowedNextKeys },
+      value: status.key,
+    })),
+  deliveryStatuses: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
+    (await createAdminDeliveriesApi(apiConfig).config()).statuses.map((status) => ({
+      label: status.label,
+      meta: { ...resolveStatusOptionPresentation(status.metadata), allowedNextKeys: status.allowedNextKeys },
+      value: status.key,
+    })),
   produtos: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
     (await createAdminCatalogApi(apiConfig).listProducts()).map((product) => ({
       label: product.name,
       meta: {
+        description: product.unit,
+        imageAlt: product.name,
+        imageSrc: product.primaryMediaUrl || "",
         measurementUnitKey: product.unit,
       },
       value: product.key,
@@ -109,7 +139,8 @@ function collectFieldSources(entityConfig: any): string[] {
   const addFieldSources = (fields: any[] = []) => {
     fields.forEach((field) => {
       if (field.source) sourceSet.add(field.source);
-      (field.columns || []).forEach((column: any) => {
+      if (field.edit?.source) sourceSet.add(field.edit.source);
+      [...(field.columns || []), ...(field.edit?.columns || [])].forEach((column: any) => {
         if (column.source) sourceSet.add(column.source);
         Object.values(column.sources || {}).forEach((source) => sourceSet.add(String(source)));
       });

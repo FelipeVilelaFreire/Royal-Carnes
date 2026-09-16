@@ -1,20 +1,17 @@
 import React from "react";
 import { AssetPicker } from "@foundation/ui/web/AssetPicker";
-import { Card } from "@foundation/ui/web/Card";
 import { CurrencyInput } from "@foundation/ui/web/CurrencyInput";
-import { DataField } from "@foundation/ui/web/DataField";
-import { FieldGrid, FieldGridItem } from "@foundation/ui/web/FieldGrid";
+import { DropdownPicker } from "@foundation/ui/web/DropdownPicker";
 import { Stack } from "@foundation/ui/web/Layout";
 import { Input } from "@foundation/ui/web/Input";
 import { MultiSelect } from "@foundation/ui/web/MultiSelect";
-import { Select } from "@foundation/ui/web/Select";
 import { Text } from "@foundation/ui/web/Text";
 import { TextArea } from "@foundation/ui/web/TextArea";
 import type { AdminTranslate } from "@/locales/i18n";
-import type { AdminStandardDetailViewModel, AdminStandardLineItemColumnViewModel, AdminStandardRelatedListColumnViewModel } from "@/view-models/standard.view-model";
+import type { AdminStandardDetailViewModel, AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import { LineItemsEditor } from "../../components/LineItemsEditor";
-import { RelatedList } from "../../components/RelatedList";
-import { DetailSectionCard } from "./DetailSectionCard";
+import { DetailFieldsSection } from "./sections/DetailFieldsSection";
+import { DetailLineItemsSection } from "./sections/DetailLineItemsSection";
 import styles from "./DetailPage.module.css";
 
 type DetailEntry = AdminStandardDetailViewModel["entries"][number];
@@ -35,54 +32,62 @@ function resolveDisplayValue(entry: DetailEntry, t: AdminTranslate): string {
   return entry.valueType === "translationKey" ? t(entry.value, "") : entry.value;
 }
 
-function renderEditableValue(entry: DetailEntry, formValues: Record<string, any>, onFieldChange: DetailContentCardProps["onFieldChange"], t: AdminTranslate) {
-  if (entry.type === "asset") return <AssetPicker cancelRemoveLabel={t("common.cancel")} chooseFileLabel={t("forms.assetChooseFile")} confirmRemoveDescription={t("forms.confirmRemoveImageDescription")} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveImageTitle")} dropzoneLabel={t("forms.assetDropzone")} onChange={(value) => onFieldChange?.(entry.key, value)} previewAlt={t(entry.labelKey, entry.key)} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={t("forms.assetRemove")} urlPlaceholder={t("forms.assetUrlPlaceholder")} value={formValues[entry.key] ?? entry.rawValue ?? ""} />;
-  if (entry.type === "lineItems") return <LineItemsEditor addLabel={t(entry.addLabelKey || "forms.addLineItem")} columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]} emptyLabel={t("forms.emptyLineItems")} onChange={(value) => onFieldChange?.(entry.key, value)} removeLabel={t("forms.removeLineItem")} t={t} value={Array.isArray(formValues[entry.key]) ? formValues[entry.key] : []} />;
-  if (entry.type === "multiSelect") return <MultiSelect cancelRemoveLabel={t("common.cancel")} confirmRemoveDescription={(option) => t("forms.confirmRemoveSelectedOptionDescription", "", { option })} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveSelectedOptionTitle")} emptyOptionLabel={t("forms.selectOption")} onChange={(value) => onFieldChange?.(entry.key, value)} options={(entry.options || []).map((option) => ({ label: option.label || t(option.labelKey || "", option.value), value: option.value }))} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={(option) => t("forms.removeSelectedOption", "", { option })} value={Array.isArray(formValues[entry.key]) ? formValues[entry.key].map(String) : []} />;
-  if (entry.type === "select") return <Select onChange={(event) => onFieldChange?.(entry.key, event.target.value)} options={(entry.options || []).map((option) => ({ label: option.label || t(option.labelKey || "", option.value), value: option.value }))} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
-  if (entry.type === "currency") {
+function resolveEditableOptions(entry: DetailEntry) {
+  const options = entry.options || [];
+  if (!entry.transitionOnly) return options;
+  const currentValue = String(entry.rawValue ?? "");
+  const currentOption = options.find((option) => option.value === currentValue);
+  const allowedNextKeys = Array.isArray(currentOption?.meta?.allowedNextKeys)
+    ? currentOption.meta.allowedNextKeys.map(String)
+    : [];
+  return options.filter((option) => option.value === currentValue || allowedNextKeys.includes(option.value));
+}
+
+function renderEditableValue(entry: DetailEntry, formValues: Record<string, any>, onFieldChange: DetailContentCardProps["onFieldChange"], t: AdminTranslate, disabled = false) {
+  const editType = entry.editType || entry.type;
+  if (editType === "asset") return <AssetPicker cancelRemoveLabel={t("common.cancel")} chooseFileLabel={t("forms.assetChooseFile")} confirmRemoveDescription={t("forms.confirmRemoveImageDescription")} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveImageTitle")} disabled={disabled} dropzoneLabel={t("forms.assetDropzone")} onChange={(value) => onFieldChange?.(entry.key, value)} previewAlt={t(entry.labelKey, entry.key)} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={t("forms.assetRemove")} urlPlaceholder={t("forms.assetUrlPlaceholder")} value={formValues[entry.key] ?? entry.rawValue ?? ""} />;
+  if (editType === "lineItems") return <LineItemsEditor addLabel={t(entry.addLabelKey || "forms.addLineItem")} columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]} emptyLabel={t("forms.emptyLineItems")} onChange={(value) => onFieldChange?.(entry.key, value)} readOnly={disabled} removeLabel={t("forms.removeLineItem")} t={t} value={Array.isArray(formValues[entry.key]) ? formValues[entry.key] : Array.isArray(entry.rawValue) ? entry.rawValue : []} />;
+  if (editType === "multiSelect") return <MultiSelect cancelRemoveLabel={t("common.cancel")} confirmRemoveDescription={(option) => t("forms.confirmRemoveSelectedOptionDescription", "", { option })} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveSelectedOptionTitle")} disabled={disabled} emptyOptionLabel={t("forms.selectOption")} onChange={(value) => onFieldChange?.(entry.key, value)} options={(entry.options || []).map((option) => ({ label: option.label || t(option.labelKey || "", option.value), value: option.value }))} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={(option) => t("forms.removeSelectedOption", "", { option })} value={Array.isArray(formValues[entry.key]) ? formValues[entry.key].map(String) : Array.isArray(entry.rawValue) ? entry.rawValue.map(String) : []} />;
+  if (editType === "select") return <DropdownPicker ariaLabel={t(entry.labelKey, entry.key)} disabled={disabled} onChange={(value) => onFieldChange?.(entry.key, value)} options={resolveEditableOptions(entry).map((option) => ({ label: option.label || t(option.labelKey || "", option.value), value: option.value }))} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
+  if (editType === "currency") {
     const fieldValue = formValues[entry.key];
     const emptyValue = fieldValue === "" || fieldValue === null || (fieldValue === undefined && (entry.rawValue === null || entry.rawValue === undefined));
-    return <CurrencyInput currency={entry.currency} locale={entry.locale} onChange={(value) => onFieldChange?.(entry.key, value)} value={emptyValue ? null : Number(fieldValue ?? entry.rawValue)} />;
+    return <CurrencyInput currency={entry.currency} disabled={disabled} locale={entry.locale} onChange={(value) => onFieldChange?.(entry.key, value)} value={emptyValue ? null : Number(fieldValue ?? entry.rawValue)} />;
   }
-  if (entry.type === "textarea") return <TextArea onChange={(event) => onFieldChange?.(entry.key, event.target.value)} rows={4} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
-  return <Input onChange={(event) => onFieldChange?.(entry.key, event.target.value)} type={entry.type === "number" ? "number" : entry.type === "datetime" ? "datetime-local" : "text"} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
+  if (editType === "textarea") return <TextArea disabled={disabled} onChange={(event) => onFieldChange?.(entry.key, event.target.value)} rows={4} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
+  return <Input disabled={disabled} onChange={(event) => onFieldChange?.(entry.key, event.target.value)} type={editType === "number" ? "number" : editType === "datetime" ? "datetime-local" : "text"} value={String(disabled ? resolveDisplayValue(entry, t) : formValues[entry.key] ?? entry.rawValue ?? "")} />;
 }
 
 function renderReadonlyValue(entry: DetailEntry, onFieldChange: DetailContentCardProps["onFieldChange"], t: AdminTranslate, viewModel: AdminStandardDetailViewModel) {
   if (entry.type === "lineItems") return <LineItemsEditor addLabel={t(entry.addLabelKey || "forms.addLineItem")} columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]} emptyLabel={t(viewModel.emptyKey || "forms.emptyLineItems")} onChange={(value) => onFieldChange?.(entry.key, value)} readOnly removeLabel={t("forms.removeLineItem")} t={t} value={Array.isArray(entry.rawValue) ? entry.rawValue : []} />;
-  if (entry.type === "relatedList") return <RelatedList columns={(entry.columns || []) as AdminStandardRelatedListColumnViewModel[]} emptyLabel={t(viewModel.emptyKey || "details.emptySummary")} rows={Array.isArray(entry.rawValue) ? entry.rawValue : []} t={t} />;
   if (entry.type === "asset" && entry.value) return <img alt={viewModel.displayName} className={styles.assetPreview} src={entry.value} />;
   return resolveDisplayValue(entry, t);
 }
 
 function renderFieldValue(entry: DetailEntry, props: DetailContentCardProps) {
-  const value = props.isEditing && entry.editable
-    ? renderEditableValue(entry, props.formValues, props.onFieldChange, props.t)
+  const value = props.isEditing
+    ? renderEditableValue(entry, props.formValues, props.onFieldChange, props.t, !entry.editable)
     : renderReadonlyValue(entry, props.onFieldChange, props.t, props.viewModel);
-  return typeof value === "string" ? <Text as="span" tone="muted" variant="caption" weight="semibold">{value}</Text> : value;
+  return typeof value === "string" ? <Text as="span" className={styles.detailFieldValue} tone="default" variant="body" weight="semibold">{value}</Text> : value;
 }
 
 export const DetailContentCard: React.FC<DetailContentCardProps> = (props) => {
   const { t, viewModel } = props;
   const sections = viewModel.sections.length ? viewModel.sections : [{ entries: viewModel.entries, key: "default" }];
+  const defaultGrid = { desktop: 4 as const, tablet: 2 as const, mobile: 1 as const };
   return (
-    <Card className={styles.detailCard} size="lg">
+    <div className={styles.detailCard}>
       {viewModel.entries.length ? (
         <Stack className={styles.detailSections} gap="xl">
           {sections.map((section) => (
-            <DetailSectionCard key={section.key} section={section} t={t}>
-                <FieldGrid className={styles.detailGrid} columns={section.entries.length === 1 ? 1 : 2} density="comfortable" gap="lg">
-                  {section.entries.map((entry) => (
-                    <FieldGridItem key={entry.key} span={entry.layout === "full" ? "full" : 1}>
-                      <DataField className={styles.detailField} label={<Text as="span" variant="body" weight="bold">{t(entry.labelKey, entry.key)}</Text>} level="sm" valueWeight={entry.type === "currency" ? "bold" : "semibold"} value={renderFieldValue(entry, props)} />
-                    </FieldGridItem>
-                  ))}
-                </FieldGrid>
-            </DetailSectionCard>
+            section.type === "lineItems" ? (
+              <DetailLineItemsSection key={section.key} renderEntry={(entry) => renderFieldValue(entry, props)} section={section} t={t} />
+            ) : (
+              <DetailFieldsSection defaultGrid={defaultGrid} key={section.key} renderEntry={(entry) => renderFieldValue(entry, props)} section={section} t={t} />
+            )
           ))}
         </Stack>
       ) : <Text tone="muted" variant="body">{t(viewModel.emptyKey || "details.emptySummary")}</Text>}
-    </Card>
+    </div>
   );
 };

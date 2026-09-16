@@ -1,6 +1,6 @@
 .productGrid {
   display: grid;
-  gap: var(--theme--spacing-spaceXl);
+  gap: var(--theme--spacing-spaceLg);
   grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
 }

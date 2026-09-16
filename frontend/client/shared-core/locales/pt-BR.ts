@@ -170,9 +170,13 @@ export const clientPtBR = {
       deliveredOrders: "Pedidos entregues"
     },
     states: {
-      loading: "Carregando",
-      empty: "Nenhum pedido encontrado",
-      error: "Nao foi possivel sincronizar com o backend agora."
+      loading: "Buscando seus pedidos",
+      loadingDescription: "Estamos preparando o acompanhamento da sua conta.",
+      empty: "Seu historico comeca aqui",
+      emptyDescription: "Quando voce fizer um pedido, ele aparecera aqui para voce acompanhar cada etapa.",
+      error: "Nao foi possivel carregar seus pedidos",
+      errorDescription: "Confira sua conexao e tente novamente em instantes.",
+      retry: "Tentar novamente"
     },
     currentOrder: {
       badge: "Pedido atual",
@@ -285,31 +289,38 @@ export const clientPtBR = {
       productQuantity: "{quantity}x {product}",
     },
     hero: {
-      badge: "Pedido Royal Carnes",
+      badge: "Selecao personalizada",
       title: "Monte seu pedido",
       mobileTitle: "Pedido",
-      description: "Escolha primeiro o tipo de compra. Depois selecione produtos, compare categorias e acompanhe o resumo da montagem.",
+      description: "Escolha como deseja comprar e comece sua selecao.",
       searchPlaceholder: "Buscar produto",
       filterLabel: "Filtrar",
       clearFilters: "Limpar filtros"
     },
+    modeSelection: {
+      eyebrow: "Modalidade de aquisicao",
+      description: "Selecione o formato de expedicao."
+    },
     modes: {
       subscription: {
-        title: "Assinatura fechada",
-        eyebrow: "Basic, Premium ou Pro",
-        description: "Planos com preço fixo, limites claros e produtos liberados por categoria.",
+        title: "Royal Assinatura",
+        eyebrow: "Mensal ou quinzenal",
+        description: "Escolha um plano e receba sua selecao na frequencia definida.",
+        action: "Configurar ciclos",
         details: ["Escolha o plano", "Selecione produtos do plano", "Receba mensal ou anual"]
       },
       royalBox: {
         title: "Royal Box",
-        eyebrow: "Recorrente mensal",
-        description: "Uma caixa personalizada que o cliente monta uma vez e recebe todo mês.",
+        eyebrow: "Caixa personalizada",
+        description: "Monte sua caixa com os produtos disponiveis para este ciclo.",
+        action: "Montar minha caixa",
         details: ["Todo o estoque Royal", "Dia do mês escolhido", "Carvão e utensílios"]
       },
       royalDelivery: {
         title: "Royal Delivery",
-        eyebrow: "Pedido avulso",
-        description: "Compra livre para receber agora, com endereço e frete definidos no pedido.",
+        eyebrow: "Envio imediato",
+        description: "Faca um pedido avulso com endereco e frete definidos na etapa seguinte.",
+        action: "Comecar pedido",
         details: ["Sem recorrência", "Endereço flexível", "Repetir último pedido"]
       }
     },
@@ -357,7 +368,7 @@ export const clientPtBR = {
     summary: {
       title: "Resumo",
       empty: "Escolha uma modalidade para começar.",
-      activeSubscriptionMode: "Minha assinatura",
+      activeSubscriptionMode: "Royal Assinatura",
       activeSubscriptionBadge: "Plano ativo",
       activeSubscriptionLabel: "Assinatura ativa",
       linkedPlan: "Plano vinculado",

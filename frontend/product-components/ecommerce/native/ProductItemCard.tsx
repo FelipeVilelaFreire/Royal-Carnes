@@ -1,12 +1,14 @@
 import React from "react";
 import { Button } from "@foundation/ui/native/Button";
-import { Stack } from "@foundation/ui/native/Layout";
+import { Icon } from "@foundation/ui/native/Icon";
+import { Inline, Stack } from "@foundation/ui/native/Layout";
 import { Surface } from "@foundation/ui/native/Surface";
 import { Text } from "@foundation/ui/native/Text";
 import { useUi } from "@foundation/ui/native/context";
 import {
   resolveProductItemCardComposition,
   type ProductItemCardActionMode,
+  type ProductItemCardDensity,
   type ProductItemCardFavoriteMode,
   type ProductItemCardMetaMode,
   type ProductItemCardPreset,
@@ -17,25 +19,32 @@ import { createProductItemCardStyles } from "./ProductItemCard.styles";
 
 export interface ProductItemCardProps {
   actionLabel?: string;
+  actionDisabled?: boolean;
+  actionDisabledLabel?: string;
   actionMode?: ProductItemCardActionMode;
+  density?: ProductItemCardDensity;
   badge?: string;
   categoryLabel?: string;
   description?: string;
+  decreaseQuantityAriaLabel?: string;
   detailLabel?: string;
   favorite?: boolean;
   favoriteActionLabel?: string;
   favoriteMode?: ProductItemCardFavoriteMode;
   formattedPrice?: string;
+  increaseQuantityAriaLabel?: string;
   image?: string;
   metaMode?: ProductItemCardMetaMode;
   name: string;
   onAction?: () => void;
+  onDecrease?: () => void;
   onFavoriteToggle?: () => void;
   priceLabel?: string;
   preset?: ProductItemCardPreset;
   priceMode?: ProductItemCardPriceMode;
   quantityMode?: ProductItemCardQuantityMode;
   quantity?: number;
+  selected?: boolean;
   showAction?: boolean;
   showBadge?: boolean;
   showCategory?: boolean;
@@ -50,25 +59,32 @@ export interface ProductItemCardProps {
 
 export const ProductItemCard: React.FC<ProductItemCardProps> = ({
   actionLabel,
+  actionDisabled = false,
+  actionDisabledLabel,
   actionMode,
+  density,
   badge,
   categoryLabel,
   description,
+  decreaseQuantityAriaLabel,
   detailLabel,
   favorite = false,
   favoriteActionLabel,
   favoriteMode,
   formattedPrice,
+  increaseQuantityAriaLabel,
   image,
   metaMode,
   name,
   onAction,
+  onDecrease,
   onFavoriteToggle,
   priceLabel,
   preset = "catalogo",
   priceMode,
   quantityMode,
   quantity = 0,
+  selected = false,
   showAction,
   showBadge,
   showCategory,
@@ -82,9 +98,9 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
 }) => {
   const { designSystem, hosts } = useUi();
   const NativeImage = hosts.Image;
-  const styles = createProductItemCardStyles(designSystem);
   const composition = resolveProductItemCardComposition(preset, {
     actionMode,
+    density,
     favoriteMode,
     metaMode,
     priceMode,
@@ -100,10 +116,12 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
     showName,
     showPrice,
   });
+  const styles = createProductItemCardStyles(designSystem, composition.density);
   const showPriceSlot = composition.showPrice && composition.priceMode !== "hidden" && composition.priceMode !== "included" && Boolean(formattedPrice);
   const showActionSlot = composition.showAction && composition.actionMode !== "none" && Boolean(actionLabel) && Boolean(onAction);
   const showFavoriteSlot = composition.showFavorite && composition.favoriteMode === "toggle" && Boolean(onFavoriteToggle) && Boolean(favoriteActionLabel);
-  const actionText = quantity > 0 ? String(quantity) : actionLabel;
+  const canUseStepper = showActionSlot && composition.quantityMode === "stepper" && composition.actionMode === "quantity";
+  const actionText = actionDisabled ? actionDisabledLabel || actionLabel : selected && quantity > 0 ? String(quantity) : actionLabel;
   const meta = [
     composition.showCategory && composition.metaMode !== "detail-only" ? categoryLabel : undefined,
     composition.showDetail && composition.metaMode !== "category-only" ? detailLabel : undefined,
@@ -132,7 +150,17 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
                 <Text style={styles.price} weight="bold">{formattedPrice}</Text>
               </Stack>
             ) : null}
-            {showActionSlot ? <Button onAction={onAction} style={styles.action} tone="primary">{actionText}</Button> : null}
+            {showActionSlot ? (
+              canUseStepper && selected && quantity > 0 ? (
+                <Inline style={styles.quantityControl}>
+                  <Button accessibilityLabel={decreaseQuantityAriaLabel} appearance="outline" disabled={!onDecrease} icon={<Icon intent="minus" />} onAction={onDecrease} tone="neutral" />
+                  <Text style={styles.quantityValue} weight="bold">{String(quantity)}</Text>
+                  <Button accessibilityLabel={increaseQuantityAriaLabel} appearance="solid" disabled={actionDisabled} icon={<Icon intent="plus" />} onAction={onAction} tone="primary" />
+                </Inline>
+              ) : (
+                <Button disabled={actionDisabled} onAction={onAction} style={styles.action} tone="primary">{actionText}</Button>
+              )
+            ) : null}
             {showFavoriteSlot ? <Button appearance="transparent" onAction={onFavoriteToggle} style={styles.favoriteAction} tone="neutral">{favoriteActionLabel}</Button> : null}
           </Stack>
         ) : null}

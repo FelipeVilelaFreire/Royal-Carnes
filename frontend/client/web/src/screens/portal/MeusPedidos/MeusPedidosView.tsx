@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Badge, type BadgeTone } from "@foundation/ui/web/Badge";
+import { Badge } from "@foundation/ui/web/Badge";
 import { Button } from "@foundation/ui/web/Button";
 import { Card } from "@foundation/ui/web/Card";
-import { EmptyState } from "@foundation/ui/web/EmptyState";
-import { CheckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { BoxIcon, CheckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { BottomModal, Modal } from "@foundation/ui/web/Modal";
 import { Container, Grid, Inline, Stack } from "@foundation/ui/web/Layout";
 import { Text } from "@foundation/ui/web/Text";
@@ -13,6 +12,7 @@ import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenH
 import { useClientOrders } from "@royalprime/client/hooks/useClientOrders";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import type { ClientOrderRowViewModel } from "@royalprime/client/view-models/orders.view-model";
+import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen";
 import styles from "./meus-pedidos/styles.module.css";
 
 export interface MeusPedidosViewProps {
@@ -20,16 +20,9 @@ export interface MeusPedidosViewProps {
   showShell?: boolean;
 }
 
-const statusBadgeTone: Record<ClientOrderRowViewModel["statusTone"], BadgeTone> = {
-  active: "warning",
-  danger: "danger",
-  pending: "primary",
-  success: "success",
-};
-
 function StatusPill({ order }: { order: ClientOrderRowViewModel }) {
   return (
-    <Badge appearance="soft" level="xs" tone={statusBadgeTone[order.statusTone]}>
+    <Badge appearance="soft" level="xs" tone={order.statusTone}>
       {order.statusLabel}
     </Badge>
   );
@@ -188,6 +181,38 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
   );
   const currentOrder = orders.viewModel.currentOrder;
   const nextBox = orders.viewModel.nextSubscriptionOrder;
+  const hasOrders = orders.viewModel.orders.length > 0;
+
+  if (!hasOrders) {
+    const isError = Boolean(orders.error);
+    const title = orders.isLoading
+      ? strings.states.loading
+      : isError
+        ? strings.states.error
+        : strings.states.empty;
+    const description = orders.isLoading
+      ? strings.states.loadingDescription
+      : isError
+        ? strings.states.errorDescription
+        : strings.states.emptyDescription;
+
+    return (
+      <div className={styles.page}>
+        <main>
+          <EmptyStateScreen
+            actions={isError ? (
+              <Button appearance="outline" onClick={() => void orders.load()} tone="neutral">
+                {strings.states.retry}
+              </Button>
+            ) : undefined}
+            description={description}
+            icon={<BoxIcon />}
+            title={title}
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -227,83 +252,72 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
 
         {orders.error ? <Text tone="text-muted">{strings.states.error}</Text> : null}
 
-        {orders.viewModel.orders.length === 0 ? (
-          <EmptyState
-            description={strings.subtitle}
-            framed
-            icon={<UserIcon size={28} />}
-            title={orders.isLoading ? strings.states.loading : strings.states.empty}
-          />
-        ) : null}
-
         {currentOrder ? (
           <section>
-          <Grid className={styles.currentGrid}>
-            <Card className={styles.orderPanel} size="lg">
-              <Stack gap="lg">
-                <Inline className={styles.panelHeader} justify="between">
-                  <Stack gap="xs">
-                    <Badge appearance="soft" level="xs" tone="primary">{strings.currentOrder.badge}</Badge>
-                    <Text as="h2" variant="h2">{currentOrder.code}</Text>
-                    <Inline gap="sm">
-                      <Text tone="text-muted">{currentOrder.kindLabel}</Text>
-                      <StatusPill order={currentOrder} />
-                    </Inline>
-                  </Stack>
-                  <Stack align="end" gap="xs">
-                    <Text variant="caption" tone="text-muted">{strings.currentOrder.total}</Text>
-                    <Text variant="h3">{currentOrder.totalLabel}</Text>
-                  </Stack>
-                </Inline>
+            <Grid className={styles.currentGrid}>
+              <Card className={styles.orderPanel} size="lg">
+                <Stack gap="lg">
+                  <Inline className={styles.panelHeader} justify="between">
+                    <Stack gap="xs">
+                      <Badge appearance="soft" level="xs" tone="primary">{strings.currentOrder.badge}</Badge>
+                      <Text as="h2" variant="h2">{currentOrder.code}</Text>
+                      <Inline gap="sm">
+                        <Text tone="text-muted">{currentOrder.kindLabel}</Text>
+                        <StatusPill order={currentOrder} />
+                      </Inline>
+                    </Stack>
+                    <Stack align="end" gap="xs">
+                      <Text variant="caption" tone="text-muted">{strings.currentOrder.total}</Text>
+                      <Text variant="h3">{currentOrder.totalLabel}</Text>
+                    </Stack>
+                  </Inline>
 
-                <div className={styles.timelineGrid}>
-                  {currentOrder.timelineSteps.map((step) => (
-                    <div
-                      className={styles.timelineStep}
-                      data-completed={step.completed || undefined}
-                      data-current={step.isCurrent || undefined}
-                      key={step.key}
-                    >
-                      <span className={styles.timelineMarker}>
-                        {step.completed ? <CheckIcon size={12} /> : null}
-                      </span>
-                      <Text variant="caption" tone={step.completed || step.isCurrent ? "text" : "text-muted"}>
-                        {step.label}
-                      </Text>
-                    </div>
-                  ))}
-                </div>
-
-                <Inline align="start" gap="lg">
-                  <div className={styles.deliveryCode}>
-                    <Text variant="caption" tone="text-muted">{strings.currentOrder.deliveryCode}</Text>
-                    <Text variant="h1">{currentOrder.deliveryCodeLabel}</Text>
-                    <Text variant="caption" tone="text-muted">{strings.currentOrder.deliveryCodeHint}</Text>
+                  <div className={styles.timelineGrid}>
+                    {currentOrder.timelineSteps.map((step) => (
+                      <div
+                        className={styles.timelineStep}
+                        data-completed={step.completed || undefined}
+                        data-current={step.isCurrent || undefined}
+                        key={step.key}
+                      >
+                        <span className={styles.timelineMarker}>
+                          {step.completed ? <CheckIcon size={12} /> : null}
+                        </span>
+                        <Text variant="caption" tone={step.completed || step.isCurrent ? "text" : "text-muted"}>
+                          {step.label}
+                        </Text>
+                      </div>
+                    ))}
                   </div>
-                  <Stack gap="sm">
-                    <Text weight="var(--theme--typography-bold)">{strings.currentOrder.items}</Text>
-                    <OrderItemsPreview order={currentOrder} />
-                  </Stack>
-                </Inline>
-              </Stack>
-            </Card>
 
-            {nextBox ? (
-              <Card className={styles.imagePanel} size="lg">
-                {nextBox.imageUrl ? (
-                  <img alt={nextBox.title} className={styles.boxImage} src={nextBox.imageUrl} />
-                ) : null}
-                <div className={styles.imageOverlay}>
-                  <Stack gap="sm">
-                    <Badge appearance="soft" level="xs" tone="primary">{strings.nextBox.badge}</Badge>
-                    <Text as="h2" variant="h2">{strings.nextBox.title}</Text>
-                    <Text weight="var(--theme--typography-bold)">{nextBox.deliveryEstimateLabel}</Text>
-                    <Text tone="text-muted">{nextBox.summary}</Text>
-                  </Stack>
-                </div>
+                  <Inline align="start" gap="lg">
+                    <div className={styles.deliveryCode}>
+                      <Text variant="caption" tone="text-muted">{strings.currentOrder.deliveryCode}</Text>
+                      <Text variant="h1">{currentOrder.deliveryCodeLabel}</Text>
+                      <Text variant="caption" tone="text-muted">{strings.currentOrder.deliveryCodeHint}</Text>
+                    </div>
+                    <Stack gap="sm">
+                      <Text weight="var(--theme--typography-bold)">{strings.currentOrder.items}</Text>
+                      <OrderItemsPreview order={currentOrder} />
+                    </Stack>
+                  </Inline>
+                </Stack>
               </Card>
-            ) : null}
-          </Grid>
+
+              {nextBox ? (
+                <Card className={styles.imagePanel} size="lg">
+                  {nextBox.imageUrl ? <img alt={nextBox.title} className={styles.boxImage} src={nextBox.imageUrl} /> : null}
+                  <div className={styles.imageOverlay}>
+                    <Stack gap="sm">
+                      <Badge appearance="soft" level="xs" tone="primary">{strings.nextBox.badge}</Badge>
+                      <Text as="h2" variant="h2">{strings.nextBox.title}</Text>
+                      <Text weight="var(--theme--typography-bold)">{nextBox.deliveryEstimateLabel}</Text>
+                      <Text tone="text-muted">{nextBox.summary}</Text>
+                    </Stack>
+                  </div>
+                </Card>
+              ) : null}
+            </Grid>
           </section>
         ) : null}
 

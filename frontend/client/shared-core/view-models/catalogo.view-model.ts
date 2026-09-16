@@ -20,6 +20,7 @@ export interface CatalogoDisplayProduct {
   badge?: string;
   badgeType?: "offer" | "limited";
   category: string;
+  categoryKeys: string[];
   line: string;
   image: string;
   origin?: string;
@@ -51,6 +52,10 @@ const mapProductToDisplayProduct = (
   const primaryCategory =
     product.categories.find((category) => category.key === product.primaryCategoryKey) ||
     product.categories[0];
+  const categoryKeys = Array.from(new Set([
+    ...product.categories.map((category) => category.key),
+    ...(product.primaryCategoryKey ? [product.primaryCategoryKey] : []),
+  ]));
 
   return {
     id: String(product.id),
@@ -59,6 +64,7 @@ const mapProductToDisplayProduct = (
     weight: variant?.measurementUnit?.symbol || variant?.unit || product.unit,
     price: price ? price.amountCents / 100 : 0,
     category: primaryCategory?.key || product.primaryCategoryKey || "all",
+    categoryKeys,
     line: primaryCategory?.name || product.collectionKeys[0] || defaultLineLabel,
     image: product.primaryMediaUrl || product.media[0]?.url || "",
   };
@@ -104,7 +110,7 @@ export const createCatalogoViewModel = ({
   const categories = createCategoryOptions(apiCategories, allCategoriesLabel);
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const filtered = products.filter((item) => {
-    const matchesCategory = activeCategoryId === "all" || item.category === activeCategoryId;
+    const matchesCategory = activeCategoryId === "all" || item.categoryKeys.includes(activeCategoryId);
     const matchesSearch =
       normalizedQuery === "" ||
       item.name.toLowerCase().includes(normalizedQuery) ||

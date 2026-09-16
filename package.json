@@ -8,6 +8,7 @@
     "dev:admin": "npm --prefix frontend/admin/web run dev",
     "build:client": "npm --prefix frontend/client/web run build",
     "build:admin": "npm --prefix frontend/admin/web run build",
+    "verify:admin-detail-contract": "node scripts/verify-admin-detail-contract.mjs",
     "verify:foundation": "node scripts/verify-foundation-contract.mjs",
     "verify:rules": "node scripts/verify-code-rules.mjs",
     "test:rules": "node --test scripts/code-rules.test.mjs",

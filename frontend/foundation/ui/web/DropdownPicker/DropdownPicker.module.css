@@ -56,6 +56,15 @@
   width: 100%;
 }
 
+.triggerImage,
+.optionImage {
+  block-size: var(--ui-button-height);
+  border-radius: var(--ui-surface-radius);
+  flex: 0 0 auto;
+  inline-size: var(--ui-button-height);
+  object-fit: cover;
+}
+
 .inlineLabel {
   color: color-mix(in srgb, var(--theme--color-text-muted) 78%, var(--theme--color-copper));
   flex: 0 0 auto;
@@ -137,6 +146,20 @@
     color var(--theme--motion-durationMd) var(--theme--motion-easingStandard),
     transform var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
   width: 100%;
+}
+
+.optionCopy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-inline-size: 0;
+  text-align: start;
+}
+
+.optionDescription {
+  color: var(--ui-dropdown-picker-option-color);
+  font-size: var(--ui-button-font-size);
+  font-weight: var(--ui-button-font-weight);
 }
 
 .option:hover {

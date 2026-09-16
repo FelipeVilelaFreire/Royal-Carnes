@@ -6,6 +6,7 @@ from apps.catalog.models import CommercialMode, Product, ProductPrice, ProductVa
 from apps.core.code_sequences import generate_code
 from apps.inventory.models import InventoryItem, InventoryMovement
 from apps.inventory.services import InventoryValidationError, adjust_inventory_item
+from apps.subscriptions.services import EntitlementValidationError, reserve_cycle_order_items
 
 from .models import Order, OrderItem, OrderKindDefinition, OrderStatusDefinition, OrderStatusHistory
 
@@ -154,6 +155,33 @@ def create_order(
             raise OrderValidationError("subscription_required_for_order", "Subscription order requires a subscription")
         if subscription_cycle is None:
             raise OrderValidationError("subscription_cycle_required_for_order", "Subscription order requires a cycle")
+
+    prepared_items = []
+    for item_data in items:
+        product = Product.objects.get(organization=organization, key=item_data["product_key"])
+        variant = None
+        if item_data.get("variant_sku"):
+            variant = ProductVariant.objects.select_related("measurement_unit").get(
+                organization=organization,
+                sku=item_data["variant_sku"],
+            )
+            if variant.product_id != product.id:
+                raise OrderValidationError("variant_product_mismatch", "Variant does not belong to product")
+        quantity = Decimal(str(item_data["quantity"]))
+        if quantity <= 0:
+            raise OrderValidationError("order_item_quantity_invalid", "Order item quantity must be greater than zero")
+        prepared_items.append({"data": item_data, "product": product, "variant": variant, "quantity": quantity})
+
+    if kind.commercial_mode and kind.commercial_mode.key == "subscription":
+        try:
+            reserve_cycle_order_items(
+                organization=organization,
+                cycle=subscription_cycle,
+                items=prepared_items,
+            )
+        except EntitlementValidationError as error:
+            raise OrderValidationError(error.code, error.detail) from error
+
     status = initial_order_status(organization)
     order = Order.objects.create(
         organization=organization,
@@ -168,16 +196,10 @@ def create_order(
         notes=notes,
     )
     subtotal_cents = 0
-    for item_data in items:
-        product = Product.objects.get(organization=organization, key=item_data["product_key"])
-        variant = None
-        if item_data.get("variant_sku"):
-            variant = ProductVariant.objects.select_related("measurement_unit").get(
-                organization=organization,
-                sku=item_data["variant_sku"],
-            )
-            if variant.product_id != product.id:
-                raise OrderValidationError("variant_product_mismatch", "Variant does not belong to product")
+    for prepared_item in prepared_items:
+        item_data = prepared_item["data"]
+        product = prepared_item["product"]
+        variant = prepared_item["variant"]
         measurement_unit = variant.measurement_unit if variant else None
         price = resolve_product_price(
             organization=organization,
@@ -185,9 +207,7 @@ def create_order(
             variant=variant,
             commercial_mode=kind.commercial_mode,
         )
-        quantity = Decimal(str(item_data["quantity"]))
-        if quantity <= 0:
-            raise OrderValidationError("order_item_quantity_invalid", "Order item quantity must be greater than zero")
+        quantity = prepared_item["quantity"]
         total_cents = int((Decimal(price.amount_cents) * quantity).to_integral_value(rounding=ROUND_HALF_UP))
         OrderItem.objects.create(
             organization=organization,

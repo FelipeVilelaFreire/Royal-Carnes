@@ -224,3 +224,19 @@
     width: auto;
   }
 }
+.mobileScreenHeader {
+  display: none;
+}
+
+.tabButtonActive {
+  --ui-button-readable-color: var(--theme--color-accent) !important;
+  --ui-surface-color: var(--theme--color-accent) !important;
+  color: var(--theme--color-accent) !important;
+  font-weight: var(--theme--typography-bold);
+}
+
+@media (max-width: 48rem) {
+  .mobileScreenHeader {
+    display: block;
+  }
+}

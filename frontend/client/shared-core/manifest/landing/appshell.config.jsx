@@ -153,5 +153,3 @@ export const landingAppShellConfig = {
     ]
   }
 };
-
-export const clientAppShellConfig = landingAppShellConfig;

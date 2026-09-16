@@ -1,0 +1,43 @@
+.root {
+  align-items: center;
+  block-size: calc(100dvh - var(--app-shell-content-offset-top, var(--theme--borders-none)) - var(--app-shell-content-offset-bottom, var(--theme--borders-none)));
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-block-size: 0;
+  padding-inline: var(--theme--spacing-spaceLg);
+}
+
+.content {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  justify-items: center;
+  max-inline-size: var(--theme--layout-container-sm);
+  text-align: center;
+}
+
+.icon {
+  block-size: var(--theme--dimensions-icon-3xl);
+  color: var(--theme--color-accent);
+  inline-size: var(--theme--dimensions-icon-3xl);
+}
+
+.icon > svg {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.title,
+.description {
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-spaceSm);
+  inline-size: fit-content;
+  justify-content: center;
+  justify-self: center;
+  margin-inline: auto;
+}

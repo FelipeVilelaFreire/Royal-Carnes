@@ -8,6 +8,7 @@ from apps.deliveries.models import Delivery
 from apps.inventory.models import InventoryItem
 from apps.orders.models import Order, OrderKindDefinition, OrderStatusDefinition
 from apps.organizations.models import Organization
+from apps.subscriptions.models import Subscription, SubscriptionCycleItem
 
 
 class OrdersApiTests(APITestCase):
@@ -31,6 +32,10 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(OrderStatusDefinition.objects.count(), 6)
         self.assertEqual(Order.objects.count(), 4)
         self.assertTrue(OrderStatusDefinition.objects.get(key="received").is_initial)
+        self.assertEqual(
+            OrderStatusDefinition.objects.get(key="received").metadata["ui"],
+            {"statusColor": "received", "statusTone": "neutral"},
+        )
         self.assertEqual(OrderKindDefinition.objects.get(key="royal-box").commercial_mode.key, "box")
         self.assertTrue(Order.objects.filter(metadata__seedKey="pedido-felipe-churrasco-familia").exists())
         subscription_order = Order.objects.select_related("subscription", "subscription_cycle").get(
@@ -136,6 +141,66 @@ class OrdersApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 400, response.data)
         self.assertEqual(response.data["code"], "subscription_required_for_order")
+
+    def test_subscription_order_reserves_cycle_balance_on_the_server(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+        subscription = Subscription.objects.get(plan__key="pro")
+        cycle = subscription.cycles.get(cycle_number=1)
+        initial_quantity = SubscriptionCycleItem.objects.get(
+            cycle=cycle,
+            entitlement__key="premium-cuts-12kg",
+            variant__sku="PICANHA-1KG",
+        ).quantity
+
+        response = self.client.post(
+            "/api/v1/orders/me/",
+            {
+                "kind_key": "subscription-cycle",
+                "subscription_id": subscription.id,
+                "subscription_cycle_id": cycle.id,
+                "items": [
+                    {
+                        "product_key": "picanha",
+                        "variant_sku": "PICANHA-1KG",
+                        "quantity": "1.000",
+                    }
+                ],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 201, response.data)
+        cycle_item = SubscriptionCycleItem.objects.get(
+            cycle=cycle,
+            entitlement__key="premium-cuts-12kg",
+            variant__sku="PICANHA-1KG",
+        )
+        self.assertEqual(cycle_item.quantity, initial_quantity + Decimal("1.000"))
+        self.assertEqual(cycle_item.status, SubscriptionCycleItem.Status.RESERVED)
+
+    def test_subscription_order_rejects_combined_quantities_over_cycle_balance(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+        subscription = Subscription.objects.get(plan__key="pro")
+        cycle = subscription.cycles.get(cycle_number=1)
+
+        response = self.client.post(
+            "/api/v1/orders/me/",
+            {
+                "kind_key": "subscription-cycle",
+                "subscription_id": subscription.id,
+                "subscription_cycle_id": cycle.id,
+                "items": [
+                    {"product_key": "picanha", "variant_sku": "PICANHA-1KG", "quantity": "6.000"},
+                    {"product_key": "picanha", "variant_sku": "PICANHA-1KG", "quantity": "6.000"},
+                ],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(response.data["code"], "quantity_exceeded")
 
     def test_admin_can_list_and_transition_order_by_seeded_workflow(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

@@ -85,7 +85,7 @@
 .table {
   border-collapse: separate;
   border-spacing: 0;
-  min-inline-size: 0;
+  min-inline-size: var(--theme--layout-container-md);
   table-layout: fixed;
   text-align: left;
   width: 100%;
@@ -248,6 +248,16 @@
   .toolbar {
     align-items: stretch;
     flex-wrap: wrap;
+  }
+
+  .header {
+    align-items: stretch;
+  }
+
+  .createButton {
+    flex: 1 1 100%;
+    inline-size: 100%;
+    margin-inline-start: 0;
   }
 
   .table th,

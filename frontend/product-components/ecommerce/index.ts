@@ -7,6 +7,7 @@ export {
 export type {
   ProductItemCardActionMode,
   ProductItemCardComposition,
+  ProductItemCardDensity,
   ProductItemCardFavoriteMode,
   ProductItemCardMetaMode,
   ProductItemCardPreset,

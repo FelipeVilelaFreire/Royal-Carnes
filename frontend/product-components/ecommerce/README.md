@@ -63,3 +63,13 @@ Layout
 
 As render surfaces importam o card pela variante da propria plataforma;
 nenhuma delas mantem uma copia local do componente.
+
+O Checkout usa o mesmo preset visual `catalogo`. Sua grade e regras de selecao
+ficam na screen consumidora; limites, disponibilidade e callbacks nunca criam
+uma variante visual nova do card.
+
+`actionPresentation="label"` e uma capacidade visual generica do adapter Web:
+ela troca o icone isolado pelo botao textual quando o consumidor precisar.
+Depois da primeira adicao, o mesmo card mostra o stepper de quantidade. A
+screen decide quando permitir a acao; o card nao conhece assinatura, checkout
+ou entitlement.

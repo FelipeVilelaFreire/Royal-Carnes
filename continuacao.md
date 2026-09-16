@@ -10,6 +10,224 @@
 Este arquivo e o ponto de entrada rapido para o proximo chat continuar o
 trabalho atual no RoyalPrime.
 
+## Atualizacao - auditoria e normalizacao dos manifests Admin (2026-09-15)
+
+O Admin ativo passou por auditoria de todos os arquivos em
+`frontend/admin/shared-core/manifest/pages/`. A regra agora e explicita:
+
+```text
+rota standard ativa
+  -> screenType: "standard"
+  -> listPage declarativo
+  -> detailPage com tabs -> sections
+  -> section com key, titleKey, iconIntent e grid responsivo
+  -> addPage somente quando create real existe no standard.data-source
+  -> DetailHeader sempre oferece Editar e Remover
+  -> Remover sempre abre o mesmo modal; so executa quando o shared-core possui
+     a operacao real
+  -> nenhuma DetailPage usa RelatedList ou tabela interna de relacoes
+```
+
+O renderer continua unico e render-only. Nenhuma entidade ganhou pagina JSX,
+shell ou regra de negocio propria.
+
+### Estado por manifest
+
+- `produtos.config.jsx`: referencia completa; todas as secoes de detalhe usam
+  grid responsivo explicito.
+- `planos.config.jsx`, `pedidos.config.jsx`, `assinaturas.config.jsx` e
+  `pagamentos.config.jsx`: todas as abas de detalhe foram normalizadas para
+  secoes declarativas. Pedido nao replica uma tabela de Entregas dentro do
+  proprio detalhe: a operacao de entrega permanece na rota dedicada. Itens,
+  pagamentos, historicos e demais relacoes tambem nao aparecem como tabelas
+  internas; suas rotas dedicadas sao a fonte operacional.
+- `clientes.config.jsx`, `categorias.config.jsx` e `colecoes.config.jsx`:
+  detalhes simples tambem foram convertidos para secoes explicitas.
+- `deliveries.config.jsx`, `usuarios.config.jsx` e `estoque.config.jsx`:
+  deixaram o formato plano legado e agora possuem `screenType`, `listPage` e
+  `detailPage` declarativos. As acoes de criar foram retiradas do manifest:
+  o `standard.data-source` ainda nao oferece create/detail persistente para
+  essas entidades e a UI nao deve prometer CRUD que nao existe.
+- `dashboard.config.jsx` e `settings.config.jsx`: permanecem especiais,
+  respectivamente Dashboard e Settings read-only; nao devem ser forcados ao
+  `screenType: "standard"`.
+- `cortes.config.jsx`, `history.config.jsx` e `trash.config.jsx`: foram
+  removidos depois de confirmar que nao possuem rota, registry nem consumidor.
+  Os screen-types locais de Historico e Lixeira que somente dependiam desses
+  manifests tambem foram removidos; nao havia fluxo publicado a preservar.
+
+### Lacuna funcional conhecida
+
+`loadAdminStandardRow` ainda resolve detalhe real para Clientes, Produtos,
+Planos, Assinaturas, Pagamentos, Categorias e Pedidos. Entregas, Usuarios e
+Estoque precisam de seus adapters de detail (e, quando aplicavel, comandos de
+create/update) no shared-core antes de oferecer edicao ou reabertura direta de
+detalhe. Essa e uma tarefa de contrato/API, nao de JSX/config.
+
+A DetailPage mostra a acao padrao Remover em todas as entidades. Produtos ja
+executa delete real; para as demais, o modal informa que a remocao ainda nao
+esta disponivel, em vez de simular sucesso. A proxima evolucao funcional e
+adicionar os comandos backend/shared-core por dominio, somente onde a regra
+de negocio permitir remocao.
+
+### Auditoria completa de configs ativos
+
+O corte tambem revisou todos os `*.config.*` e manifests do produto. Foram
+preservados somente os contratos com consumidor real: manifests das telas
+standard Admin, Dashboard/Settings, AppShell Admin/Portal/Landing, acesso,
+checkout, rotas, tema e a composicao de ProductItemCard. Os manifests antigos
+de Home/Landing do Client, o registry `screens.ts`, o alias
+`clientAppShellConfig`, `adminTheme.config.ts` e `frontend/shared-core/config.ts`
+nao tinham importador real e foram removidos, junto de seus exports mortos.
+
+`settings.config.jsx` deixou de guardar texto visivel em `value`: toda copy
+estatica dessa tela agora usa `valueKey` e o catalogo ativo `pt-BR`. Valores
+operacionais reais, quando a tela deixar de ser somente leitura, devem vir do
+backend/shared-core e nao voltar para o manifest.
+
+### Contencao visual dos campos de detalhe
+
+`FieldGrid` e a cadeia local da `DetailPage` agora usam dimensoes logicas com
+`min-inline-size: 0` e `max-inline-size: 100%`. O ponto essencial e que
+`sectionContent` passou a usar `box-sizing: border-box`: seu padding fica dentro
+da largura do `DetailSectionCard`, sem ampliar a superficie. Valores longos
+usam `overflow-wrap: anywhere`; inputs e demais controles continuam limitados
+pelo item do grid. Isso corrige o estouro sem clipar conteudo ou criar CSS por
+entidade.
+
+### Validacao exigida para este corte
+
+```text
+npm run verify:rules
+npm run build:admin
+git diff --check
+```
+
+Depois dos checks, fazer QA no navegador para as rotas standard, priorizando
+Produtos, Planos, Assinaturas, Pedidos e Pagamentos em desktop/mobile. A
+presenca de config e build nao comprova a aparencia, a reabertura por URL ou
+as operacoes ainda ausentes de Entregas, Usuarios e Estoque.
+
+## Checkpoint Atual - 2026-09-14
+
+O foco desta etapa foi consolidar o `screenType: "standard"` do Admin, em
+especial a DetailPage, sem mudar seu fluxo funcional ou criar uma tela paralela
+por entidade. A tela continua no caminho:
+
+```text
+config.jsx -> shared-core view-model -> DetailPage render-only -> Foundation UI
+```
+
+### DetailPage: composicao atual
+
+A antiga `DetailPage.tsx` concentrava cabecalho, abas, campos e cards. Ela foi
+dividida em componentes locais do renderer standard:
+
+```text
+DetailPage
+  -> controla navegacao, edicao e modal de confirmacao
+  -> DetailHeader
+       titulo, avatar, metadados, status e acoes Editar/Remover/Salvar
+  -> DetailQuickInfo
+       estatisticas opcionais da entidade
+  -> DetailTabs
+       controle Dados, Precos, Midia e demais abas declaradas
+  -> DetailContentCard
+       superficie central da aba
+       -> DetailSectionCard
+            card por secao, cabecalho, icone, titulo e grid de campos
+```
+
+Arquivos principais:
+
+```text
+frontend/admin/web/src/engines/rendering/screen-types/standard/pages/DetailPage/
+  DetailPage.tsx
+  DetailHeader.tsx
+  DetailTabs.tsx
+  DetailContentCard.tsx
+  DetailSectionCard.tsx
+  DetailQuickInfo.tsx
+```
+
+O `DetailSectionCard` e local ao DetailPage, e nao uma primitive nova da
+Foundation: ele possui consumidor comprovado no renderer standard e evita
+promover uma abstracao global antes de haver outro contexto independente.
+Cada card de secao usa somente Foundation UI e tokens existentes, com cabecalho
+de tom primario sutil, icone SVG, titulo e borda inferior. Os campos permanecem
+nos mesmos lugares e continuam editaveis segundo a configuracao.
+
+O `iconIntent` agora percorre o view-model de detalhe. Produtos ja declara os
+icones por secao em `frontend/admin/shared-core/manifest/pages/produtos.config.jsx`:
+
+```text
+identity -> identity
+catalog  -> catalog
+variants -> box
+prices   -> commerce
+media    -> box
+```
+
+Precos e Midia de Produtos tambem foram convertidos de `fields` diretos para
+uma unica `section` declarada. Isso preserva os dados, mas permite que todas as
+abas usem a mesma hierarquia visual de card de secao.
+
+### Controle segmentado
+
+O `SegmentedControl variant="underline"` agora representa de forma visivel a
+aba ativa: texto primario, borda inferior, gradiente discreto e sombra interna.
+A causa do estado ativo antes invisivel nao era o estado React: o HTML ja tinha
+`data-active="true"`, mas os tokens `--semicomposed--segmented-control--*`
+nao eram carregados no Admin. A entrada do Admin passou a importar
+`@foundation/semi-composed`, e o bundle final contem os tokens da receita.
+
+O espacamento entre abas e card de conteudo foi aumentado, e a sombra interna
+ativa recebeu maior presenca pelos tokens Semi-Composed. Nao hardcodar esse
+efeito em telas: ajustes gerais do segmented pertencem a:
+
+```text
+frontend/foundation/semi-composed/surface.css
+frontend/foundation/ui/web/SegmentedControl/SegmentedControl.module.css
+```
+
+### Autenticacao local do Admin
+
+No bypass de desenvolvimento, um token velho em `sessionStorage` podia manter
+as chamadas de Dashboard e Clientes em `401`. O fetcher de bypass agora limpa
+o token local vencido, obtém um token seed atual e refaz a requisicao uma vez.
+O fluxo funcional continua no shared-core em:
+
+```text
+frontend/admin/shared-core/api/dev-auth-bypass.api.ts
+```
+
+Isso foi testado contra o endpoint de autenticacao; nao substitui testar a tela
+com o backend em execucao.
+
+### Validacao deste checkpoint
+
+```text
+npm run verify:foundation -> passou, 94 checks
+npm run build:admin      -> passou
+verify-code-rules        -> 0 violacoes novas; achados legados inalterados
+git diff --check         -> passou
+```
+
+Os builds e checks nao comprovam a aparencia final no navegador. Ainda falta
+abrir o Admin em `http://localhost:3001`, revisar Produtos em todas as abas e
+validar visualmente DetailSectionCard em desktop e mobile. A automacao de
+browser nao estava disponivel nesta sessao.
+
+### Proximo passo recomendado
+
+1. Fazer QA visual de Produtos: Dados, Precos e Midia, inclusive edicao,
+   cancelar, salvar e confirmacao de Remover.
+2. Se a composicao se provar boa, declarar `iconIntent` nas secoes dos demais
+   detalhes standard, por config, sem criar JSX por entidade.
+3. Somente depois avaliar se AddPage deve compartilhar a mesma linguagem de
+   cards de secao. Nao mover `DetailSectionCard` para Foundation sem evidencias
+   de um segundo uso realmente independente.
+
 ## Checkpoint Atual - 2026-09-13
 
 O responsivo do Admin agora separa navegacao frequente de navegacao secundaria
@@ -1745,3 +1963,504 @@ Pendente: browser visual/CUA indisponivel nesta sessao (`iab` e `chrome`
 indisponiveis), e Playwright nao esta instalado no `node_modules` atual.
 Portanto, ainda falta screenshot real desktop/mobile antes de declarar nota
 visual maxima.
+
+## Atualizacao - Configuracoes e responsividade do Admin
+
+`/configuracoes` deixou de apresentar o badge `Manifest` e deixou de expor uma
+aba interna de `AppShell`. O AppShell publicado continua sendo a casca global;
+esta tela passou a organizar somente preferencias do produto:
+
+```text
+Frontend  -> identidade e aparencia ativa
+Operacao  -> expedicao, entrega e cadeia de frio
+Comercial -> cobranca, moeda e ciclo
+```
+
+No desktop, a navegacao e uma arvore lateral local e o conteudo fica separado
+em cards por assunto. No mobile, a mesma navegacao vira uma faixa horizontal
+rolavel, com alvos de toque compactos, e cada card usa uma unica coluna.
+Depois da revisao visual, essa arvore deixou de usar Card: ela mostra somente
+o rotulo de contexto e botoes compactos de Frontend, Operacao e Comercial.
+As descricoes repetidas sairam da navegacao e permanecem apenas no cabecalho
+do conteudo selecionado.
+
+A largura e a grade de Settings tambem passaram a ser declaradas em
+`frontend/admin/shared-core/manifest/pages/settings.config.jsx`:
+
+```text
+layout.usefulColumns -> largura util de leitura
+layout.navigation   -> composicao compacta da navegacao
+section.grid        -> colunas, densidade e gap de cada secao
+```
+
+O renderer le esses valores; nao decide mais a fisica especifica da tela.
+
+O tema escuro desta tela recebeu uma segunda passagem de contraste: navegacao
+e cards de secao usam `surfaceContainer`, enquanto cada campo fica numa
+superficie propria `surface`, com borda de token, raio e padding. Isso evita o
+efeito de texto e campos pretos sobre fundo preto sem introduzir cores locais.
+
+O corte tambem revisou os screen types standard para telas estreitas:
+
+- listas: cabecalho e acao de criar quebram para uma coluna; filtros ocupam a
+  largura disponivel; tabelas preservam colunas em rolagem horizontal;
+- detalhes: acoes preenchem a largura, tabs mantem rolagem horizontal e grids
+  passam para uma coluna sem extrapolar os cards;
+- formularios: campos passam para uma coluna e acoes ficam empilhadas;
+- dashboard: grids ja passam para uma coluna e tabelas continuam rolaveis.
+
+Validacao deste corte:
+
+```text
+git diff --check
+# passou
+
+npm run build:admin
+# passou: regras 0 violacoes; Vite build concluido
+```
+
+Pendente: validacao visual em browser real desktop/mobile. O CUA desta sessao
+nao tinha navegador ou app disponivel, portanto a compilacao nao substitui a
+inspecao por screenshot e interacao de toque.
+
+## Atualizacao - Status de Pedidos como contrato do backend
+
+A lista de `/pedidos` ficou com as cinco informacoes operacionais essenciais:
+
+```text
+Codigo | Cliente | Tipo de pedido | Status | Valor total
+```
+
+`Entrega` e `Pagamento` nao aparecem mais como colunas paralelas. Seus dados
+continuam pertencendo ao pedido e devem ser consultados no detalhe ou em suas
+respectivas telas, sem criar um segundo estado operacional na lista.
+
+O status nao e mais inferido no frontend por nomes como `approved` ou
+`cancelled`. A configuracao de status retornada por `GET /api/v1/orders/config/`
+passa a carregar, no proprio backend, a apresentacao de cada estado:
+
+```text
+metadata.ui.statusColor
+metadata.ui.statusTone
+```
+
+O seed `backend/seeds/royalprime/kits/orders.seed.json` definiu essa
+apresentacao para os seis estados de Pedido (`received`, `approved`,
+`separating`, `ready`, `completed`, `cancelled`). O view-model apenas associa a
+definicao retornada ao pedido; `ListPageTable` apenas entrega esses valores ao
+Badge generico. Assim, trocar estado, texto ou cor passa a ser responsabilidade
+da definicao persistida no backend, nunca de condicionais locais na tela.
+
+Validacao deste corte:
+
+```text
+py manage.py seed_backend --seed royalprime
+# passou: orders=4
+
+npm run build:admin
+# passou: regras 0 violacoes; Vite build concluido
+
+npm run verify:foundation
+# passou: 94 checks
+
+npm run verify:rules
+# passou: 0 violacoes; 2 achados legados inalterados
+
+git diff --check
+# passou
+
+py manage.py test apps.orders.tests.test_api.OrdersApiTests.test_seed_creates_order_config_and_demo_orders --verbosity 1
+# passou: 1 teste em 6.044s
+```
+
+Ainda falta verificacao visual real no navegador, que continua indisponivel
+nesta sessao.
+
+## Atualizacao - Acoes reais e conteudo essencial dos detalhes Admin
+
+Todos os manifests em `frontend/admin/shared-core/manifest/pages` foram
+revisados quanto a acoes de detalhe e campos de resumo. O comportamento
+standard agora exige tres condicoes para exibir `Editar`:
+
+```text
+config.jsx declara detailPage.actions.edit
+  + existe ao menos um campo editable
+  + o data source possui update real no backend
+```
+
+Assim, `Clientes`, `Categorias`, `Produtos`, `Planos`, `Assinaturas` e
+`Pagamentos` entram em edit mode e persistem via seus endpoints existentes.
+`Pedidos` e `Entregas` nao exibem uma edicao generica falsa: seus estados sao
+workflows do backend. `Estoque`, `Usuarios` e `Colecoes` continuam de leitura
+porque ainda nao possuem um contrato de update correspondente.
+
+O renderer tambem deixou de passar uma acao externa que abria a tela de criar
+no lugar de editar. A acao de remover continua visivel apenas onde existe
+`deleteAction` e mutacao real, hoje Produto.
+
+Foram removidos dos detalhes os resumos que nao permitem decisao ou acao:
+
+- Produto: secao `Variantes / Quantidade de variantes`;
+- Colecao: `Produtos vinculados` duplicado no detalhe;
+- Cliente: `Enderecos cadastrados` duplicado ao lado do endereco principal.
+
+Os contadores de lista continuam quando ajudam a comparar registros sem abrir
+o detalhe.
+
+Validacao deste corte:
+
+```text
+npm run build:admin
+# passou: regras 0 violacoes; Vite build concluido
+
+npm run verify:foundation
+# passou: 94 checks
+
+npm run verify:rules
+# passou: 0 violacoes; 2 achados legados inalterados
+
+git diff --check
+# passou
+```
+
+## Atualizacao - Contrato de secoes e campos do detalhe standard
+
+O detalhe standard passou a separar dois tipos de secao no `config.jsx`:
+
+```text
+type: "fields"    -> grade de campos simples
+type: "lineItems" -> tabela/editor proprio de itens
+```
+
+O renderer foi dividido em `DetailFieldsSection.tsx` e
+`DetailLineItemsSection.tsx`; `DetailContentCard.tsx` apenas orquestra essas
+secoes. Assim, tabela nao e mais tratada como um campo visual comum.
+
+Campos tambem aceitam contratos distintos de leitura e edicao. Pedido e
+Entrega usam o primeiro caso real: status mostra texto no detalhe e abre um
+`select` com opcoes do backend somente no edit mode.
+
+```js
+display: { key: "statusLabel", type: "text" }
+edit: { type: "select", source: "orderStatuses" }
+```
+
+As secoes de detalhe dos configs standard existentes foram declaradas como
+`fields` ou `lineItems`; a leitura legada de campo continua suportada para
+evitar quebra de contratos durante a migracao.
+
+Validacao desta atualizacao:
+
+```text
+npm run build:admin
+# passou; aviso conhecido de chunk grande do Vite
+
+npm run verify:rules
+# passou: 0 violacoes; 2 achados legados inalterados
+
+git diff --check
+# passou
+```
+
+## Refatoracao - arvore do renderer de itens
+
+O renderer de itens foi separado por responsabilidade, mantendo uma tabela
+semantica unica para leitura e edicao:
+
+```text
+LineItemsEditor.tsx      estado, adicionar, remover e atualizacao da linha
+LineItemsTable.tsx       table, thead e contratos das colunas
+LineItemsReadTable.tsx   valores de leitura nas linhas
+LineItemsEditorRow.tsx   uma linha editavel e sua acao
+LineItemsEditCell.tsx    escolhe DropdownPicker, Select, Input ou CurrencyInput
+line-items.utils.ts      opcoes dependentes, sufixos e normalizacao
+```
+
+Assim o `select` de produto com midia, input de quantidade e campo monetario
+nao ficam misturados com a estrutura da tabela. O `config.jsx` continua dono
+do tipo, fonte, moeda e demais regras de cada coluna.
+
+Validacao: `npm run build:admin` passou, incluindo contrato de detalhe e
+regras no prebuild; `git diff --check` passou.
+
+## Correcao - fontes de opcoes declaradas no edit mode
+
+O seletor de status de `Pedidos` e `Entregas` abria sem itens porque os dois
+manifestos declaram a fonte no proprio contrato de edicao:
+
+```text
+field.edit.source -> deliveryStatuses / orderStatuses
+```
+
+O carregador generico de fontes verificava apenas `field.source`. Por isso a
+interface do seletor estava correta, mas recebia uma lista vazia. Ele agora
+reconhece tambem `field.edit.source` e fontes de colunas dentro de `edit`, sem
+duplicar regra de status em nenhuma tela.
+
+O fluxo continua sendo:
+
+```text
+config.jsx declara a fonte e a transicao
+  -> shared-core carrega as opcoes
+  -> detalhe filtra somente o status atual e os proximos permitidos
+  -> DropdownPicker apresenta os valores simples
+```
+
+Validacao desta correcao:
+
+```text
+npm run build:admin
+# passou; contrato de detalhe e regras de codigo tambem passaram no prebuild
+
+git diff --check
+# passou
+```
+
+## Atualizacao - tabela unica para itens configuraveis
+
+`LineItemsEditor` deixou de renderizar cada item como um card no modo de
+edicao. Leitura e edicao agora usam a mesma tabela semantica, com cabecalho de
+colunas uma unica vez e uma linha por item.
+
+O contrato de cada coluna continua no `config.jsx`:
+
+```text
+type: select   -> seletor de opcoes da fonte declarada
+type: number   -> input numerico
+type: currency -> CurrencyInput em centavos, com moeda e locale do config
+type: text     -> input de texto
+```
+
+Assim, produto pode ser declarado como `select` com a fonte `produtos`, e um
+preco so vira um campo monetario quando a entidade possuir contrato de
+persistencia para esse valor. Nenhuma tela inventa um preco editavel: pedidos
+continuam com preco calculado pelo backend; planos ja podem usar o contrato
+generico onde houver campo monetario editavel.
+
+Em telas estreitas a tabela mantem as colunas e permite rolagem horizontal, em
+vez de quebrar o significado de cada celula em cards desconexos.
+
+Validacao desta atualizacao:
+
+```text
+npm run build:admin
+# passou; contrato de detalhe e regras passaram no prebuild
+
+git diff --check
+# passou
+```
+
+## Atualizacao - Editor de itens e seletor visual de produto
+
+O `LineItemsEditor` deixou de concentrar tabela, linha de formulario e regras
+de opcoes no mesmo arquivo. A estrutura agora e:
+
+```text
+LineItemsEditor/
+  LineItemsEditor.tsx       # orquestra valor, adicionar e remover
+  LineItemsEditorRow.tsx    # uma linha editavel
+  LineItemsReadTable.tsx    # tabela somente leitura
+  line-items.utils.ts       # opcoes, metadados e valores derivados
+  LineItemsEditor.module.css
+```
+
+O `DropdownPicker` da Foundation ganhou suporte reutilizavel a imagem e
+descricao da opcao. O `config.jsx` de Pedidos declara somente
+`presentation: "media"` na coluna `productKey`; os dados vem da fonte
+`produtos` do shared-core, que fornece `primaryMediaUrl`, nome e unidade.
+Assim, a escolha de produto mostra imagem quando houver midia cadastrada e
+segue funcional, com nome e unidade, quando nao houver imagem. Variantes e os
+demais campos continuam usando o controle adequado ao seu tipo.
+
+Validacao desta atualizacao:
+
+```text
+npm run build:admin
+# passou; aviso conhecido de chunk grande do Vite
+
+npm run verify:foundation
+# passou: 94 checks
+
+npm run verify:admin-detail-contract
+# passou
+
+npm run verify:rules
+# passou: 0 violacoes; 87 achados legados inalterados
+
+git diff --check
+# passou
+```
+
+## Correcao - Seletor de status e estado bloqueado
+
+Os selects do edit mode dos detalhes, incluindo `Status` de Pedido e `Status
+de envio` de Entrega, usam agora o `DropdownPicker` compartilhado. O mesmo
+controle ja usado nos filtros do Admin mostra o valor selecionado e abre um
+painel legivel; a mudanca nao altera opcoes, transicoes ou persistencia do
+backend.
+
+Os controles bloqueados do edit mode tambem passaram a comunicar esse estado
+na Foundation: `Input`, `TextArea` e `Select` ficam dessaturados, com menor
+opacidade e cursor de indisponivel. O `DropdownPicker` bloqueado ja recebe o
+mesmo estado pelo `Button` compartilhado. Assim, o usuario ve todos os dados,
+mas distingue de imediato o que pode ou nao ser alterado.
+
+Validacao: `npm run verify:foundation`, `npm run verify:rules`,
+`npm run build:admin` e `git diff --check` passaram. O build manteve apenas o
+aviso conhecido de chunks grandes do Vite.
+
+## Correcao - Cor semantica em status de Pedido e Entrega
+
+O seletor compartilhado agora aceita `statusColor` e `tone` e compoe o
+`Badge` da Foundation tanto no valor selecionado quanto nas opcoes abertas.
+Nao ha mais uma regra visual local para Pedido ou Entrega.
+
+```text
+backend status.metadata.ui
+  -> fonte de opcoes shared-core
+  -> DropdownPicker
+  -> Badge com indicador, cor e tom
+```
+
+As definicoes de status de Entrega no seed `royalprime` receberam os mesmos
+metadados declarativos ja usados por Pedido. O seed foi reaplicado no banco
+local: pendente, separando, saiu para entrega, entregue, falhou e cancelada
+agora retornam cor e tom no endpoint de configuracao. A tabela de Entregas
+tambem passou a exibir esses status como badges, inclusive o tom `primary` de
+"Saiu para entrega".
+
+Validacao: `npm run verify:foundation`, `npm run verify:rules`,
+`npm run build:admin` e `git diff --check` passaram. A consulta local confirmou
+os seis metadados de status de Entrega apos `py manage.py seed_backend --seed
+royalprime`.
+
+## Correcao - Seletor respeita transicoes do workflow
+
+O status editavel de Pedido e Entrega nao mostra mais uma lista irrestrita de
+destinos. O manifest declara `transitionOnly: true`; o shared-core preserva
+`allowedNextKeys` fornecido pelo endpoint de configuracao; e o renderer mostra
+somente o status atual e os proximos estados validos.
+
+Isso evita o erro anterior em que a interface deixava selecionar um status que
+o backend recusava no momento de Salvar. A regra continua centralizada no
+backend: o frontend apenas apresenta as transicoes permitidas e envia a
+transicao escolhida ao endpoint existente.
+
+Validacao: contrato de detalhes, Foundation, regras e `npm run build:admin`
+passaram; o aviso de chunk grande do Vite permanece apenas informativo.
+
+## Ajuste - Status com seletor simples
+
+O `DropdownPicker` nao veste mais badges ou cores dentro do controle de edicao.
+No edit mode ele exibe somente texto e a marcacao de opcao selecionada, para
+manter o clique e a leitura simples. Cor semantica continua reservada para a
+tabela e para a leitura do detalhe. A filtragem por `allowedNextKeys` permanece
+ativa, portanto o seletor simples ainda respeita o workflow do backend.
+
+O contrato tambem e executado por `npm run verify:admin-detail-contract` e no
+`prebuild` do Admin. Ele revisa todos os `manifest/pages/*.config.jsx` com
+detalhe standard e falha para secoes sem tipo explicito, `lineItems` dentro de
+`fields`, ou tabelas sem `itemsKey` e colunas.
+
+## Atualizacao - Pedido com conteudo antes de metadados
+
+O detalhe de `Pedidos` passou a iniciar a aba `Dados` pelo que a operacao
+precisa conferir primeiro: os itens efetivamente comprados. Cada linha mostra
+produto, quantidade com unidade, preco unitario e total do item. Os valores
+vem do snapshot real de `OrderItem` no backend, ja presente no contrato de
+Pedido; o view-model apenas os formata para leitura.
+
+Depois dos itens, a secao `Dados` concentra codigo, cliente, tipo, status,
+total do pedido, data e observacoes. A aba `Assinatura` permanece como contexto
+adicional, quando houver ciclo vinculado. Entrega nao duplica o pedido: ela
+continua sendo a execucao logistica da caixa derivada dele.
+
+Validacao desta atualizacao:
+
+```text
+npm run build:admin
+# passou; aviso conhecido de chunk grande do Vite
+
+npm run verify:rules
+# passou: 0 violacoes; 2 achados legados inalterados
+
+git diff --check
+# passou
+```
+
+Pendente: verificacao visual e de interacao em navegador real; nenhum browser
+estava conectado nesta sessao.
+
+## Correcao - Padrao fixo de Editar e Remover no Standard
+
+O corte anterior interpretou incorretamente o contrato de acoes. Em todo
+detalhe `standard`, `Editar` e `Remover` sao acoes fixas do renderer; o
+manifesto nao decide se os botoes existem. O `config.jsx` decide somente quais
+campos entram no edit mode por meio de `editable: true`:
+
+```text
+Detalhe standard
+  -> Editar e Remover sempre visiveis
+  -> Editar entra em edit mode
+  -> campo editable: true vira controle de formulario
+  -> demais campos permanecem somente leitura
+```
+
+Pedido e Entrega receberam o campo de status editavel nesse fluxo. As opcoes
+sao carregadas do respectivo endpoint de configuracao do backend e Salvar usa
+as transicoes reais, mantendo a validacao e o historico do workflow. O modal
+de Remover tambem e padrao; enquanto uma entidade nao possuir exclusao real,
+ele informa que a acao ainda nao esta disponivel em vez de apagar dados sem
+contrato.
+
+Validacao desta correcao:
+
+```text
+npm run build:admin
+# passou
+
+npm run verify:foundation
+# passou: 94 checks
+
+npm run verify:rules
+# passou: 0 violacoes; 2 achados legados inalterados
+
+git diff --check
+# passou
+```
+
+## Atualizacao - Ordem da Entrega e campos bloqueados no edit mode
+
+O detalhe de `Entregas` agora apresenta os dados operacionais na ordem de
+leitura definida para a operacao:
+
+```text
+Caixa -> Status de envio -> Assinante -> Pedido de origem -> Criada em
+```
+
+No edit mode, todos os campos do detalhe continuam visiveis como controles.
+O `config.jsx` continua sendo a fonte unica para decidir permissao de edicao:
+
+- `editable: true`: controle habilitado e salvo pelo contrato real;
+- sem `editable`: controle visivel, mas desabilitado e sem alteracao.
+
+Isso deixa claro o conjunto completo do registro sem sugerir que dados
+operacionais imutaveis possam ser modificados. O `MultiSelect` compartilhado
+tambem passou a bloquear a remocao de itens quando estiver desabilitado, para
+que esse estado seja consistente com os demais controles.
+
+Validacao desta atualizacao:
+
+```text
+npm run build:admin
+# passou; aviso conhecido de chunk grande do Vite
+
+npm run verify:foundation
+# passou
+
+npm run verify:rules
+# passou: 0 violacoes; 2 achados legados inalterados
+
+git diff --check
+# passou
+```

@@ -21,6 +21,7 @@ type ProductItemCardComposition = Partial<Pick<ProductItemCardProps,
   | "metaMode"
   | "priceMode"
   | "actionMode"
+  | "density"
   | "favoriteMode"
   | "quantityMode"
 >>;
@@ -120,6 +121,13 @@ export const productItemCardManifest = {
           control: "select",
           values: ["category-detail", "category-only", "detail-only"],
           defaultValue: "category-detail",
+          owner: "product-component"
+        },
+        {
+          key: "density",
+          control: "select",
+          values: ["showcase", "selection", "compact"],
+          defaultValue: "showcase",
           owner: "product-component"
         },
         {

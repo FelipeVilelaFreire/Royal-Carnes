@@ -29,11 +29,18 @@ export interface AdminOrderRowViewModel {
   statusKey: string;
   statusLabel: string;
   statusLabelKey: string;
+  statusColor?: string;
+  statusTone?: "danger" | "neutral" | "success" | "warning";
   totalLabel: string;
   totalFormatted: string;
   summary: string;
   itemCount: number;
-  items: AdminOrderView["items"];
+  items: Array<AdminOrderView["items"][number] & {
+    quantityLabel: string;
+    sourceTypeLabelKey: string;
+    totalFormatted: string;
+    unitPriceFormatted: string;
+  }>;
   deliveries: Array<{
     id: string | number;
     code: string;
@@ -82,12 +89,35 @@ function formatMoney(amountCents: number, currency: string): string {
   }).format(amountCents / 100);
 }
 
+function formatQuantity(quantity: string, measurementUnitKey?: string | null): string {
+  const parsedQuantity = Number(quantity);
+  const quantityLabel = Number.isFinite(parsedQuantity)
+    ? new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 3 }).format(parsedQuantity)
+    : quantity;
+  return [quantityLabel, measurementUnitKey].filter(Boolean).join(" ");
+}
+
 function resolveKindLabel(config: AdminOrderConfigView | null, kindKey: string): string {
   return config?.kinds.find((kind) => kind.key === kindKey)?.label || kindKey;
 }
 
 function resolveStatusLabel(config: AdminOrderConfigView | null, statusKey: string): string {
   return config?.statuses.find((status) => status.key === statusKey)?.label || statusKey;
+}
+
+function resolveStatusPresentation(config: AdminOrderConfigView | null, statusKey: string) {
+  const metadata = config?.statuses.find((status) => status.key === statusKey)?.metadata;
+  const presentation = metadata?.ui;
+  if (!presentation || typeof presentation !== "object") return {};
+
+  const { statusColor, statusTone } = presentation as Record<string, unknown>;
+  return {
+    statusColor: typeof statusColor === "string" ? statusColor : undefined,
+    statusTone:
+      statusTone === "danger" || statusTone === "neutral" || statusTone === "success" || statusTone === "warning"
+        ? statusTone
+        : undefined,
+  };
 }
 
 function resolveDeliveryStatusLabel(
@@ -107,6 +137,10 @@ function formatAddressSnapshot(snapshot: Record<string, unknown>): string {
     snapshot.zipCode || snapshot.zip_code,
   ];
   return addressParts.map((part) => String(part || "").trim()).filter(Boolean).join(", ");
+}
+
+function resolveOrderItemSourceLabelKey(sourceType: string): string {
+  return sourceType ? `pedidos.items.sourceTypes.${sourceType}` : "";
 }
 
 export function createAdminOrderRowViewModel(
@@ -129,6 +163,7 @@ export function createAdminOrderRowViewModel(
     ? [order.subscriptionPlanName, subscriptionCycleLabel].filter(Boolean).join(" - ")
     : "";
   const totalLabel = formatMoney(order.totalCents, order.currency);
+  const statusPresentation = resolveStatusPresentation(config, order.statusKey);
 
   return {
     id: order.id,
@@ -150,11 +185,18 @@ export function createAdminOrderRowViewModel(
     statusKey: order.statusKey,
     statusLabel: resolveStatusLabel(config, order.statusKey),
     statusLabelKey: `common.status${order.statusKey.charAt(0).toUpperCase()}${order.statusKey.slice(1)}`,
+    ...statusPresentation,
     totalLabel,
     totalFormatted: totalLabel,
     summary: order.items.map((item) => `${item.nameSnapshot} x ${item.quantity}`).join(", "),
     itemCount: order.items.length,
-    items: order.items,
+    items: order.items.map((item) => ({
+      ...item,
+      quantityLabel: formatQuantity(item.quantity, item.measurementUnitKey),
+      sourceTypeLabelKey: resolveOrderItemSourceLabelKey(item.sourceType),
+      totalFormatted: formatMoney(item.totalCents, order.currency),
+      unitPriceFormatted: formatMoney(item.unitPriceCents, order.currency),
+    })),
     deliveries: relatedDeliveries.map((delivery) => ({
       id: delivery.id,
       code: delivery.code,

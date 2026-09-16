@@ -1,38 +1,24 @@
 import React from "react";
-import { Badge } from "@foundation/ui/web/Badge";
-import { Card } from "@foundation/ui/web/Card";
-import { DataField } from "@foundation/ui/web/DataField";
-import { FieldGrid, FieldGridItem } from "@foundation/ui/web/FieldGrid";
-import { Inline, Stack } from "@foundation/ui/web/Layout";
+import { Button } from "@foundation/ui/web/Button";
+import { Stack } from "@foundation/ui/web/Layout";
 import { SectionContainer } from "@foundation/ui/web/SectionContainer";
-import { SegmentedControl } from "@foundation/ui/web/SegmentedControl";
+import { CartIcon, SettingsIcon, TruckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { Text } from "@foundation/ui/web/Text";
 import { useAdminI18n } from "@/locales/i18n";
 import { settingsConfig } from "@/manifest/pages/settings.config";
 import styles from "./SettingsPage.module.css";
+import { SettingsHeader } from "./SettingsHeader";
+import { SettingsSection } from "./SettingsSection";
 
 export interface SettingsPageProps {
   config?: typeof settingsConfig;
 }
 
-type SettingsTab = NonNullable<typeof settingsConfig.tabs>[number];
-type SettingsField = SettingsTab["sections"][number]["fields"][number] & {
-  layout?: "default" | "full";
-  statusTone?: "success" | "warning" | "neutral" | "primary";
-};
-
-function resolveFieldValue(field: SettingsField, t: (key: string, fallback?: string) => string): string {
-  if ("valueKey" in field && field.valueKey) return t(field.valueKey, field.valueKey);
-  return "value" in field ? String(field.value || "") : "";
-}
-
-function resolveBadgeTone(field: SettingsField): "success" | "warning" | "neutral" | "primary" {
-  return field.statusTone || "neutral";
-}
-
-function resolveFieldSpan(field: SettingsField) {
-  return field.layout === "full" ? "full" : 1;
-}
+const tabIconByIntent = {
+  commerce: CartIcon,
+  frontend: SettingsIcon,
+  operation: TruckIcon,
+} as const;
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({ config = settingsConfig }) => {
   const { t } = useAdminI18n();
@@ -42,78 +28,42 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ config = settingsCon
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
+      <SectionContainer atmosphere="transparent" usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
-          <Inline align="start" className={styles.header} justify="between" wrap>
-            <Stack gap="xs">
-              <Stack className={styles.titleLine} gap="2xs">
-                <Text as="h1" variant="h1">
-                  {t(config.titleKey)}
-                </Text>
-              </Stack>
-              <Text tone="muted" variant="body">
-                {t(config.subtitleKey)}
-              </Text>
-            </Stack>
-            <Badge appearance="soft" indicator tone="primary">
-              {t(config.readOnlyBadgeKey)}
-            </Badge>
-          </Inline>
+          <SettingsHeader config={config} t={t} />
 
-          <Stack className={styles.tabbedContent} gap="2xs">
-            <SegmentedControl
-              items={tabs.map((tab) => ({
-                key: tab.id,
-                label: t(tab.labelKey, tab.id),
-              }))}
-              level="md"
-              onChange={setActiveTab}
-              value={selectedTab?.id}
-              variant="underline"
-              width="full"
-            />
-
-            <Card className={styles.settingsCard} size="lg">
-              <Stack className={styles.settingsSections} gap="xl">
-                {(selectedTab?.sections || []).map((section) => (
-                  <Stack className={styles.settingsSection} gap="lg" key={section.key}>
-                    <Stack className={styles.sectionHeading} gap="2xs">
-                      <Text as="h2" variant="h3">
-                        {t(section.titleKey, section.key)}
-                      </Text>
-                      <Text tone="muted" variant="body">
-                        {t(section.descriptionKey, "")}
-                      </Text>
-                    </Stack>
-
-                    <FieldGrid className={styles.settingsGrid} columns={2} density="comfortable" gap="lg">
-                      {section.fields.map((field) => (
-                        <FieldGridItem key={field.key} span={resolveFieldSpan(field)}>
-                          <DataField
-                            className={styles.settingField}
-                            label={t(field.labelKey, field.key)}
-                            level="sm"
-                            value={(
-                              <Inline align="center" className={styles.fieldValue} gap="sm" wrap>
-                                <Text as="span" variant="body" weight="semibold">
-                                  {resolveFieldValue(field, t)}
-                                </Text>
-                                {field.statusKey ? (
-                                  <Badge appearance="soft" tone={resolveBadgeTone(field)}>
-                                    {t(field.statusKey)}
-                                  </Badge>
-                                ) : null}
-                              </Inline>
-                            )}
-                          />
-                        </FieldGridItem>
-                      ))}
-                    </FieldGrid>
+          <div className={styles.settingsLayout} data-navigation={config.layout.navigation}>
+            <aside aria-label={t(config.navigationLabelKey)} className={styles.settingsNavigation}>
+              <Stack className={styles.navigationList} gap="xs">
+                <Text className={styles.navigationLabel} tone="muted" variant="caption">{t(config.navigationLabelKey)}</Text>
+                <div className={styles.navigationRail}>
+                  <Stack className={styles.navigationItems} gap="2xs">
+                    {tabs.map((tab) => {
+                      const Icon = tabIconByIntent[tab.iconIntent as keyof typeof tabIconByIntent] || SettingsIcon;
+                      const isActive = tab.id === selectedTab?.id;
+                      return (
+                        <Button aria-current={isActive ? "page" : undefined} appearance="transparent" className={styles.navigationButton} icon={<Icon aria-hidden="true" />} key={tab.id} onClick={() => setActiveTab(tab.id)} size="sm" tone={isActive ? "primary" : "neutral"}>
+                          <Text as="span" tone="inherit" variant="body" weight="semibold">{t(tab.labelKey, tab.id)}</Text>
+                        </Button>
+                      );
+                    })}
                   </Stack>
-                ))}
+                </div>
               </Stack>
-            </Card>
-          </Stack>
+            </aside>
+
+            <main className={styles.settingsContent}>
+              <Stack gap="lg">
+                <Stack className={styles.tabHeading} gap="2xs">
+                  <Text as="h2" variant="h2">{selectedTab ? t(selectedTab.labelKey, selectedTab.id) : ""}</Text>
+                  <Text tone="muted" variant="body">{selectedTab ? t(selectedTab.descriptionKey, "") : ""}</Text>
+                </Stack>
+                <Stack className={styles.settingsSections} gap="lg">
+                  {(selectedTab?.sections || []).map((section) => <SettingsSection key={section.key} section={section} t={t} />)}
+                </Stack>
+              </Stack>
+            </main>
+          </div>
         </Stack>
       </SectionContainer>
     </div>
