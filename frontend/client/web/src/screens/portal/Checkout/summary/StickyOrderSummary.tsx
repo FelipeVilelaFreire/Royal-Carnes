@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Stack, Surface, Text } from "@foundation/ui";
+import { Badge, Button, Stack, Surface, Text } from "@foundation/ui";
+import { OrderSummaryItem } from "@royalprime/product-components/ecommerce";
 import type { ClientCheckoutStepKey } from "@/manifest/checkout.config";
 import type { ClientCheckoutProduct, ClientCheckoutProductExperience } from "@/view-models/checkout.view-model";
 import { SummaryRow } from "./SummaryRow";
@@ -40,6 +41,7 @@ export interface StickyOrderSummaryProps {
   };
   formatMeasure: (value: number, unit: string) => string;
   formatMoney: (value: number) => string;
+  onAddProduct: (product: ClientCheckoutProduct) => void;
   onNextStep: () => void;
   onRemoveProduct: (productId: string) => void;
   orderEstimateTotal: number;
@@ -52,8 +54,8 @@ export interface StickyOrderSummaryProps {
   selectedProteinKg: number;
   selectedSeasoningCount: number;
   selectedSideCount: number;
-  selectedUnitsCount: number;
   selectedUtensilCount: number;
+  stepOrder: ClientCheckoutStepKey[];
   strings: any;
   subscriptionCycleCharcoalUsed: number;
   subscriptionCycleCutsUsed: number;
@@ -81,6 +83,7 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
   currentSubscriptionPlan,
   formatMeasure,
   formatMoney,
+  onAddProduct,
   onNextStep,
   onRemoveProduct,
   orderEstimateTotal,
@@ -93,8 +96,8 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
   selectedProteinKg,
   selectedSeasoningCount,
   selectedSideCount,
-  selectedUnitsCount,
   selectedUtensilCount,
+  stepOrder,
   strings,
   subscriptionCycleCharcoalUsed,
   subscriptionCycleCutsUsed,
@@ -105,6 +108,13 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
   subscriptionSummaryUsage,
   tokens,
 }) => {
+  const summaryBadge = selectedMode
+    ? selectedMode === "subscription"
+      ? strings.summary.modePlanBadge
+        .replace("{mode}", activeSubscription ? strings.summary.activeSubscriptionMode : strings.modes[selectedMode].title)
+        .replace("{plan}", activeSubscriptionLabel || currentSubscriptionPlan.name)
+      : strings.modes[selectedMode].title
+    : null;
   const hasSelectedProduct = (predicate: (product: ClientCheckoutProduct) => boolean) => (
     selectedProductEntries.some(({ product }) => predicate(product))
   );
@@ -147,31 +157,61 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
       },
     ].filter((row) => row.isVisible)
     : [];
+  const productGroupKey = (product: ClientCheckoutProduct) => (
+    product.kind === "kit" && product.tags.includes("acompanhamento") ? "side" : product.kind
+  );
+  const productGroupLabel = (key: ClientCheckoutProduct["kind"] | "side") => ({
+    meat: strings.summary.meatUsage,
+    charcoal: strings.summary.charcoalUsage,
+    seasoning: strings.summary.seasoningUsage,
+    side: strings.summary.sideUsage,
+    utensil: strings.summary.utensilUsage,
+    kit: strings.summary.selectedItems,
+  })[key];
+  const productGroups = selectedProductEntries.reduce<Array<{
+    key: ClientCheckoutProduct["kind"] | "side";
+    entries: SummaryProductEntry[];
+  }>>((groups, entry) => {
+    const key = productGroupKey(entry.product);
+    const existingGroup = groups.find((group) => group.key === key);
+    if (existingGroup) {
+      existingGroup.entries.push(entry);
+      return groups;
+    }
+    groups.push({ entries: [entry], key });
+    return groups;
+  }, []);
+  const usageByLabel = new Map(subscriptionUsageRows.map((row) => [row.label, row.value]));
 
   return (
     <Surface appearance="soft" as="aside" className={styles.summary}>
-      <Stack gap="md">
-        <Text as="h2" className={styles.summaryTitle} variant="h3" tone="inherit">
-          {strings.summary.title}
-        </Text>
+      <Stack gap="sm">
+        <div className={styles.summaryHeader}>
+          <Text as="h2" className={styles.summaryTitle} variant="h3" tone="inherit">
+            {strings.summary.title}
+          </Text>
+          {summaryBadge ? (
+            <Badge appearance="soft" className={styles.summaryModeBadge} level="xs" tone="primary">
+              {summaryBadge}
+            </Badge>
+          ) : null}
+        </div>
+        <div className={styles.summaryProgress}>
+          {stepOrder.map((step, index) => (
+            <span
+              aria-current={step === currentStep ? "step" : undefined}
+              aria-label={strings.steps[step]}
+              className={styles.summaryProgressItem}
+              data-current={step === currentStep || undefined}
+              key={step}
+            >
+              {index + 1}
+            </span>
+          ))}
+        </div>
 
         {selectedMode ? (
           <>
-            <SummaryRow
-              label={strings.summary.selectedMode}
-              value={selectedMode === "subscription" && activeSubscription ? strings.summary.activeSubscriptionMode : strings.modes[selectedMode].title}
-            />
-            {selectedMode === "subscription" ? (
-              <SummaryRow
-                label={activeSubscription ? strings.summary.linkedPlan : strings.summary.selectedPlan}
-                value={activeSubscriptionLabel || currentSubscriptionPlan.name}
-              />
-            ) : null}
-            <SummaryRow
-              label={subscriptionSummaryUsage ? strings.summary.cycleCuts : selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
-              value={subscriptionSummaryUsage ? `${subscriptionCycleCutsUsed} / ${subscriptionSummaryUsage.cutsLimit}` : String(selectedUnitsCount)}
-            />
-
             {currentStep !== "montagem" ? (
               <Surface appearance="soft" className={styles.summaryGroup}>
                 <Stack gap="sm">
@@ -199,65 +239,56 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
               </Surface>
             ) : null}
 
-            {subscriptionUsageRows.length ? (
-              <Surface appearance="soft" className={styles.summaryGroup}>
-                <Stack gap="sm">
-                  {subscriptionUsageRows.map((row) => (
-                    <SummaryRow key={row.label} label={row.label} value={row.value} />
-                  ))}
-                </Stack>
-              </Surface>
+            {selectedProductEntries.length ? (
+              <Stack className={styles.summarySelections} gap="sm">
+                {productGroups.map(({ entries, key }) => {
+                  const label = productGroupLabel(key);
+                  return (
+                    <section className={styles.summarySelectionGroup} key={key}>
+                      <div className={styles.summarySelectionHeader}>
+                        <Text as="h3" className={styles.summarySelectionTitle} tone="inherit" variant="caption" weight="semibold">
+                          {label}
+                        </Text>
+                        {selectedMode === "subscription" && usageByLabel.get(label) ? (
+                          <Text as="span" className={styles.summarySelectionUsage} tone="inherit" variant="caption">
+                            {usageByLabel.get(label)}
+                          </Text>
+                        ) : null}
+                      </div>
+                      <Stack gap="xs">
+                        {entries.slice(0, 5).map(({ product, quantity }) => (
+                          <OrderSummaryItem
+                            detail={product.weightLabel || product.unit}
+                            image={product.image}
+                            key={product.id}
+                            name={product.name}
+                            priceLabel={selectedMode === "subscription" ? undefined : formatMoney(product.price * quantity)}
+                            quantityControl={{
+                              decrementAriaLabel: `${strings.productCard.decreaseQuantity}: ${product.name}`,
+                              incrementAriaLabel: `${strings.productCard.increaseQuantity}: ${product.name}`,
+                              onDecrement: () => onRemoveProduct(product.id),
+                              onIncrement: () => onAddProduct(product),
+                              valueLabel: String(quantity),
+                            }}
+                          />
+                        ))}
+                      </Stack>
+                    </section>
+                  );
+                })}
+              </Stack>
             ) : null}
 
-            {selectedProductEntries.length ? (
-              <Stack gap="xs">
-                {selectedProductEntries.slice(0, 5).map(({ product, quantity }) => (
-                  <div key={product.id} className={styles.summaryItem}>
-                    <Text as="span" className={styles.summaryMutedText} variant="caption" tone="inherit">
-                      {strings.format.productQuantity.replace("{quantity}", String(quantity)).replace("{product}", product.name)}
-                    </Text>
-                    {selectedMode === "subscription" ? (
-                      <Button
-                        appearance="transparent"
-                        className={styles.checkoutSubtleAction}
-                        size="sm"
-                        tone="neutral"
-                        type="button"
-                        onClick={() => onRemoveProduct(product.id)}
-                      >
-                        {strings.summary.remove}
-                      </Button>
-                    ) : (
-                    <Text as="span" className={styles.summaryMutedText} variant="caption" tone="inherit">
-                      {formatMoney(product.price * quantity)}
-                    </Text>
-                    )}
-                  </div>
-                ))}
-              </Stack>
-            ) : (
-              <Text className={styles.summaryMutedText} tone="inherit">
-                {strings.summary.placeholder}
-              </Text>
-            )}
-
-            <div className={styles.summaryTotal}>
-              <Text as="span" className={styles.summaryTotalLabel} variant="caption" tone="inherit">
-                {selectedMode === "subscription"
-                  ? activeSubscription ? strings.summary.activeSubscriptionLabel : strings.summary.fixedPlanPrice
-                  : strings.summary.variableEstimate}
-              </Text>
-              <Text as="strong" className={styles.summaryTotalValue} variant="h3" tone="inherit">
-                {selectedMode === "subscription" ? activeSubscriptionLabel || formatMoney(currentSubscriptionPlan.monthlyPrice) : formatMoney(orderEstimateTotal)}
-              </Text>
-              {selectedMode === "subscription" ? (
-                <Text className={styles.summaryMutedText} variant="caption" tone="inherit">
-                  {activeSubscription
-                    ? `${strings.summary.subscriptionRenewPrefix} ${activeSubscription.nextBillingLabel}. ${strings.summary.activeSubscriptionHintSuffix}`
-                    : strings.summary.noVariableEstimate}
+            {selectedMode !== "subscription" ? (
+              <div className={styles.summaryTotal}>
+                <Text as="span" className={styles.summaryTotalLabel} variant="caption" tone="inherit">
+                  {strings.summary.variableEstimate}
                 </Text>
-              ) : null}
-            </div>
+                <Text as="strong" className={styles.summaryTotalValue} variant="h3" tone="inherit">
+                  {formatMoney(orderEstimateTotal)}
+                </Text>
+              </div>
+            ) : null}
 
             <Button appearance="solid" className={styles.summaryPrimaryAction} tone="neutral" onClick={onNextStep}>
               {currentStep === "montagem"

@@ -89,16 +89,17 @@ function normalizeLineItems(value: unknown): Array<Record<string, any>> {
   return Array.isArray(value) ? value.filter((item) => item && typeof item === "object") : [];
 }
 
-function normalizePlanEntitlements(value: unknown, itemLimits: unknown = []): NonNullable<AdminPlanFormInput["entitlements"]> {
+function normalizePlanEntitlements(value: unknown, itemLimits?: unknown): NonNullable<AdminPlanFormInput["entitlements"]> {
   const allowedTargetTypes = new Set(["collection", "category", "product", "variant"]);
+  const hasExplicitItemLimits = Array.isArray(itemLimits);
   const entitlements: NonNullable<AdminPlanFormInput["entitlements"]> = [];
-  normalizeLineItems(value)
+  const normalizedItems = normalizeLineItems(value)
     .map((item, index) => {
       const targetType = String(item.targetType || "product");
       const targetKey = String(item.targetKey || "");
       const quantity = String(item.quantity || "");
       if (!allowedTargetTypes.has(targetType) || !targetKey || !quantity) return null;
-      const capacityKey = String(item.capacityKey || item.key || `${targetType}-${targetKey}-${index + 1}`);
+      const capacityKey = String(item.capacityKey || item.key || `${targetType}-${targetKey}`);
       const matchingItemLimits = normalizeLineItems(itemLimits)
         .filter((limit) => String(limit.capacityKey || "") === capacityKey)
         .filter((limit) => limit.targetKey && limit.maxQuantity)
@@ -109,7 +110,7 @@ function normalizePlanEntitlements(value: unknown, itemLimits: unknown = []): No
           capacityKey,
           capacityLabel: String(item.capacityLabel || ""),
           maxSelections: parseOptionalInteger(item.maxSelections),
-          itemLimits: matchingItemLimits,
+          ...(hasExplicitItemLimits ? { itemLimits: matchingItemLimits } : {}),
         },
         key: item.key || capacityKey,
         measurementUnitKey: item.measurementUnitKey || undefined,
@@ -119,9 +120,9 @@ function normalizePlanEntitlements(value: unknown, itemLimits: unknown = []): No
         targetType: targetType as "collection" | "category" | "product" | "variant",
       };
     })
-    .forEach((item) => {
-      if (item) entitlements.push(item);
-    });
+    .filter(Boolean) as Array<NonNullable<AdminPlanFormInput["entitlements"]>[number] & { constraints: Record<string, unknown> }>;
+
+  entitlements.push(...normalizedItems);
   return entitlements;
 }
 
@@ -147,8 +148,10 @@ async function mapCatalogProductResult(
   product: Awaited<ReturnType<ReturnType<typeof createAdminCatalogApi>["detail"]>>,
   apiConfig: ApiClientConfig,
 ) {
-  const collections = await createAdminCatalogApi(apiConfig).listCollections();
+  const api = createAdminCatalogApi(apiConfig);
+  const [categories, collections] = await Promise.all([api.listCategories(), api.listCollections()]);
   return mapProductRows(createAdminCatalogViewModel({
+    categories,
     collections,
     commercialModes: [],
     products: [product],
@@ -205,7 +208,8 @@ export async function loadAdminStandardRows(
 
     if (dataSource.key === "produtos") {
       const api = createAdminCatalogApi(apiConfig);
-      const [collections, commercialModes, products] = await Promise.all([
+      const [categories, collections, commercialModes, products] = await Promise.all([
+        api.listCategories(),
         api.listCollections(),
         api.listCommercialModes(),
         api.listProducts(),
@@ -214,7 +218,7 @@ export async function loadAdminStandardRows(
         error: null,
         isFallback: false,
         rows: mapProductRows(
-          createAdminCatalogViewModel({ collections, commercialModes, products }).rows,
+          createAdminCatalogViewModel({ categories, collections, commercialModes, products }).rows,
         ),
       };
     }
@@ -342,6 +346,23 @@ export async function loadAdminStandardRow(
     if (dataSource.key === "produtos") {
       const product = await createAdminCatalogApi(apiConfig).detail(rowId);
       return { error: null, row: await mapCatalogProductResult(product, apiConfig) };
+    }
+
+    if (dataSource.key === "categorias") {
+      const api = createAdminCatalogApi(apiConfig);
+      const category = await api.updateCategory(rowId, {
+        isActive: parseOptionalBoolean(values.isActive),
+        key: values.key,
+        name: values.name,
+        parentKey: values.parentKey || "",
+        sortOrder: parseOptionalInteger(values.sortOrder),
+      });
+      const categories = await api.listAdminCategories();
+      return {
+        error: null,
+        row: createAdminCategoryRowsViewModel(categories).find((row) => row.id === category.id)
+          || createAdminCategoryRowsViewModel([category])[0],
+      };
     }
 
     if (dataSource.key === "planos") {

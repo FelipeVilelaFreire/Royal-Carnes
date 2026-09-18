@@ -21,6 +21,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class CategoryUpdateSerializer(serializers.Serializer):
     key = serializers.SlugField(max_length=100, required=False)
     name = serializers.CharField(max_length=160, required=False)
+    parent_key = serializers.SlugField(max_length=100, required=False, allow_blank=True)
     sort_order = serializers.IntegerField(min_value=0, required=False)
     is_active = serializers.BooleanField(required=False)
 

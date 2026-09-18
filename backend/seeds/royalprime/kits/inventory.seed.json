@@ -42,6 +42,94 @@
       "availableQuantity": 12,
       "reservedQuantity": 0,
       "lowStockThreshold": 4
+    },
+    {
+      "productKey": "file-mignon",
+      "variantSku": "FILE-MIGNON-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 10,
+      "reservedQuantity": 1,
+      "lowStockThreshold": 3
+    },
+    {
+      "productKey": "bife-de-chorizo",
+      "variantSku": "CHORIZO-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 12,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 3
+    },
+    {
+      "productKey": "costelinha-suina",
+      "variantSku": "COSTELINHA-SUINA-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 16,
+      "reservedQuantity": 2,
+      "lowStockThreshold": 4
+    },
+    {
+      "productKey": "asa-de-frango",
+      "variantSku": "ASA-FRANGO-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 28,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 6
+    },
+    {
+      "productKey": "sobrecoxa-de-frango",
+      "variantSku": "SOBRECOXA-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 22,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 5
+    },
+    {
+      "productKey": "linguica-toscana",
+      "variantSku": "LINGUICA-TOSCANA-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 25,
+      "reservedQuantity": 1,
+      "lowStockThreshold": 6
+    },
+    {
+      "productKey": "sal-de-parrilla",
+      "variantSku": "SAL-PARRILLA-400G",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 40,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 10
+    },
+    {
+      "productKey": "molho-barbecue",
+      "variantSku": "MOLHO-BARBECUE-400G",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 30,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 8
+    },
+    {
+      "productKey": "kit-espetos-inox",
+      "variantSku": "ESPETOS-INOX-6UN",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 14,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 3
+    },
+    {
+      "productKey": "tabua-madeira",
+      "variantSku": "TABUA-MADEIRA-M",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 9,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 2
+    },
+    {
+      "productKey": "avental-churrasco",
+      "variantSku": "AVENTAL-CHURRASCO",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 12,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 3
     }
   ]
 }

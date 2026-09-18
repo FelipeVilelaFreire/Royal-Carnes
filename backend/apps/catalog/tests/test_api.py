@@ -30,11 +30,11 @@ class CatalogApiTests(APITestCase):
 
     def test_seed_creates_collections_and_products(self):
         self.assertEqual(Collection.objects.count(), 5)
-        self.assertEqual(Category.objects.count(), 15)
-        self.assertEqual(Product.objects.count(), 14)
-        self.assertEqual(ProductMedia.objects.count(), 14)
+        self.assertEqual(Category.objects.count(), 23)
+        self.assertEqual(Product.objects.count(), 38)
+        self.assertEqual(ProductMedia.objects.count(), 38)
         self.assertEqual(MeasurementUnit.objects.count(), 5)
-        self.assertGreaterEqual(ProductVariant.objects.count(), 27)
+        self.assertEqual(ProductVariant.objects.count(), 63)
         self.assertTrue(Collection.objects.filter(key="churrasco-premium", image_url__gt="").exists())
         self.assertTrue(
             Product.objects.filter(
@@ -42,7 +42,9 @@ class CatalogApiTests(APITestCase):
                 collection_links__collection__key="churrasco-premium",
             ).exists()
         )
-        self.assertTrue(Category.objects.filter(key="bovinos-premium", parent__key="bovinos").exists())
+        self.assertTrue(Category.objects.filter(key="bovinos", parent__key="carnes").exists())
+        self.assertTrue(Category.objects.filter(key="espetos", parent__key="utensilios").exists())
+        self.assertTrue(Category.objects.filter(key="brindes", parent__isnull=True).exists())
 
     def test_public_catalog_endpoints(self):
         collections_response = self.client.get(
@@ -74,7 +76,7 @@ class CatalogApiTests(APITestCase):
         self.assertTrue(collections_response.data[0]["image_url"])
         self.assertGreaterEqual(len(categories_response.data), 15)
         self.assertGreaterEqual(len(units_response.data), 5)
-        self.assertTrue(any(category["key"] == "bovinos-premium" for category in categories_response.data))
+        self.assertTrue(any(category["key"] == "bovinos" for category in categories_response.data))
         self.assertGreaterEqual(len(products_response.data), 14)
         self.assertTrue(products_response.data[0]["primary_media_url"])
         self.assertGreaterEqual(len(products_response.data[0]["media"]), 1)
@@ -184,13 +186,36 @@ class CatalogApiTests(APITestCase):
         self.assertTrue(response.data["is_active"])
         self.assertEqual(Category.objects.get(key="aves-premium").parent.key, "aves")
 
+    def test_admin_can_move_category_and_reject_hierarchy_cycle(self):
+        self.authenticate()
+        category = Category.objects.get(key="aves")
+
+        move_response = self.client.patch(
+            f"/api/v1/catalog/admin/categories/{category.id}/",
+            {"parent_key": "bovinos"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        self.assertEqual(move_response.status_code, 200, move_response.data)
+        self.assertEqual(Category.objects.get(id=category.id).parent.key, "bovinos")
+
+        bovinos = Category.objects.get(key="bovinos")
+        cycle_response = self.client.patch(
+            f"/api/v1/catalog/admin/categories/{bovinos.id}/",
+            {"parent_key": "aves"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        self.assertEqual(cycle_response.status_code, 400, cycle_response.data)
+        self.assertEqual(cycle_response.data["code"], "category_parent_cycle")
+
     def test_admin_can_create_product_with_variants(self):
         self.authenticate()
 
         response = self.client.post(
             "/api/v1/catalog/admin/products/",
             {
-                "key": "bife-de-chorizo",
+                "key": "bife-de-chorizo-teste",
                 "name": "Bife de chorizo",
                 "category_keys": ["carnes"],
                 "unit": "kg",
@@ -198,7 +223,7 @@ class CatalogApiTests(APITestCase):
                 "collection_keys": ["churrasco-premium"],
                 "variants": [
                     {
-                        "sku": "CHORIZO-1KG",
+                        "sku": "CHORIZO-TESTE-1KG",
                         "name": "Bife de chorizo 1kg",
                         "unit": "kg",
                         "unit_key": "kg",
@@ -215,10 +240,10 @@ class CatalogApiTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 201, response.data)
-        self.assertEqual(response.data["variants"][0]["sku"], "CHORIZO-1KG")
+        self.assertEqual(response.data["variants"][0]["sku"], "CHORIZO-TESTE-1KG")
         self.assertEqual(response.data["variants"][0]["unit_key"], "kg")
         self.assertEqual(response.data["variants"][0]["attributes"]["cut"], "chorizo")
-        self.assertEqual(response.data["prices"][0]["variant_sku"], "CHORIZO-1KG")
+        self.assertEqual(response.data["prices"][0]["variant_sku"], "CHORIZO-TESTE-1KG")
 
     def test_admin_can_upload_media_and_attach_to_product(self):
         self.authenticate()

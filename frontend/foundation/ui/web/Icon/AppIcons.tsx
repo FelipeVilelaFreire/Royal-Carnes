@@ -18,6 +18,13 @@ export const UserIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentCo
   </svg>
 );
 
+export const LockIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="4" y="11" width="16" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+  </svg>
+);
+
 export const CartIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <circle cx="9" cy="21" r="1" />

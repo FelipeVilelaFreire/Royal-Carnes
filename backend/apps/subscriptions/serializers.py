@@ -20,6 +20,7 @@ class PlanPriceSerializer(serializers.ModelSerializer):
 class PlanEntitlementSerializer(serializers.ModelSerializer):
     target_key = serializers.SerializerMethodField()
     target_name = serializers.SerializerMethodField()
+    target_path = serializers.SerializerMethodField()
     measurement_unit_key = serializers.CharField(source="measurement_unit.key", read_only=True, allow_null=True)
     measurement_unit_symbol = serializers.CharField(source="measurement_unit.symbol", read_only=True, allow_null=True)
 
@@ -31,6 +32,7 @@ class PlanEntitlementSerializer(serializers.ModelSerializer):
             "target_type",
             "target_key",
             "target_name",
+            "target_path",
             "quantity",
             "measurement_unit_key",
             "measurement_unit_symbol",
@@ -45,6 +47,19 @@ class PlanEntitlementSerializer(serializers.ModelSerializer):
     def get_target_name(self, entitlement):
         target = self._target(entitlement)
         return getattr(target, "name", None)
+
+    def get_target_path(self, entitlement):
+        target = self._target(entitlement)
+        category = entitlement.category
+        if category is None and target is not None:
+            product = getattr(target, "product", target)
+            link = product.category_links.filter(is_primary=True).select_related("category__parent__parent__parent").first()
+            category = link.category if link else None
+        path = []
+        while category is not None:
+            path.append({"key": category.key, "name": category.name})
+            category = category.parent
+        return list(reversed(path))
 
     def _target(self, entitlement):
         return {

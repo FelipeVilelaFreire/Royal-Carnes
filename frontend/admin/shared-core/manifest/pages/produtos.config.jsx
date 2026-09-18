@@ -74,36 +74,16 @@ export const produtosConfig = {
           {
             key: "catalog",
             type: "fields",
-            grid: { desktop: 3, tablet: 2, mobile: 1 },
+            grid: { desktop: 2, tablet: 2, mobile: 1 },
             iconIntent: "catalog",
             titleKey: "produtos.detail.sections.catalog",
             fields: [
+              { key: "parentCategoryName", labelKey: "produtos.fields.parentCategory" },
               {
                 key: "categoryKeys",
-                displayKey: "allCategoryLabel",
-                labelKey: "produtos.fields.categories",
-                layout: "full",
-                type: "multiSelect",
-                source: "categorias",
-                editable: true
-              },
-              {
-                key: "collectionKeys",
-                displayKey: "collectionLabel",
-                labelKey: "produtos.fields.collections",
-                layout: "full",
-                type: "multiSelect",
-                source: "colecoes",
-                editable: true
-              },
-              {
-                key: "commercialModeKeys",
-                displayKey: "commercialModeLabel",
-                labelKey: "produtos.fields.commercialModes",
-                layout: "full",
-                type: "multiSelect",
-                source: "commercialModes",
-                editable: true
+                display: { key: "primaryCategoryName", type: "text" },
+                edit: { type: "select", source: "categorias" },
+                labelKey: "produtos.fields.category"
               }
             ]
           },

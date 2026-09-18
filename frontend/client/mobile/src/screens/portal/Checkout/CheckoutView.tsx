@@ -7,16 +7,11 @@ import { formatClientCheckoutMeasure, formatClientCheckoutMoney } from "../../..
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 import { ScreenHeader } from "@foundation/product-components/screens/native/ScreenHeader";
 import { normalizeScreenHeaderScrollProgress } from "@foundation/product-components/screens/shared";
-import { AcquisitionIntro } from "./acquisition/AcquisitionIntro";
-import { AcquisitionModeGrid } from "./acquisition/AcquisitionModeGrid";
-import { ProductCatalogStep } from "./catalog/ProductCatalogStep";
-import { ActiveCycleSummary } from "./cycle/ActiveCycleSummary";
-import { DeliveryStep } from "./delivery/DeliveryStep";
-import { PaymentStep } from "./payment/PaymentStep";
-import { CheckoutStepTracker } from "./progress/CheckoutStepTracker";
-import { ReviewStep } from "./review/ReviewStep";
+import { CheckoutAcquisition } from "./acquisition/CheckoutAcquisition";
+import { CheckoutFlow } from "./flow/CheckoutFlow";
+import { CheckoutFlowMain } from "./flow/left/CheckoutFlowMain";
+import { CheckoutFlowSummary } from "./flow/right/CheckoutFlowSummary";
 import { useCheckoutRuntime } from "./runtime/useCheckoutRuntime";
-import { MobileSelectionSummary } from "./summary/MobileSelectionSummary";
 import { createCheckoutStyles } from "./checkout.styles";
 
 export interface CheckoutViewProps {
@@ -108,142 +103,122 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       />
       <Container style={styles.page}>
         <Stack style={styles.stack}>
-        <AcquisitionIntro strings={strings.modeSelection}>
-          <AcquisitionModeGrid
+          <CheckoutAcquisition
             activeSubscription={checkout.activeSubscription}
             activeSubscriptionLabel={viewModel.activeSubscriptionLabel}
             activeSubscriptionPlan={viewModel.activeSubscriptionPlan}
+            isCompact={Boolean(selectedMode)}
             modeOrder={config.modeOrder}
             onSelectMode={actions.selectMode}
             selectedMode={selectedMode}
             strings={strings}
             tokens={theme}
           />
-        </AcquisitionIntro>
 
         {selectedMode ? (
-          <Stack style={styles.stack}>
-            <CheckoutStepTracker
-              currentStep={currentStep}
-              stepOrder={config.stepOrder}
-              steps={strings.steps}
-              tokens={theme}
-            />
-
-            {currentStep === "montagem" ? (
-              selectedMode === "subscription" ? (
-                <ActiveCycleSummary
-                  activeCycleUsage={activeCycleUsage}
-                  activeSubscription={checkout.activeSubscription}
-                  activeSubscriptionLabel={viewModel.activeSubscriptionLabel}
-                  catalogSubscriptionPlans={catalogSubscriptionPlans}
-                  currentSubscriptionPlan={viewModel.currentSubscriptionPlan}
-                  formatMeasure={formatClientCheckoutMeasure}
-                  onSelectPlan={actions.selectPlan}
-                  selectedPlanKey={selectedPlanKey}
-                  strings={strings}
-                  subscriptionCycleCharcoalUsed={viewModel.subscriptionCycleCharcoalUsed}
-                  subscriptionCycleCutsUsed={viewModel.subscriptionCycleCutsUsed}
-                  subscriptionCycleWeightUsed={viewModel.subscriptionCycleWeightUsed}
-                  tokens={theme}
-                />
-              ) : null
-            ) : null}
-
-            {currentStep === "montagem" ? (
-              <ProductCatalogStep
-                availableProducts={viewModel.availableProducts}
-                canAddProduct={viewModel.canAddProduct}
-                categories={productCategories}
-                categoryById={viewModel.categoryById}
-                formatMoney={formatClientCheckoutMoney}
-                onClearFilters={() => {
-                  actions.setSelectedCategoryId("all");
-                  actions.setQuery("");
+          <CheckoutFlow
+            main={(
+              <CheckoutFlowMain
+                currentStep={currentStep}
+                montage={{
+                  cycle: selectedMode === "subscription" ? {
+                    activeCycleUsage,
+                    activeSubscription: checkout.activeSubscription,
+                    catalogSubscriptionPlans,
+                    currentSubscriptionPlan: viewModel.currentSubscriptionPlan,
+                    formatMeasure: formatClientCheckoutMeasure,
+                    onSelectPlan: actions.selectPlan,
+                    selectedPlanKey,
+                    strings,
+                    subscriptionCycleCharcoalUsed: viewModel.subscriptionCycleCharcoalUsed,
+                    subscriptionCycleWeightUsed: viewModel.subscriptionCycleWeightUsed,
+                    tokens: theme,
+                  } : undefined,
+                  catalog: {
+                    availableProducts: viewModel.availableProducts,
+                    canAddProduct: viewModel.canAddProduct,
+                    categories: productCategories,
+                    categoryById: viewModel.categoryById,
+                    formatMoney: formatClientCheckoutMoney,
+                    onClearFilters: () => {
+                      actions.setSelectedCategoryId("all");
+                      actions.setQuery("");
+                    },
+                    onDecreaseProduct: actions.removeProduct,
+                    onProductSelect: actions.addProduct,
+                    onQueryChange: actions.setQuery,
+                    onSelectCategory: actions.setSelectedCategoryId,
+                    query,
+                    selectedCategoryId,
+                    selectedMode,
+                    selectedProductQuantities,
+                    strings,
+                    tokens: theme,
+                  },
                 }}
-                onDecreaseProduct={actions.removeProduct}
-                onProductSelect={actions.addProduct}
-                onQueryChange={actions.setQuery}
-                onSelectCategory={actions.setSelectedCategoryId}
-                query={query}
-                selectedCategoryId={selectedCategoryId}
-                selectedMode={selectedMode}
-                selectedProductQuantities={selectedProductQuantities}
-                strings={strings}
-                tokens={theme}
-              />
-            ) : null}
-
-            {currentStep === "entrega" ? (
-              <DeliveryStep
-                addresses={addresses}
-                checkoutConfig={config}
-                currentFreightPrice={viewModel.currentFreightPrice}
-                formatMoney={formatClientCheckoutMoney}
-                freightOptions={freightOptions}
-                onBack={() => actions.setCurrentStep("montagem")}
-                onNext={() => requestProtectedStep("pagamento")}
-                onSelectAddress={actions.setSelectedAddressId}
-                onSelectDeliveryDay={actions.setSelectedDeliveryDay}
-                onSelectFreight={actions.setSelectedFreight}
-                selectedAddressId={selectedAddressId}
-                selectedDeliveryDay={selectedDeliveryDay}
-                selectedFreight={selectedFreight}
-                selectedMode={selectedMode}
-                strings={strings}
-                tokens={theme}
-              />
-            ) : null}
-
-            {currentStep === "pagamento" ? (
-              <PaymentStep
-                onBack={() => actions.setCurrentStep("entrega")}
-                onNext={() => requestProtectedStep("resumo")}
-                onSelectInstallments={actions.setSelectedInstallments}
-                onSelectPaymentMethod={actions.setSelectedPaymentMethod}
-                paymentCopy={paymentCopy}
-                paymentInstallments={paymentInstallments}
-                paymentMethods={paymentMethods}
-                selectedInstallments={selectedInstallments}
-                selectedPaymentMethod={selectedPaymentMethod}
-                tokens={theme}
-              />
-            ) : null}
-
-            {currentStep === "resumo" ? (
-              <ReviewStep
-                currentSubscriptionPlan={viewModel.currentSubscriptionPlan}
-                finalTotal={viewModel.finalTotal}
-                formatMoney={formatClientCheckoutMoney}
-                onBack={() => actions.setCurrentStep("pagamento")}
-                onFinish={() => {
-                  void actions.submitOrder();
+                delivery={{
+                  addresses,
+                  checkoutConfig: config,
+                  currentFreightPrice: viewModel.currentFreightPrice,
+                  formatMoney: formatClientCheckoutMoney,
+                  freightOptions,
+                  onBack: () => actions.setCurrentStep("montagem"),
+                  onNext: () => requestProtectedStep("pagamento"),
+                  onSelectAddress: actions.setSelectedAddressId,
+                  onSelectDeliveryDay: actions.setSelectedDeliveryDay,
+                  onSelectFreight: actions.setSelectedFreight,
+                  selectedAddressId,
+                  selectedDeliveryDay,
+                  selectedFreight,
+                  selectedMode,
+                  strings,
+                  tokens: theme,
                 }}
-                reviewCopy={strings.reviewStep}
-                selectedAddressSummary={viewModel.selectedAddressSummary}
-                selectedMode={selectedMode}
-                selectedPaymentLabel={selectedPayment?.label || paymentCopy.methods.creditCard}
-                selectedProductEntries={viewModel.selectedProductEntries}
-                strings={strings}
-                tokens={theme}
+                payment={{
+                  onBack: () => actions.setCurrentStep("entrega"),
+                  onNext: () => requestProtectedStep("resumo"),
+                  onSelectInstallments: actions.setSelectedInstallments,
+                  onSelectPaymentMethod: actions.setSelectedPaymentMethod,
+                  paymentCopy,
+                  paymentInstallments,
+                  paymentMethods,
+                  selectedInstallments,
+                  selectedPaymentMethod,
+                  tokens: theme,
+                }}
+                review={{
+                  currentSubscriptionPlan: viewModel.currentSubscriptionPlan,
+                  finalTotal: viewModel.finalTotal,
+                  formatMoney: formatClientCheckoutMoney,
+                  onBack: () => actions.setCurrentStep("pagamento"),
+                  onFinish: () => {
+                    void actions.submitOrder();
+                  },
+                  reviewCopy: strings.reviewStep,
+                  selectedAddressSummary: viewModel.selectedAddressSummary,
+                  selectedMode,
+                  selectedPaymentLabel: selectedPayment?.label || paymentCopy.methods.creditCard,
+                  selectedProductEntries: viewModel.selectedProductEntries,
+                  strings,
+                  tokens: theme,
+                }}
               />
-            ) : null}
-
-            {currentStep === "montagem" ? (
-              <MobileSelectionSummary
+            )}
+            summary={currentStep === "montagem" ? (
+              <CheckoutFlowSummary
                 itemCount={viewModel.selectedUnitsCount}
-                itemLabel={strings.summary.selectedItems}
-                estimateLabel={strings.summary.variableEstimate}
-                estimateValue={formatClientCheckoutMoney(viewModel.orderEstimateTotal)}
+                itemLabel={selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
+                estimateLabel={selectedMode === "subscription" ? strings.summary.fixedPlanPrice : strings.summary.variableEstimate}
+                estimateValue={formatClientCheckoutMoney(selectedMode === "subscription" ? viewModel.currentSubscriptionPlan.monthlyPrice : viewModel.orderEstimateTotal)}
+                contextLabel={strings.steps[currentStep]}
                 nextStepLabel={strings.summary.nextStep}
                 onNextStep={() => requestProtectedStep("entrega")}
-                placeholder={strings.summary.placeholder}
                 title={strings.summary.title}
                 tokens={theme}
               />
-            ) : null}
-          </Stack>
-        ) : null}
+            ) : undefined}
+          />
+          ) : null}
         </Stack>
       </Container>
     </ScrollContainer>

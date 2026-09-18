@@ -14,6 +14,7 @@ export interface AcquisitionModeGridProps {
   };
   activeSubscriptionLabel: string;
   activeSubscriptionPlan?: unknown;
+  isCompact: boolean;
   modeOrder: ClientCheckoutProductExperience[];
   onSelectMode: (mode: ClientCheckoutProductExperience) => void;
   selectedMode: ClientCheckoutProductExperience | null;
@@ -25,6 +26,7 @@ export const AcquisitionModeGrid: React.FC<AcquisitionModeGridProps> = ({
   activeSubscription,
   activeSubscriptionLabel,
   activeSubscriptionPlan,
+  isCompact,
   modeOrder,
   onSelectMode,
   selectedMode,
@@ -57,7 +59,7 @@ export const AcquisitionModeGrid: React.FC<AcquisitionModeGridProps> = ({
               appearance={active ? "soft" : "transparent"}
               key={mode}
               onAction={() => onSelectMode(mode)}
-              style={active ? styles.modeCardActive : styles.modeCard}
+              style={isCompact ? active ? styles.modeCardCompactActive : styles.modeCardCompact : active ? styles.modeCardActive : styles.modeCard}
               tone={active ? "primary" : "neutral"}
             >
               <Surface style={styles.modeCardContent}>

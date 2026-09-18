@@ -57,8 +57,6 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
   return (
     <Surface style={styles.panel}>
       <Stack style={styles.stack}>
-        <Text style={styles.title} variant="h2">{strings.catalog.title}</Text>
-        <Text style={styles.muted}>{strings.catalog.subtitle}</Text>
         <Input onChangeText={onQueryChange} placeholder={strings.hero.searchPlaceholder} value={query} />
         <Button
           appearance="outline"

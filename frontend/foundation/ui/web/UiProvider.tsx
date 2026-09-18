@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo } from "react";
+import "../../semi-composed";
 import { injectThemeTokens } from "../../tokens";
 import { resolveSurfaceUiConfig, type ResolvedUiConfig, type SurfaceUiConfig } from "../shared/core";
 

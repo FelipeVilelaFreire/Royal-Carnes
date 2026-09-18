@@ -586,7 +586,13 @@ export function NotificationsPanel({
   );
 }
 
-export function SecurityPanel({ strings }: { strings: MinhaContaStrings }) {
+export function SecurityPanel({
+  onLogoutRequest,
+  strings,
+}: {
+  onLogoutRequest?: () => void;
+  strings: MinhaContaStrings;
+}) {
   return (
     <Card className={styles.panelCard}>
       <Stack gap="lg">
@@ -600,6 +606,7 @@ export function SecurityPanel({ strings }: { strings: MinhaContaStrings }) {
           description={strings.security.closeDescription}
           action={strings.actions.closeAccount}
           danger
+          onAction={onLogoutRequest}
         />
         <Text variant="caption" tone="text-muted">{strings.legalNotice}</Text>
       </Stack>
@@ -611,11 +618,13 @@ function SecurityRow({
   action,
   danger,
   description,
+  onAction,
   title,
 }: {
   action: string;
   danger?: boolean;
   description: string;
+  onAction?: () => void;
   title: string;
 }) {
   return (
@@ -624,7 +633,7 @@ function SecurityRow({
         <Text className={danger ? styles.dangerText : undefined} weight="var(--theme--typography-bold)">{title}</Text>
         <Text variant="caption" tone="text-muted">{description}</Text>
       </Stack>
-      <Button appearance="outline" className={danger ? styles.dangerText : undefined} tone="neutral">{action}</Button>
+      <Button appearance="outline" className={danger ? styles.dangerText : undefined} onClick={onAction} tone="neutral">{action}</Button>
     </Inline>
   );
 }

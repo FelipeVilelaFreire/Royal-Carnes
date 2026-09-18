@@ -7,13 +7,13 @@ import { Inline } from "@foundation/ui/native/Layout";
 import { createCheckoutStyles } from "../checkout.styles";
 
 export interface MobileSelectionSummaryProps {
+  contextLabel: string;
   estimateLabel: string;
   estimateValue: string;
   itemCount: number;
   itemLabel: string;
   nextStepLabel: string;
   onNextStep: () => void;
-  placeholder: string;
   title: string;
   tokens: any;
 }
@@ -21,11 +21,11 @@ export interface MobileSelectionSummaryProps {
 export const MobileSelectionSummary: React.FC<MobileSelectionSummaryProps> = ({
   estimateLabel,
   estimateValue,
+  contextLabel,
   itemCount,
   itemLabel,
   nextStepLabel,
   onNextStep,
-  placeholder,
   title,
   tokens,
 }) => {
@@ -34,6 +34,7 @@ export const MobileSelectionSummary: React.FC<MobileSelectionSummaryProps> = ({
   return (
     <Surface style={styles.panel}>
       <Stack style={styles.compactStack}>
+        <Text style={styles.accent} variant="caption">{contextLabel}</Text>
         <Text style={styles.title}>{title}</Text>
         <Inline style={styles.summaryRow}>
           <Text style={styles.muted}>{itemLabel}</Text>
@@ -43,7 +44,6 @@ export const MobileSelectionSummary: React.FC<MobileSelectionSummaryProps> = ({
           <Text style={styles.muted}>{estimateLabel}</Text>
           <Text style={styles.accent}>{estimateValue}</Text>
         </Inline>
-        <Text style={styles.muted}>{placeholder}</Text>
         <Button onAction={onNextStep}>{nextStepLabel}</Button>
       </Stack>
     </Surface>

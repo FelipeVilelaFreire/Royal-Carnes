@@ -753,10 +753,10 @@ Response inclui:
   "prices": [{ "amount_cents": 44900, "billing_interval": "month" }],
   "entitlements": [
     {
-      "key": "premium-cuts-12kg",
-      "target_type": "collection",
-      "target_key": "churrasco-premium",
-      "quantity": "12.000",
+      "key": "carnes-10kg",
+      "target_type": "category",
+      "target_key": "carnes",
+      "quantity": "10.000",
       "measurement_unit_key": "kg",
       "constraints": {
         "maxSelections": 10,
@@ -789,11 +789,17 @@ Objetivo:
 retornar ciclo aberto atual da assinatura ativa do cliente
 ```
 
-Response inclui `capacity`: uma lista calculada pelo backend a partir dos
-entitlements do plano e dos itens validos do ciclo. Cada grupo informa chave,
-label de negocio, quantidade usada/limite, unidade e, quando configurado,
-selecoes usadas/limite. `item_limits` reserva a regra futura por produto ou
-variante; a tela apenas apresenta esse resumo e nunca recalcula uso ou limite.
+Response inclui `capacity`: uma lista calculada pelo backend a partir das
+capacidades do plano e dos itens validos do ciclo. Cada grupo informa target,
+quantidade usada, limite, saldo, unidade e, quando aplicavel, a relacao de
+capacidade configurada pelo plano. Cada entitlement pode declarar em
+`constraints` `allocationMode: "standalone" | "withinParent"` e, no segundo
+caso, `parentCapacityKey`. Um item selecionado consome sua capacidade e a
+cadeia explicita de pais: por exemplo, `Picanha 3 kg` dentro de `Bovinos 5 kg`
+dentro de `Carnes 10 kg` consome os tres limites. Uma capacidade `standalone`
+permanece uma secao independente, mesmo que seu alvo pertença a uma categoria
+filha do catalogo. A tela apenas apresenta esse resumo e nunca recalcula uso,
+saldo ou limite.
 
 Auth:
 
@@ -819,7 +825,7 @@ Request:
 
 ```json
 {
-  "entitlement_key": "premium-cuts-12kg",
+  "entitlement_key": "carnes-10kg",
   "product_key": "picanha",
   "variant_sku": "PICANHA-1KG",
   "quantity": "1.000",
@@ -831,9 +837,9 @@ Validacao:
 
 ```text
 entitlement pertence ao plano da assinatura
-produto/variant pertencem ao target do entitlement
-unidade bate com MeasurementUnit do entitlement
-quantidade total do ciclo nao excede entitlement.quantity
+produto/variant pertencem ao target informado
+unidade bate com todas as capacidades aplicaveis
+quantidade total do ciclo nao excede nenhuma capacidade aplicavel
 constraints maxSelections, maxQuantity, allowedAttributes,
 allowedCommercialModes e requiresAvailability sao respeitadas
 ```

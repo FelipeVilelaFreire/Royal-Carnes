@@ -31,6 +31,19 @@
   --ui-modal-width: var(--theme--layout-container-sm);
 }
 
+.panel[data-size="xs"] {
+  --ui-modal-width: var(--semicomposed--modal-width-xs);
+}
+
+.panel[data-size="compact"] {
+  --ui-modal-width: var(--semicomposed--modal-width-compact);
+}
+
+.panel[data-size="roomy"] {
+  --ui-modal-width: var(--semicomposed--modal-width-auth);
+  min-height: var(--semicomposed--modal-min-height-roomy);
+}
+
 .panel[data-size="md"] {
   --ui-modal-width: var(--theme--layout-container-sm);
 }

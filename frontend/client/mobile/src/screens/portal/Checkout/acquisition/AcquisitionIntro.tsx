@@ -4,16 +4,15 @@ import { Text } from "@foundation/ui/native/Text";
 
 export interface AcquisitionIntroProps {
   children: ReactNode;
+  isCompact?: boolean;
   strings: {
     description: string;
-    eyebrow: string;
   };
 }
 
-export const AcquisitionIntro: React.FC<AcquisitionIntroProps> = ({ children, strings }) => (
-  <Stack gap="lg">
+export const AcquisitionIntro: React.FC<AcquisitionIntroProps> = ({ children, isCompact = false, strings }) => (
+  <Stack gap={isCompact ? "md" : "lg"}>
     <Stack gap="sm">
-      <Text tone="primary" variant="caption" weight="bold">{strings.eyebrow}</Text>
       <Text tone="muted">{strings.description}</Text>
     </Stack>
     {children}

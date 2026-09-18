@@ -7,13 +7,62 @@
 }
 
 .screen > .content {
-  max-width: var(--theme--layout-content-narrow);
+  max-width: var(--theme--layout-container-xs);
   width: 100%;
 }
 
 .content {
   display: grid;
-  gap: var(--theme--spacing-spaceLg);
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.modalContent {
+  margin-block-start: var(--semicomposed--access-shell--modal-content-offset);
+}
+
+.brandHeader {
+  align-items: flex-start;
+  display: grid;
+  grid-template-columns: var(--semicomposed--access-shell--header-control-size) minmax(0, 1fr) var(--semicomposed--access-shell--header-control-size);
+}
+
+.brandSpacer {
+  display: block;
+  height: var(--semicomposed--access-shell--header-control-size);
+  width: var(--semicomposed--access-shell--header-control-size);
+}
+
+.brand {
+  align-items: center;
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+  justify-content: center;
+  justify-items: center;
+  min-width: 0;
+}
+
+.brandLogo {
+  display: block;
+  height: var(--theme--dimensions-height-lg);
+  max-width: var(--theme--dimensions-minWidth-4xl);
+  object-fit: contain;
+  width: auto;
+}
+
+.brandName {
+  color: var(--theme--color-accent);
+  text-align: center;
+}
+
+.closeButton {
+  --ui-button-height: var(--semicomposed--access-shell--header-control-size);
+  --ui-button-min-width: var(--semicomposed--access-shell--header-control-size);
+  --ui-button-padding-x: var(--semicomposed--access-shell--header-control-padding);
+  --ui-button-padding-y: var(--semicomposed--access-shell--header-control-padding);
+  --ui-surface-bg: var(--semicomposed--button-bg-outline);
+  --ui-surface-border: var(--semicomposed--button-border-solid);
+  justify-self: end;
+  margin-inline-end: var(--semicomposed--access-shell--header-corner-offset);
 }
 
 .callout,
@@ -24,6 +73,13 @@
   --ui-surface-padding-x: var(--theme--spacing-spaceLg);
   --ui-surface-padding-y: var(--theme--spacing-spaceLg);
   --ui-surface-radius: var(--theme--radius-xl);
+}
+
+.formPanelFlat {
+  --ui-surface-bg: transparent;
+  --ui-surface-border: transparent;
+  --ui-surface-padding-x: 0;
+  --ui-surface-padding-y: 0;
 }
 
 .formPanel {
@@ -47,6 +103,24 @@
 .hint,
 .legal {
   color: var(--theme--color-text-muted, var(--theme--color-textMuted));
+}
+
+.flowSwitcher {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-space2xs);
+  justify-content: center;
+}
+
+.switcherHint {
+  color: var(--theme--color-text-muted, var(--theme--color-textMuted));
+}
+
+.switcherAction {
+  --ui-button-height: auto;
+  --ui-button-padding-x: 0;
+  --ui-button-padding-y: 0;
 }
 
 .tabs {
@@ -77,6 +151,25 @@
   gap: var(--theme--spacing-spaceMd);
 }
 
+.formHeading {
+  display: grid;
+  gap: var(--semicomposed--formatted-input--gap);
+  justify-items: center;
+  margin-bottom: var(--semicomposed--formatted-input--gap);
+  text-align: center;
+}
+
+.formTitle {
+  color: var(--semicomposed--button-color-outline);
+  margin: 0;
+}
+
+.formDescription {
+  color: var(--semicomposed--confirmation-modal--muted-color);
+  margin: 0;
+  max-width: var(--semicomposed--confirmation-modal--description-max-width);
+}
+
 .formMeta {
   align-items: center;
   display: flex;
@@ -93,6 +186,33 @@
   --ui-button-height: var(--theme--dimensions-height-xl);
   --ui-surface-radius: var(--theme--radius-lg);
   width: 100%;
+}
+
+.providers {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+}
+
+.providerDivider {
+  align-items: center;
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.providerDividerLabel {
+  color: var(--theme--color-text-muted, var(--theme--color-textMuted));
+  text-align: center;
+}
+
+.providerButton {
+  width: 100%;
+}
+
+.providerButtons {
+  display: grid;
+  gap: var(--semicomposed--formatted-input--gap);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .error {

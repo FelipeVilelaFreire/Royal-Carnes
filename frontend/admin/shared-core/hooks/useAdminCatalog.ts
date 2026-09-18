@@ -16,6 +16,7 @@ export interface UseAdminCatalogOptions {
 }
 
 const emptySnapshot: AdminCatalogSnapshot = {
+  categories: [],
   collections: [],
   commercialModes: [],
   products: [],
@@ -33,12 +34,13 @@ export function useAdminCatalog(options: UseAdminCatalogOptions = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      const [collections, commercialModes, products] = await Promise.all([
+      const [categories, collections, commercialModes, products] = await Promise.all([
+        api.listCategories(),
         api.listCollections(),
         api.listCommercialModes(),
         api.listProducts(),
       ]);
-      const nextSnapshot = { collections, commercialModes, products };
+      const nextSnapshot = { categories, collections, commercialModes, products };
       setSnapshot(nextSnapshot);
       return nextSnapshot;
     } catch (err) {

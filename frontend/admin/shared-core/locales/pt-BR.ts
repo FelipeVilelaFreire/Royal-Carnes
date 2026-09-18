@@ -424,6 +424,8 @@ export const adminPtBR = {
       unit: "Unidade",
       status: "Status",
       categories: "Categorias",
+      category: "Categoria",
+      parentCategory: "Categoria pai",
       categoryKeys: "Categorias por chave",
       collections: "Coleções",
       collectionKeys: "Coleções por chave",
@@ -476,9 +478,11 @@ export const adminPtBR = {
     ctaAdd: "Nova categoria",
     searchPlaceholder: "Buscar categorias...",
     tableHeaders: {
+      hierarchy: "Hierarquia",
       name: "Nome",
       key: "Chave",
       parent: "Categoria pai",
+      children: "Categorias filhas",
       sortOrder: "Ordem",
       status: "Status"
     },
@@ -494,6 +498,10 @@ export const adminPtBR = {
     },
     detail: {
       title: "Detalhe da categoria",
+      sections: {
+        identity: "Identificacao",
+        relations: "Hierarquia"
+      },
       tabs: {
         data: "Dados"
       },
@@ -579,9 +587,15 @@ export const adminPtBR = {
       addIncludedItem: "Adicionar item incluso",
       addItemLimit: "Adicionar limite específico",
       allowedItems: "Pode escolher de",
+      capacity: "Capacidade",
       capacityGroup: "Grupo geral",
       capacityGroupKey: "Grupo geral",
+      capacityCount: "Regras de capacidade",
+      capacityPath: "Hierarquia da capacidade",
       capacityScope: "Tipo de seleção",
+      allocationMode: "Como este limite se relaciona",
+      capacities: "Capacidades do plano",
+      addCapacity: "Adicionar capacidade",
       itemLimits: "Limites específicos",
       itemMaximum: "Máximo por item",
       maxSelections: "Máximo de escolhas",
@@ -600,7 +614,8 @@ export const adminPtBR = {
       name: "Nome do plano",
       sortOrder: "Ordem",
       status: "Status",
-      trialDays: "Dias de teste"
+      trialDays: "Dias de teste",
+      totalCapacity: "Limites gerais"
     },
     form: {
       billingInterval: "Recorrência",
@@ -618,6 +633,7 @@ export const adminPtBR = {
       sections: {
         identity: "Identificacao",
         commercial: "Comercial",
+        capacities: "Capacidades do plano",
         itemLimits: "Limites específicos"
       },
       tabs: {
@@ -647,6 +663,7 @@ export const adminPtBR = {
       sections: {
         identity: "Identificacao",
         commercial: "Comercial",
+        capacities: "Capacidades do plano",
         includedItems: "Itens inclusos",
         itemLimits: "Limites específicos"
       }
@@ -657,7 +674,15 @@ export const adminPtBR = {
       month: "Mensal",
       year: "Anual"
     },
-    capacityScopes: { collection: "Coleção", category: "Categoria", product: "Produto", variant: "Variante" }
+    capacityScopes: { collection: "Coleção", category: "Categoria", product: "Produto", variant: "Variante" },
+    allocationModes: {
+      standalone: "Avulso — inicia uma seção própria",
+      withinParent: "Dentro do limite acima"
+    },
+    hierarchy: {
+      limit: "Limite",
+      maxSelections: "{count} escolhas máximas"
+    }
   },
   clientes: {
     title: "Clientes",

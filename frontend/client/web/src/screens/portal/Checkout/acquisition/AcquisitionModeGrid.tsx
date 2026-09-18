@@ -1,8 +1,8 @@
 import React from "react";
 import type { ClientCheckoutProductExperience } from "@/view-models/checkout.view-model";
 import { Button } from "@foundation/ui";
-import { ArrowForwardIcon } from "@foundation/ui/web/Icon/AppIcons";
-import styles from "../CheckoutView.module.css";
+import { ArrowForwardIcon, BoxIcon, CartIcon, TruckIcon } from "@foundation/ui/web/Icon/AppIcons";
+import styles from "./AcquisitionModeGrid.module.css";
 
 export interface AcquisitionModeGridProps {
   activeSubscription?: {
@@ -26,9 +26,7 @@ export const AcquisitionModeGrid: React.FC<AcquisitionModeGridProps> = ({
   selectedMode,
   strings,
 }) => (
-  <section
-    className={styles.modeList}
-  >
+  <section className={styles.grid} data-compact={selectedMode ? "true" : undefined}>
     {modeOrder.map((mode) => {
       const modeCopy = strings.modes[mode];
       const isActive = selectedMode === mode;
@@ -38,45 +36,39 @@ export const AcquisitionModeGrid: React.FC<AcquisitionModeGridProps> = ({
       const modeDescription = isActiveSubscriptionMode
         ? `${strings.summary.activeCycleDescriptionPrefix} ${activeSubscriptionLabel}.`
         : modeCopy.description;
+      const ModeIcon = mode === "subscription" ? CartIcon : mode === "royalBox" ? BoxIcon : TruckIcon;
       return (
         <Button
           appearance="soft"
           aria-pressed={isActive}
-          className={styles.modeCard}
+          className={styles.card}
           data-active={isActive || undefined}
           key={mode}
           size="md"
-          tone="neutral"
+          tone={isActive ? "accent" : "neutral"}
           type="button"
           onClick={() => onSelectMode(mode)}
         >
-          <span className={styles.modeCardFrame}>
-            <span className={styles.modeCardContent}>
-              <span className={styles.modeCopy}>
-                <span className={styles.modeHeading}>
-                  <span className={styles.modeTitle}>
-                    {modeTitle}
-                  </span>
-                  <span className={styles.modeEyebrow}>
-                    {modeEyebrow}
-                  </span>
-                </span>
+          <span className={styles.cardFrame}>
+            <span className={styles.cardHeading}>
+              <span className={styles.iconFrame}>
+                <ModeIcon aria-hidden="true" className={styles.icon} />
+              </span>
+              <span className={styles.copy}>
+                <span className={styles.eyebrow}>{modeEyebrow}</span>
+                <span className={styles.title}>{modeTitle}</span>
                 {isActiveSubscriptionMode ? (
-                  <span className={styles.modeBadge}>
-                    {strings.summary.activeSubscriptionBadge}
-                  </span>
+                  <span className={styles.badge}>{strings.summary.activeSubscriptionBadge}</span>
                 ) : null}
+                <span className={styles.description}>{modeDescription}</span>
               </span>
             </span>
 
-            <p className={styles.modeDescription}>
-              {modeDescription}
-            </p>
-            <span className={styles.modeAction}>
+            <span className={styles.action}>
               {modeCopy.action}
               <ArrowForwardIcon />
             </span>
-            </span>
+          </span>
         </Button>
       );
     })}

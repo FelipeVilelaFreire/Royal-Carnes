@@ -12,39 +12,34 @@ export interface ActiveCycleSummaryProps {
   activeSubscription?: {
     nextBillingLabel: string;
   };
-  activeSubscriptionLabel: string;
   catalogSubscriptionPlans: ClientCheckoutSubscriptionPlan[];
   currentSubscriptionPlan: ClientCheckoutSubscriptionPlan;
+  embedded?: boolean;
   formatMeasure: (value: number, unit: string) => string;
   onSelectPlan: (planKey: ClientCheckoutSubscriptionTier) => void;
   selectedPlanKey: ClientCheckoutSubscriptionTier;
   strings: any;
   subscriptionCycleCharcoalUsed: number;
-  subscriptionCycleCutsUsed: number;
   subscriptionCycleWeightUsed: number;
 }
 
 export const ActiveCycleSummary: React.FC<ActiveCycleSummaryProps> = ({
   activeCycleUsage,
   activeSubscription,
-  activeSubscriptionLabel,
   catalogSubscriptionPlans,
   currentSubscriptionPlan,
+  embedded = false,
   formatMeasure,
   onSelectPlan,
   selectedPlanKey,
   strings,
   subscriptionCycleCharcoalUsed,
-  subscriptionCycleCutsUsed,
   subscriptionCycleWeightUsed,
 }) => {
+  const charcoalKgLimit = activeCycleUsage?.charcoalKgLimit || currentSubscriptionPlan.charcoalKgLimit;
   const metrics = activeSubscription
     ? [
         [strings.plans.renewalLabel, activeSubscription.nextBillingLabel],
-        [
-          strings.summary.cycleCuts,
-          `${subscriptionCycleCutsUsed} / ${activeCycleUsage?.cutsLimit || currentSubscriptionPlan.productSelectionLimit}`,
-        ],
         [
           strings.summary.meatUsage,
           `${formatMeasure(subscriptionCycleWeightUsed, "kg")} / ${formatMeasure(
@@ -52,57 +47,43 @@ export const ActiveCycleSummary: React.FC<ActiveCycleSummaryProps> = ({
             "kg",
           )}`,
         ],
-        [
+        charcoalKgLimit > 0 ? [
           strings.summary.charcoalUsage,
-          `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")} / ${formatMeasure(
-            activeCycleUsage?.charcoalKgLimit || currentSubscriptionPlan.charcoalKgLimit,
-            "kg",
-          )}`,
-        ],
-      ]
+          `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")} / ${formatMeasure(charcoalKgLimit, "kg")}`,
+        ] : null,
+      ].filter(Boolean)
     : [];
 
   return (
     <Surface
       appearance="soft"
       className={styles.activePlanPanel}
+      data-active-cycle={activeSubscription ? "true" : undefined}
+      data-embedded={embedded || undefined}
     >
       {activeSubscription ? (
         <Stack className={styles.activePlanContent}>
         <Inline align="start" className={styles.activePlanHeader} justify="between">
           <div className={styles.activePlanCopy}>
-            <Text as="span" className={styles.activePlanKicker} tone="inherit" variant="caption">
-              {strings.plans.activePlanLabel}
-            </Text>
             <Text as="h2" className={styles.activePlanTitle} tone="inherit" variant="h3">
-              {strings.plans.activeTitle} {activeSubscriptionLabel}
-            </Text>
-            <Text className={styles.activePlanDescription} tone="inherit">
-              {strings.plans.activeSubtitle}
+              {strings.plans.activeTitle}
             </Text>
           </div>
-          <Text as="span" className={styles.activePlanBadge} tone="inherit" variant="caption">
-            {activeSubscriptionLabel}
-          </Text>
         </Inline>
 
         <div className={styles.activePlanMetrics}>
-          {metrics.map(([label, value]) => (
-            <Surface appearance="soft" className={styles.activePlanMetric} key={label}>
-              <span className={styles.metricLabel}>{label}</span>
-              <strong className={styles.metricValue}>{value}</strong>
-            </Surface>
+          {metrics.map(([label, value]: any) => (
+            <Text as="span" className={styles.activePlanMetric} key={label} tone="inherit" variant="caption">
+              {strings.format.dashSeparated.replace("{first}", label).replace("{second}", value)}
+            </Text>
           ))}
         </div>
         </Stack>
       ) : (
-        <Stack className={styles.activePlanContent}>
+      <Stack className={styles.activePlanContent} gap="sm">
           <div className={styles.activePlanCopy}>
             <Text as="h2" className={styles.activePlanTitle} tone="inherit" variant="h3">
               {strings.plans.title}
-            </Text>
-            <Text className={styles.activePlanDescription} tone="inherit">
-              {strings.plans.subtitle}
             </Text>
           </div>
 
@@ -121,9 +102,14 @@ export const ActiveCycleSummary: React.FC<ActiveCycleSummaryProps> = ({
                   tone="neutral"
                   type="button"
                 >
-                  <Text as="strong" tone="inherit" variant="body" weight="semibold">
-                    {plan.name}
-                  </Text>
+                  <span className={styles.planButtonContent}>
+                    <Text as="strong" tone="inherit" variant="body" weight="semibold">
+                      {plan.name}
+                    </Text>
+                    <Text as="span" className={styles.planLimit} tone="inherit" variant="caption">
+                      {formatMeasure(plan.proteinKgLimit, "kg")}
+                    </Text>
+                  </span>
                 </Button>
               );
             })}

@@ -4,141 +4,49 @@
   "plans": [
     {
       "key": "basic",
-      "name": "Basic",
-      "description": "Plano inicial para cortes do dia a dia.",
+      "name": "Royal Essencial",
+      "description": "Plano mensal para montar uma selecao de carnes do dia a dia, respeitando o limite total e os subgrupos.",
+      "reconcileEntitlements": true,
       "billingInterval": "month",
-      "prices": [
-        { "amountCents": 19900, "billingInterval": "month" }
-      ],
+      "prices": [{ "amountCents": 24900, "billingInterval": "month" }],
       "entitlements": [
-        {
-          "key": "daily-cuts-4kg",
-          "targetType": "collection",
-          "targetKey": "dia-a-dia",
-          "quantity": 4,
-          "measurementUnitKey": "kg",
-          "constraints": {
-            "capacityKey": "meat",
-            "capacityLabel": "Carnes",
-            "selectionLabel": "Cortes",
-            "maxSelections": 3,
-            "allowedCommercialModes": ["subscription"],
-            "requiresAvailability": true
-          }
-        }
+        { "key": "carnes-4kg", "legacyKeys": ["daily-cuts-4kg"], "targetType": "category", "targetKey": "carnes", "quantity": 4, "measurementUnitKey": "kg", "constraints": { "capacityKey": "carnes", "capacityLabel": "Carnes", "maxSelections": 5, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "acompanhamentos-1un", "targetType": "category", "targetKey": "acompanhamentos", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acompanhamentos", "capacityLabel": "Acompanhamentos", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
       ]
     },
     {
       "key": "premium",
-      "name": "Premium",
-      "description": "Plano intermediario com cortes premium e carvao.",
+      "name": "Royal Select",
+      "description": "Plano mensal para uma caixa maior, com limite proprio para bovinos premium, carvao e utensilios.",
+      "reconcileEntitlements": true,
       "billingInterval": "month",
-      "prices": [
-        { "amountCents": 29900, "billingInterval": "month" }
-      ],
+      "prices": [{ "amountCents": 39900, "billingInterval": "month" }],
       "entitlements": [
-        {
-          "key": "premium-cuts-8kg",
-          "targetType": "collection",
-          "targetKey": "churrasco-premium",
-          "quantity": 8,
-          "measurementUnitKey": "kg",
-          "constraints": {
-            "capacityKey": "meat",
-            "capacityLabel": "Carnes",
-            "selectionLabel": "Cortes",
-            "maxSelections": 6,
-            "allowedCommercialModes": ["subscription"],
-            "requiresAvailability": true
-          }
-        },
-        {
-          "key": "charcoal-5kg",
-          "targetType": "variant",
-          "targetKey": "CARVAO-5KG",
-          "quantity": 1,
-          "measurementUnitKey": "bag",
-          "constraints": {
-            "capacityKey": "charcoal",
-            "capacityLabel": "Carvão",
-            "maxQuantity": 1,
-            "allowedCommercialModes": ["subscription"],
-            "requiresAvailability": true
-          }
-        }
+        { "key": "carnes-7kg", "legacyKeys": ["premium-cuts-8kg"], "targetType": "category", "targetKey": "carnes", "quantity": 7, "measurementUnitKey": "kg", "constraints": { "capacityKey": "carnes", "capacityLabel": "Carnes", "maxSelections": 8, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "utensilios-1un", "targetType": "category", "targetKey": "utensilios", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
       ]
     },
     {
       "key": "pro",
-      "name": "Pro",
-      "description": "Plano completo com maior limite mensal e itens extras.",
+      "name": "Royal Prime",
+      "description": "Plano mensal completo com capacidades gerais para carnes, acompanhamentos e utensilios.",
+      "reconcileEntitlements": true,
       "billingInterval": "month",
-      "prices": [
-        { "amountCents": 44900, "billingInterval": "month" }
-      ],
+      "prices": [{ "amountCents": 59900, "billingInterval": "month" }],
       "entitlements": [
-        {
-          "key": "premium-cuts-12kg",
-          "targetType": "collection",
-          "targetKey": "churrasco-premium",
-          "quantity": 12,
-          "measurementUnitKey": "kg",
-          "constraints": {
-            "capacityKey": "meat",
-            "capacityLabel": "Carnes",
-            "selectionLabel": "Cortes",
-            "maxSelections": 10,
-            "allowedCommercialModes": ["subscription"],
-            "requiresAvailability": true
-          }
-        },
-        {
-          "key": "charcoal-10kg",
-          "targetType": "variant",
-          "targetKey": "CARVAO-10KG",
-          "quantity": 1,
-          "measurementUnitKey": "bag",
-          "constraints": {
-            "capacityKey": "charcoal",
-            "capacityLabel": "Carvão",
-            "maxQuantity": 1,
-            "allowedCommercialModes": ["subscription"],
-            "requiresAvailability": true
-          }
-        }
+        { "key": "carnes-10kg", "legacyKeys": ["premium-cuts-12kg"], "targetType": "category", "targetKey": "carnes", "quantity": 10, "measurementUnitKey": "kg", "constraints": { "capacityKey": "carnes", "capacityLabel": "Carnes", "maxSelections": 10, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "acompanhamentos-3un", "targetType": "category", "targetKey": "acompanhamentos", "quantity": 3, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acompanhamentos", "capacityLabel": "Acompanhamentos", "maxSelections": 3, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "utensilios-2un", "targetType": "category", "targetKey": "utensilios", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
       ]
     }
   ],
   "subscriptions": [
-    {
-      "key": "cliente-royalprime-pro",
-      "customerKey": "cliente-royalprime",
-      "planKey": "pro",
-      "status": "active",
-      "startedAt": "2026-08-01T00:00:00-03:00",
-      "currentCycleStartsAt": "2026-09-01T00:00:00-03:00",
-      "currentCycleEndsAt": "2026-09-30T23:59:59-03:00"
-    }
+    { "key": "cliente-royalprime-pro", "customerKey": "cliente-royalprime", "planKey": "pro", "status": "active", "startedAt": "2026-08-01T00:00:00-03:00", "currentCycleStartsAt": "2026-09-01T00:00:00-03:00", "currentCycleEndsAt": "2026-09-30T23:59:59-03:00" }
   ],
   "cycles": [
-    {
-      "key": "cliente-royalprime-pro-2026-09",
-      "subscriptionKey": "cliente-royalprime-pro",
-      "cycleNumber": 1,
-      "status": "open",
-      "startsAt": "2026-09-01T00:00:00-03:00",
-      "endsAt": "2026-09-30T23:59:59-03:00"
-    }
+    { "key": "cliente-royalprime-pro-2026-09", "subscriptionKey": "cliente-royalprime-pro", "cycleNumber": 1, "status": "open", "startsAt": "2026-09-01T00:00:00-03:00", "endsAt": "2026-09-30T23:59:59-03:00" }
   ],
   "cycleItems": [
-    {
-      "cycleKey": "cliente-royalprime-pro-2026-09",
-      "entitlementKey": "premium-cuts-12kg",
-      "productKey": "picanha",
-      "variantSku": "PICANHA-1KG",
-      "quantity": 2,
-      "measurementUnitKey": "kg",
-      "status": "selected"
-    }
+    { "cycleKey": "cliente-royalprime-pro-2026-09", "entitlementKey": "carnes-10kg", "productKey": "picanha", "variantSku": "PICANHA-1KG", "quantity": 1, "measurementUnitKey": "kg", "status": "selected" }
   ]
 }

@@ -14,6 +14,7 @@ import type {
   AccessShellConfig,
   AccessShellFieldKey,
   AccessShellFlowKey,
+  AccessShellProviderKey,
   AccessShellStrings,
   AccessShellValues,
 } from "../types";
@@ -25,6 +26,7 @@ export interface NativeAccessShellProps {
   hosts: FoundationHostComponents;
   isLoading?: boolean;
   onClose?: () => void;
+  onProviderAction?: (provider: AccessShellProviderKey) => void;
   onSubmit: (flow: AccessShellFlowKey, values: AccessShellValues) => Promise<unknown> | unknown;
   strings: AccessShellStrings;
   themeMode?: "dark" | "light";
@@ -43,6 +45,7 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
   hosts,
   isLoading = false,
   onClose,
+  onProviderAction,
   onSubmit,
   strings,
   themeMode = "dark",
@@ -53,6 +56,10 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
     () => config.flows.find((flow) => flow.key === activeFlow) || config.flows[0],
     [activeFlow, config.flows],
   );
+  const flowSwitcher = config.visual.flowSwitcher || "tabs";
+  const switcher = strings.switcher?.[activeFlowConfig.key];
+  const header = config.header || config.brand;
+  const BrandImage = hosts.Image;
   const updateValue = (key: AccessShellFieldKey, value: string) => {
     setValues((current) => ({ ...current, [key]: value }));
   };
@@ -60,6 +67,25 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
   return (
     <UiProvider designSystem={designSystem} hosts={hosts} mode={themeMode}>
       <Stack fill fullWidth gap="lg" justify="center" padding="lg">
+        {header ? <Stack gap="xs" style={{ alignItems: "center" }}>
+          {header.logo && BrandImage ? (
+            <BrandImage
+              accessibilityLabel={header.name}
+              source={{ uri: header.logo }}
+              style={{ height: designSystem?.theme.tokens.spacing?.space3xl, width: "100%" }}
+            />
+          ) : header.name ? (
+            <Text tone="primary" variant="h3">{header.name}</Text>
+          ) : null}
+          {header.logo && BrandImage && header.name ? (
+            <Text tone="primary" variant="h3">{header.name}</Text>
+          ) : null}
+          {header.showClose !== false && onClose ? (
+            <Button appearance="transparent" onPress={onClose} tone="neutral">
+              {strings.close}
+            </Button>
+          ) : null}
+        </Stack> : null}
         {config.visual.showCallout && strings.callout ? (
           <Surface appearance="soft" padding="lg" tone="primary">
             <Stack gap="xs">
@@ -70,7 +96,7 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
           </Surface>
         ) : null}
 
-        {config.flows.length > 1 ? (
+        {config.flows.length > 1 && flowSwitcher === "tabs" ? (
           <Inline gap="xs">
             {config.flows.map((flow) => (
               <Button
@@ -94,7 +120,7 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
           <Text tone="muted">{strings.flows[activeFlowConfig.key].description}</Text>
           {activeFlowConfig.fieldKeys.map((fieldKey) => (
             <Stack gap="xs" key={fieldKey}>
-              <Text variant="caption">{strings.fields[fieldKey]}</Text>
+              {config.visual.showFieldLabels === false ? null : <Text variant="caption">{strings.fields[fieldKey]}</Text>}
               <Input
                 accessibilityLabel={strings.fields[fieldKey]}
                 keyboardType={fieldInputType[fieldKey]}
@@ -112,12 +138,37 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
             disabled={isLoading}
             onPress={() => void onSubmit(activeFlowConfig.key, values)}
           >{strings.flows[activeFlowConfig.key].submit}</Button>
+          {config.providers?.length && strings.providers ? (
+            <Stack gap="xs">
+              <Text tone="muted" variant="caption">{strings.providers.divider}</Text>
+              {config.providers.map((provider) => (
+                <Button
+                  appearance="soft"
+                  disabled={!onProviderAction}
+                  key={provider}
+                  onPress={() => onProviderAction?.(provider)}
+                  tone="neutral"
+                >
+                  {strings.providers[provider]}
+                </Button>
+              ))}
+            </Stack>
+          ) : null}
           </Stack>
         </Surface>
 
         {config.visual.showLegal && strings.legal ? <Text tone="muted" variant="caption">{strings.legal}</Text> : null}
-        {onClose ? (
-          <Button appearance="transparent" onPress={onClose} tone="neutral">{strings.close}</Button>
+        {config.flows.length > 1 && flowSwitcher === "footerLink" && switcher ? (
+          <Inline gap="xs" style={{ justifyContent: "center" }}>
+            <Text tone="muted" variant="caption">{switcher.hint}</Text>
+            <Button
+              appearance="transparent"
+              onPress={() => setActiveFlow(activeFlowConfig.key === "login" ? "register" : "login")}
+              tone="primary"
+            >
+              {switcher.action}
+            </Button>
+          </Inline>
         ) : null}
       </Stack>
     </UiProvider>

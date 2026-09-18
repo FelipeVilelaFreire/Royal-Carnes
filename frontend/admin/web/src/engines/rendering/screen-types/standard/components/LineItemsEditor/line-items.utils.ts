@@ -5,7 +5,7 @@ import type {
 import type { AdminTranslate } from "@/locales/i18n";
 
 export function createEmptyLineItem(columns: AdminStandardLineItemColumnViewModel[]): Record<string, any> {
-  return Object.fromEntries(columns.map((column) => [column.key, ""]));
+  return Object.fromEntries(columns.filter((column) => !column.readOnly).map((column) => [column.key, ""]));
 }
 
 export function resolveLineItemOptions(

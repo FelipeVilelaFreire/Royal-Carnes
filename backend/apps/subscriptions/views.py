@@ -38,6 +38,7 @@ from .services import (
     upsert_plan_entitlement,
     upsert_subscription,
     upsert_subscription_cycle_item,
+    validate_plan_capacity_hierarchy,
     validate_cycle_item_selection,
 )
 
@@ -212,6 +213,7 @@ def admin_plans(request):
                 constraints=entitlement_data.get("constraints", {}),
                 sort_order=entitlement_data.get("sort_order", sort_order),
             )
+        validate_plan_capacity_hierarchy(plan=plan)
     except ObjectDoesNotExist:
         return Response({"code": "plan_entitlement_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
     except EntitlementValidationError as error:

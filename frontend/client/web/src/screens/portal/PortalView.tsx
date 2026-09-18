@@ -72,7 +72,9 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
     forgotPassword: strings.accessShell.forgotPassword,
     legal: strings.accessShell.legal,
     placeholders: strings.accessShell.placeholders,
+    providers: strings.accessShell.providers,
     registerHint: strings.accessShell.registerHint,
+    switcher: strings.accessShell.switcher,
     tabs: strings.accessShell.tabs,
   };
 
@@ -113,7 +115,16 @@ export const PortalView: React.FC<PortalViewProps> = ({ initialTab = "home" }) =
       case "meusPedidos":
         return <MeusPedidosView onNavigate={navigate} showShell={false} />;
       case "minhaConta":
-        return <PerfilView onNavigate={navigate} showShell={false} />;
+        return (
+          <PerfilView
+            onLogout={async () => {
+              await auth.logout();
+              navigate(clientRoutes.home);
+            }}
+            onNavigate={navigate}
+            showShell={false}
+          />
+        );
       case "home":
       default:
         return <HomeView isAuthenticated={isAuthenticated} onNavigate={navigate} />;

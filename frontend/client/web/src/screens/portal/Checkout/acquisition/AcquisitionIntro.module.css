@@ -12,10 +12,13 @@
   width: 100%;
 }
 
-.eyebrow {
-  font-weight: var(--theme--typography-bold);
-  letter-spacing: var(--theme--typography-letterSpacingMd);
-  text-transform: uppercase;
+.root[data-compact="true"] {
+  gap: var(--theme--spacing-spaceMd);
+  padding-block: var(--theme--spacing-spaceLg);
+}
+
+.root[data-compact="true"] .description {
+  max-inline-size: var(--theme--layout-container-xs);
 }
 
 .description {

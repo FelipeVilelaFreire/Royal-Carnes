@@ -120,7 +120,10 @@ def admin_category(request, category_id):
 
     serializer = CategoryUpdateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    category_obj = update_category(category=category_obj, **serializer.validated_data)
+    try:
+        category_obj = update_category(category=category_obj, **serializer.validated_data)
+    except CatalogValidationError as error:
+        return Response({"code": error.code, "detail": error.detail}, status=status.HTTP_400_BAD_REQUEST)
     return Response(CategorySerializer(category_obj).data)
 
 

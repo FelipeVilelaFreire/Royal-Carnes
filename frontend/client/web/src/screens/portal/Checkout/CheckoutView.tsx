@@ -7,17 +7,12 @@ import { useClientCheckout } from "@/hooks/useClientCheckout";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { formatClientCheckoutMeasure, formatClientCheckoutMoney } from "@royalprime/client/utils/checkout.formatters";
 import styles from "./CheckoutView.module.css";
-import { AcquisitionIntro } from "./acquisition/AcquisitionIntro";
-import { AcquisitionModeGrid } from "./acquisition/AcquisitionModeGrid";
-import { ProductCatalogStep } from "./catalog/ProductCatalogStep";
+import { CheckoutAcquisition } from "./acquisition/CheckoutAcquisition";
 import { ProductFilterModal } from "./catalog/ProductFilterModal";
-import { ActiveCycleSummary } from "./cycle/ActiveCycleSummary";
-import { DeliveryStep } from "./delivery/DeliveryStep";
-import { PaymentStep } from "./payment/PaymentStep";
-import { CheckoutStepTracker } from "./progress/CheckoutStepTracker";
-import { ReviewStep } from "./review/ReviewStep";
+import { CheckoutFlow } from "./flow/CheckoutFlow";
+import { CheckoutFlowLeft } from "./flow/left/CheckoutFlowLeft";
+import { CheckoutFlowRight } from "./flow/right/CheckoutFlowRight";
 import { useCheckoutRuntime } from "./runtime/useCheckoutRuntime";
-import { StickyOrderSummary } from "./summary/StickyOrderSummary";
 
 export interface CheckoutViewProps {
   isAuthenticated: boolean;
@@ -110,146 +105,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
     placeholder: strings.deliveryStep.common.addressPlaceholders[field.placeholderKey],
   }));
 
-  const renderStepTracker = () => (
-    <CheckoutStepTracker
-      completedLabel={strings.steps.completed}
-      currentStep={currentStep}
-      stepOrder={config.stepOrder}
-      steps={strings.steps}
-    />
-  );
-
-  const renderCurrentStep = () => {
-    if (!selectedMode) return null;
-
-    if (currentStep === "montagem") {
-      return (
-        <>
-          {selectedMode === "subscription" ? (
-            <ActiveCycleSummary
-              activeCycleUsage={activeCycleUsage}
-              activeSubscription={activeSubscription}
-              activeSubscriptionLabel={activeSubscriptionLabel}
-              catalogSubscriptionPlans={catalogSubscriptionPlans}
-              currentSubscriptionPlan={currentSubscriptionPlan}
-              formatMeasure={formatClientCheckoutMeasure}
-              onSelectPlan={actions.selectPlan}
-              selectedPlanKey={selectedPlanKey}
-              strings={strings}
-              subscriptionCycleCharcoalUsed={subscriptionCycleCharcoalUsed}
-              subscriptionCycleCutsUsed={subscriptionCycleCutsUsed}
-              subscriptionCycleWeightUsed={subscriptionCycleWeightUsed}
-            />
-          ) : null}
-          <ProductCatalogStep
-            availableProducts={availableProducts}
-            canAddProduct={viewModel.canAddProduct}
-            categoryById={categoryById}
-            formatMoney={formatClientCheckoutMoney}
-            onClearFilters={() => {
-              actions.setSelectedCategoryId("all");
-              actions.setQuery("");
-            }}
-            onDecreaseProduct={actions.removeProduct}
-            onOpenFilters={() => actions.setFilterModalOpen(true)}
-            onProductSelect={actions.addProduct}
-            onQueryChange={actions.setQuery}
-            query={query}
-            selectedCategoryId={selectedCategoryId}
-            selectedMode={selectedMode}
-            selectedProductQuantities={selectedProductQuantities}
-            strings={strings}
-            tokens={tokens}
-          />
-        </>
-      );
-    }
-
-    if (currentStep === "entrega") {
-      return (
-        <div className={styles.animatedStack}>
-          {renderStepTracker()}
-          <DeliveryStep
-            addresses={addresses}
-            checkoutConfig={config}
-            currentFreightPrice={currentFreightPrice}
-            deliveryCopy={deliveryCopy}
-            formatMoney={formatClientCheckoutMoney}
-            freightOptions={freightOptions}
-            isAddingAddress={isAddingAddress}
-            newAddressDraft={newAddressDraft}
-            newAddressFields={newAddressFields}
-            onBack={() => actions.setCurrentStep("montagem")}
-            onNext={() => runtime.requestProtectedStep("pagamento", actions.setCurrentStep)}
-            onSubmitNewAddress={() => actions.submitNewAddress(strings.deliveryStep.common.newAddressLabelPrefix)}
-            onSelectAddress={actions.setSelectedAddressId}
-            onSelectDeliveryDay={actions.setSelectedDeliveryDay}
-            onSelectFreight={actions.setSelectedFreight}
-            onSetAddingAddress={actions.setIsAddingAddress}
-            onUpdateNewAddressDraft={actions.updateNewAddressDraft}
-            selectedAddressId={selectedAddressId}
-            selectedDeliveryDay={selectedDeliveryDay}
-            selectedFreight={selectedFreight}
-            selectedMode={selectedMode}
-            strings={strings}
-          />
-        </div>
-      );
-    }
-
-    if (currentStep === "pagamento") {
-      return (
-        <div className={styles.animatedStack}>
-          {renderStepTracker()}
-          <PaymentStep
-            onBack={() => actions.setCurrentStep("entrega")}
-            onNext={() => runtime.requestProtectedStep("resumo", actions.setCurrentStep)}
-            onSelectInstallments={actions.setSelectedInstallments}
-            onSelectPaymentMethod={actions.setSelectedPaymentMethod}
-            paymentCopy={paymentCopy}
-            paymentInstallments={paymentInstallments}
-            paymentMethods={paymentMethods}
-            selectedInstallments={selectedInstallments}
-            selectedMode={selectedMode}
-            selectedPaymentMethod={selectedPaymentMethod}
-          />
-        </div>
-      );
-    }
-
-    return (
-      <div className={styles.animatedStack}>
-        {renderStepTracker()}
-        <ReviewStep
-          categoryById={categoryById}
-          currentFreightOption={currentFreightOption}
-          currentFreightPrice={currentFreightPrice}
-          currentSubscriptionPlan={currentSubscriptionPlan}
-          finalTotal={finalTotal}
-          formatMeasure={formatClientCheckoutMeasure}
-          formatMoney={formatClientCheckoutMoney}
-          onBack={() => actions.setCurrentStep("pagamento")}
-          onFinish={() => actions.submitOrder()}
-          reviewCopy={reviewCopy}
-          selectedAddressSummary={selectedAddressSummary}
-          selectedDeliveryDay={selectedDeliveryDay}
-          selectedInstallments={selectedInstallments}
-          selectedMode={selectedMode}
-          selectedPaymentLabel={selectedPayment?.label || paymentCopy.methods.creditCard}
-          selectedProductEntries={selectedProductEntries}
-          selectedUnitsCount={selectedUnitsCount}
-          strings={strings}
-          subscriptionCycleCharcoalUsed={subscriptionCycleCharcoalUsed}
-          subscriptionCycleSeasoningsUsed={subscriptionCycleSeasoningsUsed}
-          subscriptionCycleSidesUsed={subscriptionCycleSidesUsed}
-          subscriptionCycleUtensilsUsed={subscriptionCycleUtensilsUsed}
-          subscriptionCycleWeightUsed={subscriptionCycleWeightUsed}
-          tokens={tokens}
-        />
-      </div>
-    );
-  };
-
   return (
     <div className={styles.pageRoot}>
       <ScreenHeader
@@ -268,25 +123,116 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
           width="wide"
           gutter="page"
         >
-          <AcquisitionIntro strings={strings.modeSelection}>
-            <AcquisitionModeGrid
-              activeSubscription={activeSubscription}
-              activeSubscriptionLabel={activeSubscriptionLabel}
-              activeSubscriptionPlan={activeSubscriptionPlan}
-              modeOrder={config.modeOrder}
-              onSelectMode={actions.selectMode}
-              selectedMode={selectedMode}
-              strings={strings}
-            />
-          </AcquisitionIntro>
+          <CheckoutAcquisition
+            activeSubscription={activeSubscription}
+            activeSubscriptionLabel={activeSubscriptionLabel}
+            activeSubscriptionPlan={activeSubscriptionPlan}
+            modeOrder={config.modeOrder}
+            onSelectMode={actions.selectMode}
+            selectedMode={selectedMode}
+            strings={strings}
+          />
 
           {hasMode && selectedMode ? (
-            <section
-              className={`${styles.shell} ${currentStep === "resumo" ? styles.shellReview : styles.shellWithSummary}`}
-            >
-              <div className={styles.contentStack}>{renderCurrentStep()}</div>
-              {currentStep !== "resumo" ? (
-                <StickyOrderSummary
+            <CheckoutFlow
+              currentStep={currentStep}
+              left={(
+                <CheckoutFlowLeft
+                  currentStep={currentStep}
+                  montage={{
+                    activeCycleUsage,
+                    activeSubscription,
+                    availableProducts,
+                    canAddProduct: viewModel.canAddProduct,
+                    catalogSubscriptionPlans,
+                    categoryById,
+                    currentSubscriptionPlan,
+                    formatMeasure: formatClientCheckoutMeasure,
+                    formatMoney: formatClientCheckoutMoney,
+                    onClearFilters: () => {
+                      actions.setSelectedCategoryId("all");
+                      actions.setQuery("");
+                    },
+                    onDecreaseProduct: actions.removeProduct,
+                    onOpenFilters: () => actions.setFilterModalOpen(true),
+                    onProductSelect: actions.addProduct,
+                    onQueryChange: actions.setQuery,
+                    onSelectPlan: actions.selectPlan,
+                    query,
+                    selectedCategoryId,
+                    selectedMode,
+                    selectedPlanKey,
+                    selectedProductQuantities,
+                    strings,
+                    subscriptionCycleCharcoalUsed,
+                    subscriptionCycleWeightUsed,
+                    tokens,
+                  }}
+                  delivery={{
+                    addresses,
+                    checkoutConfig: config,
+                    currentFreightPrice,
+                    deliveryCopy,
+                    formatMoney: formatClientCheckoutMoney,
+                    freightOptions,
+                    isAddingAddress,
+                    newAddressDraft,
+                    newAddressFields,
+                    onBack: () => actions.setCurrentStep("montagem"),
+                    onNext: () => runtime.requestProtectedStep("pagamento", actions.setCurrentStep),
+                    onSubmitNewAddress: () => actions.submitNewAddress(strings.deliveryStep.common.newAddressLabelPrefix),
+                    onSelectAddress: actions.setSelectedAddressId,
+                    onSelectDeliveryDay: actions.setSelectedDeliveryDay,
+                    onSelectFreight: actions.setSelectedFreight,
+                    onSetAddingAddress: actions.setIsAddingAddress,
+                    onUpdateNewAddressDraft: actions.updateNewAddressDraft,
+                    selectedAddressId,
+                    selectedDeliveryDay,
+                    selectedFreight,
+                    selectedMode,
+                    strings,
+                  }}
+                  payment={{
+                    onBack: () => actions.setCurrentStep("entrega"),
+                    onNext: () => runtime.requestProtectedStep("resumo", actions.setCurrentStep),
+                    onSelectInstallments: actions.setSelectedInstallments,
+                    onSelectPaymentMethod: actions.setSelectedPaymentMethod,
+                    paymentCopy,
+                    paymentInstallments,
+                    paymentMethods,
+                    selectedInstallments,
+                    selectedMode,
+                    selectedPaymentMethod,
+                  }}
+                  review={{
+                    currentFreightOption,
+                    currentFreightPrice,
+                    currentSubscriptionPlan,
+                    finalTotal,
+                    formatMeasure: formatClientCheckoutMeasure,
+                    formatMoney: formatClientCheckoutMoney,
+                    onBack: () => actions.setCurrentStep("pagamento"),
+                    onFinish: () => actions.submitOrder(),
+                    reviewCopy,
+                    selectedAddressSummary,
+                    selectedDeliveryDay,
+                    selectedInstallments,
+                    selectedMode,
+                    selectedPaymentLabel: selectedPayment?.label || paymentCopy.methods.creditCard,
+                    selectedProductEntries,
+                    selectedUnitsCount,
+                    strings,
+                    subscriptionCycleCharcoalUsed,
+                    subscriptionCycleSeasoningsUsed,
+                    subscriptionCycleSidesUsed,
+                    subscriptionCycleUtensilsUsed,
+                    subscriptionCycleWeightUsed,
+                    tokens,
+                  }}
+                />
+              )}
+              right={currentStep !== "resumo" ? (
+                <CheckoutFlowRight
                   activeSubscription={activeSubscription}
                   activeSubscriptionLabel={activeSubscriptionLabel}
                   currentFreightOption={currentFreightOption}
@@ -295,6 +241,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                   currentSubscriptionPlan={currentSubscriptionPlan}
                   formatMeasure={formatClientCheckoutMeasure}
                   formatMoney={formatClientCheckoutMoney}
+                  onAddProduct={actions.addProduct}
                   onNextStep={() => {
                     if (currentStep === "montagem") {
                       runtime.requestProtectedStep("entrega", actions.setCurrentStep);
@@ -317,8 +264,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                   selectedProteinKg={selectedProteinKg}
                   selectedSeasoningCount={selectedSeasoningCount}
                   selectedSideCount={selectedSideCount}
-                  selectedUnitsCount={selectedUnitsCount}
                   selectedUtensilCount={selectedUtensilCount}
+                  stepOrder={config.stepOrder}
                   strings={strings}
                   subscriptionCycleCharcoalUsed={subscriptionCycleCharcoalUsed}
                   subscriptionCycleCutsUsed={subscriptionCycleCutsUsed}
@@ -329,8 +276,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                   subscriptionSummaryUsage={subscriptionSummaryUsage}
                   tokens={tokens}
                 />
-              ) : null}
-            </section>
+              ) : undefined}
+            />
           ) : null}
         </Container>
       </main>

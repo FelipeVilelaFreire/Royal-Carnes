@@ -65,6 +65,21 @@ export const createCheckoutStyles = (theme: any) => {
       minWidth: space3xl + space2xl,
       padding: spaceMd,
     },
+    modeCardCompact: {
+      borderColor: colors.border,
+      borderRadius: radiusLg,
+      borderWidth: stroke,
+      minWidth: space3xl + space2xl,
+      padding: spaceSm,
+    },
+    modeCardCompactActive: {
+      backgroundColor: colors.surfaceContainer,
+      borderColor: colors.copper,
+      borderRadius: radiusLg,
+      borderWidth: stroke,
+      minWidth: space3xl + space2xl,
+      padding: spaceSm,
+    },
     modeCardContent: {
       gap: spaceSm,
     },

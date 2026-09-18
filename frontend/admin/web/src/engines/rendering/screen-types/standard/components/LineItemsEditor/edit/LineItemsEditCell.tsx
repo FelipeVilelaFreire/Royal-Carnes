@@ -3,9 +3,10 @@ import { CurrencyInput } from "@foundation/ui/web/CurrencyInput";
 import { DropdownPicker } from "@foundation/ui/web/DropdownPicker";
 import { FormattedInput } from "@foundation/ui/web/FormattedInput";
 import { Select } from "@foundation/ui/web/Select";
+import { Text } from "@foundation/ui/web/Text";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
-import { resolveLineItemMaximum, resolveLineItemOptions, resolveLineItemSuffix } from "../line-items.utils";
+import { resolveLineItemDisplayValue, resolveLineItemMaximum, resolveLineItemOptions, resolveLineItemSuffix } from "../line-items.utils";
 import styles from "../LineItemsEditor.module.css";
 
 interface LineItemsEditCellProps {
@@ -23,6 +24,10 @@ export const LineItemsEditCell: React.FC<LineItemsEditCellProps> = ({ column, it
     { label: t("forms.selectOption"), value: "" },
     ...options.map((option) => ({ label: option.label || t(option.labelKey || "", option.value), value: option.value })),
   ];
+
+  if (column.readOnly) {
+    return <Text as="span" className={styles.readOnlyValue} variant="body">{resolveLineItemDisplayValue(column, item, t) || t("common.emptyValue")}</Text>;
+  }
 
   if (column.type === "select" && column.presentation === "media") {
     return <DropdownPicker ariaLabel={t(column.labelKey)} onChange={(value) => onChangeColumn(column, value)} options={selectOptions.map((option) => {

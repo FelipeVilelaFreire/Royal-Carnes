@@ -192,6 +192,7 @@ export interface AdminProductCreateDto {
 }
 
 export interface AdminCatalogSnapshot {
+  categories: CategoryBase[];
   collections: CollectionBase[];
   commercialModes: CommercialModeBase[];
   products: ProductBase[];

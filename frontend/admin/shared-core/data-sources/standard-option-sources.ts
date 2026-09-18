@@ -22,12 +22,73 @@ function resolveStatusOptionPresentation(metadata: unknown) {
   };
 }
 
-const adminStandardOptionSourceLoaders = {
-  categorias: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
-    (await createAdminCatalogApi(apiConfig).listCategories()).map((category) => ({
-      label: category.name,
+async function loadCapacityTargetOptions(
+  apiConfig: ApiClientConfig,
+  options: { parentCategoriesOnly?: boolean } = {},
+): Promise<AdminStandardFieldOption[]> {
+  const api = createAdminCatalogApi(apiConfig);
+  const [categories, products] = await Promise.all([api.listCategories(), api.listProducts()]);
+  const categoryById = new Map(categories.map((category) => [String(category.id), category]));
+  const pathFor = (categoryId: string | number | null | undefined) => {
+    const names: string[] = [];
+    let category = categoryId ? categoryById.get(String(categoryId)) : undefined;
+    while (category) {
+      names.unshift(category.name);
+      category = category.parentId ? categoryById.get(String(category.parentId)) : undefined;
+    }
+    return names;
+  };
+  const unitsByCategory = new Map(categories.map((category) => [String(category.id), new Set<string>()]));
+  products.forEach((product) => {
+    product.categories.forEach((productCategory) => {
+      let category = categoryById.get(String(productCategory.id));
+      while (category) {
+        unitsByCategory.get(String(category.id))?.add(product.unit);
+        category = category.parentId ? categoryById.get(String(category.parentId)) : undefined;
+      }
+    });
+  });
+  const categoryOptions = categories.flatMap((category) => {
+    if (options.parentCategoriesOnly && category.parentId) return [];
+    const units = [...(unitsByCategory.get(String(category.id)) || [])];
+    if (units.length !== 1) return [];
+    const hierarchyLabel = pathFor(category.id).join(" / ");
+    return [{
+      label: hierarchyLabel,
+      meta: { hierarchyLabel, measurementUnitKey: units[0], targetType: "category" },
       value: category.key,
-    })),
+    }];
+  });
+  const productOptions = options.parentCategoriesOnly ? [] : products.map((product) => {
+    const category = product.categories.find((candidate) => candidate.key === product.primaryCategoryKey)
+      || product.categories[0];
+    const hierarchyLabel = [...pathFor(category?.id), product.name].join(" / ");
+    return {
+      label: hierarchyLabel,
+      meta: { hierarchyLabel, measurementUnitKey: product.unit, targetType: "product" },
+      value: product.key,
+    };
+  });
+  return [...categoryOptions, ...productOptions];
+}
+
+const adminStandardOptionSourceLoaders = {
+  capacidadeAlvos: loadCapacityTargetOptions,
+  capacidadeAlvosPai: async (apiConfig: ApiClientConfig) => loadCapacityTargetOptions(apiConfig, { parentCategoriesOnly: true }),
+  categorias: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> => {
+    const categories = await createAdminCatalogApi(apiConfig).listCategories();
+    const byId = new Map(categories.map((category) => [String(category.id), category]));
+    const labelFor = (category: typeof categories[number]) => {
+      const names = [category.name];
+      let parent = category.parentId ? byId.get(String(category.parentId)) : undefined;
+      while (parent) {
+        names.unshift(parent.name);
+        parent = parent.parentId ? byId.get(String(parent.parentId)) : undefined;
+      }
+      return names.join(" / ");
+    };
+    return categories.map((category) => ({ label: labelFor(category), value: category.key }));
+  },
   colecoes: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
     (await createAdminCatalogApi(apiConfig).listAdminCollections()).map((collection) => ({
       label: collection.name,
@@ -153,6 +214,7 @@ const adminStandardOptionSourceLoaders = {
     (await createAdminCatalogApi(apiConfig).listProducts()).flatMap((product) =>
       product.variants.map((variant) => ({
         label: `${product.name} - ${variant.name}`,
+        meta: { measurementUnitKey: variant.measurementUnit?.key || variant.unit },
         value: variant.sku || String(variant.id),
       })),
     ),

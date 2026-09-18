@@ -41,6 +41,7 @@ function mapAdminPlanEntitlementDto(dto: AdminPlanEntitlementDto): PlanEntitleme
     targetType: dto.target_type,
     targetKey: dto.target_key ?? null,
     targetName: dto.target_name ?? null,
+    targetPath: dto.target_path || [],
     quantity: String(dto.quantity),
     measurementUnitKey: dto.measurement_unit_key ?? null,
     measurementUnitSymbol: dto.measurement_unit_symbol ?? null,

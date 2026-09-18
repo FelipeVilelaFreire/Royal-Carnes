@@ -6,6 +6,7 @@ export type NativeHostComponentProps = Record<string, any> & { children?: ReactN
 export type NativeHostComponent = React.ComponentType<NativeHostComponentProps>;
 
 export interface FoundationHostComponents {
+  Image?: NativeHostComponent;
   Pressable: NativeHostComponent;
   Text: NativeHostComponent;
   TextInput?: NativeHostComponent;

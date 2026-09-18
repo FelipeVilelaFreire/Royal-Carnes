@@ -45,6 +45,7 @@ from apps.subscriptions.services import (
     upsert_subscription,
     upsert_subscription_cycle,
     upsert_subscription_cycle_item,
+    validate_plan_capacity_hierarchy,
 )
 from apps.inventory.services import upsert_inventory_item
 from apps.core.code_sequences import upsert_code_sequence
@@ -277,6 +278,7 @@ class BackendSeedApplier:
                 name=category_data["name"],
                 parent=self.categories_by_key.get(category_data.get("parentKey", "")),
                 sort_order=category_data.get("sortOrder", 0),
+                is_active=category_data.get("isActive", True),
             )
 
         for commercial_mode_data in data.get("commercialModes", []):
@@ -416,8 +418,20 @@ class BackendSeedApplier:
                     measurement_unit_key=entitlement_data.get("measurementUnitKey"),
                     constraints=entitlement_data.get("constraints", {}),
                     sort_order=entitlement_data.get("sortOrder", entitlement_order),
+                    legacy_keys=entitlement_data.get("legacyKeys", []),
                 )
                 self.entitlements_by_key[f"{plan.key}:{entitlement.key}"] = entitlement
+            if plan_data.get("reconcileEntitlements"):
+                seeded_keys = {entitlement_data["key"] for entitlement_data in plan_data.get("entitlements", [])}
+                stale_entitlements = plan.entitlements.exclude(key__in=seeded_keys)
+                for stale_entitlement in stale_entitlements.exclude(cycle_items__isnull=True):
+                    constraints = {**(stale_entitlement.constraints or {})}
+                    constraints.pop("allocationMode", None)
+                    constraints.pop("parentCapacityKey", None)
+                    stale_entitlement.constraints = constraints
+                    stale_entitlement.save(update_fields=["constraints", "updated_at"])
+                stale_entitlements.filter(cycle_items__isnull=True).delete()
+            validate_plan_capacity_hierarchy(plan=plan)
 
         subscriptions_by_key = {}
         cycles_by_key = {}

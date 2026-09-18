@@ -41,19 +41,27 @@
   "categories": [
     { "key": "carnes", "name": "Carnes", "sortOrder": 10 },
     { "key": "bovinos", "name": "Bovinos", "parentKey": "carnes", "sortOrder": 20 },
-    { "key": "bovinos-premium", "name": "Bovinos premium", "parentKey": "bovinos", "sortOrder": 30 },
-    { "key": "bovinos-dia-a-dia", "name": "Bovinos do dia a dia", "parentKey": "bovinos", "sortOrder": 40 },
-    { "key": "preparo-lento", "name": "Preparo lento", "parentKey": "bovinos", "sortOrder": 50 },
     { "key": "aves", "name": "Aves", "parentKey": "carnes", "sortOrder": 60 },
     { "key": "suinos", "name": "Suinos", "parentKey": "carnes", "sortOrder": 70 },
     { "key": "linguicas", "name": "Linguicas", "parentKey": "suinos", "sortOrder": 80 },
-    { "key": "combos", "name": "Combos e kits", "sortOrder": 90 },
-    { "key": "kits-churrasco", "name": "Kits para churrasco", "parentKey": "combos", "sortOrder": 100 },
-    { "key": "kits-familia", "name": "Kits familia", "parentKey": "combos", "sortOrder": 110 },
-    { "key": "acompanhamentos", "name": "Acompanhamentos", "sortOrder": 120 },
-    { "key": "carvao", "name": "Carvao", "parentKey": "acompanhamentos", "sortOrder": 130 },
-    { "key": "temperos", "name": "Temperos", "parentKey": "acompanhamentos", "sortOrder": 140 },
-    { "key": "utensilios", "name": "Utensilios", "parentKey": "acompanhamentos", "sortOrder": 150 }
+    { "key": "suinos-preparo-lento", "name": "Suinos para preparo lento", "parentKey": "suinos", "sortOrder": 90 },
+    { "key": "acompanhamentos", "name": "Acompanhamentos", "sortOrder": 100 },
+    { "key": "temperos", "name": "Temperos", "parentKey": "acompanhamentos", "sortOrder": 110 },
+    { "key": "molhos", "name": "Molhos", "parentKey": "acompanhamentos", "sortOrder": 115 },
+    { "key": "paes", "name": "Paes e acompanhamentos", "parentKey": "acompanhamentos", "sortOrder": 118 },
+    { "key": "carvao", "name": "Carvao", "sortOrder": 120 },
+    { "key": "acendedores", "name": "Acendedores", "parentKey": "carvao", "sortOrder": 125 },
+    { "key": "utensilios", "name": "Utensilios", "sortOrder": 130 },
+    { "key": "espetos", "name": "Espetos", "parentKey": "utensilios", "sortOrder": 140 },
+    { "key": "facas", "name": "Facas e jogos", "parentKey": "utensilios", "sortOrder": 150 },
+    { "key": "grelhas", "name": "Grelhas", "parentKey": "utensilios", "sortOrder": 160 },
+    { "key": "tabuas", "name": "Tabuas", "parentKey": "utensilios", "sortOrder": 165 },
+    { "key": "acessorios-churrasco", "name": "Acessorios", "parentKey": "utensilios", "sortOrder": 168 },
+    { "key": "brindes", "name": "Brindes", "sortOrder": 170 },
+    { "key": "preparo-lento", "name": "Preparo lento (legado)", "parentKey": "bovinos", "sortOrder": 890, "isActive": false },
+    { "key": "combos", "name": "Combos e kits (legado)", "sortOrder": 900, "isActive": false },
+    { "key": "kits-churrasco", "name": "Kits para churrasco (legado)", "parentKey": "combos", "sortOrder": 910, "isActive": false },
+    { "key": "kits-familia", "name": "Kits familia (legado)", "parentKey": "combos", "sortOrder": 920, "isActive": false }
   ],
   "commercialModes": [
     { "key": "subscription", "name": "Assinatura" },
@@ -102,7 +110,7 @@
       "key": "picanha",
       "name": "Picanha",
       "description": "Corte premium com capa de gordura uniforme para churrasco, box mensal e pedidos de ultima hora.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-premium", "combos", "kits-churrasco"],
+      "categoryKeys": ["bovinos"],
       "collections": ["colecao-familia", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 8990,
@@ -163,7 +171,7 @@
       "key": "maminha",
       "name": "Maminha",
       "description": "Corte macio e versatil para churrasco familiar, forno e preparo do dia a dia.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-dia-a-dia", "combos", "kits-familia"],
+      "categoryKeys": ["bovinos"],
       "collections": ["colecao-familia", "dia-a-dia", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 6490,
@@ -200,7 +208,7 @@
       "key": "fraldinha",
       "name": "Fraldinha",
       "description": "Corte versatil para churrasco familiar e preparo do dia a dia, com alta recorrencia de compra.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-dia-a-dia", "combos", "kits-familia"],
+      "categoryKeys": ["bovinos"],
       "collections": ["colecao-familia", "dia-a-dia"],
       "unit": "kg",
       "priceCents": 5990,
@@ -237,7 +245,7 @@
       "key": "alcatra",
       "name": "Alcatra",
       "description": "Corte bovino classico para bifes, espetinhos, churrasco simples e compra recorrente.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-dia-a-dia"],
+      "categoryKeys": ["bovinos"],
       "collections": ["dia-a-dia", "colecao-familia"],
       "unit": "kg",
       "priceCents": 5590,
@@ -274,7 +282,7 @@
       "key": "contra-file",
       "name": "Contra-file",
       "description": "Corte bovino de churrascaria para bifes altos, grelha rapida e kit premium.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-premium"],
+      "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium", "colecao-familia"],
       "unit": "kg",
       "priceCents": 6990,
@@ -311,7 +319,7 @@
       "key": "ancho",
       "name": "Ancho",
       "description": "Bife ancho marmorizado para linha premium, com preco separado por canal comercial.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-premium"],
+      "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium"],
       "unit": "kg",
       "priceCents": 7990,
@@ -348,7 +356,7 @@
       "key": "costela-bovina",
       "name": "Costela bovina",
       "description": "Corte brasileiro classico para preparo lento, churrasqueira, forno e colecao de inverno.",
-      "categoryKeys": ["carnes", "bovinos", "preparo-lento", "combos", "kits-churrasco"],
+      "categoryKeys": ["bovinos"],
       "collections": ["colecao-inverno", "colecao-familia", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 4490,
@@ -385,7 +393,7 @@
       "key": "cupim",
       "name": "Cupim",
       "description": "Corte de preparo lento muito usado no churrasco brasileiro, ideal para box de fim de semana.",
-      "categoryKeys": ["carnes", "bovinos", "preparo-lento"],
+      "categoryKeys": ["bovinos"],
       "collections": ["colecao-inverno", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 5290,
@@ -422,7 +430,7 @@
       "key": "tomahawk",
       "name": "Tomahawk",
       "description": "Corte de alto impacto visual para ocasioes especiais, campanhas premium e box presenteavel.",
-      "categoryKeys": ["carnes", "bovinos", "bovinos-premium", "combos", "kits-churrasco"],
+      "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium", "colecao-inverno"],
       "unit": "kg",
       "priceCents": 12990,
@@ -459,7 +467,7 @@
       "key": "coxinha-da-asa",
       "name": "Coxinha da asa",
       "description": "Frango pratico para aperitivo, churrasco de verao e pedidos recorrentes de familia.",
-      "categoryKeys": ["carnes", "aves", "combos", "kits-familia"],
+      "categoryKeys": ["aves"],
       "collections": ["colecao-verao", "colecao-familia", "dia-a-dia"],
       "unit": "kg",
       "priceCents": 2490,
@@ -496,7 +504,7 @@
       "key": "coracao-de-frango",
       "name": "Coracao de frango",
       "description": "Item tradicional de churrasco brasileiro para espetinho, box e compra avulsa.",
-      "categoryKeys": ["carnes", "aves", "combos", "kits-churrasco"],
+      "categoryKeys": ["aves"],
       "collections": ["colecao-verao", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 3490,
@@ -533,7 +541,7 @@
       "key": "linguica-toscana",
       "name": "Linguica toscana",
       "description": "Classico de churrasco para combos, box mensal e venda rapida por quilo.",
-      "categoryKeys": ["carnes", "suinos", "linguicas", "combos", "kits-churrasco"],
+      "categoryKeys": ["linguicas"],
       "collections": ["colecao-familia", "churrasco-premium", "dia-a-dia"],
       "unit": "kg",
       "priceCents": 2990,
@@ -570,7 +578,7 @@
       "key": "panceta-suina",
       "name": "Panceta suina",
       "description": "Corte suino de gordura e carne para pururuca, grelha e kits especiais.",
-      "categoryKeys": ["carnes", "suinos", "preparo-lento"],
+      "categoryKeys": ["suinos-preparo-lento"],
       "collections": ["colecao-inverno", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 3990,
@@ -604,10 +612,422 @@
       ]
     },
     {
+      "key": "sal-de-parrilla",
+      "name": "Sal de Parrilla",
+      "description": "Sal de granulometria media para finalizar carnes na grelha e compor a compra completa do churrasco.",
+      "categoryKeys": ["temperos"],
+      "collections": ["churrasco-premium", "dia-a-dia"],
+      "unit": "unit",
+      "priceCents": 2490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [
+        {
+          "url": "https://fortatacadista.vteximg.com.br/arquivos/ids/301361-1000-1000/2614685-Sal-de-Parrilla-Dom-Fiorelo-para-Churrasco-400g.jpg?v=637818392292330000",
+          "alt": "Pote de sal de parrilla para churrasco",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "SAL-PARRILLA-400G",
+          "name": "Sal de Parrilla 400g",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "weightGrams": 400,
+          "priceCents": 2490,
+          "commercialModes": ["subscription", "delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "jogo-churrasco-3-pecas",
+      "name": "Jogo para churrasco 3 pecas",
+      "description": "Conjunto com faca, garfo trinchante e tabua para preparar e servir o churrasco.",
+      "categoryKeys": ["facas"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 15990,
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://tramontinaar.vtexassets.com/arquivos/ids/172777/21198914ENM001G.jpg?v=638252809089930000",
+          "alt": "Jogo de faca, garfo e tabua para churrasco",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "JOGO-CHURRASCO-3PCS",
+          "name": "Jogo para churrasco 3 pecas",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 15990,
+          "commercialModes": ["delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "kit-espetos-inox",
+      "name": "Kit de espetos inox",
+      "description": "Kit reutilizavel de espetos para churrasco, pratico para completar o pedido ou presentear.",
+      "categoryKeys": ["espetos"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 6990,
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://tramontinaar.vtexassets.com/arquivos/ids/172777/21198914ENM001G.jpg?v=638252809089930000",
+          "alt": "Utensilios de aco para preparo de churrasco",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "ESPETOS-INOX-6UN",
+          "name": "Kit de espetos inox 6 unidades",
+          "unit": "unit",
+          "unitQuantity": 6,
+          "priceCents": 6990,
+          "commercialModes": ["delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "grelha-dupla-inox",
+      "name": "Grelha dupla inox",
+      "description": "Grelha com abertura lateral para assar, virar e servir cortes e acompanhamentos na churrasqueira.",
+      "categoryKeys": ["grelhas"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 8990,
+      "commercialModes": ["delivery", "box"],
+      "media": [
+        {
+          "url": "https://images.tcdn.com.br/img/img_prod/1117210/grelha_dupla_em_aco_inox_grande_c_abertura_lateral_547_3_2ca0cc32645bb101933feee41ffad8e6.jpg",
+          "alt": "Grelha dupla de aco inox para churrasqueira",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "GRELHA-DUPLA-INOX-G",
+          "name": "Grelha dupla inox grande",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 8990,
+          "commercialModes": ["delivery", "box"]
+        }
+      ]
+    },
+    {
+      "key": "avental-churrasco",
+      "name": "Avental de churrasco",
+      "description": "Avental de algodao para presentear clientes e completar a experiencia de churrasco em casa.",
+      "categoryKeys": ["brindes"],
+      "collections": ["churrasco-premium"],
+      "unit": "unit",
+      "priceCents": 0,
+      "commercialModes": ["box"],
+      "media": [
+        {
+          "url": "https://www.viainox.com/upload/produto/imagem/avental-estampado-tramontina-churrasco-produzido-em-tecido-100-algod-o.webp",
+          "alt": "Avental de algodao para churrasco",
+          "isPrimary": true
+        }
+      ],
+      "variants": [
+        {
+          "sku": "AVENTAL-CHURRASCO",
+          "name": "Avental de churrasco",
+          "unit": "unit",
+          "unitQuantity": 1,
+          "priceCents": 0,
+          "commercialModes": ["box"]
+        }
+      ]
+    },
+    {
+      "key": "file-mignon",
+      "name": "File mignon",
+      "description": "Corte bovino macio para medalhoes, grelha rapida e ocasioes especiais.",
+      "categoryKeys": ["bovinos"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 10990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80", "alt": "Corte bovino premium para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "FILE-MIGNON-500G", "name": "File mignon 500g", "unit": "kg", "unitQuantity": 0.5, "weightGrams": 500, "priceCents": 5690, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "FILE-MIGNON-1KG", "name": "File mignon 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 10990, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "bife-de-chorizo",
+      "name": "Bife de chorizo",
+      "description": "Corte alto e marmorizado, ideal para uma grelha intensa e churrasco premium.",
+      "categoryKeys": ["bovinos"],
+      "collections": ["churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 8290,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.tcdn.com.br/img/img_prod/1249907/contra_file_bovino_550gr_557_1_6a4425fca4f02e4e54e749351360a442.jpg", "alt": "Bife bovino para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "CHORIZO-600G", "name": "Bife de chorizo 600g", "unit": "kg", "unitQuantity": 0.6, "weightGrams": 600, "priceCents": 4990, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "CHORIZO-1KG", "name": "Bife de chorizo 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 8290, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "acem-bovino",
+      "name": "Acem bovino",
+      "description": "Corte versatil para espetinhos, hamburguer e preparos de longa coccao.",
+      "categoryKeys": ["bovinos"],
+      "collections": ["dia-a-dia", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 3890,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=1200&q=80", "alt": "Corte bovino para preparo diario", "isPrimary": true }],
+      "variants": [
+        { "sku": "ACEM-700G", "name": "Acem bovino 700g", "unit": "kg", "unitQuantity": 0.7, "weightGrams": 700, "priceCents": 2790, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "ACEM-1KG", "name": "Acem bovino 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 3890, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "patinho-bovino",
+      "name": "Patinho bovino",
+      "description": "Corte magro para bifes, carne moida e a rotina da familia.",
+      "categoryKeys": ["bovinos"],
+      "collections": ["dia-a-dia", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 4290,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?auto=format&fit=crop&w=1200&q=80", "alt": "Carne bovina magra fresca", "isPrimary": true }],
+      "variants": [
+        { "sku": "PATINHO-500G", "name": "Patinho bovino 500g", "unit": "kg", "unitQuantity": 0.5, "weightGrams": 500, "priceCents": 2190, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "PATINHO-1KG", "name": "Patinho bovino 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 4290, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "short-rib",
+      "name": "Short rib",
+      "description": "Corte bovino com osso para fogo lento, defumacao e churrasco de fim de semana.",
+      "categoryKeys": ["bovinos"],
+      "collections": ["colecao-inverno", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 6790,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://assets.instabuy.app.br/ib.item.image.large/l-77969cdca50e4e709d62789d090b9005.jpeg", "alt": "Costela bovina para preparo lento", "isPrimary": true }],
+      "variants": [
+        { "sku": "SHORT-RIB-1KG", "name": "Short rib 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 6790, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "SHORT-RIB-15KG", "name": "Short rib 1.5kg", "unit": "kg", "unitQuantity": 1.5, "weightGrams": 1500, "priceCents": 9990, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "asa-de-frango",
+      "name": "Asa de frango",
+      "description": "Asas para churrasco, aperitivo e encontros de familia.",
+      "categoryKeys": ["aves"],
+      "collections": ["colecao-verao", "colecao-familia", "dia-a-dia"],
+      "unit": "kg",
+      "priceCents": 2190,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://swiftbr.vteximg.com.br/arquivos/ids/209620-551-502/617524-coxinha-da-asa-swift-do-campo_inn.webp?v=638894846338070000", "alt": "Asas de frango para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "ASA-FRANGO-1KG", "name": "Asa de frango 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 2190, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "ASA-FRANGO-2KG", "name": "Asa de frango 2kg", "unit": "kg", "unitQuantity": 2, "weightGrams": 2000, "priceCents": 4190, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "sobrecoxa-de-frango",
+      "name": "Sobrecoxa de frango",
+      "description": "Sobrecoxa temperada para grelha, forno e compra recorrente.",
+      "categoryKeys": ["aves"],
+      "collections": ["dia-a-dia", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 2390,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=1200&q=80", "alt": "Frango fresco para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "SOBRECOXA-1KG", "name": "Sobrecoxa de frango 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 2390, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "SOBRECOXA-2KG", "name": "Sobrecoxa de frango 2kg", "unit": "kg", "unitQuantity": 2, "weightGrams": 2000, "priceCents": 4590, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "tulipa-de-frango",
+      "name": "Tulipa de frango",
+      "description": "Tulipas para servir como aperitivo no churrasco e em pedidos rapidos.",
+      "categoryKeys": ["aves"],
+      "collections": ["colecao-verao", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 2690,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=1200&q=80", "alt": "Tulipas de frango para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "TULIPA-1KG", "name": "Tulipa de frango 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 2690, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "costelinha-suina",
+      "name": "Costelinha suina",
+      "description": "Costelinha para assar lentamente ou finalizar na churrasqueira.",
+      "categoryKeys": ["suinos-preparo-lento"],
+      "collections": ["colecao-inverno", "churrasco-premium"],
+      "unit": "kg",
+      "priceCents": 3690,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80", "alt": "Costelinha suina para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "COSTELINHA-SUINA-1KG", "name": "Costelinha suina 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 3690, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "COSTELINHA-SUINA-15KG", "name": "Costelinha suina 1.5kg", "unit": "kg", "unitQuantity": 1.5, "weightGrams": 1500, "priceCents": 5390, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "lombo-suino",
+      "name": "Lombo suino",
+      "description": "Lombo suino para assar inteiro, fatiar ou levar para a grelha.",
+      "categoryKeys": ["suinos-preparo-lento"],
+      "collections": ["dia-a-dia", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 3590,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.tcdn.com.br/img/img_prod/1249907/panceta_suina_550gr_579_1_c2eb9a725e8ca2b248d32d156cb1bfaa.jpg", "alt": "Corte suino fresco", "isPrimary": true }],
+      "variants": [
+        { "sku": "LOMBO-SUINO-1KG", "name": "Lombo suino 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 3590, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "LOMBO-SUINO-15KG", "name": "Lombo suino 1.5kg", "unit": "kg", "unitQuantity": 1.5, "weightGrams": 1500, "priceCents": 5190, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "pernil-suino",
+      "name": "Pernil suino",
+      "description": "Pernil para preparo lento, ceias, churrascos e porcoes de familia.",
+      "categoryKeys": ["suinos-preparo-lento"],
+      "collections": ["colecao-inverno", "colecao-familia"],
+      "unit": "kg",
+      "priceCents": 3290,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=1200&q=80", "alt": "Pernil suino para assar", "isPrimary": true }],
+      "variants": [
+        { "sku": "PERNIL-SUINO-1KG", "name": "Pernil suino 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 3290, "commercialModes": ["subscription", "delivery", "box"] },
+        { "sku": "PERNIL-SUINO-2KG", "name": "Pernil suino 2kg", "unit": "kg", "unitQuantity": 2, "weightGrams": 2000, "priceCents": 6290, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "chimichurri-seco",
+      "name": "Chimichurri seco",
+      "description": "Tempero de ervas para carnes, legumes e marinadas de churrasco.",
+      "categoryKeys": ["temperos"],
+      "collections": ["churrasco-premium", "dia-a-dia"],
+      "unit": "unit",
+      "priceCents": 1890,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://fortatacadista.vteximg.com.br/arquivos/ids/301361-1000-1000/2614685-Sal-de-Parrilla-Dom-Fiorelo-para-Churrasco-400g.jpg?v=637818392292330000", "alt": "Tempero para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "CHIMICHURRI-100G", "name": "Chimichurri seco 100g", "unit": "unit", "unitQuantity": 1, "weightGrams": 100, "priceCents": 1890, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "molho-barbecue",
+      "name": "Molho barbecue",
+      "description": "Molho barbecue para finalizar carnes, hamburgueres e acompanhamentos.",
+      "categoryKeys": ["molhos"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 2290,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=1200&q=80", "alt": "Molho barbecue para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "MOLHO-BARBECUE-400G", "name": "Molho barbecue 400g", "unit": "unit", "unitQuantity": 1, "weightGrams": 400, "priceCents": 2290, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "pao-de-alho",
+      "name": "Pao de alho",
+      "description": "Pao de alho para grelhar e completar a caixa de churrasco.",
+      "categoryKeys": ["paes"],
+      "collections": ["colecao-familia", "colecao-verao"],
+      "unit": "unit",
+      "priceCents": 1690,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=1200&q=80", "alt": "Pao de alho para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "PAO-ALHO-400G", "name": "Pao de alho pacote 400g", "unit": "unit", "unitQuantity": 1, "weightGrams": 400, "priceCents": 1690, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "farofa-artesanal",
+      "name": "Farofa artesanal",
+      "description": "Farofa crocante para acompanhar carnes e o churrasco completo.",
+      "categoryKeys": ["paes"],
+      "collections": ["colecao-familia", "dia-a-dia"],
+      "unit": "unit",
+      "priceCents": 1490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=80", "alt": "Acompanhamento para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "FAROFA-300G", "name": "Farofa artesanal 300g", "unit": "unit", "unitQuantity": 1, "weightGrams": 300, "priceCents": 1490, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "tabua-madeira",
+      "name": "Tabua de madeira",
+      "description": "Tabua para preparo e servico de carnes no churrasco.",
+      "categoryKeys": ["tabuas"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 7990,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://lojasbecker.vtexassets.com/arquivos/ids/4016931/kit-churrasco-tramontina-03.jpg?v=638835110420300000", "alt": "Tabua de madeira para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "TABUA-MADEIRA-M", "name": "Tabua de madeira media", "unit": "unit", "unitQuantity": 1, "priceCents": 7990, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "faca-chef-churrasco",
+      "name": "Faca chef para churrasco",
+      "description": "Faca em inox para corte, preparo e servico das carnes.",
+      "categoryKeys": ["facas"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 6490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://expresso10.cdn.magazord.com.br/img/2023/03/produto/75311/22399036pdma001.jpeg", "alt": "Faca de inox para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "FACA-CHEF-8", "name": "Faca chef churrasco 8 polegadas", "unit": "unit", "unitQuantity": 1, "priceCents": 6490, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "pegador-inox",
+      "name": "Pegador inox",
+      "description": "Pegador em inox para virar e servir carnes na churrasqueira.",
+      "categoryKeys": ["acessorios-churrasco"],
+      "collections": ["churrasco-premium", "colecao-familia"],
+      "unit": "unit",
+      "priceCents": 3490,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://palaciodaarte.com/cdn/shop/files/jogo-para-churrasco-inox-3pcs-polywood-tramontina-natural-21198462-palacio-da-arte-19773.jpg?v=1749488100&width=1066", "alt": "Acessorio em inox para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "PEGADOR-INOX-40CM", "name": "Pegador inox 40cm", "unit": "unit", "unitQuantity": 1, "priceCents": 3490, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
+      "key": "acendedor-ecologico",
+      "name": "Acendedor ecologico",
+      "description": "Acendedor para iniciar o carvao com praticidade e completar o pedido.",
+      "categoryKeys": ["acendedores"],
+      "collections": ["churrasco-premium", "dia-a-dia"],
+      "unit": "unit",
+      "priceCents": 1290,
+      "commercialModes": ["subscription", "delivery", "box"],
+      "media": [{ "url": "https://metro-muscat.com/cdn/shop/files/uat7HIndom_588x588.webp?v=1746445676", "alt": "Carvao e acendedor para churrasco", "isPrimary": true }],
+      "variants": [
+        { "sku": "ACENDEDOR-ECO-24UN", "name": "Acendedor ecologico 24 unidades", "unit": "unit", "unitQuantity": 1, "priceCents": 1290, "commercialModes": ["subscription", "delivery", "box"] }
+      ]
+    },
+    {
       "key": "carvao-premium",
       "name": "Carvao Premium",
       "description": "Carvao de apoio para pedido de churrasco, box e venda avulsa com ticket complementar.",
-      "categoryKeys": ["acompanhamentos", "carvao"],
+      "categoryKeys": ["carvao"],
       "collections": ["churrasco-premium", "dia-a-dia"],
       "unit": "bag",
       "priceCents": 3490,

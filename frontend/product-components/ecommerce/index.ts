@@ -1,5 +1,7 @@
 export { ProductItemCard } from "./web/ProductItemCard";
 export type { ProductItemCardProps } from "./web/ProductItemCard";
+export { OrderSummaryItem } from "./web/OrderSummaryItem";
+export type { OrderSummaryItemProps } from "./web/OrderSummaryItem";
 export {
   productItemCardCompositions,
   resolveProductItemCardComposition,

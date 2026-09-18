@@ -95,6 +95,9 @@ export function injectThemeTokens(target: "client" | "admin" = "client", customM
   root.style.setProperty("--theme--radius-full", px(tokens.radius?.full ?? themeTokens.radius.full));
   root.style.setProperty("--theme--spacing-md", px(tokens.spacing?.spaceMd ?? themeTokens.spacing.md));
   root.style.setProperty("--theme--spacing-lg", px(tokens.spacing?.spaceLg ?? themeTokens.spacing.lg));
+  root.style.setProperty("--theme--layout-container-xs", px(tokens.layout?.containerXs ?? 360));
+  root.style.setProperty("--theme--layout-container-compact", px(tokens.layout?.containerCompact ?? 400));
+  root.style.setProperty("--theme--layout-container-auth", px(tokens.layout?.containerAuth ?? 560));
   root.style.setProperty("--theme--layout-container-sm", px(tokens.layout?.containerSm ?? 720));
   root.style.setProperty("--theme--layout-container-md", px(tokens.layout?.containerMd ?? 960));
   root.style.setProperty("--theme--layout-container-lg", px(tokens.layout?.containerLg ?? 1180));

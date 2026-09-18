@@ -1,0 +1,27 @@
+.root {
+  align-items: flex-start;
+  animation: pedidoAppear var(--theme--motion-durationLg) ease both;
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+}
+
+.withSummary {
+  grid-template-columns: minmax(0, 7fr) minmax(calc(var(--theme--dimensions-minWidth-3xl) + var(--theme--dimensions-minWidth-lg)), 3fr);
+}
+
+.review {
+  grid-template-columns: 1fr;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--theme--spacing-spaceLg);
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .withSummary {
+    grid-template-columns: 1fr;
+  }
+}

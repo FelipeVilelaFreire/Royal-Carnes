@@ -2,10 +2,11 @@ import React from "react";
 import { Button } from "@foundation/ui/web/Button";
 import { PlusIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { Text } from "@foundation/ui/web/Text";
-import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
+import type { AdminStandardLineItemColumnViewModel, AdminStandardLineItemsHierarchyViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
 import { LineItemsEditorRow } from "./edit/LineItemsEditorRow";
 import { LineItemsReadTable } from "./read/LineItemsReadTable";
+import { LineItemsHierarchy } from "./read/LineItemsHierarchy";
 import { LineItemsTable } from "./table/LineItemsTable";
 import { createEmptyLineItem, resolveNextLineItem } from "./line-items.utils";
 import styles from "./LineItemsEditor.module.css";
@@ -14,6 +15,7 @@ export interface LineItemsEditorProps {
   addLabel: string;
   columns: AdminStandardLineItemColumnViewModel[];
   emptyLabel: string;
+  hierarchy?: AdminStandardLineItemsHierarchyViewModel;
   onChange: (value: Array<Record<string, any>>) => void;
   readOnly?: boolean;
   removeLabel: string;
@@ -25,6 +27,7 @@ export const LineItemsEditor: React.FC<LineItemsEditorProps> = ({
   addLabel,
   columns,
   emptyLabel,
+  hierarchy,
   onChange,
   readOnly = false,
   removeLabel,
@@ -52,7 +55,7 @@ export const LineItemsEditor: React.FC<LineItemsEditorProps> = ({
   if (readOnly) {
     return (
       <div className={styles.editor}>
-        {items.length ? <LineItemsReadTable columns={columns} items={items} t={t} /> : (
+        {items.length ? hierarchy ? <LineItemsHierarchy columns={columns} hierarchy={hierarchy} items={items} t={t} /> : <LineItemsReadTable columns={columns} items={items} t={t} /> : (
           <div className={styles.empty}>
             <Text tone="muted" variant="body">{emptyLabel}</Text>
           </div>

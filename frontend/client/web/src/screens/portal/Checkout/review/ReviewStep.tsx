@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Grid, Inline, Stack, Surface, Text } from "@foundation/ui";
+import { OrderSummaryItem } from "@royalprime/product-components/ecommerce";
 import type {
   ClientCheckoutFreightOptionKey,
   ClientCheckoutProduct,
-  ClientCheckoutProductCategory,
   ClientCheckoutProductExperience,
   ClientCheckoutSubscriptionPlan,
 } from "@/view-models/checkout.view-model";
@@ -12,7 +12,6 @@ import { SummaryRow } from "../summary/SummaryRow";
 import styles from "../CheckoutView.module.css";
 
 export interface ReviewStepProps {
-  categoryById: Map<string, ClientCheckoutProductCategory>;
   currentFreightOption?: { key: ClientCheckoutFreightOptionKey; label: string; price: number };
   currentFreightPrice: number;
   currentSubscriptionPlan: ClientCheckoutSubscriptionPlan;
@@ -46,7 +45,6 @@ export interface ReviewStepProps {
 }
 
 export const ReviewStep: React.FC<ReviewStepProps> = ({
-  categoryById,
   currentFreightOption,
   currentFreightPrice,
   currentSubscriptionPlan,
@@ -127,14 +125,13 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           {selectedProductEntries.length ? (
             <Stack gap="sm">
               {selectedProductEntries.map(({ product, quantity }) => (
-                <div className={styles.summaryItem} key={product.id}>
-                  <span>{strings.format.productQuantity.replace("{quantity}", String(quantity)).replace("{product}", product.name)}</span>
-                  {selectedMode === "subscription" ? (
-                    <span>{categoryById.get(product.categoryId)?.name || strings.productCard.categoryLabel}</span>
-                  ) : (
-                    <span>{formatMoney(product.price * quantity)}</span>
-                  )}
-                </div>
+                <OrderSummaryItem
+                  detail={product.weightLabel || product.unit}
+                  image={product.image}
+                  key={product.id}
+                  name={strings.format.productQuantity.replace("{quantity}", String(quantity)).replace("{product}", product.name)}
+                  priceLabel={selectedMode === "subscription" ? undefined : formatMoney(product.price * quantity)}
+                />
               ))}
             </Stack>
           ) : (

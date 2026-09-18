@@ -98,6 +98,7 @@ def upsert_plan_entitlement(
     measurement_unit_key: str | None = None,
     constraints: dict | None = None,
     sort_order: int = 0,
+    legacy_keys: list[str] | None = None,
 ) -> PlanEntitlement:
     target_defaults = {
         "collection": None,
@@ -118,20 +119,85 @@ def upsert_plan_entitlement(
             organization=organization,
             key=measurement_unit_key,
         )
-    entitlement, _created = PlanEntitlement.objects.update_or_create(
+    defaults = {
+        "target_type": target_type,
+        "quantity": quantity,
+        "measurement_unit": measurement_unit,
+        "constraints": constraints or {},
+        "sort_order": sort_order,
+        **target_defaults,
+    }
+    entitlement = PlanEntitlement.objects.filter(
         organization=organization,
         plan=plan,
         key=key,
-        defaults={
-            "target_type": target_type,
-            "quantity": quantity,
-            "measurement_unit": measurement_unit,
-            "constraints": constraints or {},
-            "sort_order": sort_order,
-            **target_defaults,
-        },
-    )
+    ).first()
+    if entitlement is None and legacy_keys:
+        entitlement = PlanEntitlement.objects.filter(
+            organization=organization,
+            plan=plan,
+            key__in=legacy_keys,
+        ).order_by("id").first()
+    if entitlement is None:
+        return PlanEntitlement.objects.create(
+            organization=organization,
+            plan=plan,
+            key=key,
+            **defaults,
+        )
+
+    entitlement.key = key
+    for field, value in defaults.items():
+        setattr(entitlement, field, value)
+    entitlement.save(update_fields=["key", *defaults.keys(), "updated_at"])
     return entitlement
+
+
+def capacity_key_for(entitlement: PlanEntitlement) -> str:
+    return str((entitlement.constraints or {}).get("capacityKey") or entitlement.key)
+
+
+def capacity_allocation_mode(entitlement: PlanEntitlement) -> str:
+    """Return the explicit allocation mode, preserving legacy plans by default."""
+    mode = (entitlement.constraints or {}).get("allocationMode")
+    return mode if mode in {"standalone", "withinParent"} else "legacy"
+
+
+def capacity_parent_key_for(entitlement: PlanEntitlement) -> str | None:
+    parent_key = (entitlement.constraints or {}).get("parentCapacityKey")
+    return str(parent_key) if parent_key else None
+
+
+def validate_plan_capacity_hierarchy(*, plan: Plan) -> None:
+    """Validate explicit plan relationships without assuming a catalog taxonomy.
+
+    A capacity can be a root (standalone) or consume an explicitly declared
+    parent capacity.  Catalog categories only define which products are
+    eligible; the plan itself owns this allocation tree.
+    """
+    entitlements = list(plan.entitlements.all())
+    by_capacity_key = {capacity_key_for(entitlement): entitlement for entitlement in entitlements}
+    for entitlement in entitlements:
+        if capacity_allocation_mode(entitlement) != "withinParent":
+            continue
+        parent_key = capacity_parent_key_for(entitlement)
+        if not parent_key or parent_key not in by_capacity_key:
+            raise EntitlementValidationError("capacity_parent_not_found", "Capacity parent was not found")
+        if parent_key == capacity_key_for(entitlement):
+            raise EntitlementValidationError("capacity_hierarchy_cycle", "Capacity cannot be its own parent")
+
+    for entitlement in entitlements:
+        visited: set[str] = set()
+        current = entitlement
+        while capacity_allocation_mode(current) == "withinParent":
+            current_key = capacity_key_for(current)
+            if current_key in visited:
+                raise EntitlementValidationError("capacity_hierarchy_cycle", "Capacity hierarchy contains a cycle")
+            visited.add(current_key)
+            parent_key = capacity_parent_key_for(current)
+            if not parent_key:
+                break
+            current = by_capacity_key[parent_key]
 
 
 @transaction.atomic
@@ -209,16 +275,129 @@ def upsert_subscription_cycle_item(
     return item
 
 
+CYCLE_CAPACITY_STATUSES = [
+    SubscriptionCycleItem.Status.PENDING,
+    SubscriptionCycleItem.Status.SELECTED,
+    SubscriptionCycleItem.Status.RESERVED,
+    SubscriptionCycleItem.Status.FULFILLED,
+]
+
+
+def category_is_same_or_descendant(category: Category, ancestor: Category) -> bool:
+    """Return whether a catalog category belongs to a capacity category."""
+    current = category
+    while current is not None:
+        if current.id == ancestor.id:
+            return True
+        current = current.parent
+    return False
+
+
 def product_matches_entitlement(product: Product, variant: ProductVariant | None, entitlement: PlanEntitlement) -> bool:
     if entitlement.target_type == PlanEntitlement.TargetType.PRODUCT:
         return entitlement.product_id == product.id
     if entitlement.target_type == PlanEntitlement.TargetType.VARIANT:
         return variant is not None and entitlement.variant_id == variant.id
     if entitlement.target_type == PlanEntitlement.TargetType.CATEGORY:
-        return product.category_links.filter(category=entitlement.category).exists()
+        return any(
+            category_is_same_or_descendant(category_link.category, entitlement.category)
+            for category_link in product.category_links.select_related(
+                "category__parent__parent__parent__parent"
+            )
+        )
     if entitlement.target_type == PlanEntitlement.TargetType.COLLECTION:
         return product.collection_links.filter(collection=entitlement.collection).exists()
     return False
+
+
+def matching_entitlement_targets(*, cycle: SubscriptionCycle, product: Product, variant: ProductVariant | None) -> list[PlanEntitlement]:
+    """Return every target that includes a product, before plan allocation rules."""
+    return [
+        entitlement
+        for entitlement in cycle.subscription.plan.entitlements.select_related(
+            "collection",
+            "category__parent__parent__parent__parent",
+            "product",
+            "variant",
+            "measurement_unit",
+        )
+        if product_matches_entitlement(product, variant, entitlement)
+    ]
+
+
+def entitlement_target_priority(entitlement: PlanEntitlement) -> tuple[int, int, int, str]:
+    target_priority = {
+        PlanEntitlement.TargetType.VARIANT: 0,
+        PlanEntitlement.TargetType.PRODUCT: 1,
+        PlanEntitlement.TargetType.CATEGORY: 2,
+        PlanEntitlement.TargetType.COLLECTION: 3,
+    }
+    current = entitlement.category if entitlement.target_type == PlanEntitlement.TargetType.CATEGORY else None
+    category_depth = 0
+    while current is not None:
+        category_depth += 1
+        current = current.parent
+    return (
+        target_priority[entitlement.target_type],
+        -category_depth,
+        entitlement.sort_order,
+        entitlement.key,
+    )
+
+
+def matching_cycle_entitlements(*, cycle: SubscriptionCycle, product: Product, variant: ProductVariant | None) -> list[PlanEntitlement]:
+    """Return the actual capacities consumed by a selection.
+
+    Legacy plans retain category-derived consumption. Explicit plans instead
+    follow the configured capacity parent chain, so a target may deliberately
+    stay standalone even when it belongs to a catalog child category.
+    """
+    matches = matching_entitlement_targets(cycle=cycle, product=product, variant=variant)
+    if not matches:
+        return []
+    owner = min(matches, key=entitlement_target_priority)
+    if capacity_allocation_mode(owner) == "legacy":
+        return matches
+
+    all_entitlements = list(cycle.subscription.plan.entitlements.all())
+    by_capacity_key = {capacity_key_for(entitlement): entitlement for entitlement in all_entitlements}
+    capacities = []
+    current = owner
+    visited: set[str] = set()
+    while current is not None:
+        current_key = capacity_key_for(current)
+        if current_key in visited:
+            break
+        visited.add(current_key)
+        capacities.append(current)
+        if capacity_allocation_mode(current) != "withinParent":
+            break
+        current = by_capacity_key.get(capacity_parent_key_for(current) or "")
+    return capacities
+
+
+def cycle_capacity_used_quantity(*, cycle: SubscriptionCycle, entitlement: PlanEntitlement) -> Decimal:
+    """Calculate real usage against a capacity target, independent of owner."""
+    used_quantity = Decimal("0")
+    items = cycle.items.filter(status__in=CYCLE_CAPACITY_STATUSES).select_related("product", "variant")
+    for item in items:
+        if item.product and entitlement.id in {
+            capacity.id
+            for capacity in matching_cycle_entitlements(cycle=cycle, product=item.product, variant=item.variant)
+        }:
+            used_quantity += item.quantity
+    return used_quantity
+
+
+def validate_entitlement_measurement_unit(
+    *,
+    entitlement: PlanEntitlement,
+    measurement_unit: MeasurementUnit | None,
+) -> None:
+    if entitlement.measurement_unit_id and measurement_unit and entitlement.measurement_unit_id != measurement_unit.id:
+        raise EntitlementValidationError("unit_mismatch", "Measurement unit does not match entitlement")
+    if entitlement.measurement_unit_id and measurement_unit is None:
+        raise EntitlementValidationError("unit_required", "Measurement unit is required")
 
 
 def validate_cycle_item_selection(
@@ -238,50 +417,45 @@ def validate_cycle_item_selection(
         raise EntitlementValidationError("plan_mismatch", "Entitlement does not belong to subscription plan")
     if variant is not None and variant.product_id != product.id:
         raise EntitlementValidationError("variant_product_mismatch", "Variant does not belong to product")
-    if not product_matches_entitlement(product, variant, entitlement):
+    matching_entitlements = matching_cycle_entitlements(
+        cycle=cycle,
+        product=product,
+        variant=variant,
+    )
+    if entitlement not in matching_entitlements:
         raise EntitlementValidationError("target_mismatch", "Product does not match entitlement target")
-    if entitlement.measurement_unit_id and measurement_unit and entitlement.measurement_unit_id != measurement_unit.id:
-        raise EntitlementValidationError("unit_mismatch", "Measurement unit does not match entitlement")
-    if entitlement.measurement_unit_id and measurement_unit is None:
-        raise EntitlementValidationError("unit_required", "Measurement unit is required")
+    for capacity in matching_entitlements:
+        validate_entitlement_measurement_unit(
+            entitlement=capacity,
+            measurement_unit=measurement_unit,
+        )
+        constraints = capacity.constraints or {}
+        if constraints.get("requiresAvailability"):
+            commercial_mode_keys = constraints.get("allowedCommercialModes") or []
+            available = CatalogAvailability.objects.filter(
+                organization=organization,
+                product=product,
+                is_available=True,
+            )
+            if commercial_mode_keys:
+                available = available.filter(commercial_mode__key__in=commercial_mode_keys)
+            if not available.exists():
+                raise EntitlementValidationError("unavailable", "Product is unavailable for entitlement")
+
+        allowed_attributes = constraints.get("allowedAttributes") or {}
+        if allowed_attributes and variant:
+            for attribute_key, allowed_values in allowed_attributes.items():
+                if variant.attributes.get(attribute_key) not in allowed_values:
+                    raise EntitlementValidationError("attribute_not_allowed", f"Attribute not allowed: {attribute_key}")
+
+        if cycle_capacity_used_quantity(cycle=cycle, entitlement=capacity) + quantity > capacity.quantity:
+            raise EntitlementValidationError("quantity_exceeded", "Entitlement quantity exceeded")
+
+        max_quantity = constraints.get("maxQuantity")
+        if max_quantity is not None and quantity > Decimal(str(max_quantity)):
+            raise EntitlementValidationError("max_quantity_exceeded", "Item quantity exceeds maxQuantity")
 
     constraints = entitlement.constraints or {}
-    if constraints.get("requiresAvailability"):
-        commercial_mode_keys = constraints.get("allowedCommercialModes") or []
-        available = CatalogAvailability.objects.filter(
-            organization=organization,
-            product=product,
-            is_available=True,
-        )
-        if commercial_mode_keys:
-            available = available.filter(commercial_mode__key__in=commercial_mode_keys)
-        if not available.exists():
-            raise EntitlementValidationError("unavailable", "Product is unavailable for entitlement")
-
-    allowed_attributes = constraints.get("allowedAttributes") or {}
-    if allowed_attributes and variant:
-        for attribute_key, allowed_values in allowed_attributes.items():
-            if variant.attributes.get(attribute_key) not in allowed_values:
-                raise EntitlementValidationError("attribute_not_allowed", f"Attribute not allowed: {attribute_key}")
-
-    used_quantity = sum(
-        item.quantity
-        for item in cycle.items.filter(
-            entitlement=entitlement,
-            status__in=[
-                SubscriptionCycleItem.Status.PENDING,
-                SubscriptionCycleItem.Status.SELECTED,
-                SubscriptionCycleItem.Status.RESERVED,
-                SubscriptionCycleItem.Status.FULFILLED,
-            ],
-        )
-    )
-    if used_quantity + quantity > entitlement.quantity:
-        raise EntitlementValidationError("quantity_exceeded", "Entitlement quantity exceeded")
-
-    max_quantity = constraints.get("maxQuantity")
-    if max_quantity is not None and quantity > Decimal(str(max_quantity)):
-        raise EntitlementValidationError("max_quantity_exceeded", "Item quantity exceeds maxQuantity")
 
     for item_limit in constraints.get("itemLimits", []):
         if not isinstance(item_limit, dict):
@@ -325,26 +499,10 @@ def resolve_cycle_entitlement(
     narrowest target wins so a variant/product allowance is never silently
     consumed from a broader category/collection allowance.
     """
-    target_priority = {
-        PlanEntitlement.TargetType.VARIANT: 0,
-        PlanEntitlement.TargetType.PRODUCT: 1,
-        PlanEntitlement.TargetType.CATEGORY: 2,
-        PlanEntitlement.TargetType.COLLECTION: 3,
-    }
-    matches = [
-        entitlement
-        for entitlement in cycle.subscription.plan.entitlements.select_related(
-            "collection",
-            "category",
-            "product",
-            "variant",
-            "measurement_unit",
-        )
-        if product_matches_entitlement(product, variant, entitlement)
-    ]
+    matches = matching_entitlement_targets(cycle=cycle, product=product, variant=variant)
     if not matches:
         raise EntitlementValidationError("product_not_in_plan", "Product is not included in the subscription plan")
-    return min(matches, key=lambda entitlement: (target_priority[entitlement.target_type], entitlement.sort_order, entitlement.key))
+    return min(matches, key=entitlement_target_priority)
 
 
 @transaction.atomic
@@ -362,8 +520,9 @@ def reserve_cycle_order_items(*, organization, cycle: SubscriptionCycle, items: 
     if locked_cycle.status != SubscriptionCycle.Status.OPEN:
         raise EntitlementValidationError("subscription_cycle_not_open", "Subscription cycle is not open for selection")
 
-    prepared: list[tuple[PlanEntitlement, dict]] = []
-    requested_by_entitlement: dict[int, Decimal] = {}
+    prepared: list[tuple[PlanEntitlement, dict, list[PlanEntitlement]]] = []
+    requested_by_capacity: dict[int, Decimal] = {}
+    capacities_by_id: dict[int, PlanEntitlement] = {}
     requested_selection_keys: dict[int, set[tuple[int, int | None]]] = {}
 
     for item in items:
@@ -381,41 +540,33 @@ def reserve_cycle_order_items(*, organization, cycle: SubscriptionCycle, items: 
             quantity=quantity,
             measurement_unit=measurement_unit,
         )
-        prepared.append((entitlement, item))
-        requested_by_entitlement[entitlement.id] = requested_by_entitlement.get(entitlement.id, Decimal("0")) + quantity
-        requested_selection_keys.setdefault(entitlement.id, set()).add((product.id, variant.id if variant else None))
+        capacities = matching_cycle_entitlements(cycle=locked_cycle, product=product, variant=variant)
+        prepared.append((entitlement, item, capacities))
+        for capacity in capacities:
+            capacities_by_id[capacity.id] = capacity
+            requested_by_capacity[capacity.id] = requested_by_capacity.get(capacity.id, Decimal("0")) + quantity
+            requested_selection_keys.setdefault(capacity.id, set()).add((product.id, variant.id if variant else None))
 
-    for entitlement, _item in prepared:
-        if entitlement.id not in requested_by_entitlement:
-            continue
-        requested_quantity = requested_by_entitlement.pop(entitlement.id)
-        used_quantity = sum(
-            item.quantity
-            for item in locked_cycle.items.filter(
-                entitlement=entitlement,
-                status__in=[
-                    SubscriptionCycleItem.Status.PENDING,
-                    SubscriptionCycleItem.Status.SELECTED,
-                    SubscriptionCycleItem.Status.RESERVED,
-                    SubscriptionCycleItem.Status.FULFILLED,
-                ],
-            )
-        )
-        if used_quantity + requested_quantity > entitlement.quantity:
+    for capacity_id, requested_quantity in requested_by_capacity.items():
+        entitlement = capacities_by_id[capacity_id]
+        if cycle_capacity_used_quantity(cycle=locked_cycle, entitlement=entitlement) + requested_quantity > entitlement.quantity:
             raise EntitlementValidationError("quantity_exceeded", "Entitlement quantity exceeded")
 
         max_selections = (entitlement.constraints or {}).get("maxSelections")
         if max_selections is not None:
-            current_selection_keys = set(
-                locked_cycle.items.filter(entitlement=entitlement)
-                .exclude(status=SubscriptionCycleItem.Status.CANCELLED)
-                .values_list("product_id", "variant_id")
-            )
-            next_selection_count = len(current_selection_keys | requested_selection_keys[entitlement.id])
+            current_selection_keys = {
+                (item.product_id, item.variant_id)
+                for item in locked_cycle.items.exclude(status=SubscriptionCycleItem.Status.CANCELLED).select_related("product", "variant")
+                if item.product and entitlement.id in {
+                    capacity.id
+                    for capacity in matching_cycle_entitlements(cycle=locked_cycle, product=item.product, variant=item.variant)
+                }
+            }
+            next_selection_count = len(current_selection_keys | requested_selection_keys[capacity_id])
             if next_selection_count > int(max_selections):
                 raise EntitlementValidationError("max_selections_exceeded", "Entitlement selections exceeded")
 
-    for entitlement, item in prepared:
+    for entitlement, item, _capacities in prepared:
         product = item["product"]
         variant = item.get("variant")
         quantity = Decimal(str(item["quantity"]))

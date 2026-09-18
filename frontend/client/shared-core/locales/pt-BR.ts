@@ -100,6 +100,21 @@ export const clientPtBR = {
       login: "Entrar",
       register: "Cadastrar"
     },
+    switcher: {
+      login: {
+        hint: "Ainda nao tem uma conta?",
+        action: "Criar conta"
+      },
+      register: {
+        hint: "Ja possui uma conta?",
+        action: "Entrar"
+      }
+    },
+    providers: {
+      divider: "ou continue com",
+      google: "Continuar com Google",
+      apple: "Continuar com Apple"
+    },
     landing: {
       badge: "Portal do cliente",
       calloutTitle: "Entre para transformar a vitrine em pedido acompanhado.",
@@ -327,7 +342,7 @@ export const clientPtBR = {
     plans: {
       title: "Escolha um plano",
       subtitle: "Na assinatura fechada, o plano define o limite e quais produtos aparecem no grid.",
-      activeTitle: "Voce esta montando o ciclo da sua assinatura",
+      activeTitle: "Montando seu ciclo",
       activeSubtitle: "O catalogo abaixo ja respeita o plano ativo, o saldo do ciclo e os limites de cada grupo.",
       activePlanLabel: "Plano ativo",
       renewalLabel: "Renova em",
@@ -383,6 +398,8 @@ export const clientPtBR = {
       selectedPlan: "Plano",
       selectedItems: "Itens selecionados",
       selectedLimit: "Itens escolhidos",
+      selectedItemsCount: "{count} itens",
+      modePlanBadge: "{mode} · {plan}",
       fixedPlanPrice: "Preço fixo do plano",
       variableEstimate: "Estimativa",
       noVariableEstimate: "Na assinatura fechada, o valor não muda conforme os produtos selecionados.",
@@ -1226,7 +1243,7 @@ export const clientPtBR = {
       saveChanges: "Salvar Alterações",
       addAddress: "Adicionar Endereço",
       addPayment: "Adicionar Cartão",
-      closeAccount: "Encerrar Conta",
+      closeAccount: "Sair da conta",
       cancelSubscription: "Cancelar Assinatura"
     },
     legalNotice: "Ao cancelar ou pausar a assinatura, os benefícios de preços diferenciados e a garantia de cota mensal serão interrompidos ao término do período vigente."
@@ -1304,7 +1321,7 @@ export const clientPtBR = {
       closeModal: "Fechar",
       changePassword: "Alterar senha",
       exportData: "Baixar dados",
-      closeAccount: "Encerrar Conta",
+      closeAccount: "Sair da conta",
       cancelSubscription: "Cancelar Assinatura"
     },
     labels: {
@@ -1383,8 +1400,14 @@ export const clientPtBR = {
       passwordDescription: "Mantenha sua conta protegida com credenciais atualizadas.",
       exportTitle: "Exportar meus dados",
       exportDescription: "Baixe um arquivo com dados cadastrais, pedidos e historico.",
-      closeTitle: "Encerrar conta Royal Prime",
-      closeDescription: "Solicite remocao de dados e cancelamento definitivo."
+      closeTitle: "Sair da conta Royal Prime",
+      closeDescription: "Encerre a sessao neste dispositivo sem apagar seus dados.",
+      logoutConfirmation: {
+        title: "Sair da conta?",
+        description: "Voce precisara entrar novamente para acessar pedidos, caixa e preferencias.",
+        cancel: "Continuar conectado",
+        confirm: "Sair da conta"
+      }
     },
     modal: {
       planTitle: "Escolha seu plano",

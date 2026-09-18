@@ -107,7 +107,7 @@ export function useClientCheckout({ isAuthenticated = false }: UseClientCheckout
       setPlans(nextPlans.map(mapPlan));
       setActiveSubscription(subscription ? {
         id: String(subscription.id), planKey: subscription.plan.key,
-        nextBillingLabel: subscription.currentCycleEndsAt || "", nextDeliveryLabel: subscription.currentCycleEndsAt || "",
+        nextBillingLabel: subscription.currentCycleEndsAt?.slice(0, 10) || "", nextDeliveryLabel: subscription.currentCycleEndsAt?.slice(0, 10) || "",
       } : undefined);
       const selectedPlan = subscription ? nextPlans.find((plan) => plan.key === subscription.plan.key) : undefined;
       const selectedPlanLimits = selectedPlan ? mapPlan(selectedPlan) : null;

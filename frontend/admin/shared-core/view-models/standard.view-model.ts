@@ -86,6 +86,7 @@ export interface AdminStandardDetailEntryViewModel {
   currency?: string;
   displayKey?: string;
   format?: "cpf" | "cnpj" | "taxIdBR" | "phoneBR" | "postalCodeBR" | "decimalBR";
+  hierarchy?: AdminStandardLineItemsHierarchyViewModel;
   editable?: boolean;
   editType?: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   key: string;
@@ -178,6 +179,7 @@ export interface AdminStandardLineItemColumnViewModel {
   presentation?: "media" | "text";
   options?: AdminStandardFieldOption[];
   required?: boolean;
+  readOnly?: boolean;
   source?: string;
   sourceBy?: string;
   sourceOptions?: Record<string, AdminStandardFieldOption[]>;
@@ -187,6 +189,14 @@ export interface AdminStandardLineItemColumnViewModel {
   type: "currency" | "number" | "select" | "text";
   writeOptionMeta?: Record<string, string>;
   writeValues?: Record<string, unknown>;
+}
+
+export interface AdminStandardLineItemsHierarchyViewModel {
+  limitLabelKey: string;
+  maxSelectionsLabelKey?: string;
+  maxSelectionsKey?: string;
+  pathKey: string;
+  quantityKey: string;
 }
 
 function resolveLineItemColumns(
@@ -202,6 +212,7 @@ function resolveLineItemColumns(
     locale: column.locale,
     maxKey: column.maxKey,
     presentation: column.presentation,
+    readOnly: column.readOnly,
     options: resolveOptions(column, optionSources),
     required: column.required,
     source: column.source,
@@ -307,6 +318,7 @@ function createDetailEntry(
     editable: Boolean(field.edit || field.editable),
     editType: editorField.type,
     format: editorField.format,
+    hierarchy: editorField.hierarchy,
     key: field.key,
     labelKey: field.labelKey,
     locale: editorField.locale || displayField.locale,

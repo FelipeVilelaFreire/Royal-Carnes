@@ -10,6 +10,9 @@ export interface AdminCategoryRowViewModel {
   id: string | number;
   isActive: boolean;
   key: string;
+  hierarchyLabel: string;
+  childCategoryNames: string[];
+  childCategoriesSummary: string;
   name: string;
   parentKey: string;
   parentName: string;
@@ -39,6 +42,7 @@ export interface AdminProductRowViewModel {
   unit: string;
   categoryKeys: string[];
   categoryNames: string[];
+  parentCategoryName: string;
   primaryCategoryName: string;
   collectionKeys: string[];
   collectionNames: string[];
@@ -74,15 +78,33 @@ function formatPrice(product: AdminProductView): string | null {
 export function createAdminCategoryRowsViewModel(
   categories: AdminCategoryView[],
 ): AdminCategoryRowViewModel[] {
+  const hierarchyFor = (category: AdminCategoryView): string => {
+    const parts = [category.name];
+    const visited = new Set<string | number>([category.id]);
+    let parent = categories.find((candidate) => candidate.id === category.parentId);
+    while (parent && !visited.has(parent.id)) {
+      parts.unshift(parent.name);
+      visited.add(parent.id);
+      parent = categories.find((candidate) => candidate.id === parent?.parentId);
+    }
+    return parts.join(" / ");
+  };
+
   return categories
     .map((category) => {
       const parent = categories.find((candidate) => candidate.id === category.parentId);
+      const children = categories
+        .filter((candidate) => candidate.parentId === category.id)
+        .sort((left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name));
       return {
+        childCategoryNames: children.map((child) => child.name),
+        childCategoriesSummary: children.map((child) => child.name).join(", "),
         id: category.id,
         isActive: category.isActive,
         key: category.key,
+        hierarchyLabel: hierarchyFor(category),
         name: category.name,
-        parentKey: String(category.parentId || ""),
+        parentKey: parent?.key || "",
         parentName: parent?.name || "",
         sortOrder: category.sortOrder,
         statusLabelKey: category.isActive ? "common.statusActive" : "common.statusInactive",
@@ -112,10 +134,15 @@ export function createAdminCollectionRowsViewModel(
 export function createAdminProductRowViewModel(
   product: AdminProductView,
   collections: AdminCollectionView[] = [],
+  categories: AdminCategoryView[] = [],
 ): AdminProductRowViewModel {
   const collectionNames = product.collectionKeys.map(
     (collectionKey) => collections.find((collection) => collection.key === collectionKey)?.name || collectionKey,
   );
+
+  const primaryCategory = product.categories.find((category) => category.key === product.primaryCategoryKey)
+    || product.categories[0];
+  const parentCategory = categories.find((category) => category.id === primaryCategory?.parentId);
 
   return {
     id: product.id,
@@ -127,10 +154,8 @@ export function createAdminProductRowViewModel(
     unit: product.unit,
     categoryKeys: product.categories.map((category) => category.key),
     categoryNames: product.categories.map((category) => category.name),
-    primaryCategoryName:
-      product.categories.find((category) => category.key === product.primaryCategoryKey)?.name ||
-      product.categories[0]?.name ||
-      "",
+    parentCategoryName: parentCategory?.name || "",
+    primaryCategoryName: primaryCategory?.name || "",
     collectionKeys: product.collectionKeys,
     collectionNames,
     commercialModeKeys: product.commercialModeKeys,
@@ -144,7 +169,7 @@ export function createAdminCatalogViewModel(
   snapshot: AdminCatalogSnapshot,
 ): AdminCatalogViewModel {
   return {
-    rows: snapshot.products.map((product) => createAdminProductRowViewModel(product, snapshot.collections)),
+    rows: snapshot.products.map((product) => createAdminProductRowViewModel(product, snapshot.collections, snapshot.categories)),
     total: snapshot.products.length,
     activeCount: snapshot.products.filter((product) => product.status === "active").length,
     draftCount: snapshot.products.filter((product) => product.status === "draft").length,

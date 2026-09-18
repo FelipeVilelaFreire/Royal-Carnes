@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@foundation/ui/web/Button";
-import { UserIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { LogoutIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { Container, Stack } from "@foundation/ui/web/Layout";
+import { ConfirmationModal } from "@foundation/ui/web/Modal";
 import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenHeader";
 import { useClientCustomer } from "@royalprime/client/hooks/useClientCustomer";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
@@ -16,12 +17,15 @@ import type { AccountTabItem } from "./minha-conta/types";
 
 export interface PerfilViewProps {
   onNavigate?: (path: string) => void;
+  onLogout?: () => Promise<void> | void;
   showShell?: boolean;
 }
 
-export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
+export const PerfilView: React.FC<PerfilViewProps> = ({ onLogout, onNavigate }) => {
   const strings = useClientStrings().minhaContaV2;
   const customer = useClientCustomer();
+  const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const tabs = useMemo<AccountTabItem[]>(() => [
     { key: "overview", label: strings.tabs.overview },
@@ -35,6 +39,15 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
   ], [strings]);
 
   const hasCustomer = Boolean(customer.dataSource.customer.id);
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await onLogout?.();
+      setIsLogoutConfirmationOpen(false);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   if (customer.isLoading || customer.error || !hasCustomer) {
     const title = customer.isLoading
@@ -87,10 +100,30 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
           />
           <Stack gap="lg">
             <AccountProfileSummary strings={strings} viewModel={customer.viewModel} />
-            <ProfileModuleContent customer={customer} onNavigate={onNavigate} strings={strings} />
+            <ProfileModuleContent
+              customer={customer}
+              onLogoutRequest={() => setIsLogoutConfirmationOpen(true)}
+              onNavigate={onNavigate}
+              strings={strings}
+            />
           </Stack>
         </div>
       </Container>
+      <ConfirmationModal
+        cancelLabel={strings.security.logoutConfirmation.cancel}
+        closeLabel={strings.actions.closeModal}
+        confirmLabel={strings.security.logoutConfirmation.confirm}
+        description={strings.security.logoutConfirmation.description}
+        icon={<LogoutIcon size={28} />}
+        isLoading={isLoggingOut}
+        onCancel={() => setIsLogoutConfirmationOpen(false)}
+        onConfirm={() => void confirmLogout()}
+        open={isLogoutConfirmationOpen}
+        size="xs"
+        title={strings.security.logoutConfirmation.title}
+        tone="danger"
+        variant="center"
+      />
     </div>
   );
 };

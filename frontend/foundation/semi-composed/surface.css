@@ -12,6 +12,34 @@
   /* Receitas de Botão (Button) */
   --semicomposed--button-radius: var(--theme--radius-md);
 
+  /* Largura semantica para modais compactos de autenticacao e confirmacao. */
+  --semicomposed--modal-width-xs: var(--theme--layout-container-xs);
+  --semicomposed--modal-width-compact: var(--theme--layout-container-compact);
+  --semicomposed--modal-width-auth: var(--theme--layout-container-auth);
+
+  /* Cabecalho compacto do modal de acesso: o shell apenas consome a receita. */
+  --semicomposed--access-shell--modal-content-offset: calc(var(--theme--spacing-spaceLg) * -1);
+  --semicomposed--access-shell--header-control-size: var(--theme--dimensions-height-sm);
+  --semicomposed--access-shell--header-control-padding: 0;
+  --semicomposed--access-shell--header-corner-offset: calc(var(--theme--spacing-spaceSm) * -1);
+  --semicomposed--modal-min-height-roomy: calc(var(--theme--spacing-space3xl) * 8);
+
+  /* Feedback de confirmacao: a primitive consome estes tokens, sem ler Theme direto. */
+  --semicomposed--confirmation-modal--icon-bg: color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-15), transparent);
+  --semicomposed--confirmation-modal--icon-color: var(--theme--color-primary);
+  --semicomposed--confirmation-modal--danger-icon-bg: color-mix(in srgb, var(--theme--color-danger) var(--theme--opacity-15), transparent);
+  --semicomposed--confirmation-modal--danger-icon-color: var(--theme--color-danger);
+  --semicomposed--confirmation-modal--muted-color: var(--theme--color-text-muted);
+  --semicomposed--confirmation-modal--gap: var(--theme--spacing-spaceLg);
+  --semicomposed--confirmation-modal--actions-gap: var(--theme--spacing-spaceSm);
+  --semicomposed--confirmation-modal--close-size: var(--theme--dimensions-height-md);
+  --semicomposed--confirmation-modal--close-padding: var(--theme--spacing-space2xs);
+  --semicomposed--confirmation-modal--close-offset: var(--theme--spacing-spaceMd);
+  --semicomposed--confirmation-modal--icon-size: var(--theme--dimensions-height-2xl);
+  --semicomposed--confirmation-modal--icon-radius: var(--theme--radius-full);
+  --semicomposed--confirmation-modal--description-max-width: var(--theme--dimensions-minWidth-4xl);
+  --semicomposed--confirmation-modal--content-bleed: calc((var(--theme--spacing-spaceXl) - var(--theme--spacing-spaceMd)) * -1);
+
   /* Appearance Solid */
   --semicomposed--button-bg-solid: var(--theme--color-primary);
   --semicomposed--button-color-solid: var(--theme--color-accent-contrast);

@@ -14,6 +14,7 @@ export interface ProductCatalogStepProps {
   canAddProduct: (product: ClientCheckoutProduct) => boolean;
   categoryById: Map<string, ClientCheckoutProductCategory>;
   formatMoney: (value: number) => string;
+  header?: React.ReactNode;
   onClearFilters: () => void;
   onDecreaseProduct: (productId: string) => void;
   onOpenFilters: () => void;
@@ -39,6 +40,7 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
   canAddProduct,
   categoryById,
   formatMoney,
+  header,
   onClearFilters,
   onDecreaseProduct,
   onOpenFilters,
@@ -58,16 +60,8 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
       appearance="soft"
       className={styles.catalogPanel}
     >
+      {header ? <div className={styles.catalogHeader}>{header}</div> : null}
       <Stack gap="lg">
-        <Stack className={styles.catalogHeader}>
-          <Text as="h2" tone="inherit" variant="h3">
-            {strings.catalog.title}
-          </Text>
-          <Text className={styles.catalogSubtitle} tone="inherit">
-            {strings.catalog.subtitle}
-          </Text>
-        </Stack>
-
         <Grid className={styles.toolbar}>
           <Input
             icon={<SearchIcon size={18} />}

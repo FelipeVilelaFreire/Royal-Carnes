@@ -7,7 +7,11 @@ from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
 from apps.customers.models import Address
 from apps.subscriptions.models import Plan, PlanEntitlement, PlanPrice, Subscription, SubscriptionCycle
 from apps.subscriptions.selectors import current_cycle_for_subscription
-from apps.subscriptions.services import EntitlementValidationError, validate_cycle_item_selection
+from apps.subscriptions.services import (
+    EntitlementValidationError,
+    reserve_cycle_order_items,
+    validate_cycle_item_selection,
+)
 
 
 class SubscriptionsApiTests(APITestCase):
@@ -32,16 +36,18 @@ class SubscriptionsApiTests(APITestCase):
     def test_seed_creates_plans_entitlements_subscription_and_cycle(self):
         self.assertEqual(Plan.objects.count(), 3)
         self.assertEqual(PlanPrice.objects.count(), 3)
-        self.assertEqual(PlanEntitlement.objects.count(), 5)
+        self.assertEqual(PlanEntitlement.objects.count(), 7)
         self.assertEqual(Subscription.objects.count(), 1)
         self.assertEqual(SubscriptionCycle.objects.count(), 1)
 
         pro = Plan.objects.get(key="pro")
-        entitlement = pro.entitlements.get(key="premium-cuts-12kg")
-        self.assertEqual(entitlement.target_type, "collection")
-        self.assertEqual(entitlement.collection.key, "churrasco-premium")
+        entitlement = pro.entitlements.get(key="carnes-10kg")
+        self.assertEqual(entitlement.target_type, "category")
+        self.assertEqual(entitlement.category.key, "carnes")
         self.assertEqual(entitlement.measurement_unit.key, "kg")
-        self.assertEqual(entitlement.quantity, Decimal("12.000"))
+        self.assertEqual(entitlement.quantity, Decimal("10.000"))
+        self.assertEqual(pro.entitlements.get(key="acompanhamentos-3un").quantity, Decimal("3.000"))
+        self.assertEqual(pro.entitlements.get(key="utensilios-2un").measurement_unit.key, "unit")
 
     def test_public_plans_endpoint_returns_entitlements(self):
         response = self.client.get(
@@ -53,9 +59,11 @@ class SubscriptionsApiTests(APITestCase):
         plan_keys = [plan["key"] for plan in response.data]
         self.assertEqual(plan_keys, ["basic", "premium", "pro"])
         pro = next(plan for plan in response.data if plan["key"] == "pro")
-        self.assertEqual(pro["prices"][0]["amount_cents"], 44900)
-        self.assertEqual(pro["entitlements"][0]["target_key"], "churrasco-premium")
+        self.assertEqual(pro["prices"][0]["amount_cents"], 59900)
+        self.assertEqual(pro["entitlements"][0]["target_key"], "carnes")
         self.assertEqual(pro["entitlements"][0]["measurement_unit_key"], "kg")
+        self.assertEqual(pro["entitlements"][0]["target_path"], [{"key": "carnes", "name": "Carnes"}])
+        self.assertTrue(all(len(item["target_path"]) <= 1 for item in pro["entitlements"]))
         self.assertNotIn("subscribers", pro)
         self.assertNotIn("subscriber_count", pro)
 
@@ -76,16 +84,13 @@ class SubscriptionsApiTests(APITestCase):
         self.assertEqual(subscription_response.data["subscription"]["plan"]["key"], "pro")
         self.assertEqual(cycle_response.data["cycle"]["items"][0]["variant_sku"], "PICANHA-1KG")
         capacity = cycle_response.data["cycle"]["capacity"]
-        meats = next(item for item in capacity if item["key"] == "meat")
-        charcoal = next(item for item in capacity if item["key"] == "charcoal")
+        meats = next(item for item in capacity if item["key"] == "carnes")
         self.assertEqual(meats["label"], "Carnes")
-        self.assertEqual(meats["used_quantity"], "2.000")
-        self.assertEqual(meats["limit_quantity"], "12.000")
+        self.assertEqual(meats["used_quantity"], "1.000")
+        self.assertEqual(meats["limit_quantity"], "10.000")
+        self.assertEqual(meats["remaining_quantity"], "9.000")
         self.assertEqual(meats["used_selections"], 1)
         self.assertEqual(meats["limit_selections"], 10)
-        self.assertEqual(charcoal["measurement_unit_key"], "bag")
-        self.assertEqual(charcoal["used_quantity"], "0")
-        self.assertEqual(charcoal["limit_quantity"], "1.000")
 
     def test_customer_can_add_valid_item_to_current_cycle(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -93,7 +98,7 @@ class SubscriptionsApiTests(APITestCase):
         response = self.client.post(
             "/api/v1/subscriptions/me/cycles/current/items/",
             {
-                "entitlement_key": "premium-cuts-12kg",
+                "entitlement_key": "carnes-10kg",
                 "product_key": "maminha",
                 "variant_sku": "MAMINHA-1KG",
                 "quantity": "1.000",
@@ -281,7 +286,7 @@ class SubscriptionsApiTests(APITestCase):
     def test_entitlement_validation_is_generic_and_blocks_overuse(self):
         subscription = Subscription.objects.select_related("organization", "plan").get()
         cycle = current_cycle_for_subscription(subscription)
-        entitlement = subscription.plan.entitlements.get(key="premium-cuts-12kg")
+        entitlement = subscription.plan.entitlements.get(key="carnes-10kg")
         product = Product.objects.get(organization=subscription.organization, key="picanha")
         variant = ProductVariant.objects.get(organization=subscription.organization, sku="PICANHA-1KG")
 
@@ -292,7 +297,7 @@ class SubscriptionsApiTests(APITestCase):
                 entitlement=entitlement,
                 product=product,
                 variant=variant,
-                quantity=11,
+                quantity=10,
                 measurement_unit=entitlement.measurement_unit,
             )
 
@@ -301,9 +306,9 @@ class SubscriptionsApiTests(APITestCase):
     def test_entitlement_validation_blocks_target_mismatch(self):
         subscription = Subscription.objects.select_related("organization", "plan").get()
         cycle = current_cycle_for_subscription(subscription)
-        entitlement = subscription.plan.entitlements.get(key="premium-cuts-12kg")
-        product = Product.objects.get(organization=subscription.organization, key="coxinha-da-asa")
-        variant = ProductVariant.objects.get(organization=subscription.organization, sku="COXINHA-ASA-1KG")
+        entitlement = subscription.plan.entitlements.get(key="utensilios-2un")
+        product = Product.objects.get(organization=subscription.organization, key="picanha")
+        variant = ProductVariant.objects.get(organization=subscription.organization, sku="PICANHA-1KG")
 
         with self.assertRaises(EntitlementValidationError) as error:
             validate_cycle_item_selection(
@@ -321,7 +326,7 @@ class SubscriptionsApiTests(APITestCase):
     def test_entitlement_validation_blocks_unit_mismatch(self):
         subscription = Subscription.objects.select_related("organization", "plan").get()
         cycle = current_cycle_for_subscription(subscription)
-        entitlement = subscription.plan.entitlements.get(key="premium-cuts-12kg")
+        entitlement = subscription.plan.entitlements.get(key="carnes-10kg")
         product = Product.objects.get(organization=subscription.organization, key="picanha")
         variant = ProductVariant.objects.get(organization=subscription.organization, sku="PICANHA-1KG")
         bag = MeasurementUnit.objects.get(organization=subscription.organization, key="bag")
@@ -339,6 +344,46 @@ class SubscriptionsApiTests(APITestCase):
 
         self.assertEqual(error.exception.code, "unit_mismatch")
 
+    def test_general_category_capacity_blocks_overuse(self):
+        subscription = Subscription.objects.select_related("organization", "plan").get()
+        cycle = current_cycle_for_subscription(subscription)
+        entitlement = subscription.plan.entitlements.get(key="carnes-10kg")
+        product = Product.objects.get(organization=subscription.organization, key="alcatra")
+        variant = ProductVariant.objects.get(organization=subscription.organization, sku="ALCATRA-PECA-1KG")
+
+        with self.assertRaises(EntitlementValidationError) as error:
+            validate_cycle_item_selection(
+                organization=subscription.organization,
+                cycle=cycle,
+                entitlement=entitlement,
+                product=product,
+                variant=variant,
+                quantity=10,
+                measurement_unit=entitlement.measurement_unit,
+            )
+
+        self.assertEqual(error.exception.code, "quantity_exceeded")
+
+    def test_batch_selection_cannot_bypass_general_capacity(self):
+        subscription = Subscription.objects.select_related("organization", "plan").get()
+        cycle = current_cycle_for_subscription(subscription)
+        organization = subscription.organization
+        coxinha = Product.objects.get(organization=organization, key="coxinha-da-asa")
+        linguica = Product.objects.get(organization=organization, key="linguica-toscana")
+        coxinha_variant = ProductVariant.objects.get(organization=organization, sku="COXINHA-ASA-1KG")
+        linguica_variant = ProductVariant.objects.get(organization=organization, sku="LINGUICA-TOSCANA-1KG")
+
+        with self.assertRaises(EntitlementValidationError) as error:
+            reserve_cycle_order_items(
+                organization=organization,
+                cycle=cycle,
+                items=[
+                    {"product": coxinha, "variant": coxinha_variant, "quantity": Decimal("5")},
+                    {"product": linguica, "variant": linguica_variant, "quantity": Decimal("5")},
+                ],
+            )
+
+        self.assertEqual(error.exception.code, "quantity_exceeded")
 
 class SubscriptionsSeedReuseTests(APITestCase):
     def test_example_seeds_use_different_units_without_backend_branching(self):

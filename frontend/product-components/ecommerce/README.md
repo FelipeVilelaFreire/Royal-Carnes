@@ -73,3 +73,10 @@ ela troca o icone isolado pelo botao textual quando o consumidor precisar.
 Depois da primeira adicao, o mesmo card mostra o stepper de quantidade. A
 screen decide quando permitir a acao; o card nao conhece assinatura, checkout
 ou entitlement.
+
+## OrderSummaryItem
+
+Linha compacta para produtos já escolhidos em um resumo ou revisão de pedido.
+Recebe somente media, nome, detalhe, preço opcional e uma ação secundária que o
+consumidor decide expor. O componente não agrupa itens, não calcula limites e
+não decide se um produto pode ser removido.

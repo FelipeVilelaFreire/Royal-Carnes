@@ -157,6 +157,45 @@
   overflow-wrap: anywhere;
 }
 
+.hierarchy,
+.hierarchyChildren {
+  display: grid;
+  gap: var(--theme--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hierarchyChildren {
+  border-inline-start: var(--theme--border-width-sm) solid var(--theme--color-border);
+  margin-inline-start: var(--theme--spacing-lg);
+  padding-inline-start: var(--theme--spacing-lg);
+  padding-block-start: var(--theme--spacing-sm);
+}
+
+.hierarchyRow {
+  align-items: center;
+  background: var(--theme--color-surface-container);
+  border: var(--theme--border-width-sm) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-md);
+  display: flex;
+  gap: var(--theme--spacing-md);
+  justify-content: space-between;
+  min-inline-size: 0;
+  padding: var(--theme--spacing-md);
+}
+
+.hierarchyLabel {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.hierarchyLimits {
+  align-items: flex-end;
+  flex: 0 0 auto;
+  text-align: end;
+}
+
 .table td[data-align="end"] .readOnlyValue {
   font-variant-numeric: tabular-nums;
 }

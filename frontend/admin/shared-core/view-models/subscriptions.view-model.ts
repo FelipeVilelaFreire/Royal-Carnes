@@ -26,6 +26,7 @@ export interface AdminPlanRowViewModel {
   sortOrder: number;
   entitlementCount: number;
   entitlementSummary: string;
+  capacitySummary: string;
   entitlements: AdminPlanFormInput["entitlements"];
   subscriberCount: number;
   activeSubscriberCount: number;
@@ -188,27 +189,6 @@ function addQuantityByUnit(
   const parsed = Number(quantity);
   const unitKey = unit || "";
   if (!Number.isFinite(parsed) || !unitKey) return totals;
-  const entitlements = plan.entitlements.map((entitlement) => ({
-    constraints: entitlement.constraints,
-    capacityKey: String(entitlement.constraints?.capacityKey || entitlement.key),
-    capacityLabel: String(entitlement.constraints?.capacityLabel || entitlement.targetName || entitlement.targetKey || entitlement.key),
-    key: entitlement.key,
-    maxSelections: entitlement.constraints?.maxSelections || "",
-    measurementUnitKey: entitlement.measurementUnitKey || undefined,
-    quantity: entitlement.quantity,
-    sortOrder: entitlement.sortOrder,
-    targetKey: entitlement.targetKey || "",
-    targetType: entitlement.targetType,
-  }));
-  const itemLimits = entitlements.flatMap((entitlement) => {
-    const limits = Array.isArray(entitlement.constraints?.itemLimits) ? entitlement.constraints.itemLimits : [];
-    return limits.map((limit: any) => ({
-      capacityKey: entitlement.capacityKey,
-      maxQuantity: limit.maxQuantity || "",
-      measurementUnitKey: entitlement.measurementUnitKey || undefined,
-      targetKey: limit.targetKey || "",
-    }));
-  });
   return {
     ...totals,
     [unitKey]: (totals[unitKey] || 0) + parsed,
@@ -239,7 +219,33 @@ function formatQuantityWithUnit(quantity: string | number | null | undefined, un
 }
 
 export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowViewModel {
-  const firstEntitlements = plan.entitlements.slice(0, 3).map((entitlement) => {
+  const planEntitlements = plan.entitlements.filter((entitlement) => (
+    entitlement.targetType === "category" && (entitlement.targetPath || []).length <= 1
+  ));
+  const entitlements = planEntitlements.map((entitlement) => {
+    const targetName = entitlement.targetName || entitlement.targetKey || entitlement.key;
+    return {
+      constraints: entitlement.constraints,
+      capacityKey: String(entitlement.constraints?.capacityKey || entitlement.key),
+      capacityLabel: String(entitlement.constraints?.capacityLabel || targetName),
+      hierarchyLabel: targetName,
+      key: entitlement.key,
+      maxSelections: entitlement.constraints?.maxSelections || "",
+      measurementUnitKey: entitlement.measurementUnitKey || undefined,
+      quantity: entitlement.quantity,
+      sortOrder: entitlement.sortOrder,
+      targetKey: entitlement.targetKey || "",
+      targetType: entitlement.targetType,
+    };
+  });
+  const capacitySummary = entitlements
+    .filter((entitlement) => {
+      const source = planEntitlements.find((item) => item.key === entitlement.key);
+      return entitlement.targetType === "category" && (source?.targetPath || []).length <= 1;
+    })
+    .map((entitlement) => `${formatQuantityWithUnit(entitlement.quantity, entitlement.measurementUnitKey || "")} ${entitlement.capacityLabel}`.trim())
+    .join(" · ");
+  const firstEntitlements = planEntitlements.slice(0, 3).map((entitlement) => {
     const targetName = entitlement.targetName || entitlement.targetKey || entitlement.key;
     const unit = entitlement.measurementUnitSymbol || entitlement.measurementUnitKey || "";
     return `${entitlement.quantity} ${unit} ${targetName}`.trim();
@@ -259,10 +265,10 @@ export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowVi
     billingIntervalLabelKey: `planos.billingIntervals.${plan.billingInterval}`,
     trialDays: plan.trialDays,
     sortOrder: plan.sortOrder,
-    entitlementCount: plan.entitlements.length,
+    entitlementCount: planEntitlements.length,
     entitlementSummary: firstEntitlements.length ? firstEntitlements.join(", ") : "",
+    capacitySummary,
     entitlements,
-    itemLimits,
     subscriberCount: plan.subscriberCount,
     activeSubscriberCount: plan.activeSubscriberCount,
     subscriberSummary: firstSubscribers.length ? firstSubscribers.join(", ") : "",

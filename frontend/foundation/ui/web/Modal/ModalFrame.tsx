@@ -20,6 +20,7 @@ export const ModalFrame: React.FC<ModalFrameProps> = ({
   children,
   closeLabel,
   description,
+  hideHeader = false,
   onClose,
   open,
   size = "md",
@@ -67,7 +68,7 @@ export const ModalFrame: React.FC<ModalFrameProps> = ({
         role="dialog"
       >
         <span className={styles.handle} aria-hidden="true" />
-        <div className={styles.header}>
+        {!hideHeader ? <div className={styles.header}>
           <div className={styles.heading}>
             {title ? (
               <Text id={titleId} as="h2" className={styles.title} tone="inherit" variant="h2">
@@ -91,7 +92,7 @@ export const ModalFrame: React.FC<ModalFrameProps> = ({
             tone="neutral"
             type="button"
           />
-        </div>
+        </div> : null}
         <div className={styles.body}>{children}</div>
       </Surface>
     </div>,

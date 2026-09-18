@@ -15,10 +15,12 @@ type CustomerController = ReturnType<typeof useClientCustomer>;
 export function ProfileModuleContent({
   customer,
   onNavigate,
+  onLogoutRequest,
   strings,
 }: {
   customer: CustomerController;
   onNavigate?: (path: string) => void;
+  onLogoutRequest?: () => void;
   strings: MinhaContaStrings;
 }) {
   if (customer.activeTab === "subscription") return <SubscriptionModule currentPlanKey={customer.selectedPlanKey} plans={customer.dataSource.plans} strings={strings} viewModel={customer.viewModel} />;
@@ -27,6 +29,6 @@ export function ProfileModuleContent({
   if (customer.activeTab === "addresses") return <AddressesModule addresses={customer.dataSource.customer.addresses} onCreate={customer.actions.createAddress} onLookupPostalCode={customer.actions.lookupAddressByPostalCode} strings={strings} />;
   if (customer.activeTab === "payments") return <PaymentModule invoices={customer.dataSource.invoices} paymentMethods={customer.dataSource.customer.paymentMethods} strings={strings} />;
   if (customer.activeTab === "notifications") return <PreferencesModule notifications={customer.notifications} onUpdate={customer.actions.updateNotification} strings={strings} />;
-  if (customer.activeTab === "security") return <SecurityModule strings={strings} />;
+  if (customer.activeTab === "security") return <SecurityModule onLogoutRequest={onLogoutRequest} strings={strings} />;
   return <OverviewModule onNavigate={onNavigate} orders={customer.dataSource.recentOrders} strings={strings} viewModel={customer.viewModel} />;
 }

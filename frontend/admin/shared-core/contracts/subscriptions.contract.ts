@@ -20,6 +20,7 @@ export interface AdminPlanEntitlementDto {
   target_type: "collection" | "category" | "product" | "variant";
   target_key?: string | null;
   target_name?: string | null;
+  target_path?: Array<{ key: string; name: string }>;
   quantity: string;
   measurement_unit_key?: string | null;
   measurement_unit_symbol?: string | null;

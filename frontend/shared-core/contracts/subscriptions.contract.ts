@@ -39,6 +39,7 @@ export interface PlanEntitlementBase {
   targetType: EntitlementTargetType;
   targetKey?: string | null;
   targetName?: string | null;
+  targetPath?: Array<{ key: string; name: string }>;
   quantity: string;
   measurementUnitKey?: MeasurementUnitKey | null;
   measurementUnitSymbol?: string | null;

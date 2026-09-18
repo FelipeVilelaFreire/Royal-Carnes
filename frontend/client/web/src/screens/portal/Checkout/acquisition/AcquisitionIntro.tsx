@@ -4,18 +4,15 @@ import styles from "./AcquisitionIntro.module.css";
 
 export interface AcquisitionIntroProps {
   children: ReactNode;
+  isCompact?: boolean;
   strings: {
     description: string;
-    eyebrow: string;
   };
 }
 
-export const AcquisitionIntro: React.FC<AcquisitionIntroProps> = ({ children, strings }) => (
-  <section className={styles.root}>
+export const AcquisitionIntro: React.FC<AcquisitionIntroProps> = ({ children, isCompact = false, strings }) => (
+  <section className={styles.root} data-compact={isCompact || undefined}>
     <div className={styles.copy}>
-      <Text as="span" className={styles.eyebrow} tone="primary" variant="caption">
-        {strings.eyebrow}
-      </Text>
       <Text className={styles.description} tone="text-muted">
         {strings.description}
       </Text>

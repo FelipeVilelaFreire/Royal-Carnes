@@ -12,8 +12,8 @@ export const categoriasConfig = {
     actionLabelKey: "categorias.ctaAdd",
     searchPlaceholderKey: "categorias.searchPlaceholder",
     columns: [
+      { key: "hierarchyLabel", labelKey: "categorias.tableHeaders.hierarchy" },
       { key: "name", labelKey: "categorias.tableHeaders.name" },
-      { key: "key", labelKey: "categorias.tableHeaders.key" },
       { key: "parentName", labelKey: "categorias.tableHeaders.parent" },
       { key: "sortOrder", labelKey: "categorias.tableHeaders.sortOrder" },
       { key: "statusLabelKey", labelKey: "categorias.tableHeaders.status", valueType: "translationKey" }
@@ -40,13 +40,13 @@ export const categoriasConfig = {
         sections: [{
           key: "identity",
           type: "fields",
-          titleKey: "categorias.detail.tabs.data",
+          titleKey: "categorias.detail.sections.identity",
           iconIntent: "catalog",
           grid: { desktop: 3, tablet: 2, mobile: 1 },
           fields: [
           { key: "name", labelKey: "categorias.fields.name", editable: true },
           { key: "key", labelKey: "categorias.fields.key", editable: true },
-          { key: "parentName", labelKey: "categorias.fields.parent" },
+          { key: "parentKey", labelKey: "categorias.fields.parent", type: "select", source: "categorias", editable: true },
           { key: "sortOrder", labelKey: "categorias.fields.sortOrder", type: "number", editable: true },
           {
             key: "isActive",
@@ -60,6 +60,16 @@ export const categoriasConfig = {
               { value: "false", labelKey: "common.statusInactive" }
             ]
           }
+          ]
+        }, {
+          key: "relations",
+          type: "fields",
+          titleKey: "categorias.detail.sections.relations",
+          iconIntent: "catalog",
+          grid: { desktop: 2, tablet: 2, mobile: 1 },
+          fields: [
+            { key: "parentName", labelKey: "categorias.fields.parent" },
+            { key: "childCategoriesSummary", labelKey: "categorias.fields.children" }
           ]
         }]
       }

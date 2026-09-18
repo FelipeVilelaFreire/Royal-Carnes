@@ -1,0 +1,54 @@
+.confirmation {
+  display: grid;
+  gap: var(--semicomposed--confirmation-modal--gap);
+  justify-items: center;
+  margin: var(--semicomposed--confirmation-modal--content-bleed);
+  position: relative;
+  text-align: center;
+}
+
+.closeButton {
+  --ui-button-height: var(--semicomposed--confirmation-modal--close-size);
+  --ui-button-min-width: var(--semicomposed--confirmation-modal--close-size);
+  --ui-button-padding-x: var(--semicomposed--confirmation-modal--close-padding);
+  --ui-button-padding-y: var(--semicomposed--confirmation-modal--close-padding);
+  justify-self: end;
+  margin-block-end: calc(var(--semicomposed--confirmation-modal--close-offset) * -1);
+}
+
+.iconFrame {
+  align-items: center;
+  background: var(--semicomposed--confirmation-modal--icon-bg);
+  border-radius: var(--semicomposed--confirmation-modal--icon-radius);
+  color: var(--semicomposed--confirmation-modal--icon-color);
+  display: flex;
+  height: var(--semicomposed--confirmation-modal--icon-size);
+  justify-content: center;
+  width: var(--semicomposed--confirmation-modal--icon-size);
+}
+
+.confirmation[data-tone="danger"] .iconFrame {
+  background: var(--semicomposed--confirmation-modal--danger-icon-bg);
+  color: var(--semicomposed--confirmation-modal--danger-icon-color);
+}
+
+.title {
+  text-align: center;
+}
+
+.description {
+  color: var(--semicomposed--confirmation-modal--muted-color);
+  max-width: var(--semicomposed--confirmation-modal--description-max-width);
+  text-align: center;
+}
+
+.actions {
+  display: grid;
+  gap: var(--semicomposed--confirmation-modal--actions-gap);
+  width: 100%;
+}
+
+.confirmButton,
+.cancelButton {
+  width: 100%;
+}

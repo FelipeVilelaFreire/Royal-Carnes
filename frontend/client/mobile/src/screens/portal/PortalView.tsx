@@ -66,8 +66,10 @@ export const PortalView: React.FC<PortalViewProps> = ({
     forgotPassword: strings.accessShell.forgotPassword,
     legal: strings.accessShell.legal,
     placeholders: strings.accessShell.placeholders,
-    registerHint: strings.accessShell.registerHint,
-    tabs: strings.accessShell.tabs,
+      registerHint: strings.accessShell.registerHint,
+      providers: strings.accessShell.providers,
+      switcher: strings.accessShell.switcher,
+      tabs: strings.accessShell.tabs,
   };
   const activePath =
     activeScreenKey === "catalogo"

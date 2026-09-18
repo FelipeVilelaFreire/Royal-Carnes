@@ -148,7 +148,7 @@ class OrdersApiTests(APITestCase):
         cycle = subscription.cycles.get(cycle_number=1)
         initial_quantity = SubscriptionCycleItem.objects.get(
             cycle=cycle,
-            entitlement__key="premium-cuts-12kg",
+            entitlement__key="picanha-3kg",
             variant__sku="PICANHA-1KG",
         ).quantity
 
@@ -173,7 +173,7 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(response.status_code, 201, response.data)
         cycle_item = SubscriptionCycleItem.objects.get(
             cycle=cycle,
-            entitlement__key="premium-cuts-12kg",
+            entitlement__key="picanha-3kg",
             variant__sku="PICANHA-1KG",
         )
         self.assertEqual(cycle_item.quantity, initial_quantity + Decimal("1.000"))

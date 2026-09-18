@@ -54,6 +54,7 @@ def upsert_category(
     name: str,
     parent: Category | None = None,
     sort_order: int = 0,
+    is_active: bool = True,
 ) -> Category:
     category, _created = Category.objects.update_or_create(
         organization=organization,
@@ -62,7 +63,7 @@ def upsert_category(
             "name": name,
             "parent": parent,
             "sort_order": sort_order,
-            "is_active": True,
+            "is_active": is_active,
         },
     )
     return category
@@ -74,6 +75,7 @@ def update_category(
     category: Category,
     key: str | None = None,
     name: str | None = None,
+    parent_key: str | None = None,
     sort_order: int | None = None,
     is_active: bool | None = None,
 ) -> Category:
@@ -84,6 +86,22 @@ def update_category(
     if name is not None:
         category.name = name
         update_fields.append("name")
+    if parent_key is not None:
+        parent = None
+        if parent_key:
+            try:
+                parent = Category.objects.get(organization=category.organization, key=parent_key)
+            except Category.DoesNotExist as exc:
+                raise CatalogValidationError("category_parent_not_found", f"Category parent not found: {parent_key}") from exc
+            if parent.id == category.id:
+                raise CatalogValidationError("category_parent_invalid", "Category cannot be its own parent")
+            ancestor = parent
+            while ancestor is not None:
+                if ancestor.id == category.id:
+                    raise CatalogValidationError("category_parent_cycle", "Category parent cannot be a descendant")
+                ancestor = ancestor.parent
+        category.parent = parent
+        update_fields.append("parent")
     if sort_order is not None:
         category.sort_order = sort_order
         update_fields.append("sort_order")
