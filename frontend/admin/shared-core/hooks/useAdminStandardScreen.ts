@@ -36,7 +36,11 @@ function collectFormFields(formConfig: any): any[] {
 function collectDetailFields(detailConfig: any): any[] {
   return (detailConfig?.tabs || []).flatMap((tab: any) => [
     ...(tab.fields || []),
-    ...(tab.sections || []).flatMap((section: any) => section.fields || []),
+    ...(tab.sections || []).flatMap((section: any) => (
+      section.type === "lineItems"
+        ? [{ ...section, key: section.itemsKey, type: "lineItems" }]
+        : section.fields || []
+    )),
   ]);
 }
 

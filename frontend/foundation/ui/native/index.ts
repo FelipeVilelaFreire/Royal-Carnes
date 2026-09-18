@@ -3,6 +3,7 @@ export * from "./CurrencyInput";
 export * from "./DropdownPicker";
 export * from "./Icon";
 export * from "./Input";
+export * from "./FormattedInput";
 export * from "./Layout";
 export * from "./Modal";
 export * from "./Select";

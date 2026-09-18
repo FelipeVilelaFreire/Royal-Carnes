@@ -8,6 +8,7 @@ import type {
   AdminOrderConfigView,
   AdminOrderCreateInput,
   AdminOrderDto,
+  AdminOrderItemsReplaceInput,
   AdminOrderTransitionInput,
   AdminOrderView,
 } from "../contracts/orders.contract";
@@ -15,6 +16,7 @@ import {
   mapAdminOrderConfigDto,
   mapAdminOrderCreateInput,
   mapAdminOrderDto,
+  mapAdminOrderItemsReplaceInput,
   mapAdminOrderTransitionInput,
 } from "../mappers/orders.mapper";
 
@@ -66,6 +68,19 @@ export function createAdminOrdersApi(config: ApiClientConfig = {}) {
         headers: buildAdminOrdersHeaders(config),
         body: JSON.stringify(mapAdminOrderCreateInput(input)),
       });
+
+      await throwIfApiError(response);
+      return mapAdminOrderDto((await response.json()) as AdminOrderDto);
+    },
+    async replaceItems(orderId: string | number, input: AdminOrderItemsReplaceInput): Promise<AdminOrderView> {
+      const response = await fetcher(
+        resolveUrl(config.baseUrl, `/api/v1/orders/admin/orders/${orderId}/items/`),
+        {
+          method: "PUT",
+          headers: buildAdminOrdersHeaders(config),
+          body: JSON.stringify(mapAdminOrderItemsReplaceInput(input)),
+        },
+      );
 
       await throwIfApiError(response);
       return mapAdminOrderDto((await response.json()) as AdminOrderDto);

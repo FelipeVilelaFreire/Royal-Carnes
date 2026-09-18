@@ -73,6 +73,10 @@ Itens repetidos sao tabela, nunca uma sequencia de cards:
 Item | Quantidade | Preco unitario | Total
 ```
 
+O config tambem declara o alinhamento da coluna. Em Pedido, `Item` fica no
+inicio; quantidade, preco unitario e total usam `align: "end"`, mantendo os
+valores comparaveis em uma leitura rapida.
+
 O renderer esta em:
 
 ```text
@@ -97,10 +101,19 @@ text     -> Input de texto
 Produto pode declarar `presentation: "media"` e usa o `DropdownPicker`
 compartilhado com imagem e unidade quando essas informacoes existirem.
 
-Limite importante: no detalhe de Pedido, itens ainda sao somente leitura. O
-backend calcula preco e total, reserva estoque e aplica regras de assinatura.
-Nao habilitar edicao de itens ate existir comando transacional real no backend.
-Status continua sendo a mutacao permitida nesse detalhe.
+No detalhe de Pedido, `Editar` troca a tabela por duas celulas editaveis no
+mesmo lugar: `Item` e `Quantidade`. O seletor mostra somente o produto (por
+exemplo, `Picanha`); sua unidade comercial fixa (`kg` ou `un`) entra
+automaticamente como sufixo da quantidade. A variante tecnica padrao, quando
+existir, segue oculta para preservar preco e reserva de estoque; o maximo do
+campo e o saldo vendavel retornado pelo estoque. `Adicionar item` insere uma
+nova linha; em `/pedidos/novo`, a tabela aparece mesmo vazia para receber essa
+acao. Preco unitario e total continuam calculados pelo backend.
+
+A persistencia usa `PUT /api/v1/orders/admin/orders/<id>/items/`. O servico
+substitui os itens em uma transacao, recalcula preco/total e compensa/reserva o
+estoque. Por seguranca, isso vale apenas para Pedido em `received` sem ciclo de
+assinatura; pedidos posteriores ou de ciclo retornam `order_items_locked`.
 
 Em mobile, a tabela preserva colunas e usa rolagem horizontal dentro da
 superficie; ela nao se converte em cards.
@@ -161,11 +174,9 @@ estilos         LineItemsEditor/LineItemsEditor.module.css
 contrato        standard.view-model.ts + config.jsx da entidade
 ```
 
-5. Se o usuario pedir edicao de itens em Pedido, parar antes de marcar
-   `editable`. Primeiro propor e implementar o contrato backend para substituir
-   itens de forma transacional: validar produto/variante, recalcular preco e
-   total, compensar/reservar estoque e respeitar ciclo de assinatura. So depois
-   conectar API, shared-core e `pedidos.config.jsx`.
+5. Se a operacao pedir edicao de itens depois de `received` ou em ciclo de
+   assinatura, ampliar primeiro o servico `replace_order_items` com a regra de
+   negocio correspondente; nao contornar `order_items_locked` no frontend.
 6. Ao concluir, executar os checks da secao anterior, registrar apenas o novo
    estado consolidado neste arquivo e manter este handoff curto.
 

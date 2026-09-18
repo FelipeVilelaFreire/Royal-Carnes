@@ -105,6 +105,49 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
   subscriptionSummaryUsage,
   tokens,
 }) => {
+  const hasSelectedProduct = (predicate: (product: ClientCheckoutProduct) => boolean) => (
+    selectedProductEntries.some(({ product }) => predicate(product))
+  );
+  const subscriptionUsageRows = selectedMode === "subscription"
+    ? [
+      {
+        isVisible: subscriptionCycleCutsUsed > 0 || subscriptionCycleWeightUsed > 0 || hasSelectedProduct((product) => product.kind === "meat"),
+        label: strings.summary.meatUsage,
+        value: subscriptionSummaryUsage
+          ? `${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
+          : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(currentSubscriptionPlan.proteinKgLimit, "kg")}`,
+      },
+      {
+        isVisible: subscriptionCycleCharcoalUsed > 0 || hasSelectedProduct((product) => product.kind === "charcoal"),
+        label: strings.summary.charcoalUsage,
+        value: subscriptionSummaryUsage
+          ? `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
+          : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(currentSubscriptionPlan.charcoalKgLimit, "kg")}`,
+      },
+      {
+        isVisible: subscriptionCycleSeasoningsUsed > 0 || hasSelectedProduct((product) => product.kind === "seasoning"),
+        label: strings.summary.seasoningUsage,
+        value: subscriptionSummaryUsage
+          ? `${subscriptionCycleSeasoningsUsed}/${subscriptionSummaryUsage.seasoningsLimit}`
+          : `${selectedSeasoningCount}/${currentSubscriptionPlan.seasoningSelectionLimit}`,
+      },
+      {
+        isVisible: subscriptionCycleSidesUsed > 0 || hasSelectedProduct((product) => product.kind === "kit" && product.tags.includes("acompanhamento")),
+        label: strings.summary.sideUsage,
+        value: subscriptionSummaryUsage
+          ? `${subscriptionCycleSidesUsed}/${subscriptionSummaryUsage.sidesLimit}`
+          : `${selectedSideCount}/${currentSubscriptionPlan.sideSelectionLimit}`,
+      },
+      {
+        isVisible: subscriptionCycleUtensilsUsed > 0 || hasSelectedProduct((product) => product.kind === "utensil"),
+        label: strings.summary.utensilUsage,
+        value: subscriptionSummaryUsage
+          ? `${subscriptionCycleUtensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
+          : `${selectedUtensilCount}/${currentSubscriptionPlan.utensilSelectionLimit}`,
+      },
+    ].filter((row) => row.isVisible)
+    : [];
+
   return (
     <Surface appearance="soft" as="aside" className={styles.summary}>
       <Stack gap="md">
@@ -156,39 +199,12 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
               </Surface>
             ) : null}
 
-            {selectedMode === "subscription" ? (
+            {subscriptionUsageRows.length ? (
               <Surface appearance="soft" className={styles.summaryGroup}>
                 <Stack gap="sm">
-                  <SummaryRow
-                    label={strings.summary.meatUsage}
-                    value={subscriptionSummaryUsage
-                      ? `${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
-                      : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(currentSubscriptionPlan.proteinKgLimit, "kg")}`}
-                  />
-                  <SummaryRow
-                    label={strings.summary.charcoalUsage}
-                    value={subscriptionSummaryUsage
-                      ? `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
-                      : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(currentSubscriptionPlan.charcoalKgLimit, "kg")}`}
-                  />
-                  <SummaryRow
-                    label={strings.summary.seasoningUsage}
-                    value={subscriptionSummaryUsage
-                      ? `${subscriptionCycleSeasoningsUsed}/${subscriptionSummaryUsage.seasoningsLimit}`
-                      : `${selectedSeasoningCount}/${currentSubscriptionPlan.seasoningSelectionLimit}`}
-                  />
-                  <SummaryRow
-                    label={strings.summary.sideUsage}
-                    value={subscriptionSummaryUsage
-                      ? `${subscriptionCycleSidesUsed}/${subscriptionSummaryUsage.sidesLimit}`
-                      : `${selectedSideCount}/${currentSubscriptionPlan.sideSelectionLimit}`}
-                  />
-                  <SummaryRow
-                    label={strings.summary.utensilUsage}
-                    value={subscriptionSummaryUsage
-                      ? `${subscriptionCycleUtensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
-                      : `${selectedUtensilCount}/${currentSubscriptionPlan.utensilSelectionLimit}`}
-                  />
+                  {subscriptionUsageRows.map((row) => (
+                    <SummaryRow key={row.label} label={row.label} value={row.value} />
+                  ))}
                 </Stack>
               </Surface>
             ) : null}

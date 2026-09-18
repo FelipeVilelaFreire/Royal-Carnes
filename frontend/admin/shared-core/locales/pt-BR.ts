@@ -577,6 +577,14 @@ export const adminPtBR = {
       includedItemCount: "Itens inclusos",
       includedItemSummary: "Produtos, quantidades e unidades",
       addIncludedItem: "Adicionar item incluso",
+      addItemLimit: "Adicionar limite específico",
+      allowedItems: "Pode escolher de",
+      capacityGroup: "Grupo geral",
+      capacityGroupKey: "Grupo geral",
+      capacityScope: "Tipo de seleção",
+      itemLimits: "Limites específicos",
+      itemMaximum: "Máximo por item",
+      maxSelections: "Máximo de escolhas",
       includedItemType: "Tipo",
       includedItemTarget: "Item",
       limit: "Limite",
@@ -609,7 +617,8 @@ export const adminPtBR = {
       title: "Detalhe do plano",
       sections: {
         identity: "Identificacao",
-        commercial: "Comercial"
+        commercial: "Comercial",
+        itemLimits: "Limites específicos"
       },
       tabs: {
         data: "Dados",
@@ -638,7 +647,8 @@ export const adminPtBR = {
       sections: {
         identity: "Identificacao",
         commercial: "Comercial",
-        includedItems: "Itens inclusos"
+        includedItems: "Itens inclusos",
+        itemLimits: "Limites específicos"
       }
     },
     billingIntervals: {
@@ -646,7 +656,8 @@ export const adminPtBR = {
       week: "Semanal",
       month: "Mensal",
       year: "Anual"
-    }
+    },
+    capacityScopes: { collection: "Coleção", category: "Categoria", product: "Produto", variant: "Variante" }
   },
   clientes: {
     title: "Clientes",

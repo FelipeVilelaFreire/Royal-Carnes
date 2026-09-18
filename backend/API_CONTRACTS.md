@@ -789,6 +789,12 @@ Objetivo:
 retornar ciclo aberto atual da assinatura ativa do cliente
 ```
 
+Response inclui `capacity`: uma lista calculada pelo backend a partir dos
+entitlements do plano e dos itens validos do ciclo. Cada grupo informa chave,
+label de negocio, quantidade usada/limite, unidade e, quando configurado,
+selecoes usadas/limite. `item_limits` reserva a regra futura por produto ou
+variante; a tela apenas apresenta esse resumo e nunca recalcula uso ou limite.
+
 Auth:
 
 ```text
@@ -1131,6 +1137,10 @@ Response inclui:
   "status_history": []
 }
 ```
+
+Cada item de pedido inclui `image_url` e `image_alt` quando o produto possui
+mídia primária no catálogo. Clientes devem usar seu fallback visual centralizado
+quando `image_url` vier nulo ou a mídia não carregar.
 
 Kinds seedados no RoyalPrime:
 

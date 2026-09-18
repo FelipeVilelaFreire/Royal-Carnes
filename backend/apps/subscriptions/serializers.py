@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from .capacity import build_cycle_capacity
 from .models import Plan, PlanEntitlement, PlanPrice, Subscription, SubscriptionCycle, SubscriptionCycleItem
 
 
@@ -154,6 +155,10 @@ class SubscriptionCycleItemSerializer(serializers.ModelSerializer):
 
 class SubscriptionCycleSerializer(serializers.ModelSerializer):
     items = SubscriptionCycleItemSerializer(many=True, read_only=True)
+    capacity = serializers.SerializerMethodField()
+
+    def get_capacity(self, cycle):
+        return build_cycle_capacity(cycle)
 
     class Meta:
         model = SubscriptionCycle
@@ -165,6 +170,7 @@ class SubscriptionCycleSerializer(serializers.ModelSerializer):
             "ends_at",
             "closed_at",
             "items",
+            "capacity",
         )
 
 

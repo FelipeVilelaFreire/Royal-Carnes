@@ -6,6 +6,9 @@
       var(--theme--color-background)
     );
   color: var(--theme--color-text);
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   min-height: 100%;
   width: 100%;
 }
@@ -45,8 +48,11 @@
 }
 
 .sidebar {
+  align-self: start;
+  max-block-size: calc(100dvh - var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) - var(--theme--spacing-spaceXl) - var(--theme--spacing-spaceMd));
+  overflow-y: auto;
   position: sticky;
-  top: var(--theme--spacing-spaceXl);
+  top: calc(var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) + var(--theme--spacing-spaceMd));
 }
 
 .tabList {
@@ -152,6 +158,20 @@
   width: var(--theme--dimensions-height-3xl);
 }
 
+.orderImageFallback {
+  align-items: center;
+  aspect-ratio: 1;
+  background: var(--theme--color-surface-container);
+  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  border-radius: var(--theme--radius-xl);
+  color: var(--theme--color-accent);
+  display: inline-flex;
+  flex: 0 0 var(--theme--dimensions-height-3xl);
+  justify-content: center;
+  overflow: hidden;
+  width: var(--theme--dimensions-height-3xl);
+}
+
 .divider {
   background: var(--theme--color-border);
   height: var(--theme--borders-hairline);
@@ -202,6 +222,8 @@
   }
 
   .sidebar {
+    max-block-size: none;
+    overflow-y: visible;
     position: static;
   }
 

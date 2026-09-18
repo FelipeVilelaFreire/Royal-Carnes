@@ -12,7 +12,7 @@ export const clientesConfig = {
     columns: [
       { key: "name", labelKey: "clientes.tableHeaders.name", showAvatar: true },
       { key: "email", labelKey: "clientes.tableHeaders.email" },
-      { key: "phone", labelKey: "clientes.tableHeaders.phone" },
+      { key: "phone", labelKey: "clientes.tableHeaders.phone", format: "phoneBR" },
       { key: "statusLabelKey", labelKey: "clientes.tableHeaders.status", valueType: "translationKey" },
       { key: "addressCount", labelKey: "clientes.tableHeaders.addressCount" }
     ],
@@ -34,7 +34,7 @@ export const clientesConfig = {
     displayNameKey: "name",
     header: {
       meta: [
-        { key: "document", labelKey: "clientes.fields.document" },
+        { key: "document", labelKey: "clientes.fields.document", format: "taxIdBR" },
         { key: "email", labelKey: "clientes.fields.email" }
       ],
       status: {
@@ -58,8 +58,8 @@ export const clientesConfig = {
           fields: [
           { key: "name", labelKey: "clientes.fields.name", editable: true },
           { key: "email", labelKey: "clientes.fields.email", editable: true },
-          { key: "phone", labelKey: "clientes.fields.phone", editable: true },
-          { key: "document", labelKey: "clientes.fields.document", editable: true },
+          { key: "phone", labelKey: "clientes.fields.phone", editable: true, format: "phoneBR" },
+          { key: "document", labelKey: "clientes.fields.document", editable: true, format: "taxIdBR" },
           {
             key: "status",
             labelKey: "clientes.fields.status",
@@ -119,7 +119,7 @@ export const clientesConfig = {
         titleKey: "clientes.add.sections.identity",
         fields: [
           { key: "name", labelKey: "clientes.fields.name", required: true },
-          { key: "document", labelKey: "clientes.fields.document" }
+          { key: "document", labelKey: "clientes.fields.document", format: "taxIdBR" }
         ]
       },
       {
@@ -127,7 +127,7 @@ export const clientesConfig = {
         titleKey: "clientes.add.sections.contact",
         fields: [
           { key: "email", labelKey: "clientes.fields.email" },
-          { key: "phone", labelKey: "clientes.fields.phone" }
+          { key: "phone", labelKey: "clientes.fields.phone", format: "phoneBR" }
         ]
       }
     ]

@@ -101,10 +101,12 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
     }));
   const selectedPayment = paymentMethods.find((method) => method.key === selectedPaymentMethod) || paymentMethods[0];
   const newAddressFields = config.addressFields.map((field) => ({
-    gridColumn: field.gridColumn,
-    gridSpan: field.gridColumn.replace(" ", "-"),
+    autoComplete: field.autoComplete,
+    gridSpan: field.gridSpan,
     key: field.key,
     label: strings.deliveryStep.common[field.labelKey],
+    maxLength: field.maxLength,
+    inputMode: field.inputMode,
     placeholder: strings.deliveryStep.common.addressPlaceholders[field.placeholderKey],
   }));
 
@@ -260,7 +262,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
         showScrollBorder={false}
         title={strings.hero.title}
       />
-      <main className="appear-on-scroll">
+      <main>
         <Container
           className={`${styles.main} ${styles.mainEmbedded}`}
           width="wide"

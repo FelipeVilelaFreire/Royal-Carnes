@@ -266,6 +266,109 @@ def create_order(
 
 
 @transaction.atomic
+def replace_order_items(*, organization, order: Order, items: list[dict], actor=None) -> Order:
+    if order.organization_id != organization.id:
+        raise OrderValidationError("organization_mismatch", "Order must belong to organization")
+    if order.status_key != "received":
+        raise OrderValidationError("order_items_locked", "Order items can only be changed while the order is received")
+    if order.subscription_cycle_id is not None:
+        raise OrderValidationError("order_items_locked", "Subscription cycle order items cannot be changed")
+    if not items:
+        raise OrderValidationError("order_items_required", "Order requires at least one item")
+
+    kind = OrderKindDefinition.objects.select_related("commercial_mode").get(
+        organization=organization,
+        key=order.kind_key,
+        is_active=True,
+    )
+    prepared_items = []
+    for item_data in items:
+        product = Product.objects.get(organization=organization, key=item_data["product_key"])
+        variant = None
+        if item_data.get("variant_sku"):
+            variant = ProductVariant.objects.select_related("measurement_unit").get(
+                organization=organization,
+                sku=item_data["variant_sku"],
+            )
+            if variant.product_id != product.id:
+                raise OrderValidationError("variant_product_mismatch", "Variant does not belong to product")
+        quantity = Decimal(str(item_data["quantity"]))
+        if quantity <= 0:
+            raise OrderValidationError("order_item_quantity_invalid", "Order item quantity must be greater than zero")
+        prepared_items.append({"data": item_data, "product": product, "variant": variant, "quantity": quantity})
+
+    existing_items = list(order.items.select_related("product", "variant"))
+    if kind.requires_inventory:
+        for existing_item in existing_items:
+            inventory_item = inventory_item_for_order_item(
+                organization=organization,
+                product=existing_item.product,
+                variant=existing_item.variant,
+            )
+            try:
+                adjust_inventory_item(
+                    organization=organization,
+                    item=inventory_item,
+                    reserved_delta=-existing_item.quantity,
+                    movement_type=InventoryMovement.MovementType.RESERVATION,
+                    reason=f"Order {order.code} items replaced",
+                    actor=actor,
+                    metadata={"orderCode": order.code},
+                )
+            except InventoryValidationError as error:
+                raise OrderValidationError(error.code, error.detail) from error
+
+    OrderItem.objects.filter(order=order).delete()
+    subtotal_cents = 0
+    for prepared_item in prepared_items:
+        item_data = prepared_item["data"]
+        product = prepared_item["product"]
+        variant = prepared_item["variant"]
+        price = resolve_product_price(
+            organization=organization,
+            product=product,
+            variant=variant,
+            commercial_mode=kind.commercial_mode,
+        )
+        total_cents = int((Decimal(price.amount_cents) * prepared_item["quantity"]).to_integral_value(rounding=ROUND_HALF_UP))
+        OrderItem.objects.create(
+            organization=organization,
+            order=order,
+            product=product,
+            variant=variant,
+            measurement_unit=variant.measurement_unit if variant else None,
+            name_snapshot=variant.name if variant else product.name,
+            quantity=prepared_item["quantity"],
+            unit_price_cents=price.amount_cents,
+            total_cents=total_cents,
+            weight_grams=variant.weight_grams if variant else None,
+            source_type=item_data.get("source_type", ""),
+            source_key=item_data.get("source_key", ""),
+            metadata=item_data.get("metadata", {}),
+        )
+        subtotal_cents += total_cents
+        if kind.requires_inventory:
+            inventory_item = inventory_item_for_order_item(organization=organization, product=product, variant=variant)
+            try:
+                adjust_inventory_item(
+                    organization=organization,
+                    item=inventory_item,
+                    reserved_delta=prepared_item["quantity"],
+                    movement_type=InventoryMovement.MovementType.RESERVATION,
+                    reason=f"Order {order.code} items replaced",
+                    actor=actor,
+                    metadata={"orderCode": order.code},
+                )
+            except InventoryValidationError as error:
+                raise OrderValidationError(error.code, error.detail) from error
+
+    order.subtotal_cents = subtotal_cents
+    order.total_cents = max(subtotal_cents - order.discount_cents + order.freight_cents, 0)
+    order.save(update_fields=["subtotal_cents", "total_cents", "updated_at"])
+    return order
+
+
+@transaction.atomic
 def transition_order_status(*, organization, order: Order, to_status_key: str, actor=None, note: str = "") -> Order:
     if order.organization_id != organization.id:
         raise OrderValidationError("organization_mismatch", "Order must belong to organization")

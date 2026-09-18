@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@foundation/ui/web/Button";
+import { PlusIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { Text } from "@foundation/ui/web/Text";
 import type { AdminStandardLineItemColumnViewModel } from "@/view-models/standard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
@@ -62,9 +63,20 @@ export const LineItemsEditor: React.FC<LineItemsEditorProps> = ({
 
   return (
     <div className={styles.editor}>
-      {items.length ? (
-        <LineItemsTable actionLabel={removeLabel} columns={columns} t={t}>
-          {items.map((item, index) => (
+      <div className={styles.actions}>
+        <Button
+          appearance="solid"
+          icon={<PlusIcon aria-hidden="true" />}
+          onClick={() => onChange([...items, createEmptyLineItem(columns)])}
+          size="sm"
+          tone="primary"
+          type="button"
+        >
+          {addLabel}
+        </Button>
+      </div>
+      <LineItemsTable columns={columns} t={t}>
+        {items.length ? items.map((item, index) => (
             <LineItemsEditorRow
               columns={columns}
               item={item}
@@ -75,22 +87,14 @@ export const LineItemsEditor: React.FC<LineItemsEditorProps> = ({
               removeLabel={removeLabel}
               t={t}
             />
-          ))}
-        </LineItemsTable>
-      ) : (
-        <div className={styles.empty}>
-          <Text tone="muted" variant="body">{emptyLabel}</Text>
-        </div>
-      )}
-      <Button
-        appearance="outline"
-        onClick={() => onChange([...items, createEmptyLineItem(columns)])}
-        size="sm"
-        tone="neutral"
-        type="button"
-      >
-        {addLabel}
-      </Button>
+          )) : (
+          <tr>
+            <td className={styles.emptyCell} colSpan={columns.length + 1}>
+              <Text tone="muted" variant="body">{emptyLabel}</Text>
+            </td>
+          </tr>
+        )}
+      </LineItemsTable>
     </div>
   );
 };

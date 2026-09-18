@@ -29,6 +29,20 @@ CYCLE_ITEM_PREFETCH = Prefetch(
 )
 
 
+def cycle_with_capacity_queryset(organization):
+    return (
+        SubscriptionCycle.objects.filter(organization=organization)
+        .select_related("subscription", "subscription__customer", "subscription__plan")
+        .prefetch_related(
+            CYCLE_ITEM_PREFETCH,
+            Prefetch(
+                "subscription__plan__entitlements",
+                queryset=PlanEntitlement.objects.select_related(*ENTITLEMENT_SELECT_RELATED),
+            ),
+        )
+    )
+
+
 def public_plans_for_organization(organization):
     return (
         Plan.objects.filter(organization=organization, status=Plan.Status.ACTIVE)
@@ -77,21 +91,13 @@ def subscription_for_organization(organization, subscription_id):
 
 
 def cycles_for_organization(organization):
-    return (
-        SubscriptionCycle.objects.filter(organization=organization)
-        .select_related("subscription", "subscription__customer", "subscription__plan")
-        .prefetch_related(CYCLE_ITEM_PREFETCH)
-    )
+    return cycle_with_capacity_queryset(organization)
 
 
 def current_cycle_for_subscription(subscription):
     return (
-        SubscriptionCycle.objects.filter(
-            organization=subscription.organization,
-            subscription=subscription,
-            status=SubscriptionCycle.Status.OPEN,
-        )
-        .prefetch_related(CYCLE_ITEM_PREFETCH)
+        cycle_with_capacity_queryset(subscription.organization)
+        .filter(subscription=subscription, status=SubscriptionCycle.Status.OPEN)
         .order_by("-starts_at", "-cycle_number")
         .first()
     )

@@ -24,9 +24,10 @@ from .serializers import (
     OrderKindSerializer,
     OrderSerializer,
     OrderStatusSerializer,
+    OrderItemsReplaceSerializer,
     OrderStatusTransitionSerializer,
 )
-from .services import OrderValidationError, create_order, transition_order_status
+from .services import OrderValidationError, create_order, replace_order_items, transition_order_status
 
 
 def _resolve_order_refs(organization, customer, data):
@@ -158,6 +159,28 @@ def admin_order_detail(request, order_id):
     organization = get_request_organization(request)
     require_organization_permission(request.user, organization, "orders.read")
     return Response(OrderSerializer(order_detail(order_id, organization)).data)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def admin_order_items(request, order_id):
+    organization = get_request_organization(request)
+    require_organization_permission(request.user, organization, "orders.manage")
+    serializer = OrderItemsReplaceSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    order = order_detail(order_id, organization)
+    try:
+        order = replace_order_items(
+            organization=organization,
+            order=order,
+            items=serializer.validated_data["items"],
+            actor=request.user,
+        )
+    except ObjectDoesNotExist:
+        return Response({"code": "order_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
+    except OrderValidationError as error:
+        return Response({"code": error.code, "detail": error.detail}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(OrderSerializer(order_detail(order.id, organization)).data)
 
 
 @api_view(["POST"])

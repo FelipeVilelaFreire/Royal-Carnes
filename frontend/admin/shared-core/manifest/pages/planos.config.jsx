@@ -1,13 +1,24 @@
 const planEntitlementColumns = [
+  { key: "capacityLabel", labelKey: "planos.fields.capacityGroup", type: "text", required: true },
   {
-    key: "targetKey",
-    labelKey: "planos.fields.product",
+    key: "targetType",
+    labelKey: "planos.fields.capacityScope",
     type: "select",
     required: true,
-    source: "produtos",
-    writeValues: {
-      targetType: "product"
-    },
+    options: [
+      { value: "collection", labelKey: "planos.capacityScopes.collection" },
+      { value: "category", labelKey: "planos.capacityScopes.category" },
+      { value: "product", labelKey: "planos.capacityScopes.product" },
+      { value: "variant", labelKey: "planos.capacityScopes.variant" },
+    ],
+  },
+  {
+    key: "targetKey",
+    labelKey: "planos.fields.allowedItems",
+    type: "select",
+    required: true,
+    sourceBy: "targetType",
+    sources: { collection: "colecoes", category: "categorias", product: "produtos", variant: "variantes" },
     writeOptionMeta: {
       measurementUnitKey: "measurementUnitKey"
     }
@@ -18,7 +29,14 @@ const planEntitlementColumns = [
     type: "number",
     required: true,
     suffixKey: "measurementUnitKey"
-  }
+  },
+  { key: "maxSelections", labelKey: "planos.fields.maxSelections", type: "number" },
+];
+
+const planItemLimitColumns = [
+  { key: "capacityKey", labelKey: "planos.fields.capacityGroupKey", type: "text", required: true },
+  { key: "targetKey", labelKey: "planos.fields.product", type: "select", required: true, source: "produtos", writeOptionMeta: { measurementUnitKey: "measurementUnitKey" } },
+  { key: "maxQuantity", labelKey: "planos.fields.itemMaximum", type: "number", format: "decimalBR", required: true, suffixKey: "measurementUnitKey" },
 ];
 
 export const planosConfig = {
@@ -128,6 +146,17 @@ export const planosConfig = {
           editable: true,
           addLabelKey: "planos.fields.addIncludedItem",
           columns: planEntitlementColumns
+        }, {
+          key: "itemLimits",
+          type: "lineItems",
+          titleKey: "planos.detail.sections.itemLimits",
+          iconIntent: "inventory",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          itemsKey: "itemLimits",
+          labelKey: "planos.fields.itemLimits",
+          editable: true,
+          addLabelKey: "planos.fields.addItemLimit",
+          columns: planItemLimitColumns
         }]
       },
     ]
@@ -191,6 +220,11 @@ export const planosConfig = {
             columns: planEntitlementColumns
           }
         ]
+      },
+      {
+        key: "itemLimits",
+        titleKey: "planos.add.sections.itemLimits",
+        fields: [{ key: "itemLimits", labelKey: "planos.fields.itemLimits", type: "lineItems", addLabelKey: "planos.fields.addItemLimit", columns: planItemLimitColumns }]
       }
     ]
   }

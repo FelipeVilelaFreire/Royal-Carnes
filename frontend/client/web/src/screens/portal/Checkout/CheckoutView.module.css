@@ -1,12 +1,10 @@
 @keyframes pedidoAppear {
   from {
     opacity: 0;
-    transform: translateY(var(--theme--spacing-spaceMd));
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -888,26 +886,83 @@
 }
 
 .addressForm {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--theme--spacing-spaceSm);
+  width: 100%;
 }
 
-.addressField {
+.deliveryStack {
+  width: 100%;
+}
+
+.deliverySection {
   display: grid;
+  gap: var(--theme--spacing-spaceMd);
   min-width: 0;
 }
 
-.addressField[data-grid-column="span-3"] {
-  grid-column: span 3;
+.deliverySection + .deliverySection {
+  border-block-start: var(--theme--borders-hairline) solid var(--pedido-panel-border);
+  padding-block-start: var(--theme--spacing-spaceLg);
 }
 
-.addressField[data-grid-column="span-4"] {
-  grid-column: span 4;
+.deliverySectionHeader {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-spaceSm);
+  justify-content: space-between;
 }
 
-.addressField[data-grid-column="span-6"] {
-  grid-column: span 6;
+.deliverySectionCopy {
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+  min-width: 0;
+}
+
+.addressGrid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
+}
+
+.addressFormPanel {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-panel-bg) 82%, var(--theme--color-background));
+  --ui-surface-border: var(--pedido-panel-border);
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+}
+
+.addressFormHeader {
+  border-block-end: var(--theme--borders-hairline) solid var(--pedido-panel-border);
+  padding-block-end: var(--theme--spacing-spaceSm);
+}
+
+.addressFormActions {
+  border-block-start: var(--theme--borders-hairline) solid var(--pedido-panel-border);
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-spaceSm);
+  padding-block-start: var(--theme--spacing-spaceMd);
+}
+
+.freightOptions {
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-xl), 1fr));
+}
+
+.freightSummary {
+  --ui-surface-bg: color-mix(in srgb, var(--pedido-option-accent) 7%, var(--pedido-panel-bg));
+  --ui-surface-border: color-mix(in srgb, var(--pedido-option-accent) 38%, var(--pedido-panel-border));
+}
+
+.deliveryNotes {
+  width: 100%;
+}
+
+.deliveryActions {
+  border-block-start: var(--theme--borders-hairline) solid var(--pedido-panel-border);
+  flex-wrap: wrap;
+  gap: var(--theme--spacing-spaceSm);
+  padding-block-start: var(--theme--spacing-spaceLg);
+}
+
+.addressField {
+  min-width: 0;
 }
 
 .summary {
@@ -922,13 +977,13 @@
   --ui-surface-padding-x: var(--theme--spacing-spaceLg);
   --ui-surface-padding-y: var(--theme--spacing-spaceLg);
   --ui-surface-radius: var(--theme--radius-xl);
-  position: sticky;
-  top: calc(var(--theme--dimensions-height-3xl) + var(--theme--spacing-spaceLg));
   align-self: flex-start;
-  height: fit-content;
-  max-height: calc(100% - var(--theme--dimensions-height-3xl) - var(--theme--spacing-space3xl));
-  overflow-y: auto;
+  block-size: fit-content;
+  inset-block-start: calc(var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) + var(--theme--spacing-spaceLg));
+  max-block-size: calc(100dvh - var(--app-shell-header-height, var(--theme--dimensions-height-3xl)) - var(--theme--spacing-space3xl));
   min-width: 0;
+  overflow-y: auto;
+  position: sticky;
   transition:
     background var(--theme--motion-durationLg) ease,
     border-color var(--theme--motion-durationLg) ease;
@@ -1000,14 +1055,6 @@
 }
 
 @media (max-width: 1100px) {
-  .shell {
-    grid-template-columns: 1fr !important;
-  }
-
-  .summary {
-    position: static;
-  }
-
   .modeList {
     grid-template-columns: repeat(3, minmax(var(--theme--dimensions-minWidth-3xl), 1fr)) !important;
     overflow-x: auto !important;
@@ -1025,6 +1072,14 @@
 }
 
 @media (max-width: 760px) {
+  .shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .summary {
+    position: static;
+  }
+
   .main {
     padding-block-end: calc(var(--theme--dimensions-height-xl) + var(--theme--spacing-space2xl)) !important;
   }
@@ -1057,11 +1112,20 @@
   }
 
   .addressForm {
-    grid-template-columns: 1fr !important;
+    gap: var(--theme--spacing-spaceSm);
   }
 
   .addressField {
     grid-column: 1 / -1 !important;
+  }
+
+  .addressFormActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .addressFormActions > * {
+    width: 100%;
   }
 
   .modeList {

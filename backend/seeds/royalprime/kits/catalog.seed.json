@@ -607,11 +607,11 @@
       "key": "carvao-premium",
       "name": "Carvao Premium",
       "description": "Carvao de apoio para pedido de churrasco, box e venda avulsa com ticket complementar.",
-      "categoryKeys": ["acompanhamentos", "carvao", "utensilios"],
+      "categoryKeys": ["acompanhamentos", "carvao"],
       "collections": ["churrasco-premium", "dia-a-dia"],
       "unit": "bag",
       "priceCents": 3490,
-      "commercialModes": ["delivery", "box"],
+      "commercialModes": ["subscription", "delivery", "box"],
       "media": [
         {
           "url": "https://metro-muscat.com/cdn/shop/files/uat7HIndom_588x588.webp?v=1746445676",
@@ -631,7 +631,7 @@
             "material": "carvao vegetal"
           },
           "priceCents": 3490,
-          "commercialModes": ["delivery", "box"]
+          "commercialModes": ["subscription", "delivery", "box"]
         },
         {
           "sku": "CARVAO-10KG",
@@ -644,7 +644,7 @@
             "material": "carvao vegetal"
           },
           "priceCents": 6490,
-          "commercialModes": ["delivery", "box"]
+          "commercialModes": ["subscription", "delivery", "box"]
         }
       ]
     }

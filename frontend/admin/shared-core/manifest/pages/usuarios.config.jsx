@@ -10,7 +10,7 @@ export const usuariosConfig = {
     columns: [
     { key: "name", labelKey: "usuarios.tableHeaders.customerName", showAvatar: true },
     { key: "email", labelKey: "usuarios.tableHeaders.email" },
-    { key: "phone", labelKey: "usuarios.tableHeaders.phone" },
+    { key: "phone", labelKey: "usuarios.tableHeaders.phone", format: "phoneBR" },
     { key: "activePlan", labelKey: "usuarios.tableHeaders.planName" },
     { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey" },
     { key: "memberSince", labelKey: "usuarios.tableHeaders.joinedDate" },
@@ -41,7 +41,7 @@ export const usuariosConfig = {
         fields: [
           { key: "name", labelKey: "usuarios.form.name" },
           { key: "email", labelKey: "usuarios.form.email" },
-          { key: "phone", labelKey: "usuarios.form.phone" },
+          { key: "phone", labelKey: "usuarios.form.phone", format: "phoneBR" },
           { key: "activePlan", labelKey: "usuarios.form.activePlan" },
           { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey" },
           { key: "memberSince", labelKey: "usuarios.tableHeaders.joinedDate" },

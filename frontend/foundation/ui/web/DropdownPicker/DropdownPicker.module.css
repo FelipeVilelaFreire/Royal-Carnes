@@ -98,8 +98,8 @@
   inset-block-start: var(--ui-dropdown-picker-panel-block-start);
   inset-inline-start: var(--ui-dropdown-picker-panel-inline-start);
   margin-block-start: var(--theme--spacing-spaceXs);
-  max-height: calc(var(--theme--dimensions-height-lg) * 5);
-  min-width: var(--ui-dropdown-picker-panel-width);
+  max-height: var(--semicomposed--dropdown-picker--panel-max-height);
+  min-width: max(var(--ui-dropdown-picker-panel-width), var(--semicomposed--dropdown-picker--panel-min-width));
   opacity: 0;
   overflow: auto;
   pointer-events: none;
@@ -130,7 +130,7 @@
   --ui-button-letter-spacing: 0;
   --ui-button-min-width: 100%;
   --ui-button-padding-x: var(--theme--spacing-spaceMd);
-  --ui-button-padding-y: 0;
+  --ui-button-padding-y: var(--semicomposed--dropdown-picker--option-padding-y);
   --ui-surface-radius: var(--theme--radius-sm);
   --ui-surface-bg: transparent;
   --ui-surface-border: transparent;
@@ -138,6 +138,7 @@
   --ui-surface-color: var(--ui-dropdown-picker-option-color);
   color: var(--ui-dropdown-picker-option-color) !important;
   position: relative;
+  align-items: flex-start;
   min-height: var(--theme--dimensions-height-md);
   justify-content: flex-start;
   text-align: start;
@@ -156,10 +157,16 @@
   text-align: start;
 }
 
+.optionCopy > span {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
 .optionDescription {
   color: var(--ui-dropdown-picker-option-color);
   font-size: var(--ui-button-font-size);
   font-weight: var(--ui-button-font-weight);
+  margin-block-start: var(--semicomposed--dropdown-picker--option-description-gap);
 }
 
 .option:hover {

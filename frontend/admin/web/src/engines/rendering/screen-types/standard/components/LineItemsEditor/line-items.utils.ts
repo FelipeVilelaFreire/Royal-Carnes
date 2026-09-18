@@ -57,3 +57,11 @@ export function resolveLineItemSuffix(
 ) {
   return column.suffixKey ? String(item[column.suffixKey] || "") : "";
 }
+
+export function resolveLineItemMaximum(
+  column: AdminStandardLineItemColumnViewModel,
+  item: Record<string, any>,
+) {
+  const value = column.maxKey ? Number(item[column.maxKey]) : Number.NaN;
+  return Number.isFinite(value) && value >= 0 ? value : undefined;
+}

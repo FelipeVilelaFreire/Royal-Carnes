@@ -75,6 +75,17 @@ class SubscriptionsApiTests(APITestCase):
         self.assertEqual(cycle_response.status_code, 200, cycle_response.data)
         self.assertEqual(subscription_response.data["subscription"]["plan"]["key"], "pro")
         self.assertEqual(cycle_response.data["cycle"]["items"][0]["variant_sku"], "PICANHA-1KG")
+        capacity = cycle_response.data["cycle"]["capacity"]
+        meats = next(item for item in capacity if item["key"] == "meat")
+        charcoal = next(item for item in capacity if item["key"] == "charcoal")
+        self.assertEqual(meats["label"], "Carnes")
+        self.assertEqual(meats["used_quantity"], "2.000")
+        self.assertEqual(meats["limit_quantity"], "12.000")
+        self.assertEqual(meats["used_selections"], 1)
+        self.assertEqual(meats["limit_selections"], 10)
+        self.assertEqual(charcoal["measurement_unit_key"], "bag")
+        self.assertEqual(charcoal["used_quantity"], "0")
+        self.assertEqual(charcoal["limit_quantity"], "1.000")
 
     def test_customer_can_add_valid_item_to_current_cycle(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

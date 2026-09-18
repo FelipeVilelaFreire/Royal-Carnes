@@ -68,6 +68,8 @@ export function mapClientOrderItemDto(dto: ClientOrderItemDto): OrderItemBase {
     unitPriceCents: dto.unit_price_cents,
     totalCents: dto.total_cents,
     weightGrams: dto.weight_grams ?? null,
+    imageUrl: dto.image_url ?? null,
+    imageAlt: dto.image_alt ?? null,
     sourceType: dto.source_type ?? "",
     sourceKey: dto.source_key ?? "",
     metadata: dto.metadata || {},

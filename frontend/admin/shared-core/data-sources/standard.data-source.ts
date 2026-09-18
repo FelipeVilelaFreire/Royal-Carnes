@@ -89,7 +89,7 @@ function normalizeLineItems(value: unknown): Array<Record<string, any>> {
   return Array.isArray(value) ? value.filter((item) => item && typeof item === "object") : [];
 }
 
-function normalizePlanEntitlements(value: unknown): NonNullable<AdminPlanFormInput["entitlements"]> {
+function normalizePlanEntitlements(value: unknown, itemLimits: unknown = []): NonNullable<AdminPlanFormInput["entitlements"]> {
   const allowedTargetTypes = new Set(["collection", "category", "product", "variant"]);
   const entitlements: NonNullable<AdminPlanFormInput["entitlements"]> = [];
   normalizeLineItems(value)
@@ -98,9 +98,20 @@ function normalizePlanEntitlements(value: unknown): NonNullable<AdminPlanFormInp
       const targetKey = String(item.targetKey || "");
       const quantity = String(item.quantity || "");
       if (!allowedTargetTypes.has(targetType) || !targetKey || !quantity) return null;
+      const capacityKey = String(item.capacityKey || item.key || `${targetType}-${targetKey}-${index + 1}`);
+      const matchingItemLimits = normalizeLineItems(itemLimits)
+        .filter((limit) => String(limit.capacityKey || "") === capacityKey)
+        .filter((limit) => limit.targetKey && limit.maxQuantity)
+        .map((limit) => ({ targetType: "product", targetKey: String(limit.targetKey), maxQuantity: String(limit.maxQuantity) }));
       return {
-        constraints: item.constraints || {},
-        key: item.key || `${targetType}-${targetKey}-${index + 1}`,
+        constraints: {
+          ...(item.constraints || {}),
+          capacityKey,
+          capacityLabel: String(item.capacityLabel || ""),
+          maxSelections: parseOptionalInteger(item.maxSelections),
+          itemLimits: matchingItemLimits,
+        },
+        key: item.key || capacityKey,
         measurementUnitKey: item.measurementUnitKey || undefined,
         quantity,
         sortOrder: parseOptionalInteger(item.sortOrder) ?? index,
@@ -450,7 +461,7 @@ export async function createAdminStandardRow(
       const plan = await createAdminSubscriptionsApi(apiConfig).createPlan({
         billingInterval: values.billingInterval || "month",
         description: values.description,
-        entitlements: normalizePlanEntitlements(values.entitlements),
+        entitlements: normalizePlanEntitlements(values.entitlements, values.itemLimits),
         key: values.key,
         name: values.name,
         priceCents: parseOptionalInteger(values.priceCents),
@@ -573,7 +584,31 @@ export async function updateAdminStandardRow(
       const ordersApi = createAdminOrdersApi(apiConfig);
       const deliveriesApi = createAdminDeliveriesApi(apiConfig);
       const paymentsApi = createAdminPaymentsApi(apiConfig);
-      const order = await ordersApi.transition(rowId, { statusKey: values.statusKey, note: values.statusNote || "" });
+      let order = await ordersApi.detail(rowId);
+      if (Array.isArray(values.items)) {
+        const nextItems = normalizeLineItems(values.items).map((item) => ({
+            metadata: item.metadata || {},
+            productKey: item.productKey,
+            quantity: String(item.quantity || ""),
+            sourceKey: item.sourceKey || undefined,
+            sourceType: item.sourceType || undefined,
+            variantSku: item.variantSku || undefined,
+          }));
+        const currentItems = order.items.map((item) => ({
+          metadata: item.metadata || {},
+          productKey: item.productKey,
+          quantity: String(item.quantity || ""),
+          sourceKey: item.sourceKey || undefined,
+          sourceType: item.sourceType || undefined,
+          variantSku: item.variantSku || undefined,
+        }));
+        if (JSON.stringify(nextItems) !== JSON.stringify(currentItems)) {
+          order = await ordersApi.replaceItems(rowId, { items: nextItems });
+        }
+      }
+      if (values.statusKey && values.statusKey !== order.statusKey) {
+        order = await ordersApi.transition(rowId, { statusKey: values.statusKey, note: values.statusNote || "" });
+      }
       const [config, deliveryConfig, deliveries, payments] = await Promise.all([
         ordersApi.config(),
         deliveriesApi.config(),
@@ -633,7 +668,7 @@ export async function updateAdminStandardRow(
         description: values.description ?? currentPlan.description ?? undefined,
         key: currentPlan.key,
         name: values.name || currentPlan.name,
-        entitlements: normalizePlanEntitlements(values.entitlements ?? currentPlan.entitlements),
+        entitlements: normalizePlanEntitlements(values.entitlements ?? currentPlan.entitlements, values.itemLimits),
         priceCents: parseOptionalInteger(values.priceCents),
         sortOrder: parseOptionalInteger(values.sortOrder) ?? currentPlan.sortOrder,
         status: values.status || currentPlan.status || "active",

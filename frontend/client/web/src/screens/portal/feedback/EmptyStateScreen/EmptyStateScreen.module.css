@@ -1,10 +1,10 @@
 .root {
   align-items: center;
-  block-size: calc(100dvh - var(--app-shell-content-offset-top, var(--theme--borders-none)) - var(--app-shell-content-offset-bottom, var(--theme--borders-none)));
+  block-size: auto;
   display: flex;
   flex: 1;
   justify-content: center;
-  min-block-size: 0;
+  min-block-size: 100%;
   padding-inline: var(--theme--spacing-spaceLg);
 }
 

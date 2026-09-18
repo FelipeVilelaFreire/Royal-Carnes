@@ -10,7 +10,7 @@
   flex: 1 1 auto;
   flex-direction: column;
   inline-size: 100%;
-  min-height: 100dvh;
+  min-height: 0;
   min-inline-size: 0;
 }
 

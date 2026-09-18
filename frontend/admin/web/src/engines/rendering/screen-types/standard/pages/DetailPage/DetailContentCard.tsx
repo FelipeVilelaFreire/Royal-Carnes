@@ -3,7 +3,7 @@ import { AssetPicker } from "@foundation/ui/web/AssetPicker";
 import { CurrencyInput } from "@foundation/ui/web/CurrencyInput";
 import { DropdownPicker } from "@foundation/ui/web/DropdownPicker";
 import { Stack } from "@foundation/ui/web/Layout";
-import { Input } from "@foundation/ui/web/Input";
+import { FormattedInput, formatFormattedInputValue } from "@foundation/ui/web/FormattedInput";
 import { MultiSelect } from "@foundation/ui/web/MultiSelect";
 import { Text } from "@foundation/ui/web/Text";
 import { TextArea } from "@foundation/ui/web/TextArea";
@@ -29,7 +29,8 @@ function resolveDisplayValue(entry: DetailEntry, t: AdminTranslate): string {
     const option = entry.options?.find((candidate) => String(candidate.value) === String(entry.rawValue));
     return option?.label || t(option?.labelKey || "", entry.value);
   }
-  return entry.valueType === "translationKey" ? t(entry.value, "") : entry.value;
+  const value = entry.valueType === "translationKey" ? t(entry.value, "") : entry.value;
+  return entry.format ? formatFormattedInputValue(value, entry.format) : value;
 }
 
 function resolveEditableOptions(entry: DetailEntry) {
@@ -55,7 +56,7 @@ function renderEditableValue(entry: DetailEntry, formValues: Record<string, any>
     return <CurrencyInput currency={entry.currency} disabled={disabled} locale={entry.locale} onChange={(value) => onFieldChange?.(entry.key, value)} value={emptyValue ? null : Number(fieldValue ?? entry.rawValue)} />;
   }
   if (editType === "textarea") return <TextArea disabled={disabled} onChange={(event) => onFieldChange?.(entry.key, event.target.value)} rows={4} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
-  return <Input disabled={disabled} onChange={(event) => onFieldChange?.(entry.key, event.target.value)} type={editType === "number" ? "number" : editType === "datetime" ? "datetime-local" : "text"} value={String(disabled ? resolveDisplayValue(entry, t) : formValues[entry.key] ?? entry.rawValue ?? "")} />;
+  return <FormattedInput disabled={disabled} format={entry.format} max={entry.max} min={entry.min} onValueChange={(value) => onFieldChange?.(entry.key, value)} suffix={entry.suffixKey ? t(entry.suffixKey) : undefined} type={editType === "number" ? "number" : editType === "date" ? "date" : editType === "datetime" ? "datetime-local" : "text"} value={String(disabled ? resolveDisplayValue(entry, t) : formValues[entry.key] ?? entry.rawValue ?? "")} />;
 }
 
 function renderReadonlyValue(entry: DetailEntry, onFieldChange: DetailContentCardProps["onFieldChange"], t: AdminTranslate, viewModel: AdminStandardDetailViewModel) {

@@ -11,6 +11,7 @@ export interface ClientCustomerDto {
   phone?: string | null;
   document?: string | null;
   member_since?: string | null;
+  created_at?: string | null;
   birth_date?: string | null;
   preferences?: Record<string, unknown>;
   notification_settings?: Partial<ClientCustomerNotificationPreferences>;
@@ -44,11 +45,30 @@ export interface ClientCustomerAddress {
   id: string;
   label: string;
   recipientName: string;
+  street: string;
+  number: string;
+  complement: string;
+  district: string;
+  city: string;
+  state: string;
   streetLine: string;
   neighborhoodLine: string;
   zipCode: string;
   phone?: string;
   isPrimary?: boolean;
+}
+
+export interface ClientCustomerAddressCreateInput {
+  label: string;
+  recipientName: string;
+  street: string;
+  number: string;
+  complement: string;
+  district: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  isPrimary: boolean;
 }
 
 export interface ClientCustomerPaymentMethod {
@@ -103,6 +123,7 @@ export interface ClientCustomerPlan {
   key: ClientCustomerSubscriptionTier;
   name: string;
   monthlyPrice: number;
+  includedItems: ClientCustomerPlanIncludedItem[];
   productSelectionLimit: number;
   proteinKgLimit: number;
   charcoalKgLimit: number;
@@ -112,8 +133,25 @@ export interface ClientCustomerPlan {
   features: string[];
 }
 
+export interface ClientCustomerPlanIncludedItem {
+  id: string;
+  name: string;
+  quantityLabel: string;
+  selectionLimit: number | null;
+}
+
 export interface ClientCustomerCycleUsage {
   cycleLabel: string;
+  capacity: Array<{
+    key: string;
+    label: string;
+    selectionLabel?: string | null;
+    usedQuantity: number;
+    limitQuantity: number;
+    measurementUnitSymbol?: string | null;
+    usedSelections: number;
+    limitSelections?: number | null;
+  }>;
   cutsUsed: number;
   cutsLimit: number;
   weightKgUsed: number;

@@ -9,6 +9,7 @@ export * from "./Divider";
 export * from "./DropdownPicker";
 export * from "./EmptyState";
 export * from "./Field";
+export * from "./FormattedInput";
 export * from "./FieldGrid";
 export * from "./Icon";
 export * from "./Input";

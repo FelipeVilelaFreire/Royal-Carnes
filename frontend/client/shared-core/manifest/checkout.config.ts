@@ -4,10 +4,13 @@ export type ClientCheckoutStepKey = "montagem" | "entrega" | "pagamento" | "resu
 export type ClientCheckoutAddressFieldKey = "zipCode" | "street" | "number" | "neighborhood" | "city" | "complement";
 
 export interface ClientCheckoutAddressFieldConfig {
+  autoComplete: string;
+  gridSpan: number;
   key: ClientCheckoutAddressFieldKey;
   labelKey: ClientCheckoutAddressFieldKey;
+  maxLength?: number;
   placeholderKey: ClientCheckoutAddressFieldKey;
-  gridColumn: string;
+  inputMode?: "numeric" | "text";
 }
 
 interface ClientCheckoutConfigDefinition {
@@ -40,12 +43,12 @@ export const clientCheckoutConfig: ClientCheckoutConfigDefinition = {
   defaultInstallments: 1,
   deliveryDays: [5, 10, 15, 20, 25],
   addressFields: [
-    { key: "zipCode", labelKey: "zipCode", placeholderKey: "zipCode", gridColumn: "span 3" },
-    { key: "street", labelKey: "street", placeholderKey: "street", gridColumn: "span 6" },
-    { key: "number", labelKey: "number", placeholderKey: "number", gridColumn: "span 3" },
-    { key: "neighborhood", labelKey: "neighborhood", placeholderKey: "neighborhood", gridColumn: "span 4" },
-    { key: "city", labelKey: "city", placeholderKey: "city", gridColumn: "span 4" },
-    { key: "complement", labelKey: "complement", placeholderKey: "complement", gridColumn: "span 4" },
+    { key: "zipCode", labelKey: "zipCode", placeholderKey: "zipCode", gridSpan: 4, autoComplete: "postal-code", inputMode: "numeric", maxLength: 9 },
+    { key: "street", labelKey: "street", placeholderKey: "street", gridSpan: 11, autoComplete: "street-address" },
+    { key: "number", labelKey: "number", placeholderKey: "number", gridSpan: 5, autoComplete: "address-line2", inputMode: "numeric" },
+    { key: "neighborhood", labelKey: "neighborhood", placeholderKey: "neighborhood", gridSpan: 6, autoComplete: "address-level3" },
+    { key: "city", labelKey: "city", placeholderKey: "city", gridSpan: 6, autoComplete: "address-level2" },
+    { key: "complement", labelKey: "complement", placeholderKey: "complement", gridSpan: 8, autoComplete: "address-line2" },
   ] satisfies ClientCheckoutAddressFieldConfig[],
 };
 

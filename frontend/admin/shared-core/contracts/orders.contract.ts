@@ -112,6 +112,10 @@ export interface AdminOrderCreateDto {
   items: AdminOrderItemCreateDto[];
 }
 
+export interface AdminOrderItemsReplaceDto {
+  items: AdminOrderItemCreateDto[];
+}
+
 export interface AdminOrderCreateInput extends OrderCreateInputBase {
   customerId: string | number;
 }
@@ -128,3 +132,6 @@ export type AdminOrderItemView = OrderItemBase;
 export type AdminOrderStatusHistoryView = OrderStatusHistoryBase;
 export type AdminOrderView = OrderBase;
 export type AdminOrderTransitionInput = OrderTransitionInputBase;
+export interface AdminOrderItemsReplaceInput {
+  items: AdminOrderCreateInput["items"];
+}

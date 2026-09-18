@@ -60,6 +60,18 @@ export interface ClientSubscriptionCycleDto {
   ends_at: string;
   closed_at?: string | null;
   items?: ClientSubscriptionCycleItemDto[];
+  capacity?: Array<{
+    key: string;
+    label: string;
+    selection_label?: string | null;
+    used_quantity: string;
+    limit_quantity: string;
+    measurement_unit_key?: string | null;
+    measurement_unit_symbol?: string | null;
+    used_selections: number;
+    limit_selections?: number | null;
+    item_limits?: Record<string, unknown>;
+  }>;
   metadata?: Record<string, unknown>;
 }
 

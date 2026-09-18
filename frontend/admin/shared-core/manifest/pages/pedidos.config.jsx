@@ -47,12 +47,20 @@ export const pedidosConfig = {
             grid: { desktop: 1, tablet: 1, mobile: 1 },
             itemsKey: "items",
             labelKey: "pedidos.fields.items",
+            editable: true,
+            addLabelKey: "pedidos.items.add",
             columns: [
-              { key: "nameSnapshot", labelKey: "pedidos.items.name", type: "text" },
-              { key: "quantityLabel", labelKey: "pedidos.items.quantity", type: "text" },
-              { key: "unitPriceFormatted", labelKey: "pedidos.items.unitPrice", type: "text" },
-              { key: "totalFormatted", labelKey: "pedidos.items.total", type: "text" },
+              { key: "nameSnapshot", labelKey: "pedidos.items.name", type: "text", align: "start" },
+              { key: "quantityLabel", labelKey: "pedidos.items.quantity", type: "text", align: "end" },
+              { key: "unitPriceFormatted", labelKey: "pedidos.items.unitPrice", type: "text", align: "end" },
+              { key: "totalFormatted", labelKey: "pedidos.items.total", type: "text", align: "end" },
             ],
+            edit: {
+              columns: [
+                { key: "productKey", labelKey: "pedidos.items.product", type: "select", source: "produtosPedido", required: true, align: "start", span: 4, writeOptionMeta: { variantSku: "variantSku", measurementUnitKey: "measurementUnitKey", maxQuantity: "maxQuantity" } },
+                { key: "quantity", labelKey: "pedidos.items.quantity", type: "number", format: "decimalBR", required: true, suffixKey: "measurementUnitKey", maxKey: "maxQuantity", align: "end", span: 2 },
+              ],
+            },
           },
           {
             key: "summary",
@@ -116,11 +124,8 @@ export const pedidosConfig = {
             required: true,
             addLabelKey: "pedidos.items.add",
             columns: [
-              { key: "productKey", labelKey: "pedidos.items.product", type: "select", presentation: "media", source: "produtos", required: true },
-              { key: "variantSku", labelKey: "pedidos.items.variant", type: "select", source: "variantes" },
-              { key: "quantity", labelKey: "pedidos.items.quantity", type: "number", required: true },
-              { key: "sourceType", labelKey: "pedidos.items.source", type: "text" },
-              { key: "sourceKey", labelKey: "pedidos.items.sourceKey", type: "text" },
+              { key: "productKey", labelKey: "pedidos.items.product", type: "select", source: "produtosPedido", required: true, span: 4, writeOptionMeta: { variantSku: "variantSku", measurementUnitKey: "measurementUnitKey", maxQuantity: "maxQuantity" } },
+              { key: "quantity", labelKey: "pedidos.items.quantity", type: "number", format: "decimalBR", required: true, suffixKey: "measurementUnitKey", maxKey: "maxQuantity", span: 2 },
             ],
           },
         ],

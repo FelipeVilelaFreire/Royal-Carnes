@@ -82,6 +82,18 @@ export function mapClientSubscriptionCycleDto(
     endsAt: dto.ends_at,
     closedAt: dto.closed_at ?? null,
     items: (dto.items || []).map(mapClientSubscriptionCycleItemDto),
+    capacity: (dto.capacity || []).map((item) => ({
+      key: item.key,
+      label: item.label,
+      selectionLabel: item.selection_label ?? null,
+      usedQuantity: String(item.used_quantity),
+      limitQuantity: String(item.limit_quantity),
+      measurementUnitKey: item.measurement_unit_key ?? null,
+      measurementUnitSymbol: item.measurement_unit_symbol ?? null,
+      usedSelections: item.used_selections,
+      limitSelections: item.limit_selections ?? null,
+      itemLimits: item.item_limits || {},
+    })),
     metadata: dto.metadata || {},
   };
 }

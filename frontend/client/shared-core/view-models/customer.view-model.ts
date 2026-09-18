@@ -3,10 +3,13 @@ import type {
   ClientCustomerAccount,
   ClientCustomerCycleUsage,
   ClientCustomerDataSource,
+  ClientCustomerPlanIncludedItem,
   ClientCustomerNotificationPreferences,
   ClientCustomerPlan,
   ClientCustomerSubscriptionTier,
 } from "../contracts/customer.contract";
+import type { ClientPlanView, ClientSubscriptionCycleView, ClientSubscriptionView } from "../contracts/subscriptions.contract";
+import type { ClientOrdersViewModel } from "./orders.view-model";
 
 export interface ClientCustomerViewModel {
   name: string;
@@ -35,7 +38,7 @@ export function createClientCustomerViewModel(
 
 export interface ClientCustomerUsageMetric {
   key: string;
-  labelKey: string;
+  label: string;
   valueLabel: string;
   percent: number;
 }
@@ -67,23 +70,93 @@ const formatPlanPrice = (value: number) => value.toLocaleString("pt-BR", {
   maximumFractionDigits: 2,
 });
 
-const emptyCycleUsage = (plan: ClientCustomerPlan): ClientCustomerCycleUsage => ({
-  cycleLabel: "Atual",
-  cutsUsed: 0,
-  cutsLimit: plan.productSelectionLimit,
-  weightKgUsed: 0,
-  weightKgLimit: plan.proteinKgLimit,
-  charcoalKgUsed: 0,
-  charcoalKgLimit: plan.charcoalKgLimit,
-  complementsUsed: 0,
-  complementsLimit: plan.seasoningSelectionLimit + plan.sideSelectionLimit,
-  seasoningsUsed: 0,
-  seasoningsLimit: plan.seasoningSelectionLimit,
-  sidesUsed: 0,
-  sidesLimit: plan.sideSelectionLimit,
-  utensilsUsed: 0,
-  utensilsLimit: plan.utensilSelectionLimit,
+const readNumber = (value: unknown) => {
+  const parsed = typeof value === "number" ? value : Number(String(value || "0").replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const formatQuantity = (quantity: string, unit: string | null) => [quantity, unit || ""].filter(Boolean).join(" ");
+
+export const createClientCustomerPlans = (plans: ClientPlanView[]): ClientCustomerPlan[] => plans.map((plan) => {
+  const entitlements = plan.entitlements || [];
+  const monthlyPrice = (plan.prices || []).find((price) => price.billingInterval === "month") || plan.prices?.[0];
+  const includedItems: ClientCustomerPlanIncludedItem[] = entitlements.map((entitlement) => ({
+    id: String(entitlement.id || entitlement.key),
+    name: entitlement.targetName || entitlement.targetKey || entitlement.key,
+    quantityLabel: formatQuantity(
+      entitlement.quantity,
+      entitlement.measurementUnitSymbol || entitlement.measurementUnitKey,
+    ),
+    selectionLimit: (() => {
+      const limit = readNumber(entitlement.constraints?.maxSelections);
+      return limit > 0 ? limit : null;
+    })(),
+  }));
+  return {
+    key: plan.key,
+    name: plan.name,
+    monthlyPrice: (monthlyPrice?.amountCents || 0) / 100,
+    productSelectionLimit: 0,
+    proteinKgLimit: 0,
+    charcoalKgLimit: 0,
+    seasoningSelectionLimit: 0,
+    sideSelectionLimit: 0,
+    utensilSelectionLimit: 0,
+    includedItems,
+    features: includedItems.map((item) => item.name),
+  };
 });
+
+export const createClientCustomerCycleUsage = (
+  subscription: ClientSubscriptionView | null,
+  cycle: ClientSubscriptionCycleView | null,
+): ClientCustomerCycleUsage | null => {
+  if (!subscription) return null;
+  const capacity = (cycle?.capacity || []).map((item) => ({
+    key: item.key,
+    label: item.label,
+    selectionLabel: item.selectionLabel ?? null,
+    usedQuantity: readNumber(item.usedQuantity),
+    limitQuantity: readNumber(item.limitQuantity),
+    measurementUnitSymbol: item.measurementUnitSymbol ?? item.measurementUnitKey ?? null,
+    usedSelections: item.usedSelections,
+    limitSelections: item.limitSelections ?? null,
+  }));
+  return {
+    cycleLabel: cycle ? String(cycle.cycleNumber) : "",
+    capacity,
+    cutsUsed: 0,
+    cutsLimit: 0,
+    weightKgUsed: 0,
+    weightKgLimit: 0,
+    charcoalKgUsed: 0,
+    charcoalKgLimit: 0,
+    complementsUsed: 0,
+    complementsLimit: 0,
+    seasoningsUsed: 0,
+    seasoningsLimit: 0,
+    sidesUsed: 0,
+    sidesLimit: 0,
+    utensilsUsed: 0,
+    utensilsLimit: 0,
+  };
+};
+
+export const createClientCustomerRecentOrders = (ordersViewModel: ClientOrdersViewModel) => ordersViewModel.orders.map((order) => ({
+  id: String(order.id),
+  code: order.code,
+  kindLabel: order.kindLabel,
+  title: order.title,
+  summary: order.summary,
+  statusLabel: order.statusLabel,
+  statusTone: order.statusTone === "danger" || order.statusTone === "success"
+    ? order.statusTone
+    : order.statusTone === "warning" ? "pending" : "active",
+  createdAtLabel: order.createdAtLabel,
+  estimateLabel: order.deliveryEstimateLabel,
+  totalLabel: order.totalLabel,
+  imageUrl: order.imageUrl,
+}));
 
 export const createClientCustomerAccountViewModel = ({
   dataSource,
@@ -92,11 +165,11 @@ export const createClientCustomerAccountViewModel = ({
   const { customer, plans } = dataSource;
   const activePlan =
     plans.find((plan) => plan.key === selectedPlanKey) ||
-    plans.find((plan) => plan.key === customer.activeSubscription?.planKey) ||
-    plans[0] || {
+    plans.find((plan) => plan.key === customer.activeSubscription?.planKey) || {
       key: "",
       name: "",
       monthlyPrice: 0,
+      includedItems: [],
       productSelectionLimit: 0,
       proteinKgLimit: 0,
       charcoalKgLimit: 0,
@@ -105,7 +178,7 @@ export const createClientCustomerAccountViewModel = ({
       utensilSelectionLimit: 0,
       features: [],
     };
-  const usage = dataSource.cycleUsage || emptyCycleUsage(activePlan);
+  const usage = dataSource.cycleUsage;
   const primaryAddress = customer.addresses.find((address) => address.isPrimary) || customer.addresses[0];
   const firstName = customer.name.trim().split(" ")[0] || customer.name;
   const initials = customer.name
@@ -125,38 +198,25 @@ export const createClientCustomerAccountViewModel = ({
     nextDeliveryLabel: customer.activeSubscription?.nextDeliveryLabel || "",
     planPriceLabel: formatPlanPrice(activePlan.monthlyPrice),
     primaryAddressLabel: primaryAddress ? `${primaryAddress.label} - ${primaryAddress.neighborhoodLine}` : "",
-    usageMetrics: [
-      {
-        key: "cuts",
-        labelKey: "cuts",
-        valueLabel: `${usage.cutsUsed} / ${usage.cutsLimit}`,
-        percent: clampPercent(usage.cutsUsed, usage.cutsLimit),
-      },
-      {
-        key: "meat",
-        labelKey: "meat",
-        valueLabel: `${usage.weightKgUsed}kg / ${usage.weightKgLimit}kg`,
-        percent: clampPercent(usage.weightKgUsed, usage.weightKgLimit),
-      },
-      {
-        key: "charcoal",
-        labelKey: "charcoal",
-        valueLabel: `${usage.charcoalKgUsed}kg / ${usage.charcoalKgLimit}kg`,
-        percent: clampPercent(usage.charcoalKgUsed, usage.charcoalKgLimit),
-      },
-      {
-        key: "complements",
-        labelKey: "complements",
-        valueLabel: `${usage.complementsUsed} / ${usage.complementsLimit}`,
-        percent: clampPercent(usage.complementsUsed, usage.complementsLimit),
-      },
-      {
-        key: "utensils",
-        labelKey: "utensils",
-        valueLabel: `${usage.utensilsUsed} / ${usage.utensilsLimit}`,
-        percent: clampPercent(usage.utensilsUsed, usage.utensilsLimit),
-      },
-    ],
+    usageMetrics: (usage?.capacity || []).flatMap((item) => {
+      const unit = item.measurementUnitSymbol || "";
+      const metrics: ClientCustomerUsageMetric[] = [];
+      if (item.limitSelections !== null && item.limitSelections !== undefined) {
+        metrics.push({
+          key: `${item.key}-selections`,
+          label: item.selectionLabel || item.label,
+          valueLabel: `${item.usedSelections} / ${item.limitSelections}`,
+          percent: clampPercent(item.usedSelections, item.limitSelections),
+        });
+      }
+      metrics.push({
+        key: `${item.key}-quantity`,
+        label: item.label,
+        valueLabel: `${item.usedQuantity}${unit} / ${item.limitQuantity}${unit}`,
+        percent: clampPercent(item.usedQuantity, item.limitQuantity),
+      });
+      return metrics;
+    }),
   };
 };
 

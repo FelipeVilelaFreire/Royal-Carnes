@@ -70,6 +70,19 @@ export interface SubscriptionCycleItemBase {
   metadata?: Record<string, unknown>;
 }
 
+export interface SubscriptionCycleCapacityBase {
+  key: string;
+  label: string;
+  selectionLabel?: string | null;
+  usedQuantity: string;
+  limitQuantity: string;
+  measurementUnitKey?: MeasurementUnitKey | null;
+  measurementUnitSymbol?: string | null;
+  usedSelections: number;
+  limitSelections?: number | null;
+  itemLimits?: Record<string, unknown>;
+}
+
 export interface SubscriptionCycleBase {
   id: SubscriptionCycleId;
   cycleNumber: number;
@@ -78,6 +91,7 @@ export interface SubscriptionCycleBase {
   endsAt: string;
   closedAt?: string | null;
   items: SubscriptionCycleItemBase[];
+  capacity?: SubscriptionCycleCapacityBase[];
   metadata?: Record<string, unknown>;
 }
 

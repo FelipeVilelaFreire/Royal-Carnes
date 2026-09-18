@@ -43,6 +43,20 @@ class OrderItemSerializer(serializers.ModelSerializer):
     product_key = serializers.CharField(source="product.key", read_only=True)
     variant_sku = serializers.CharField(source="variant.sku", read_only=True, allow_null=True)
     measurement_unit_key = serializers.CharField(source="measurement_unit.key", read_only=True, allow_null=True)
+    image_url = serializers.SerializerMethodField()
+    image_alt = serializers.SerializerMethodField()
+
+    def _primary_media(self, item):
+        media = item.product.media.all()
+        return next((entry for entry in media if entry.is_primary), None)
+
+    def get_image_url(self, item):
+        media = self._primary_media(item)
+        return media.url if media else None
+
+    def get_image_alt(self, item):
+        media = self._primary_media(item)
+        return media.alt if media else ""
 
     class Meta:
         model = OrderItem
@@ -58,6 +72,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "weight_grams",
             "source_type",
             "source_key",
+            "image_url",
+            "image_alt",
             "metadata",
         )
 
@@ -142,6 +158,10 @@ class OrderCreateSerializer(serializers.Serializer):
 
 class AdminOrderCreateSerializer(OrderCreateSerializer):
     customer_id = serializers.IntegerField()
+
+
+class OrderItemsReplaceSerializer(serializers.Serializer):
+    items = serializers.ListField(child=OrderItemCreateSerializer(), allow_empty=False)
 
 
 class OrderStatusTransitionSerializer(serializers.Serializer):

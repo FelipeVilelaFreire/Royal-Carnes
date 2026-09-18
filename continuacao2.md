@@ -1,6 +1,6 @@
 # Continuacao 2 - RoyalPrime Client
 
-> Handoff operacional de Client. Atualizado em 2026-09-16.
+> Handoff operacional de Client. Atualizado em 2026-09-18.
 > `continuacao.md` e reservado ao estado geral, Admin e backend.
 
 ## Como retomar
@@ -122,6 +122,31 @@ opcoes usam todas as tags/categorias de cada produto, nao apenas a categoria
 primaria. Isso evita reduzir a lista indevidamente a `Carnes` e
 `Acompanhamentos`.
 
+### Entrega e endereco
+
+O passo `entrega` possui um formulario de endereco separado da escolha de
+endereco ja salvo. A grade e declarada em
+`client/shared-core/manifest/checkout.config.ts` e deve continuar usando a
+matriz Foundation de 20 colunas:
+
+```text
+linha 1 -> CEP (4) | Rua (11) | Numero (5)
+linha 2 -> Bairro (6) | Cidade (6) | Complemento (8)
+mobile  -> um campo por linha
+```
+
+`DeliveryStep` usa `GridItem` como filho direto de `Grid`. Nao colocar o span
+como `data-*` no `Input`: nesse caso o atributo vai para o elemento `input` e
+nao muda a grade. O CEP aceita somente numeros, aplica a mascara `00000-000`
+e declara `autocomplete="postal-code"`.
+
+Ha uma capacidade compartilhada de consulta em
+`client/shared-core/api/brazilian-postal-code.api.ts`, hoje consumida pelo
+Perfil. Ela ainda nao esta ligada ao Checkout; antes de conectar, decidir se a
+consulta ViaCEP deve continuar como capacidade client-side ou ser mediada pelo
+backend. Nao dizer que rua, bairro, cidade ou frete ja sao calculados pelo CEP
+nesta tela.
+
 ### Limite comercial pendente
 
 O servidor ja e a autoridade para criar pedido e validar reservas de ciclo.
@@ -151,7 +176,7 @@ backend entitlement/saldo
 ## Validacao e limites conhecidos
 
 ```text
-npm run verify:rules -> passou; 5 arquivos alterados, 0 violacoes
+npm run verify:rules -> passou; 0 violacoes
 git diff --check     -> passou; avisos LF/CRLF sem falha de diff
 ```
 

@@ -63,6 +63,8 @@ export interface ClientOrderItemDto {
   unit_price_cents: number;
   total_cents: number;
   weight_grams?: number | null;
+  image_url?: string | null;
+  image_alt?: string | null;
   source_type?: string;
   source_key?: string;
   metadata?: Record<string, unknown>;

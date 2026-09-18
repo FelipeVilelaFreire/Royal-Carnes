@@ -2,6 +2,7 @@ import { normalizeApiError, type ApiClientConfig } from "../../../shared-core";
 import { createAdminCatalogApi } from "../api/catalog.api";
 import { createAdminCustomersApi } from "../api/customers.api";
 import { createAdminDeliveriesApi } from "../api/deliveries.api";
+import { createAdminInventoryApi } from "../api/inventory.api";
 import { createAdminOrdersApi } from "../api/orders.api";
 import { createAdminSubscriptionsApi } from "../api/subscriptions.api";
 import type { AdminStandardFieldOption } from "../view-models/standard.view-model";
@@ -115,6 +116,39 @@ const adminStandardOptionSourceLoaders = {
       },
       value: product.key,
     })),
+  produtosPedido: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> => {
+    const [products, inventoryItems] = await Promise.all([
+      createAdminCatalogApi(apiConfig).listProducts(),
+      createAdminInventoryApi(apiConfig).listItems(),
+    ]);
+
+    return products.map((product) => {
+      const variants = (product.variants || []).filter((variant) => variant.isActive !== false);
+      const defaultVariant = variants.find((variant) => (
+        (variant.measurementUnitKey || variant.unit) === product.unit
+        && Number(variant.unitQuantity ?? 1) === 1
+      )) || variants[0];
+      const inventoryItem = inventoryItems.find((item) => (
+        item.productKey === product.key
+        && (defaultVariant
+          ? item.variantSku === defaultVariant.sku
+          : !item.variantSku)
+      ));
+
+      return {
+        label: product.name,
+        meta: {
+          description: product.unit,
+          imageAlt: product.name,
+          imageSrc: product.primaryMediaUrl || "",
+          maxQuantity: inventoryItem?.sellableQuantity,
+          measurementUnitKey: product.unit,
+          variantSku: defaultVariant?.sku,
+        },
+        value: product.key,
+      };
+    });
+  },
   variantes: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
     (await createAdminCatalogApi(apiConfig).listProducts()).flatMap((product) =>
       product.variants.map((variant) => ({
@@ -149,7 +183,9 @@ function collectFieldSources(entityConfig: any): string[] {
 
   (entityConfig?.detailPage?.tabs || []).forEach((tab: any) => {
     addFieldSources(tab.fields || []);
-    (tab.sections || []).forEach((section: any) => addFieldSources(section.fields || []));
+    (tab.sections || []).forEach((section: any) => addFieldSources(
+      section.type === "lineItems" ? [section] : section.fields || [],
+    ));
   });
   (entityConfig?.addPage?.sections || []).forEach((section: any) => addFieldSources(section.fields || []));
   addFieldSources(entityConfig?.addPage?.fields || []);

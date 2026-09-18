@@ -9,6 +9,7 @@ export interface AdminStandardFilterViewModel {
 
 export interface AdminStandardColumnViewModel {
   currency?: string;
+  format?: "cpf" | "cnpj" | "taxIdBR" | "phoneBR" | "postalCodeBR" | "decimalBR";
   key: string;
   labelKey: string;
   locale?: string;
@@ -46,16 +47,20 @@ export interface AdminStandardFormFieldViewModel {
   currency?: string;
   defaultValue?: any;
   displayKey?: string;
+  format?: "cpf" | "cnpj" | "taxIdBR" | "phoneBR" | "postalCodeBR" | "decimalBR";
   helperKey?: string;
   key: string;
   labelKey: string;
   locale?: string;
+  max?: number;
+  min?: number;
   layout?: "full";
   options?: AdminStandardFieldOption[];
   placeholderKey?: string;
   required?: boolean;
   source?: string;
-  type: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  suffixKey?: string;
+  type: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   value: any;
 }
 
@@ -80,17 +85,21 @@ export interface AdminStandardDetailEntryViewModel {
   columns?: AdminStandardLineItemColumnViewModel[];
   currency?: string;
   displayKey?: string;
+  format?: "cpf" | "cnpj" | "taxIdBR" | "phoneBR" | "postalCodeBR" | "decimalBR";
   editable?: boolean;
-  editType?: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  editType?: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   key: string;
   labelKey: string;
   locale?: string;
+  max?: number;
+  min?: number;
   layout?: "full";
   options?: AdminStandardFieldOption[];
   source?: string;
+  suffixKey?: string;
   span?: 1 | 2 | 3 | 4 | 5 | 6 | "full";
   transitionOnly?: boolean;
-  type?: "asset" | "currency" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  type?: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   value: string;
   rawValue: any;
   valueType?: "optionLabel" | "text" | "translationKey";
@@ -159,16 +168,20 @@ export interface AdminStandardFieldOption {
 export type AdminStandardOptionSources = Record<string, AdminStandardFieldOption[]>;
 
 export interface AdminStandardLineItemColumnViewModel {
+  align?: "end" | "start";
   currency?: string;
+  format?: "decimalBR";
   key: string;
   labelKey: string;
   locale?: string;
+  maxKey?: string;
   presentation?: "media" | "text";
   options?: AdminStandardFieldOption[];
   required?: boolean;
   source?: string;
   sourceBy?: string;
   sourceOptions?: Record<string, AdminStandardFieldOption[]>;
+  span?: 1 | 2 | 3 | 4 | 5 | 6;
   sources?: Record<string, string>;
   suffixKey?: string;
   type: "currency" | "number" | "select" | "text";
@@ -181,10 +194,13 @@ function resolveLineItemColumns(
   optionSources: AdminStandardOptionSources,
 ): AdminStandardLineItemColumnViewModel[] {
   return columns.map((column: any) => ({
+    align: column.align,
     currency: column.currency,
+    format: column.format,
     key: column.key,
     labelKey: column.labelKey,
     locale: column.locale,
+    maxKey: column.maxKey,
     presentation: column.presentation,
     options: resolveOptions(column, optionSources),
     required: column.required,
@@ -197,6 +213,7 @@ function resolveLineItemColumns(
       ]),
     ),
     sources: column.sources,
+    span: column.span,
     suffixKey: column.suffixKey,
     type: column.type || "text",
     writeOptionMeta: column.writeOptionMeta,
@@ -289,13 +306,17 @@ function createDetailEntry(
     displayKey: displayField.displayKey,
     editable: Boolean(field.edit || field.editable),
     editType: editorField.type,
+    format: editorField.format,
     key: field.key,
     labelKey: field.labelKey,
     locale: editorField.locale || displayField.locale,
+    max: editorField.max,
+    min: editorField.min,
     layout: displayField.layout || (displayField.type === "lineItems" ? "full" : undefined),
     options: resolveOptions(editorField, optionSources),
     rawValue: row[field.key],
     source: editorField.source,
+    suffixKey: editorField.suffixKey,
     span: resolveDetailFieldSpan(displayField),
     transitionOnly: Boolean(editorField.transitionOnly),
     type: displayField.type,
@@ -404,15 +425,19 @@ export function createAdminStandardFormViewModel(
       defaultValue: field.defaultValue,
       currency: field.currency,
       displayKey: field.displayKey,
+      format: field.format,
       helperKey: field.helperKey,
       key: field.key,
       labelKey: field.labelKey,
       locale: field.locale,
+      max: field.max,
+      min: field.min,
       layout: field.layout || (field.type === "lineItems" ? "full" : undefined),
       options: resolveOptions(field, optionSources),
       placeholderKey: field.placeholderKey,
       required: field.required,
       source: field.source,
+      suffixKey: field.suffixKey,
       type: field.type || "text",
       value: resolveFormFieldValue(values, field),
     })),
@@ -424,15 +449,19 @@ export function createAdminStandardFormViewModel(
         defaultValue: field.defaultValue,
         currency: field.currency,
         displayKey: field.displayKey,
+        format: field.format,
         helperKey: field.helperKey,
         key: field.key,
         labelKey: field.labelKey,
         locale: field.locale,
+        max: field.max,
+        min: field.min,
         layout: field.layout || (field.type === "lineItems" ? "full" : undefined),
         options: resolveOptions(field, optionSources),
         placeholderKey: field.placeholderKey,
         required: field.required,
         source: field.source,
+        suffixKey: field.suffixKey,
         type: field.type || "text",
         value: resolveFormFieldValue(values, field),
       })),

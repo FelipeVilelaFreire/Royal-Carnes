@@ -229,6 +229,37 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(transition_response.data["status_key"], "approved")
         self.assertEqual(transition_response.data["status_history"][-1]["from_status_key"], "received")
 
+    def test_admin_can_replace_items_of_received_order_and_recalculate_inventory(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+        create_response = self.client.post(
+            "/api/v1/orders/me/",
+            {
+                "kind_key": "delivery",
+                "items": [{"product_key": "picanha", "variant_sku": "PICANHA-1KG", "quantity": "1.000"}],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        self.assertEqual(create_response.status_code, 201, create_response.data)
+        inventory_item = InventoryItem.objects.get(variant__sku="PICANHA-1KG")
+        reserved_before = inventory_item.reserved_quantity
+
+        self.authenticate()
+        response = self.client.put(
+            f"/api/v1/orders/admin/orders/{create_response.data['id']}/items/",
+            {
+                "items": [{"product_key": "picanha", "variant_sku": "PICANHA-1KG", "quantity": "2.000"}],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["items"][0]["quantity"], "2.000")
+        self.assertEqual(response.data["total_cents"], 17980)
+        inventory_item.refresh_from_db()
+        self.assertEqual(inventory_item.reserved_quantity, reserved_before + Decimal("1.000"))
+
     def test_invalid_status_transition_is_blocked_by_seeded_workflow(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
         create_response = self.client.post(

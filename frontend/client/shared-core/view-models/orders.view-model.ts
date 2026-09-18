@@ -180,9 +180,9 @@ export function createClientOrderRowViewModel(
 ): ClientOrderRowViewModel {
   const delivery = resolveMetadata<{ estimateLabel?: string; deliveryCode?: string }>(order, "delivery");
   const payment = resolveMetadata<{ methodLabel?: string }>(order, "payment");
-  const title = resolveMetadata<string>(order, "title") || order.code;
+  const title = resolveMetadata<string>(order, "title") || order.items.map((item) => item.nameSnapshot).join(", ") || order.code;
   const summary = resolveMetadata<string>(order, "summary") || order.notes;
-  const imageUrl = resolveMetadata<string>(order, "imageUrl") || "";
+  const imageUrl = resolveMetadata<string>(order, "imageUrl") || order.items.find((item) => item.imageUrl)?.imageUrl || "";
   const createdAtLabel = resolveMetadata<string>(order, "createdAtLabel") || order.createdAt;
 
   return {

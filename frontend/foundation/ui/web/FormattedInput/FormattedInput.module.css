@@ -1,0 +1,26 @@
+.root {
+  align-items: center;
+  display: flex;
+  gap: var(--semicomposed--formatted-input--gap);
+  min-width: 0;
+  width: 100%;
+}
+
+.control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.suffix {
+  flex: 0 0 auto;
+}
+
+.numeric input {
+  appearance: textfield;
+}
+
+.numeric input::-webkit-inner-spin-button,
+.numeric input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}

@@ -15,7 +15,7 @@ export const LineItemsTable: React.FC<LineItemsTableProps> = ({ actionLabel, chi
     <table className={styles.table}>
       <thead>
         <tr>
-          {columns.map((column) => <th key={column.key} scope="col">{t(column.labelKey)}</th>)}
+          {columns.map((column) => <th colSpan={column.span} data-align={column.align || "start"} data-compact={column.type === "number" || undefined} key={column.key} scope="col">{t(column.labelKey)}</th>)}
           {actionLabel ? <th className={styles.actionHeader} scope="col"><span className={styles.visuallyHidden}>{actionLabel}</span></th> : null}
         </tr>
       </thead>

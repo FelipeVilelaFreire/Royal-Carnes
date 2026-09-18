@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import transaction
+from django.db.models import Sum
 
 from apps.catalog.models import (
     CatalogAvailability,
@@ -281,6 +282,25 @@ def validate_cycle_item_selection(
     max_quantity = constraints.get("maxQuantity")
     if max_quantity is not None and quantity > Decimal(str(max_quantity)):
         raise EntitlementValidationError("max_quantity_exceeded", "Item quantity exceeds maxQuantity")
+
+    for item_limit in constraints.get("itemLimits", []):
+        if not isinstance(item_limit, dict):
+            continue
+        target_type = item_limit.get("targetType", "product")
+        target_key = item_limit.get("targetKey")
+        matches_target = (
+            target_type == "product" and target_key == product.key
+        ) or (
+            target_type == "variant" and target_key == variant.sku
+        )
+        if matches_target and item_limit.get("maxQuantity") is not None:
+            used_for_target = cycle.items.filter(
+                entitlement=entitlement,
+                product=product,
+                variant=variant,
+            ).exclude(status=SubscriptionCycleItem.Status.CANCELLED).aggregate(total=Sum("quantity"))["total"] or Decimal("0")
+            if used_for_target + quantity > Decimal(str(item_limit["maxQuantity"])):
+                raise EntitlementValidationError("item_limit_exceeded", "Item quantity exceeds item limit")
 
     max_selections = constraints.get("maxSelections")
     if max_selections is not None:

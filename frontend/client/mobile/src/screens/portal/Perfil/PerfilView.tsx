@@ -8,6 +8,7 @@ import type { useClientStrings } from "../../../../../shared-core/hooks/useClien
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 import { ProfileScreenHeader } from "./minha-conta/fixed/ProfileScreenHeader";
 import { ProfileTabNavigation } from "./minha-conta/fixed/ProfileTabNavigation";
+import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen";
 
 export interface PerfilViewProps {
   activePath?: string;
@@ -33,6 +34,34 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
     { key: "notifications", label: strings.tabs.preferences },
     { key: "security", label: strings.tabs.security },
   ];
+
+  const hasCustomer = Boolean(customer.dataSource.customer.id);
+
+  if (customer.isLoading || customer.error || !hasCustomer) {
+    const title = customer.isLoading
+      ? strings.states.loading
+      : customer.error
+        ? strings.states.error
+        : strings.states.empty;
+    const description = customer.isLoading
+      ? strings.states.loadingDescription
+      : customer.error
+        ? strings.states.errorDescription
+        : strings.states.emptyDescription;
+
+    return (
+      <EmptyStateScreen
+        actions={customer.error ? (
+          <Button appearance="outline" onAction={() => void customer.actions.reload()} tone="neutral">
+            {strings.states.retry}
+          </Button>
+        ) : undefined}
+        description={description}
+        iconIntent="user"
+        title={title}
+      />
+    );
+  }
 
   const basePanel = {
     borderColor: theme.border,
@@ -62,8 +91,8 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           <SummaryPill label={strings.labels.plan} value={`${strings.planNamePrefix} ${customer.viewModel.activeSubscriptionLabel}`} />
           <SummaryPill label={strings.renewLabel} value={customer.viewModel.nextBillingLabel} />
           <SummaryPill label={strings.deliveryLabel} value={customer.viewModel.nextDeliveryLabel} />
+          <SummaryPill label={strings.memberSinceLabel} value={customer.viewModel.customer.memberSince} />
         </Inline>
-        <Button onAction={customer.actions.openPlansModal}>{strings.actions.changePlan}</Button>
       </Stack>
     </Surface>
   );
@@ -75,7 +104,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           <Text style={title}>{strings.sections.capacityTitle}</Text>
           {customer.viewModel.usageMetrics.map((metric) => (
             <Inline key={metric.key} style={{ justifyContent: "space-between", gap: theme.spacing?.sm }}>
-              <Text style={muted}>{strings.usage[metric.labelKey as keyof typeof strings.usage]}</Text>
+              <Text style={muted}>{metric.label}</Text>
               <Text style={title}>{metric.valueLabel}</Text>
             </Inline>
           ))}
@@ -119,7 +148,12 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                 <Stack style={compactStack}>
                   <Text style={title}>{strings.planNamePrefix} {plan.name}</Text>
                   <Text style={accent}>{strings.currencyPrefix} {plan.monthlyPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</Text>
-                  <Text style={muted}>{strings.format.dashSeparated.replace("{first}", strings.format.valueWithUnit.replace("{value}", String(plan.productSelectionLimit)).replace("{unit}", strings.usage.cuts)).replace("{second}", strings.format.valueWithUnit.replace("{value}", String(plan.proteinKgLimit)).replace("{unit}", strings.format.kilogram))}</Text>
+                  {plan.includedItems.map((item) => (
+                    <Stack key={item.id} style={compactStack}>
+                      <Text style={muted}>{strings.format.includedItem.replace("{quantity}", item.quantityLabel).replace("{item}", item.name)}</Text>
+                      {item.selectionLimit ? <Text style={muted}>{strings.format.selectionLimit.replace("{count}", String(item.selectionLimit))}</Text> : null}
+                    </Stack>
+                  ))}
                 </Stack>
               </Surface>
             ))}

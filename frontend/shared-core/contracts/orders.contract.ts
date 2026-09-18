@@ -53,6 +53,8 @@ export interface OrderItemBase {
   unitPriceCents: number;
   totalCents: number;
   weightGrams?: number | null;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
   sourceType: OrderSourceType;
   sourceKey: OrderSourceKey;
   metadata: Record<string, unknown>;

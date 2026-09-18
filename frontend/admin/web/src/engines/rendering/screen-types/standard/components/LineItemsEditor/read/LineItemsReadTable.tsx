@@ -18,7 +18,7 @@ export const LineItemsReadTable: React.FC<LineItemsReadTableProps> = ({ columns,
       {items.map((item, index) => (
         <tr key={item.key || index}>
           {columns.map((column) => (
-            <td key={column.key}>
+            <td colSpan={column.span} data-align={column.align || "start"} key={column.key}>
               <Text as="span" className={styles.readOnlyValue} variant="body">
                 {resolveLineItemDisplayValue(column, item, t) || t("common.emptyValue")}
               </Text>

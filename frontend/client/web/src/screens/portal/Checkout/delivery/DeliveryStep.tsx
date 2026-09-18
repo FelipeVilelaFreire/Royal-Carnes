@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Grid, Inline, Input, Stack, Surface, Text, TextArea } from "@foundation/ui";
+import { Button, Grid, GridItem, Inline, Input, Stack, Surface, Text, TextArea } from "@foundation/ui";
 import { CheckIcon, StoreIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   ClientCheckoutAddress,
@@ -19,7 +19,15 @@ export interface DeliveryStepProps {
   freightOptions: Array<{ key: ClientCheckoutFreightOptionKey; label: string; price: number; etaLabel: string }>;
   isAddingAddress: boolean;
   newAddressDraft: Record<ClientCheckoutAddressFieldKey, string>;
-  newAddressFields: Array<{ key: ClientCheckoutAddressFieldKey; label: string; placeholder: string; gridColumn: string; gridSpan: string }>;
+  newAddressFields: Array<{
+    autoComplete: string;
+    gridSpan: number;
+    inputMode?: "numeric" | "text";
+    key: ClientCheckoutAddressFieldKey;
+    label: string;
+    maxLength?: number;
+    placeholder: string;
+  }>;
   onBack: () => void;
   onNext: () => void;
   onSetAddingAddress: (value: boolean) => void;
@@ -64,25 +72,26 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
     description={deliveryCopy?.description || strings.deliveryStep.description}
     title={strings.deliveryStep.title}
   >
-    <Grid className={styles.infoGrid}>
-      {(deliveryCopy?.fields || []).map((field: string) => (
-        <Surface appearance="soft" className={styles.infoTile} key={field}>
-          <span className={styles.infoIcon}>
-            <CheckIcon size={16} />
-          </span>
-          <Text as="strong" tone="inherit" variant="body" weight="semibold">
-            {field}
-          </Text>
-        </Surface>
-      ))}
-    </Grid>
-
-    <Stack gap="lg">
-      <Stack gap="sm">
-        <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
-          {strings.deliveryStep.common.addressTitle}
-        </Text>
-        <Grid className={styles.optionGrid}>
+    <Stack className={styles.deliveryStack} gap="xl">
+      <section className={styles.deliverySection}>
+        <div className={styles.deliverySectionHeader}>
+          <div className={styles.deliverySectionCopy}>
+            <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
+              {strings.deliveryStep.common.addressTitle}
+            </Text>
+          </div>
+          <Button
+            appearance="outline"
+            className={styles.checkoutSubtleAction}
+            size="sm"
+            tone="neutral"
+            type="button"
+            onClick={() => onSetAddingAddress(true)}
+          >
+            {strings.deliveryStep.common.addAddress}
+          </Button>
+        </div>
+        <Grid className={[styles.optionGrid, styles.addressGrid].join(" ")}>
           {addresses.map((address) => {
             const isSelectedAddress = selectedAddressId === address.id;
 
@@ -131,36 +140,34 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
           })}
         </Grid>
 
-        <Button
-          appearance="outline"
-          className={styles.checkoutSubtleAction}
-          size="sm"
-          tone="neutral"
-          type="button"
-          onClick={() => onSetAddingAddress(true)}
-        >
-          {strings.deliveryStep.common.addAddress}
-        </Button>
-
         {isAddingAddress ? (
-          <Surface appearance="soft" className={styles.formPanel}>
-            <Text as="h3" tone="inherit" variant="h3">
-              {strings.deliveryStep.common.newAddressTitle}
-            </Text>
-            <Grid className={styles.addressForm}>
+          <Surface appearance="soft" className={[styles.formPanel, styles.addressFormPanel].join(" ")}>
+            <div className={styles.addressFormHeader}>
+              <Text as="h3" tone="inherit" variant="h3">
+                {strings.deliveryStep.common.newAddressTitle}
+              </Text>
+            </div>
+            <Grid className={styles.addressForm} gap="md">
               {newAddressFields.map((field) => (
-                <Input
-                  className={styles.addressField}
-                  data-grid-column={field.gridSpan}
-                  key={field.key}
-                  label={field.label}
-                  onChange={(event) => onUpdateNewAddressDraft(field.key, event.target.value)}
-                  placeholder={field.placeholder}
-                  value={newAddressDraft[field.key]}
-                />
+                <GridItem className={styles.addressField} key={field.key} span={field.gridSpan}>
+                  <Input
+                    autoComplete={field.autoComplete}
+                    inputMode={field.inputMode}
+                    label={field.label}
+                    maxLength={field.maxLength}
+                    onChange={(event) => {
+                      const nextValue = field.key === "zipCode"
+                        ? event.target.value.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d)/, "$1-$2")
+                        : event.target.value;
+                      onUpdateNewAddressDraft(field.key, nextValue);
+                    }}
+                    placeholder={field.placeholder}
+                    value={newAddressDraft[field.key]}
+                  />
+                </GridItem>
               ))}
             </Grid>
-            <Inline justify="end">
+            <Inline className={styles.addressFormActions} justify="end">
               <Button appearance="outline" onClick={() => onSetAddingAddress(false)}>
                 {strings.deliveryStep.common.cancelAddress}
               </Button>
@@ -170,16 +177,18 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
             </Inline>
           </Surface>
         ) : null}
-      </Stack>
+      </section>
 
       {selectedMode === "royalBox" ? (
-        <Stack gap="sm">
-          <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
-            {strings.deliveryStep.royalBox.deliveryDayLabel}
-          </Text>
-          <Text className={styles.optionDescription} tone="inherit">
-            {strings.deliveryStep.royalBox.deliveryDayHint}
-          </Text>
+        <section className={styles.deliverySection}>
+          <div className={styles.deliverySectionCopy}>
+            <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
+              {strings.deliveryStep.royalBox.deliveryDayLabel}
+            </Text>
+            <Text className={styles.optionDescription} tone="inherit">
+              {strings.deliveryStep.royalBox.deliveryDayHint}
+            </Text>
+          </div>
           <Grid className={styles.compactOptionGrid}>
             {checkoutConfig.deliveryDays.map((day) => {
               const isActive = selectedDeliveryDay === day;
@@ -200,15 +209,17 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
               );
             })}
           </Grid>
-        </Stack>
+        </section>
       ) : null}
 
-      <Stack gap="sm">
-        <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
-          {strings.deliveryStep.royalDelivery.freightLabel}
-        </Text>
+      <section className={styles.deliverySection}>
+        <div className={styles.deliverySectionCopy}>
+          <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
+            {strings.deliveryStep.royalDelivery.freightLabel}
+          </Text>
+        </div>
         {selectedMode === "royalDelivery" ? (
-          <Grid className={styles.compactOptionGrid}>
+          <Grid className={[styles.compactOptionGrid, styles.freightOptions].join(" ")}>
             {freightOptions.map((freight) => {
               const isActive = selectedFreight === freight.key;
 
@@ -230,7 +241,7 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
             })}
           </Grid>
         ) : null}
-        <Surface appearance="soft" className={styles.summaryLine}>
+        <Surface appearance="soft" className={[styles.summaryLine, styles.freightSummary].join(" ")}>
           <Text as="strong" tone="inherit" variant="body" weight="semibold">
             {selectedMode === "royalDelivery" && !selectedFreight
               ? strings.deliveryStep.royalDelivery.pendingFreight
@@ -244,11 +255,18 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
               : formatMoney(currentFreightPrice)}
           </Text>
         </Surface>
-      </Stack>
+      </section>
 
-      <TextArea label={strings.deliveryStep.common.notesTitle} placeholder={strings.deliveryStep.common.notesPlaceholder} rows={4} />
+      <section className={styles.deliverySection}>
+        <TextArea
+          className={styles.deliveryNotes}
+          label={strings.deliveryStep.common.notesTitle}
+          placeholder={strings.deliveryStep.common.notesPlaceholder}
+          rows={4}
+        />
+      </section>
 
-      <Inline justify="between">
+      <Inline className={styles.deliveryActions} justify="between">
         <Button appearance="outline" onClick={onBack}>
           {strings.deliveryStep.back}
         </Button>

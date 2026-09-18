@@ -18,6 +18,9 @@
           "quantity": 4,
           "measurementUnitKey": "kg",
           "constraints": {
+            "capacityKey": "meat",
+            "capacityLabel": "Carnes",
+            "selectionLabel": "Cortes",
             "maxSelections": 3,
             "allowedCommercialModes": ["subscription"],
             "requiresAvailability": true
@@ -41,6 +44,9 @@
           "quantity": 8,
           "measurementUnitKey": "kg",
           "constraints": {
+            "capacityKey": "meat",
+            "capacityLabel": "Carnes",
+            "selectionLabel": "Cortes",
             "maxSelections": 6,
             "allowedCommercialModes": ["subscription"],
             "requiresAvailability": true
@@ -53,8 +59,10 @@
           "quantity": 1,
           "measurementUnitKey": "bag",
           "constraints": {
+            "capacityKey": "charcoal",
+            "capacityLabel": "Carvão",
             "maxQuantity": 1,
-            "allowedCommercialModes": ["box", "delivery"],
+            "allowedCommercialModes": ["subscription"],
             "requiresAvailability": true
           }
         }
@@ -76,6 +84,9 @@
           "quantity": 12,
           "measurementUnitKey": "kg",
           "constraints": {
+            "capacityKey": "meat",
+            "capacityLabel": "Carnes",
+            "selectionLabel": "Cortes",
             "maxSelections": 10,
             "allowedCommercialModes": ["subscription"],
             "requiresAvailability": true
@@ -88,8 +99,10 @@
           "quantity": 1,
           "measurementUnitKey": "bag",
           "constraints": {
+            "capacityKey": "charcoal",
+            "capacityLabel": "Carvão",
             "maxQuantity": 1,
-            "allowedCommercialModes": ["box", "delivery"],
+            "allowedCommercialModes": ["subscription"],
             "requiresAvailability": true
           }
         }

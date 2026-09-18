@@ -188,6 +188,27 @@ function addQuantityByUnit(
   const parsed = Number(quantity);
   const unitKey = unit || "";
   if (!Number.isFinite(parsed) || !unitKey) return totals;
+  const entitlements = plan.entitlements.map((entitlement) => ({
+    constraints: entitlement.constraints,
+    capacityKey: String(entitlement.constraints?.capacityKey || entitlement.key),
+    capacityLabel: String(entitlement.constraints?.capacityLabel || entitlement.targetName || entitlement.targetKey || entitlement.key),
+    key: entitlement.key,
+    maxSelections: entitlement.constraints?.maxSelections || "",
+    measurementUnitKey: entitlement.measurementUnitKey || undefined,
+    quantity: entitlement.quantity,
+    sortOrder: entitlement.sortOrder,
+    targetKey: entitlement.targetKey || "",
+    targetType: entitlement.targetType,
+  }));
+  const itemLimits = entitlements.flatMap((entitlement) => {
+    const limits = Array.isArray(entitlement.constraints?.itemLimits) ? entitlement.constraints.itemLimits : [];
+    return limits.map((limit: any) => ({
+      capacityKey: entitlement.capacityKey,
+      maxQuantity: limit.maxQuantity || "",
+      measurementUnitKey: entitlement.measurementUnitKey || undefined,
+      targetKey: limit.targetKey || "",
+    }));
+  });
   return {
     ...totals,
     [unitKey]: (totals[unitKey] || 0) + parsed,
@@ -240,15 +261,8 @@ export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowVi
     sortOrder: plan.sortOrder,
     entitlementCount: plan.entitlements.length,
     entitlementSummary: firstEntitlements.length ? firstEntitlements.join(", ") : "",
-    entitlements: plan.entitlements.map((entitlement) => ({
-      constraints: entitlement.constraints,
-      key: entitlement.key,
-      measurementUnitKey: entitlement.measurementUnitKey || undefined,
-      quantity: entitlement.quantity,
-      sortOrder: entitlement.sortOrder,
-      targetKey: entitlement.targetKey || "",
-      targetType: entitlement.targetType,
-    })),
+    entitlements,
+    itemLimits,
     subscriberCount: plan.subscriberCount,
     activeSubscriberCount: plan.activeSubscriberCount,
     subscriberSummary: firstSubscribers.length ? firstSubscribers.join(", ") : "",

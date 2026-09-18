@@ -4,6 +4,7 @@ export * from "./card";
 export * from "./divider";
 export * from "./dropdown-picker";
 export * from "./field";
+export * from "./formatted-input";
 export * from "./icon";
 export * from "./layout";
 export * from "./segmented-control";

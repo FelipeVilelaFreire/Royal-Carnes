@@ -26,25 +26,28 @@ export const LineItemsEditorRow: React.FC<LineItemsEditorRowProps> = ({
   t,
 }) => (
   <tr>
-    {columns.map((column) => {
+    {columns.map((column, index) => {
+        const isLastColumn = index === columns.length - 1;
         return (
-          <td key={column.key}>
-            <LineItemsEditCell column={column} item={item} onChangeColumn={onChangeColumn} onChangeValue={onChangeValue} t={t} />
+          <td colSpan={column.span} data-align={column.align || "start"} data-compact={column.type === "number" || undefined} key={column.key}>
+            {isLastColumn ? (
+              <span className={styles.cellWithAction}>
+                <LineItemsEditCell column={column} item={item} onChangeColumn={onChangeColumn} onChangeValue={onChangeValue} t={t} />
+                <Button
+                  appearance="transparent"
+                  aria-label={removeLabel}
+                  className={styles.removeButton}
+                  icon={<CloseIcon aria-hidden="true" />}
+                  iconPosition="only"
+                  onClick={onRemove}
+                  size="sm"
+                  tone="danger"
+                  type="button"
+                />
+              </span>
+            ) : <LineItemsEditCell column={column} item={item} onChangeColumn={onChangeColumn} onChangeValue={onChangeValue} t={t} />}
           </td>
         );
       })}
-    <td className={styles.actionCell}>
-      <Button
-        appearance="transparent"
-        aria-label={removeLabel}
-        className={styles.removeButton}
-        icon={<CloseIcon aria-hidden="true" />}
-        iconPosition="only"
-        onClick={onRemove}
-        size="sm"
-        tone="danger"
-        type="button"
-      />
-    </td>
   </tr>
 );

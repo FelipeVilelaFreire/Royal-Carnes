@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { Button } from "@foundation/ui/web/Button";
+import { UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { Container, Stack } from "@foundation/ui/web/Layout";
 import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenHeader";
 import { useClientCustomer } from "@royalprime/client/hooks/useClientCustomer";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
-import { PlanComparisonModal } from "./minha-conta/components";
+import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen";
 import { AccountProfileSummary } from "./minha-conta/fixed/AccountProfileSummary";
 import { AccountSidebarNav } from "./minha-conta/fixed/AccountSidebarNav";
 import { ProfileModuleContent } from "./minha-conta/modules/ProfileModuleContent";
@@ -32,6 +34,36 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
     { key: "security", label: strings.tabs.security },
   ], [strings]);
 
+  const hasCustomer = Boolean(customer.dataSource.customer.id);
+
+  if (customer.isLoading || customer.error || !hasCustomer) {
+    const title = customer.isLoading
+      ? strings.states.loading
+      : customer.error
+        ? strings.states.error
+        : strings.states.empty;
+    const description = customer.isLoading
+      ? strings.states.loadingDescription
+      : customer.error
+        ? strings.states.errorDescription
+        : strings.states.emptyDescription;
+
+    return (
+      <div className={styles.page}>
+        <EmptyStateScreen
+          actions={customer.error ? (
+            <Button appearance="outline" onClick={() => void customer.actions.reload()} tone="neutral">
+              {strings.states.retry}
+            </Button>
+          ) : undefined}
+          description={description}
+          icon={<UserIcon />}
+          title={title}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.mobileScreenHeader}>
@@ -54,25 +86,11 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onNavigate }) => {
             viewModel={customer.viewModel}
           />
           <Stack gap="lg">
-            <AccountProfileSummary
-              onChangePlan={customer.actions.openPlansModal}
-              strings={strings}
-              viewModel={customer.viewModel}
-            />
+            <AccountProfileSummary strings={strings} viewModel={customer.viewModel} />
             <ProfileModuleContent customer={customer} onNavigate={onNavigate} strings={strings} />
           </Stack>
         </div>
       </Container>
-      <PlanComparisonModal
-        currentPlanKey={customer.selectedPlanKey}
-        onClose={() => customer.actions.setIsPlansModalOpen(false)}
-        onConfirm={customer.actions.confirmPlanChange}
-        onSelect={customer.actions.setPendingPlanKey}
-        open={customer.isPlansModalOpen}
-        plans={customer.dataSource.plans}
-        selectedPlanKey={customer.pendingPlanKey}
-        strings={strings}
-      />
     </div>
   );
 };

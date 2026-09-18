@@ -30,6 +30,13 @@
 
   /* Camada de sobreposicao do DropdownPicker */
   --semicomposed--dropdown-picker--layer: var(--theme--z-index-top-layer);
+  --semicomposed--dropdown-picker--option-padding-y: var(--theme--spacing-spaceSm);
+  --semicomposed--dropdown-picker--option-description-gap: var(--theme--spacing-space2xs);
+  --semicomposed--dropdown-picker--panel-max-height: calc(var(--theme--dimensions-height-lg) * 7);
+  --semicomposed--dropdown-picker--panel-min-width: var(--theme--sizing-24);
+
+  /* Campo formatado: documento, quantidade com unidade e demais entradas auxiliares */
+  --semicomposed--formatted-input--gap: var(--theme--spacing-spaceXs);
 
   /* Navegacao segmentada com indicador inferior */
   --semicomposed--segmented-control--underline-active: var(--theme--color-primary);

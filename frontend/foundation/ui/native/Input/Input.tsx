@@ -8,6 +8,7 @@ export interface InputProps {
   accessibilityLabel?: string;
   iconIntent?: string;
   keyboardType?: string;
+  onBlur?: () => void;
   onChangeText?: (value: string) => void;
   placeholder?: string;
   style?: any;
@@ -18,6 +19,7 @@ export const Input: React.FC<InputProps> = ({
   accessibilityLabel,
   iconIntent,
   keyboardType,
+  onBlur,
   onChangeText,
   placeholder,
   style,
@@ -35,6 +37,7 @@ export const Input: React.FC<InputProps> = ({
       <TextInput
         accessibilityLabel={accessibilityLabel}
         keyboardType={keyboardType}
+        onBlur={onBlur}
         onChangeText={onChangeText}
         placeholder={placeholder}
         style={inputStyle}

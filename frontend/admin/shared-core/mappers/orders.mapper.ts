@@ -5,6 +5,8 @@ import type {
   AdminOrderDto,
   AdminOrderItemCreateDto,
   AdminOrderItemDto,
+  AdminOrderItemsReplaceDto,
+  AdminOrderItemsReplaceInput,
   AdminOrderKindDto,
   AdminOrderStatusDto,
   AdminOrderStatusHistoryDto,
@@ -141,6 +143,10 @@ export function mapAdminOrderCreateInput(input: AdminOrderCreateInput): AdminOrd
     notes: input.notes,
     items: input.items.map(mapAdminOrderItemCreateInput),
   };
+}
+
+export function mapAdminOrderItemsReplaceInput(input: AdminOrderItemsReplaceInput): AdminOrderItemsReplaceDto {
+  return { items: input.items.map(mapAdminOrderItemCreateInput) };
 }
 
 export function mapAdminOrderTransitionInput(

@@ -8,5 +8,6 @@ urlpatterns = [
     path("me/<int:order_id>/", views.my_order_detail),
     path("admin/orders/", views.admin_orders),
     path("admin/orders/<int:order_id>/", views.admin_order_detail),
+    path("admin/orders/<int:order_id>/items/", views.admin_order_items),
     path("admin/orders/<int:order_id>/transition/", views.admin_order_transition),
 ]

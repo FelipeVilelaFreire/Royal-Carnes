@@ -1239,6 +1239,8 @@ export const clientPtBR = {
       labelValue: "{label}: {value}",
       paymentMethodSummary: "{holder} | {expiresLabel}: {expiresAt}",
       invoiceSummary: "{date} | {paymentMethod} | {id}",
+      includedItem: "{quantity} de {item}",
+      selectionLimit: "Ate {count} escolhas no ciclo",
       valueWithUnit: "{value} {unit}",
     },
     title: "Minha Conta",
@@ -1268,7 +1270,7 @@ export const clientPtBR = {
       overviewTitle: "Painel da conta",
       overviewDescription: "Resumo do plano, ciclo atual e proximas acoes da conta.",
       subscriptionTitle: "Minha assinatura",
-      subscriptionDescription: "Plano ativo, cota mensal e opcoes disponiveis para troca.",
+      subscriptionDescription: "Plano ativo e itens incluidos conforme sua assinatura atual.",
       capacityTitle: "Uso & Capacidade da Assinatura",
       capacityDescription: "Acompanhe quanto do ciclo atual ja foi usado.",
       recentOrdersTitle: "Pedidos Recentes",
@@ -1322,7 +1324,21 @@ export const clientPtBR = {
       defaultAddress: "Principal",
       defaultPayment: "Padrao",
       cardEnding: "Final",
-      expiresAt: "Validade"
+      expiresAt: "Validade",
+      addressLabel: "Identificacao do endereco",
+      recipientName: "Quem recebe",
+      street: "Rua / Avenida",
+      number: "Numero",
+      complement: "Complemento",
+      district: "Bairro",
+      city: "Cidade",
+      state: "Estado",
+      zipCode: "CEP"
+    },
+    addressLookup: {
+      loading: "Buscando endereco pelo CEP...",
+      notFound: "CEP nao encontrado. Confira os numeros informados.",
+      error: "Nao foi possivel consultar o CEP agora. Tente novamente.",
     },
     usage: {
       cuts: "Cortes",
@@ -1335,7 +1351,14 @@ export const clientPtBR = {
       active: "Ativo",
       inactive: "Inativo",
       current: "Atual",
-      selected: "Selecionado"
+      selected: "Selecionado",
+      loading: "Carregando sua conta",
+      loadingDescription: "Estamos preparando suas informacoes, plano e preferencias.",
+      error: "Nao foi possivel carregar sua conta",
+      errorDescription: "Atualize para tentar buscar seus dados novamente.",
+      empty: "Sua conta ainda nao possui dados disponiveis",
+      emptyDescription: "Quando seus dados estiverem prontos, eles aparecerao aqui.",
+      retry: "Tentar novamente"
     },
     notifications: {
       whatsapp: {
@@ -1368,7 +1391,8 @@ export const clientPtBR = {
       planDescription: "Compare limites e beneficios antes de confirmar a troca."
     },
     feedback: {
-      saved: "Dados salvos com sucesso."
+      saved: "Dados salvos com sucesso.",
+      addressSaved: "Endereco salvo com sucesso."
     },
     empty: {
       noOrders: "Nenhum pedido encontrado.",
