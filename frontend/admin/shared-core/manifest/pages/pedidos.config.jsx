@@ -16,17 +16,11 @@ export const pedidosConfig = {
       { key: "totalFormatted", labelKey: "pedidos.tableHeaders.total" },
     ],
     filters: [
+      { key: "customerId", labelKey: "pedidos.fields.customer", source: "clientes" },
       {
         key: "status",
         labelKey: "common.status",
-        options: [
-          { value: "received", labelKey: "common.statusReceived" },
-          { value: "approved", labelKey: "common.statusApproved" },
-          { value: "separating", labelKey: "common.statusSeparating" },
-          { value: "ready", labelKey: "common.statusReady" },
-          { value: "completed", labelKey: "common.statusCompleted" },
-          { value: "cancelled", labelKey: "common.statusCancelled" },
-        ],
+        source: "orderStatuses",
       },
     ],
   },
@@ -57,7 +51,7 @@ export const pedidosConfig = {
             ],
             edit: {
               columns: [
-                { key: "productKey", labelKey: "pedidos.items.product", type: "select", source: "produtosPedido", required: true, align: "start", span: 4, writeOptionMeta: { variantSku: "variantSku", measurementUnitKey: "measurementUnitKey", maxQuantity: "maxQuantity" } },
+                { key: "productKey", labelKey: "pedidos.items.product", type: "select", source: "produtosPedido", required: true, align: "start", span: 4, presentation: "media", searchable: true, searchPlaceholderKey: "pedidos.items.searchProductPlaceholder", searchEmptyKey: "pedidos.items.emptyProductSearch", writeOptionMeta: { variantSku: "variantSku", measurementUnitKey: "measurementUnitKey", maxQuantity: "maxQuantity" } },
                 { key: "quantity", labelKey: "pedidos.items.quantity", type: "number", format: "decimalBR", required: true, suffixKey: "measurementUnitKey", maxKey: "maxQuantity", align: "end", span: 2 },
               ],
             },
@@ -95,6 +89,26 @@ export const pedidosConfig = {
           { key: "subscriptionCycleStatus", labelKey: "pedidos.fields.subscriptionCycleStatus" },
         ] }],
       },
+      {
+        id: "entrega",
+        labelKey: "pedidos.detail.tabs.delivery",
+        emptyKey: "pedidos.detail.emptyDelivery",
+        sections: [{
+          key: "deliveries",
+          type: "lineItems",
+          titleKey: "pedidos.detail.tabs.delivery",
+          iconIntent: "delivery",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          itemsKey: "deliveries",
+          labelKey: "pedidos.fields.deliveries",
+          columns: [
+            { key: "code", labelKey: "pedidos.deliveries.code", type: "text", detailScreenKey: "deliveries" },
+            { key: "statusLabel", labelKey: "pedidos.deliveries.status", type: "text" },
+            { key: "address", labelKey: "pedidos.deliveries.address", type: "text" },
+            { key: "confirmationCode", labelKey: "pedidos.deliveries.confirmationCode", type: "text" },
+          ],
+        }],
+      },
     ],
   },
   addPage: {
@@ -124,7 +138,7 @@ export const pedidosConfig = {
             required: true,
             addLabelKey: "pedidos.items.add",
             columns: [
-              { key: "productKey", labelKey: "pedidos.items.product", type: "select", source: "produtosPedido", required: true, span: 4, writeOptionMeta: { variantSku: "variantSku", measurementUnitKey: "measurementUnitKey", maxQuantity: "maxQuantity" } },
+              { key: "productKey", labelKey: "pedidos.items.product", type: "select", source: "produtosPedido", required: true, span: 4, presentation: "media", searchable: true, searchPlaceholderKey: "pedidos.items.searchProductPlaceholder", searchEmptyKey: "pedidos.items.emptyProductSearch", writeOptionMeta: { variantSku: "variantSku", measurementUnitKey: "measurementUnitKey", maxQuantity: "maxQuantity" } },
               { key: "quantity", labelKey: "pedidos.items.quantity", type: "number", format: "decimalBR", required: true, suffixKey: "measurementUnitKey", maxKey: "maxQuantity", span: 2 },
             ],
           },

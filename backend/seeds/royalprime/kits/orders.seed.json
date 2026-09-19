@@ -58,23 +58,44 @@
     {
       "key": "separating",
       "label": "Separando",
-      "allowedNextKeys": ["ready"],
+      "allowedNextKeys": ["ready", "cancelled"],
       "metadata": { "ui": { "statusColor": "separating", "statusTone": "warning" } },
       "sortOrder": 3
     },
     {
       "key": "ready",
-      "label": "Pronto",
-      "allowedNextKeys": ["completed"],
+      "label": "Pronto para envio",
+      "allowedNextKeys": ["out-for-delivery", "completed", "cancelled"],
       "metadata": { "ui": { "statusColor": "ready", "statusTone": "neutral" } },
       "sortOrder": 4
     },
     {
-      "key": "completed",
-      "label": "Concluido",
+      "key": "out-for-delivery",
+      "label": "Saiu para entrega",
+      "allowedNextKeys": ["delivered", "delivery-failed", "cancelled"],
+      "metadata": { "ui": { "statusColor": "outForDelivery", "statusTone": "neutral" } },
+      "sortOrder": 5
+    },
+    {
+      "key": "delivered",
+      "label": "Entregue",
       "isTerminal": true,
       "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
-      "sortOrder": 5
+      "sortOrder": 6
+    },
+    {
+      "key": "completed",
+      "label": "Concluído",
+      "isTerminal": true,
+      "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
+      "sortOrder": 7
+    },
+    {
+      "key": "delivery-failed",
+      "label": "Falha na entrega",
+      "isTerminal": true,
+      "metadata": { "ui": { "statusColor": "canceled", "statusTone": "danger" } },
+      "sortOrder": 98
     },
     {
       "key": "cancelled",

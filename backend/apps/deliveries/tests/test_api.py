@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
 from apps.deliveries.models import Delivery, DeliveryStatusDefinition
+from apps.orders.models import Order
 
 
 class DeliveriesApiTests(APITestCase):
@@ -51,28 +52,37 @@ class DeliveriesApiTests(APITestCase):
             format="json",
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
+        self.assertEqual(delivery.code, "DEL-000005")
+        self.assertEqual(delivery.status_key, "pending")
+        self.assertEqual(transition_response.status_code, 200, transition_response.data)
+        self.assertEqual(transition_response.data["status_key"], "packing")
+        for status_key in ("approved", "separating", "ready"):
+            order_transition_response = self.client.post(
+                f"/api/v1/orders/admin/orders/{order['id']}/transition/",
+                {"status_key": status_key},
+                format="json",
+                HTTP_X_ORGANIZATION_SLUG="royalprime",
+            )
+            self.assertEqual(order_transition_response.status_code, 200, order_transition_response.data)
         out_response = self.client.post(
             f"/api/v1/deliveries/admin/deliveries/{delivery.id}/transition/",
             {"status_key": "out-for-delivery"},
             format="json",
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
+        self.assertEqual(out_response.status_code, 200, out_response.data)
+        self.assertEqual(out_response.data["status_key"], "out-for-delivery")
+        self.assertEqual(Order.objects.get(pk=order["id"]).status_key, "out-for-delivery")
         confirm_response = self.client.post(
             f"/api/v1/deliveries/admin/deliveries/{delivery.id}/confirm/",
             {"confirmation_type": "code", "confirmed_by": "Cliente RoyalPrime", "note": "Codigo validado"},
             format="json",
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
-
-        self.assertEqual(delivery.code, "DEL-000005")
-        self.assertEqual(delivery.status_key, "pending")
-        self.assertEqual(transition_response.status_code, 200, transition_response.data)
-        self.assertEqual(transition_response.data["status_key"], "packing")
-        self.assertEqual(out_response.status_code, 200, out_response.data)
-        self.assertEqual(out_response.data["status_key"], "out-for-delivery")
         self.assertEqual(confirm_response.status_code, 200, confirm_response.data)
         self.assertEqual(confirm_response.data["status_key"], "delivered")
         self.assertEqual(confirm_response.data["confirmation"]["confirmation_type"], "code")
+        self.assertEqual(Order.objects.get(pk=order["id"]).status_key, "delivered")
 
     def test_customer_can_read_own_deliveries(self):
         order = self.create_order()
@@ -83,6 +93,54 @@ class DeliveriesApiTests(APITestCase):
         self.assertEqual(list_response.status_code, 200, list_response.data)
         self.assertGreaterEqual(len(list_response.data), 1)
         self.assertTrue(any(delivery["order_code"] == order["code"] for delivery in list_response.data))
+
+    def test_delivery_failure_and_cancellation_update_the_parent_order(self):
+        order = self.create_order()
+        self.authenticate()
+        delivery = Delivery.objects.get(order_id=order["id"])
+
+        cancel_response = self.client.post(
+            f"/api/v1/deliveries/admin/deliveries/{delivery.id}/transition/",
+            {"status_key": "cancelled"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(cancel_response.status_code, 200, cancel_response.data)
+        self.assertEqual(Order.objects.get(pk=order["id"]).status_key, "cancelled")
+
+        order = self.create_order()
+        self.authenticate()
+        delivery = Delivery.objects.get(order_id=order["id"])
+        self.client.post(
+            f"/api/v1/deliveries/admin/deliveries/{delivery.id}/transition/",
+            {"status_key": "packing"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        for status_key in ("approved", "separating", "ready"):
+            response = self.client.post(
+                f"/api/v1/orders/admin/orders/{order['id']}/transition/",
+                {"status_key": status_key},
+                format="json",
+                HTTP_X_ORGANIZATION_SLUG="royalprime",
+            )
+            self.assertEqual(response.status_code, 200, response.data)
+        self.client.post(
+            f"/api/v1/deliveries/admin/deliveries/{delivery.id}/transition/",
+            {"status_key": "out-for-delivery"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        failure_response = self.client.post(
+            f"/api/v1/deliveries/admin/deliveries/{delivery.id}/transition/",
+            {"status_key": "failed"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(failure_response.status_code, 200, failure_response.data)
+        self.assertEqual(Order.objects.get(pk=order["id"]).status_key, "delivery-failed")
 
     def test_admin_cannot_duplicate_delivery_for_order(self):
         order = self.create_order()

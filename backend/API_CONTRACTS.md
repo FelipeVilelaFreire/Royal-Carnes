@@ -1244,6 +1244,7 @@ order_reference_not_found
 order_status_not_found
 order_status_transition_not_allowed
 order_status_terminal
+delivery_order_status_transition_not_allowed
 subscription_customer_mismatch
 subscription_cycle_mismatch
 subscription_required_for_cycle
@@ -1262,6 +1263,10 @@ codeSequenceKey.
 CodeSequence define prefixo, padding e template por organization.
 Quando createsDelivery=true, Orders cria a Delivery inicial sem regra hardcoded
 por nome comercial.
+No kit RoyalPrime, o fluxo de pedido e configurado como Recebido -> Aprovado ->
+Separando -> Pronto para envio. A partir dai, um pedido com entrega segue para
+Saiu para entrega -> Entregue ou Falha na entrega; retirada/sem entrega pode
+seguir para Concluido. Cancelamento e permitido nos estados nao terminais.
 ```
 
 ## Deliveries
@@ -1336,6 +1341,8 @@ Objetivo:
 
 ```text
 mudar status da entrega validando allowedNextKeys do DeliveryStatusDefinition atual
+e, quando o status representa despacho, entrega, falha ou cancelamento, alinhar
+o Order relacionado pela transicao configurada do workflow.
 ```
 
 Permissao:

@@ -13,6 +13,37 @@ class DeliveryValidationError(ValueError):
         super().__init__(detail)
 
 
+ORDER_STATUS_BY_DELIVERY_STATUS = {
+    "out-for-delivery": "out-for-delivery",
+    "delivered": "delivered",
+    "failed": "delivery-failed",
+    "cancelled": "cancelled",
+}
+
+
+def synchronize_order_status_from_delivery(*, organization, delivery: Delivery, to_status_key: str, actor=None, note: str = "") -> None:
+    order_status_key = ORDER_STATUS_BY_DELIVERY_STATUS.get(to_status_key)
+    if not order_status_key:
+        return
+
+    order = delivery.order
+    if order.status_key == order_status_key:
+        return
+
+    from apps.orders.services import OrderValidationError, transition_order_status
+
+    try:
+        transition_order_status(
+            organization=organization,
+            order=order,
+            to_status_key=order_status_key,
+            actor=actor,
+            note=note or f"Delivery status: {to_status_key}",
+        )
+    except OrderValidationError as error:
+        raise DeliveryValidationError("delivery_order_status_transition_not_allowed", error.detail) from error
+
+
 @transaction.atomic
 def upsert_delivery_status(
     *,
@@ -123,6 +154,13 @@ def transition_delivery_status(*, organization, delivery: Delivery, to_status_ke
         organization=organization,
         delivery=delivery,
         from_status_key=previous,
+        to_status_key=next_status.key,
+        actor=actor,
+        note=note,
+    )
+    synchronize_order_status_from_delivery(
+        organization=organization,
+        delivery=delivery,
         to_status_key=next_status.key,
         actor=actor,
         note=note,

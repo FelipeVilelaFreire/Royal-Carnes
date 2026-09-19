@@ -24,6 +24,7 @@ export interface DropdownPickerProps {
   className?: string;
   disabled?: boolean;
   label?: string;
+  labelPlacement?: "inline" | "top";
   onChange?: (value: string) => void;
   optionPresentation?: "media" | "text";
   options: DropdownPickerOption[];
@@ -31,6 +32,7 @@ export interface DropdownPickerProps {
   placeholder?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
+  showSelectionIndicator?: boolean;
   value?: string;
   width?: "auto" | "full";
 }
@@ -40,6 +42,7 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
   className,
   disabled = false,
   label,
+  labelPlacement = "inline",
   onChange,
   optionPresentation = "text",
   options = [],
@@ -47,6 +50,7 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
   placeholder,
   searchable = false,
   searchPlaceholder,
+  showSelectionIndicator = true,
   value,
   width = "full",
 }) => {
@@ -57,6 +61,7 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [activeOptionIndex, setActiveOptionIndex] = useState(-1);
+  const [panelPlacement, setPanelPlacement] = useState<"bottom" | "top">("bottom");
   const [query, setQuery] = useState("");
   const selected = useMemo(() => options.find((option) => option.value === value), [options, value]);
   const filteredOptions = useMemo(() => {
@@ -70,16 +75,31 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
 
   const close = (restoreFocus = false) => {
     setIsOpen(false);
-    if (restoreFocus) triggerRef.current?.focus();
+    if (restoreFocus) (searchable ? searchInputRef.current : triggerRef.current)?.focus();
+  };
+  const openSearch = () => {
+    if (!disabled) setIsOpen(true);
+  };
+  const handleSearchFocus = () => {
+    if (!isOpen) setQuery("");
+    openSearch();
   };
   const updatePanelPosition = useCallback(() => {
     const rect = rootRef.current?.getBoundingClientRect();
     const panel = panelRef.current;
     if (!rect || !panel) return;
 
+    const availableAbove = rect.top;
+    const availableBelow = window.innerHeight - rect.bottom;
+    const shouldOpenAbove = availableBelow < panel.offsetHeight && availableAbove > availableBelow;
+    const availableHeight = Math.max(0, shouldOpenAbove ? availableAbove : availableBelow);
+
     panel.style.setProperty("--ui-dropdown-picker-panel-block-start", `${rect.bottom}px`);
+    panel.style.setProperty("--ui-dropdown-picker-panel-block-end", `${window.innerHeight - rect.top}px`);
+    panel.style.setProperty("--ui-dropdown-picker-panel-available-height", `${availableHeight}px`);
     panel.style.setProperty("--ui-dropdown-picker-panel-inline-start", `${rect.left}px`);
     panel.style.setProperty("--ui-dropdown-picker-panel-width", `${rect.width}px`);
+    setPanelPlacement(shouldOpenAbove ? "top" : "bottom");
   }, []);
 
   useLayoutEffect(() => {
@@ -162,12 +182,52 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
       ref={rootRef}
       className={[styles.root, className].filter(Boolean).join(" ")}
       data-open={isOpen || undefined}
+      data-label-placement={labelPlacement}
       data-presentation={optionPresentation}
       data-width={width}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget) && !panelRef.current?.contains(event.relatedTarget as Node)) close();
       }}
     >
+      {label && labelPlacement === "top" ? <span className={styles.fieldLabel}>{label}</span> : null}
+      {searchable ? (
+        <div className={styles.searchTrigger}>
+          <Input
+            aria-autocomplete="list"
+            aria-controls={listboxId}
+            aria-expanded={isOpen}
+            aria-label={ariaLabel || searchPlaceholder}
+            className={styles.trackSearchInput}
+            disabled={disabled}
+            icon={<SearchIcon aria-hidden="true" />}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              openSearch();
+            }}
+            onFocus={handleSearchFocus}
+            placeholder={searchPlaceholder || placeholder}
+            ref={searchInputRef}
+            role="combobox"
+            type="search"
+            value={isOpen ? query : selected?.label || ""}
+          />
+          <Button
+            aria-controls={listboxId}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-label={ariaLabel}
+            appearance="transparent"
+            className={styles.searchToggle}
+            disabled={disabled}
+            icon={<ChevronRightIcon />}
+            iconPosition="only"
+            onClick={() => setIsOpen((current) => !current)}
+            size="sm"
+            tone="neutral"
+            type="button"
+          />
+        </div>
+      ) : (
       <Button
         aria-controls={listboxId}
         aria-expanded={isOpen}
@@ -187,15 +247,17 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
         <span className={styles.value}>
           {selected?.imageSrc && optionPresentation !== "media" ? <img alt={selected.imageAlt || ""} className={styles.triggerImage} src={selected.imageSrc} /> : null}
           {selected && optionPresentation === "media" ? <AvatarCell image={selected.imageSrc} name={selected.imageAlt || selected.label} showName={false} size="sm" /> : null}
-          {label ? <span className={styles.inlineLabel}>{label}</span> : null}
+          {label && labelPlacement === "inline" ? <span className={styles.inlineLabel}>{label}</span> : null}
           <span>{selectedLabel}</span>
         </span>
       </Button>
+      )}
 
       {isOpen && typeof document !== "undefined" ? createPortal(
         <Surface
           appearance="solid"
           className={styles.panel}
+          data-placement={panelPlacement}
                 data-open="true"
           id={listboxId}
           ref={panelRef}
@@ -203,19 +265,6 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
           tabIndex={-1}
         >
           <Stack className={styles.panelContent} gap="xs">
-            {searchable ? (
-              <div className={styles.searchField}>
-                <Input
-                  aria-label={searchPlaceholder}
-                  icon={<SearchIcon aria-hidden="true" />}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={searchPlaceholder}
-                  ref={searchInputRef}
-                  type="search"
-                  value={query}
-                />
-              </div>
-            ) : null}
             <div className={styles.optionsList}>
               {filteredOptions.length ? filteredOptions.map((option, index) => {
                 const isSelected = option.value === value;
@@ -239,12 +288,20 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
                     tone={isSelected ? "primary" : "neutral"}
                     type="button"
                   >
-                    {optionPresentation === "media" ? <AvatarCell image={option.imageSrc} name={option.imageAlt || option.label} showName={false} size="sm" /> : option.imageSrc ? <img alt={option.imageAlt || ""} className={styles.optionImage} src={option.imageSrc} /> : null}
-                    <span className={styles.optionCopy}>
-                      <span>{option.label}</span>
-                      {option.description ? <span className={styles.optionDescription}>{option.description}</span> : null}
-                    </span>
-                    {isSelected ? <span aria-hidden="true" className={styles.selectionIndicator}><CheckIcon /></span> : null}
+                    {optionPresentation === "media" ? (
+                      <span className={styles.mediaOption}>
+                        <AvatarCell image={option.imageSrc} name={option.label} size="md" />
+                      </span>
+                    ) : (
+                      <>
+                        {option.imageSrc ? <img alt={option.imageAlt || ""} className={styles.optionImage} src={option.imageSrc} /> : null}
+                        <span className={styles.optionCopy}>
+                          <span>{option.label}</span>
+                          {option.description ? <span className={styles.optionDescription}>{option.description}</span> : null}
+                        </span>
+                      </>
+                    )}
+                    {isSelected && showSelectionIndicator ? <span aria-hidden="true" className={styles.selectionIndicator}><CheckIcon /></span> : null}
                   </Button>
                 );
               }) : searchable && emptySearchLabel ? <span className={styles.emptySearch}>{emptySearchLabel}</span> : null}
