@@ -2,7 +2,7 @@ import type {
   AdminOrderConfigView,
   AdminOrderView,
 } from "../contracts/orders.contract";
-import type { AdminPaymentView } from "../contracts/payments.contract";
+import type { AdminPaymentStatus, AdminPaymentView } from "../contracts/payments.contract";
 import type { AdminSubscriptionView } from "../contracts/subscriptions.contract";
 
 export interface AdminPaymentRowViewModel {
@@ -23,6 +23,7 @@ export interface AdminPaymentRowViewModel {
   subscriptionCycleStatusLabelKey: string;
   status: string;
   statusLabelKey: string;
+  statusTone: "success" | "warning" | "danger" | "neutral";
   amountCents: number;
   amountLabel: string;
   currency: string;
@@ -54,6 +55,14 @@ export interface AdminPaymentRowViewModel {
     date: string;
   }>;
 }
+
+const paymentStatusTones: Record<AdminPaymentStatus, AdminPaymentRowViewModel["statusTone"]> = {
+  paid: "success",
+  pending: "warning",
+  failed: "danger",
+  cancelled: "danger",
+  refunded: "neutral",
+};
 
 function formatDate(value: string | null | undefined): string | null {
   if (!value) return null;
@@ -135,6 +144,7 @@ export function createAdminPaymentRowViewModel(
     subscriptionCycleStatusLabelKey: currentCycle ? statusLabelKey(currentCycle.status) : "",
     status: payment.status,
     statusLabelKey: statusLabelKey(payment.status),
+    statusTone: paymentStatusTones[payment.status],
     amountCents: payment.amountCents,
     amountLabel: formatMoney(payment.amountCents, payment.currency),
     currency: payment.currency,

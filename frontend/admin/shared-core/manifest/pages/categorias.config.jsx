@@ -16,7 +16,7 @@ export const categoriasConfig = {
       { key: "name", labelKey: "categorias.tableHeaders.name" },
       { key: "parentName", labelKey: "categorias.tableHeaders.parent" },
       { key: "sortOrder", labelKey: "categorias.tableHeaders.sortOrder" },
-      { key: "statusLabelKey", labelKey: "categorias.tableHeaders.status", valueType: "translationKey" }
+      { key: "statusLabelKey", labelKey: "categorias.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" }
     ],
     filters: [
       {

@@ -12,7 +12,7 @@ export const usuariosConfig = {
     { key: "email", labelKey: "usuarios.tableHeaders.email" },
     { key: "phone", labelKey: "usuarios.tableHeaders.phone", format: "phoneBR" },
     { key: "activePlan", labelKey: "usuarios.tableHeaders.planName" },
-    { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey" },
+    { key: "statusLabelKey", labelKey: "usuarios.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" },
     { key: "memberSince", labelKey: "usuarios.tableHeaders.joinedDate" },
     ],
     filters: [

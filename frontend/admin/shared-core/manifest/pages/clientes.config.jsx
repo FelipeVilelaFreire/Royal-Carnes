@@ -13,7 +13,12 @@ export const clientesConfig = {
       { key: "name", labelKey: "clientes.tableHeaders.name", showAvatar: true },
       { key: "email", labelKey: "clientes.tableHeaders.email" },
       { key: "phone", labelKey: "clientes.tableHeaders.phone", format: "phoneBR" },
-      { key: "statusLabelKey", labelKey: "clientes.tableHeaders.status", valueType: "translationKey" },
+      {
+        key: "statusLabelKey",
+        labelKey: "clientes.tableHeaders.status",
+        valueType: "translationKey",
+        statusToneKey: "statusTone"
+      },
       { key: "addressCount", labelKey: "clientes.tableHeaders.addressCount" }
     ],
     filters: [

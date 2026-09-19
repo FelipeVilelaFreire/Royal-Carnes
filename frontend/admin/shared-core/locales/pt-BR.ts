@@ -132,6 +132,10 @@ export const adminPtBR = {
     statusArchived: "Arquivado",
     statusCancelled: "Cancelado",
     statusPastDue: "Pagamento pendente",
+    statusAvailable: "Disponível",
+    statusLimited: "Estoque baixo",
+    statusUnavailable: "Indisponível",
+    statusDisabled: "Desativado",
     statusReserved: "Reservado",
     statusSelected: "Selecionado",
     statusFulfilled: "Concluído",
@@ -449,18 +453,26 @@ export const adminPtBR = {
         collections: "Coleções",
         variants: "Variantes",
         prices: "Preços",
-        media: "Mídia"
+        media: "Mídia",
+        subscriptionPlans: "Planos de assinatura"
       },
       sections: {
         identity: "Identificação",
         catalog: "Catálogo",
-        variants: "Variantes"
+        variants: "Variantes",
+        subscriptionPlans: "Planos de assinatura"
       },
       emptyData: "Nenhum dado cadastrado para este produto.",
       emptyCollections: "Nenhuma coleção vinculada a este produto.",
       emptyVariants: "Nenhuma variante cadastrada para este produto.",
       emptyPrices: "Nenhum preço cadastrado para este produto.",
-      emptyMedia: "Nenhuma mídia cadastrada para este produto."
+      emptyMedia: "Nenhuma mídia cadastrada para este produto.",
+      emptySubscriptionPlans: "Este produto não está incluído em nenhum plano de assinatura."
+    },
+    subscriptionPlans: {
+      plan: "Plano",
+      capacity: "Incluído por",
+      limit: "Limite"
     },
     add: {
       title: "Cadastrar produto",
@@ -544,9 +556,13 @@ export const adminPtBR = {
     detail: {
       title: "Detalhe da coleção",
       tabs: {
-        data: "Dados"
+        data: "Dados",
+        products: "Produtos"
       },
-      emptyData: "Nenhum dado cadastrado para esta coleção."
+      emptyData: "Nenhum dado cadastrado para esta coleção.",
+      emptyProducts: "Nenhum produto vinculado a esta coleção.",
+      emptyProductSearch: "Nenhum produto encontrado.",
+      searchProductsPlaceholder: "Buscar produto..."
     }
   },
   planos: {

@@ -7,6 +7,13 @@ const customerStatusLabelKeys: Record<AdminCustomerView["status"], string> = {
   paused: "common.statusPaused",
 };
 
+const customerStatusTones: Record<AdminCustomerView["status"], "success" | "warning" | "danger" | "neutral"> = {
+  active: "success",
+  paused: "warning",
+  blocked: "danger",
+  archived: "neutral",
+};
+
 function resolveDefaultAddressLabel(customer: AdminCustomerView): string {
   const address = customer.addresses.find((item) => item.isDefault) || customer.addresses[0];
   if (!address) return "";
@@ -19,5 +26,6 @@ export function createAdminCustomerRowViewModel(customer: AdminCustomerView) {
     addressCount: customer.addresses.length,
     defaultAddress: resolveDefaultAddressLabel(customer),
     statusLabelKey: customerStatusLabelKeys[customer.status],
+    statusTone: customerStatusTones[customer.status],
   };
 }

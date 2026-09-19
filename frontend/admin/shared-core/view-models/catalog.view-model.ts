@@ -6,6 +6,8 @@ import type {
   AdminProductView,
 } from "../contracts/catalog.contract";
 
+type CatalogStatusTone = "success" | "warning" | "neutral";
+
 export interface AdminCategoryRowViewModel {
   id: string | number;
   isActive: boolean;
@@ -18,6 +20,7 @@ export interface AdminCategoryRowViewModel {
   parentName: string;
   sortOrder: number;
   statusLabelKey: string;
+  statusTone: CatalogStatusTone;
 }
 
 export interface AdminCollectionRowViewModel {
@@ -30,6 +33,7 @@ export interface AdminCollectionRowViewModel {
   sortOrder: number;
   status: string;
   statusLabelKey: string;
+  statusTone: CatalogStatusTone;
 }
 
 export interface AdminProductRowViewModel {
@@ -39,6 +43,7 @@ export interface AdminProductRowViewModel {
   key: string;
   name: string;
   status: string;
+  statusTone: CatalogStatusTone;
   unit: string;
   categoryKeys: string[];
   categoryNames: string[];
@@ -75,6 +80,12 @@ function formatPrice(product: AdminProductView): string | null {
   }).format(price.amountCents / 100);
 }
 
+function resolveCatalogStatusTone(status: "active" | "draft" | "archived"): CatalogStatusTone {
+  if (status === "active") return "success";
+  if (status === "draft") return "warning";
+  return "neutral";
+}
+
 export function createAdminCategoryRowsViewModel(
   categories: AdminCategoryView[],
 ): AdminCategoryRowViewModel[] {
@@ -108,6 +119,7 @@ export function createAdminCategoryRowsViewModel(
         parentName: parent?.name || "",
         sortOrder: category.sortOrder,
         statusLabelKey: category.isActive ? "common.statusActive" : "common.statusInactive",
+        statusTone: category.isActive ? "success" : "danger",
       };
     })
     .sort((left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name));
@@ -127,6 +139,7 @@ export function createAdminCollectionRowsViewModel(
       sortOrder: collection.sortOrder,
       status: collection.status,
       statusLabelKey: `common.status${collection.status.charAt(0).toUpperCase()}${collection.status.slice(1)}`,
+      statusTone: resolveCatalogStatusTone(collection.status),
     }))
     .sort((left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name));
 }
@@ -151,6 +164,7 @@ export function createAdminProductRowViewModel(
     key: product.key,
     name: product.name,
     status: product.status,
+    statusTone: resolveCatalogStatusTone(product.status),
     unit: product.unit,
     categoryKeys: product.categories.map((category) => category.key),
     categoryNames: product.categories.map((category) => category.name),

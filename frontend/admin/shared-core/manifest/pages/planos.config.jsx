@@ -36,7 +36,7 @@ export const planosConfig = {
       { key: "billingIntervalLabelKey", labelKey: "planos.tableHeaders.billingInterval", valueType: "translationKey" },
       { key: "entitlementCount", labelKey: "planos.tableHeaders.includedItems" },
       { key: "activeSubscriberCount", labelKey: "planos.tableHeaders.activeSubscribers" },
-      { key: "statusLabelKey", labelKey: "planos.tableHeaders.status", valueType: "translationKey" }
+      { key: "statusLabelKey", labelKey: "planos.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" }
     ],
     filters: [
       {

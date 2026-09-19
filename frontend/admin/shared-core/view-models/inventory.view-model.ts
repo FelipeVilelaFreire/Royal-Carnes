@@ -11,6 +11,8 @@ export interface AdminInventoryItemRowViewModel {
   variantName: string | null;
   sku: string | null;
   status: string;
+  statusLabelKey: string;
+  statusTone: "success" | "warning" | "danger" | "neutral";
   availableQuantity: string;
   reservedQuantity: string;
   sellableQuantity: string;
@@ -57,6 +59,13 @@ function toNumber(quantity: string): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function resolveInventoryStatusTone(status: AdminInventoryItemView["status"]): AdminInventoryItemRowViewModel["statusTone"] {
+  if (status === "available") return "success";
+  if (status === "limited") return "warning";
+  if (status === "unavailable") return "danger";
+  return "neutral";
+}
+
 export function createAdminInventoryItemRowViewModel(
   item: AdminInventoryItemView,
 ): AdminInventoryItemRowViewModel {
@@ -66,6 +75,8 @@ export function createAdminInventoryItemRowViewModel(
     variantName: item.variantName ?? null,
     sku: item.variantSku ?? null,
     status: item.status,
+    statusLabelKey: `common.status${item.status.charAt(0).toUpperCase()}${item.status.slice(1)}`,
+    statusTone: resolveInventoryStatusTone(item.status),
     availableQuantity: item.availableQuantity,
     reservedQuantity: item.reservedQuantity,
     sellableQuantity: item.sellableQuantity,

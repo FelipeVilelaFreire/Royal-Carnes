@@ -96,12 +96,16 @@ export interface AdminStandardDetailEntryViewModel {
   min?: number;
   layout?: "full";
   options?: AdminStandardFieldOption[];
+  optionPresentation?: "media" | "text";
   source?: string;
+  searchable?: boolean;
+  searchEmptyKey?: string;
+  searchPlaceholderKey?: string;
   suffixKey?: string;
   span?: 1 | 2 | 3 | 4 | 5 | 6 | "full";
   transitionOnly?: boolean;
   type?: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
-  value: string;
+  value: any;
   rawValue: any;
   valueType?: "optionLabel" | "text" | "translationKey";
 }
@@ -256,9 +260,9 @@ function isMissingRequiredValue(value: any): boolean {
   return false;
 }
 
-function resolveFieldValue(row: Record<string, any>, field: any): string {
+function resolveFieldValue(row: Record<string, any>, field: any): any {
   const displayValue = field.displayKey ? row[field.displayKey] : row[field.key];
-  if (Array.isArray(displayValue)) return displayValue.join(", ");
+  if (Array.isArray(displayValue)) return field.type === "lineItems" ? displayValue : displayValue.join(", ");
   if (displayValue === undefined || displayValue === null) return "";
   return String(displayValue);
 }
@@ -326,8 +330,12 @@ function createDetailEntry(
     min: editorField.min,
     layout: displayField.layout || (displayField.type === "lineItems" ? "full" : undefined),
     options: resolveOptions(editorField, optionSources),
+    optionPresentation: editorField.optionPresentation,
     rawValue: row[field.key],
     source: editorField.source,
+    searchable: Boolean(editorField.searchable),
+    searchEmptyKey: editorField.searchEmptyKey,
+    searchPlaceholderKey: editorField.searchPlaceholderKey,
     suffixKey: editorField.suffixKey,
     span: resolveDetailFieldSpan(displayField),
     transitionOnly: Boolean(editorField.transitionOnly),

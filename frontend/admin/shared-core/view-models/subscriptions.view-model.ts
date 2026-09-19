@@ -11,6 +11,20 @@ import type {
   AdminSubscriptionCycleView,
 } from "../contracts/subscriptions.contract";
 
+type SubscriptionStatusTone = "success" | "warning" | "danger" | "neutral";
+
+function resolveSubscriptionStatusTone(status: "active" | "paused" | "cancelled" | "past_due"): SubscriptionStatusTone {
+  if (status === "active") return "success";
+  if (status === "paused" || status === "past_due") return "warning";
+  return "danger";
+}
+
+function resolvePlanStatusTone(status: "active" | "draft" | "archived"): SubscriptionStatusTone {
+  if (status === "active") return "success";
+  if (status === "draft") return "warning";
+  return "neutral";
+}
+
 export interface AdminPlanRowViewModel {
   id: string | number;
   key: string;
@@ -18,6 +32,7 @@ export interface AdminPlanRowViewModel {
   description: string | null;
   status: string;
   statusLabelKey: string;
+  statusTone: SubscriptionStatusTone;
   priceCents: number | null;
   priceLabel: string | null;
   billingInterval: string;
@@ -86,6 +101,7 @@ export interface AdminSubscriptionRowViewModel {
   preferredDeliveryDay: string;
   status: string;
   statusLabelKey: string;
+  statusTone: SubscriptionStatusTone;
   startedAt: string;
   startedAtInput: string;
 }
@@ -259,6 +275,7 @@ export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowVi
     description: plan.description ?? null,
     status: plan.status,
     statusLabelKey: `common.status${plan.status.charAt(0).toUpperCase()}${plan.status.slice(1)}`,
+    statusTone: resolvePlanStatusTone(plan.status),
     priceCents: plan.prices[0]?.amountCents ?? null,
     priceLabel: formatPrice(plan),
     billingInterval: plan.billingInterval,
@@ -381,6 +398,7 @@ export function createAdminSubscriptionRowViewModel(
     preferredDeliveryDay: subscription.preferredDeliveryDay || "",
     status: subscription.status,
     statusLabelKey: `common.status${subscription.status.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("")}`,
+    statusTone: resolveSubscriptionStatusTone(subscription.status),
     startedAt: formatDate(subscription.startedAt) || subscription.startedAt,
     startedAtInput: formatDateTimeInput(subscription.startedAt),
   };

@@ -50,7 +50,7 @@
     { "key": "molhos", "name": "Molhos", "parentKey": "acompanhamentos", "sortOrder": 115 },
     { "key": "paes", "name": "Paes e acompanhamentos", "parentKey": "acompanhamentos", "sortOrder": 118 },
     { "key": "carvao", "name": "Carvao", "sortOrder": 120 },
-    { "key": "acendedores", "name": "Acendedores", "parentKey": "carvao", "sortOrder": 125 },
+    { "key": "acendedores", "name": "Acendedores", "sortOrder": 125 },
     { "key": "utensilios", "name": "Utensilios", "sortOrder": 130 },
     { "key": "espetos", "name": "Espetos", "parentKey": "utensilios", "sortOrder": 140 },
     { "key": "facas", "name": "Facas e jogos", "parentKey": "utensilios", "sortOrder": 150 },

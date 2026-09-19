@@ -19,6 +19,64 @@ config.jsx -> shared-core -> view-model -> screen type render-only -> Foundation
 - Textos novos de interface pertencem aos locales; UI usa somente icones SVG da
   Foundation, nunca emojis soltos.
 
+## Catalogo, planos e colecoes
+
+O seed Royal Carnes foi ampliado com categorias pai e filha, produtos com
+midia e unidades comerciais. A composicao comercial atual trabalha primeiro
+no nivel de categoria pai: Carnes, Acompanhamentos, Carvao, Utensilios e
+Brindes. As categorias filhas organizam o catalogo; elas nao criam uma regra
+separada no plano nesta etapa.
+
+Em Plano de assinatura, cada capacidade e declarada por config como:
+
+```text
+Categoria pai -> limite -> unidade resolvida pelos produtos da categoria
+```
+
+Exemplo: Carnes 10 kg, Utensilios 2 un. O backend continua sendo o dono da
+validacao de capacidade; o Admin apenas apresenta e edita o contrato suportado.
+Nao reintroduzir hierarquia de limites filho/produto no formulario sem antes
+definir e implementar a regra comercial no backend.
+
+Colecao e relacao real de Catalogo, nao texto decorativo. A aba Produtos de
+`/colecoes/detalhes` mostra os produtos vinculados em leitura. No modo Editar,
+salvar compara `collectionProductKeys` e atualiza somente os produtos que
+entraram ou sairam da colecao pelo endpoint real de produto. Nao existe PATCH
+proprio de Colecao: a relacao e persistida por `product.collectionKeys`.
+
+## DropdownPicker e selecao rica
+
+`frontend/foundation/ui/web/DropdownPicker/` e o dono unico do seletor rico.
+Ele recebe opcoes genericas com `label`, `description`, `imageSrc` e `imageAlt`;
+nao conhece Produto, Colecao ou qualquer entidade administrativa.
+
+O componente suporta, por props/config:
+
+```text
+searchable          -> busca no painel, com foco inicial
+optionPresentation  -> "text" ou "media"
+searchPlaceholder   -> copy fornecida pela surface
+emptySearchLabel    -> estado vazio fornecido pela surface
+```
+
+Quando `optionPresentation: "media"`, cada opcao usa imagem ou avatar de
+iniciais, nome e descricao. Ha selecao visivel, fechamento ao escolher e
+navegacao por teclado com setas, Enter e Esc. O `MultiSelect` reutiliza esse
+componente quando `searchable` esta ativo; os itens ja escolhidos continuam
+como badges removiveis.
+
+Hoje somente a aba Produtos da Colecao ativa essa apresentacao, por config:
+
+```text
+colecoes.config.jsx -> edit.source: "produtos"
+                     -> searchable: true
+                     -> optionPresentation: "media"
+```
+
+As imagens, unidade e nome chegam pela fonte `produtos` do shared-core. Copy de
+busca e vazio esta em `frontend/admin/shared-core/locales/pt-BR.ts`; Foundation
+nao possui texto de interface hardcoded.
+
 ## Configs standard
 
 Os manifests ativos ficam em:
@@ -158,12 +216,24 @@ QA visual e funcional em navegador real.
    alteracao Admin, abrir primeiro o `*.config.jsx` da entidade. Nao iniciar por
    JSX de tela.
 3. Conferir visualmente em `http://localhost:3001`:
+   - `/colecoes/detalhes`: aba Produtos em leitura deve listar itens reais da
+     colecao; Editar deve abrir o seletor pesquisavel com imagem/avatar e
+     unidade, adicionar/remover e salvar a relacao apos recarregar;
+   - `/planos/detalhes`: capacidades devem exibir apenas categorias pai e a
+     unidade correta de cada grupo;
    - `/pedidos/detalhes`: a secao de itens deve ser a tabela de quatro colunas;
-   - `/planos/detalhes`: itens editaveis devem preservar a mesma tabela;
-   - `/deliveries/detalhes`: Editar -> Status de envio deve abrir opcoes;
-   - viewport desktop e mobile: tabelas rolam dentro do card, sem estourar a
-     pagina ou converter linhas em cards.
-4. Se houver defeito visual da tabela, alterar somente os donos abaixo:
+   - viewport desktop e mobile: paineis, tabelas e dropdowns nao devem estourar
+     a pagina ou converter linhas em cards.
+4. Se houver defeito visual do DropdownPicker, alterar somente os donos abaixo:
+
+```text
+interacao/portal  foundation/ui/web/DropdownPicker/DropdownPicker.tsx
+layout local      foundation/ui/web/DropdownPicker/DropdownPicker.module.css
+opcoes ricas      fonte no shared-core + config.jsx da entidade
+copy              locales da surface que consome o componente
+```
+
+5. Se houver defeito visual da tabela, alterar somente os donos abaixo:
 
 ```text
 estrutura       LineItemsEditor/table/LineItemsTable.tsx
@@ -174,13 +244,17 @@ estilos         LineItemsEditor/LineItemsEditor.module.css
 contrato        standard.view-model.ts + config.jsx da entidade
 ```
 
-5. Se a operacao pedir edicao de itens depois de `received` ou em ciclo de
+6. Se a operacao pedir edicao de itens depois de `received` ou em ciclo de
    assinatura, ampliar primeiro o servico `replace_order_items` com a regra de
    negocio correspondente; nao contornar `order_items_locked` no frontend.
-6. Ao concluir, executar os checks da secao anterior, registrar apenas o novo
+7. Ao concluir, executar os checks da secao anterior, registrar apenas o novo
    estado consolidado neste arquivo e manter este handoff curto.
 
 ## Limites de verificacao desta sessao
 
-Os builds e contratos recentes passaram. Nenhum navegador estava conectado
-nesta sessao; a aparencia final e os cliques ainda precisam de QA visual real.
+`git diff --check`, `npm run verify:rules`, o contrato de detalhes e
+`npm run build:admin` passaram para a alteracao de DropdownPicker. A primeira
+tentativa de build encontrou o erro intermitente de permissao OneDrive/esbuild;
+a repeticao passou. Nenhum navegador estava conectado nesta sessao: a aparencia
+final, o teclado e o salvamento da colecao ainda precisam de QA visual e
+funcional real.

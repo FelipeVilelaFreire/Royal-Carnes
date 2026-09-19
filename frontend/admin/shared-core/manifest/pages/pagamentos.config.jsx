@@ -13,7 +13,12 @@ export const pagamentosConfig = {
       { key: "customerName", labelKey: "pagamentos.tableHeaders.customer", showAvatar: true },
       { key: "originLabelKey", labelKey: "pagamentos.tableHeaders.origin", valueType: "translationKey" },
       { key: "relationReference", labelKey: "pagamentos.tableHeaders.relation" },
-      { key: "statusLabelKey", labelKey: "pagamentos.tableHeaders.status", valueType: "translationKey" },
+      {
+        key: "statusLabelKey",
+        labelKey: "pagamentos.tableHeaders.status",
+        valueType: "translationKey",
+        statusToneKey: "statusTone"
+      },
       { key: "amountLabel", labelKey: "pagamentos.tableHeaders.amount" },
       { key: "dueAt", labelKey: "pagamentos.tableHeaders.dueAt" }
     ],

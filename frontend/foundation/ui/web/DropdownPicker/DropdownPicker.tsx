@@ -2,8 +2,11 @@
 
 import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronRightIcon } from "../Icon/AppIcons";
+import { CheckIcon, ChevronRightIcon, SearchIcon } from "../Icon/AppIcons";
+import { AvatarCell } from "../Avatar";
 import { Button } from "../Button";
+import { Input } from "../Input";
+import { Stack } from "../Layout";
 import { Surface } from "../Surface";
 import styles from "./DropdownPicker.module.css";
 
@@ -22,8 +25,12 @@ export interface DropdownPickerProps {
   disabled?: boolean;
   label?: string;
   onChange?: (value: string) => void;
+  optionPresentation?: "media" | "text";
   options: DropdownPickerOption[];
+  emptySearchLabel?: string;
   placeholder?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
   value?: string;
   width?: "auto" | "full";
 }
@@ -34,8 +41,12 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
   disabled = false,
   label,
   onChange,
+  optionPresentation = "text",
   options = [],
+  emptySearchLabel,
   placeholder,
+  searchable = false,
+  searchPlaceholder,
   value,
   width = "full",
 }) => {
@@ -43,10 +54,24 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
   const listboxId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [activeOptionIndex, setActiveOptionIndex] = useState(-1);
+  const [query, setQuery] = useState("");
   const selected = useMemo(() => options.find((option) => option.value === value), [options, value]);
+  const filteredOptions = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    if (!normalizedQuery) return options;
+    return options.filter((option) => [option.label, option.description]
+      .filter(Boolean)
+      .some((entry) => String(entry).toLocaleLowerCase().includes(normalizedQuery)));
+  }, [options, query]);
   const selectedLabel = selected?.label || placeholder || options[0]?.label || "";
 
-  const close = () => setIsOpen(false);
+  const close = (restoreFocus = false) => {
+    setIsOpen(false);
+    if (restoreFocus) triggerRef.current?.focus();
+  };
   const updatePanelPosition = useCallback(() => {
     const rect = rootRef.current?.getBoundingClientRect();
     const panel = panelRef.current;
@@ -79,8 +104,33 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
+    if (searchable) searchInputRef.current?.focus();
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(true);
+      }
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const enabledIndexes = filteredOptions
+          .map((option, index) => option.disabled ? -1 : index)
+          .filter((index) => index >= 0);
+        if (!enabledIndexes.length) return;
+        const currentIndex = enabledIndexes.indexOf(activeOptionIndex);
+        const direction = event.key === "ArrowDown" ? 1 : -1;
+        const nextIndex = currentIndex < 0
+          ? (direction > 0 ? 0 : enabledIndexes.length - 1)
+          : (currentIndex + direction + enabledIndexes.length) % enabledIndexes.length;
+        setActiveOptionIndex(enabledIndexes[nextIndex]);
+      }
+      if (event.key === "Enter") {
+        const activeOption = filteredOptions[activeOptionIndex];
+        if (!activeOption || activeOption.disabled) return;
+        event.preventDefault();
+        onChange?.(activeOption.value);
+        close(true);
+      }
     };
     const handlePointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
@@ -95,13 +145,24 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
       window.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("pointerdown", handlePointerDown);
     };
+  }, [activeOptionIndex, filteredOptions, isOpen, onChange, searchable, value]);
+
+  useEffect(() => {
+    if (!isOpen) setQuery("");
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const selectedIndex = filteredOptions.findIndex((option) => option.value === value && !option.disabled);
+    setActiveOptionIndex(selectedIndex >= 0 ? selectedIndex : filteredOptions.findIndex((option) => !option.disabled));
+  }, [filteredOptions, isOpen, value]);
 
   return (
     <div
       ref={rootRef}
       className={[styles.root, className].filter(Boolean).join(" ")}
       data-open={isOpen || undefined}
+      data-presentation={optionPresentation}
       data-width={width}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget) && !panelRef.current?.contains(event.relatedTarget as Node)) close();
@@ -118,12 +179,14 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
         icon={<ChevronRightIcon />}
         iconPosition="end"
         onClick={() => setIsOpen((current) => !current)}
+        ref={triggerRef}
         size="sm"
         tone="neutral"
         type="button"
       >
         <span className={styles.value}>
-          {selected?.imageSrc ? <img alt={selected.imageAlt || ""} className={styles.triggerImage} src={selected.imageSrc} /> : null}
+          {selected?.imageSrc && optionPresentation !== "media" ? <img alt={selected.imageAlt || ""} className={styles.triggerImage} src={selected.imageSrc} /> : null}
+          {selected && optionPresentation === "media" ? <AvatarCell image={selected.imageSrc} name={selected.imageAlt || selected.label} showName={false} size="sm" /> : null}
           {label ? <span className={styles.inlineLabel}>{label}</span> : null}
           <span>{selectedLabel}</span>
         </span>
@@ -139,33 +202,54 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
           role="listbox"
           tabIndex={-1}
         >
-          {options.map((option) => {
-            const isSelected = option.value === value;
-            return (
-              <Button
-                aria-selected={isSelected}
-                appearance={isSelected ? "soft" : "transparent"}
-                className={styles.option}
-                disabled={option.disabled}
-                key={option.value}
-                onClick={() => {
-                  if (option.disabled) return;
-                  onChange?.(option.value);
-                  close();
-                }}
-                role="option"
-                size="sm"
-                tone={isSelected ? "primary" : "neutral"}
-                type="button"
-              >
-                {option.imageSrc ? <img alt={option.imageAlt || ""} className={styles.optionImage} src={option.imageSrc} /> : null}
-                <span className={styles.optionCopy}>
-                  <span>{option.label}</span>
-                  {option.description ? <span className={styles.optionDescription}>{option.description}</span> : null}
-                </span>
-              </Button>
-            );
-          })}
+          <Stack className={styles.panelContent} gap="xs">
+            {searchable ? (
+              <div className={styles.searchField}>
+                <Input
+                  aria-label={searchPlaceholder}
+                  icon={<SearchIcon aria-hidden="true" />}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={searchPlaceholder}
+                  ref={searchInputRef}
+                  type="search"
+                  value={query}
+                />
+              </div>
+            ) : null}
+            <div className={styles.optionsList}>
+              {filteredOptions.length ? filteredOptions.map((option, index) => {
+                const isSelected = option.value === value;
+                const isActive = index === activeOptionIndex;
+                return (
+                  <Button
+                    aria-selected={isSelected}
+                    appearance={isSelected ? "soft" : "transparent"}
+                    className={styles.option}
+                    data-active={isActive || undefined}
+                    data-presentation={optionPresentation}
+                    disabled={option.disabled}
+                    key={option.value}
+                    onClick={() => {
+                      if (option.disabled) return;
+                      onChange?.(option.value);
+                      close(true);
+                    }}
+                    role="option"
+                    size="sm"
+                    tone={isSelected ? "primary" : "neutral"}
+                    type="button"
+                  >
+                    {optionPresentation === "media" ? <AvatarCell image={option.imageSrc} name={option.imageAlt || option.label} showName={false} size="sm" /> : option.imageSrc ? <img alt={option.imageAlt || ""} className={styles.optionImage} src={option.imageSrc} /> : null}
+                    <span className={styles.optionCopy}>
+                      <span>{option.label}</span>
+                      {option.description ? <span className={styles.optionDescription}>{option.description}</span> : null}
+                    </span>
+                    {isSelected ? <span aria-hidden="true" className={styles.selectionIndicator}><CheckIcon /></span> : null}
+                  </Button>
+                );
+              }) : searchable && emptySearchLabel ? <span className={styles.emptySearch}>{emptySearchLabel}</span> : null}
+            </div>
+          </Stack>
         </Surface>,
         document.body,
       ) : null}

@@ -11,7 +11,7 @@ export const assinaturasConfig = {
     columns: [
       { key: "customerName", labelKey: "assinaturas.tableHeaders.customer", showAvatar: true },
       { key: "planName", labelKey: "assinaturas.tableHeaders.plan" },
-      { key: "statusLabelKey", labelKey: "assinaturas.tableHeaders.status", valueType: "translationKey" },
+      { key: "statusLabelKey", labelKey: "assinaturas.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" },
       { key: "currentCycleEndsAt", labelKey: "assinaturas.tableHeaders.currentCycleEndsAt" }
     ],
     filters: [

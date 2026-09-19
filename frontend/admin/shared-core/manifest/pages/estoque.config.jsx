@@ -11,7 +11,7 @@ export const estoqueConfig = {
       { key: "productName", labelKey: "estoque.title" },
       { key: "variantName", labelKey: "estoque.subtitle" },
       { key: "sellableQuantity", labelKey: "estoque.title" },
-      { key: "status", labelKey: "common.status" },
+      { key: "statusLabelKey", labelKey: "common.status", valueType: "translationKey", statusToneKey: "statusTone" },
       { key: "updatedAt", labelKey: "estoque.subtitle" },
     ],
     filters: [],

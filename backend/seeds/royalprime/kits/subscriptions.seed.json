@@ -5,38 +5,49 @@
     {
       "key": "basic",
       "name": "Royal Essencial",
-      "description": "Plano mensal para montar uma selecao de carnes do dia a dia, respeitando o limite total e os subgrupos.",
+      "description": "Plano mensal de entrada para montar um churrasco completo com carnes, acompanhamentos, itens para o fogo, utensilios e brinde.",
       "reconcileEntitlements": true,
       "billingInterval": "month",
       "prices": [{ "amountCents": 24900, "billingInterval": "month" }],
       "entitlements": [
         { "key": "carnes-4kg", "legacyKeys": ["daily-cuts-4kg"], "targetType": "category", "targetKey": "carnes", "quantity": 4, "measurementUnitKey": "kg", "constraints": { "capacityKey": "carnes", "capacityLabel": "Carnes", "maxSelections": 5, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
-        { "key": "acompanhamentos-1un", "targetType": "category", "targetKey": "acompanhamentos", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acompanhamentos", "capacityLabel": "Acompanhamentos", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
+        { "key": "acompanhamentos-1un", "targetType": "category", "targetKey": "acompanhamentos", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acompanhamentos", "capacityLabel": "Acompanhamentos", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "carvao-1saco", "targetType": "category", "targetKey": "carvao", "quantity": 1, "measurementUnitKey": "bag", "constraints": { "capacityKey": "carvao", "capacityLabel": "Carvao", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "acendedores-1un", "targetType": "category", "targetKey": "acendedores", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acendedores", "capacityLabel": "Acendedores", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "utensilios-1un", "targetType": "category", "targetKey": "utensilios", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "brindes-1un", "targetType": "category", "targetKey": "brindes", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "brindes", "capacityLabel": "Brindes", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
       ]
     },
     {
       "key": "premium",
       "name": "Royal Select",
-      "description": "Plano mensal para uma caixa maior, com limite proprio para bovinos premium, carvao e utensilios.",
+      "description": "Plano mensal para uma caixa maior, com mais carnes, acompanhamentos e itens de churrasco.",
       "reconcileEntitlements": true,
       "billingInterval": "month",
       "prices": [{ "amountCents": 39900, "billingInterval": "month" }],
       "entitlements": [
         { "key": "carnes-7kg", "legacyKeys": ["premium-cuts-8kg"], "targetType": "category", "targetKey": "carnes", "quantity": 7, "measurementUnitKey": "kg", "constraints": { "capacityKey": "carnes", "capacityLabel": "Carnes", "maxSelections": 8, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
-        { "key": "utensilios-1un", "targetType": "category", "targetKey": "utensilios", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
+        { "key": "acompanhamentos-2un", "targetType": "category", "targetKey": "acompanhamentos", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acompanhamentos", "capacityLabel": "Acompanhamentos", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "carvao-1saco", "targetType": "category", "targetKey": "carvao", "quantity": 1, "measurementUnitKey": "bag", "constraints": { "capacityKey": "carvao", "capacityLabel": "Carvao", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "acendedores-2un", "targetType": "category", "targetKey": "acendedores", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acendedores", "capacityLabel": "Acendedores", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "utensilios-2un", "targetType": "category", "targetKey": "utensilios", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "brindes-1un", "targetType": "category", "targetKey": "brindes", "quantity": 1, "measurementUnitKey": "unit", "constraints": { "capacityKey": "brindes", "capacityLabel": "Brindes", "maxSelections": 1, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
       ]
     },
     {
       "key": "pro",
       "name": "Royal Prime",
-      "description": "Plano mensal completo com capacidades gerais para carnes, acompanhamentos e utensilios.",
+      "description": "Plano mensal completo para uma experiencia de churrasco com mais carnes e itens complementares.",
       "reconcileEntitlements": true,
       "billingInterval": "month",
       "prices": [{ "amountCents": 59900, "billingInterval": "month" }],
       "entitlements": [
         { "key": "carnes-10kg", "legacyKeys": ["premium-cuts-12kg"], "targetType": "category", "targetKey": "carnes", "quantity": 10, "measurementUnitKey": "kg", "constraints": { "capacityKey": "carnes", "capacityLabel": "Carnes", "maxSelections": 10, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
         { "key": "acompanhamentos-3un", "targetType": "category", "targetKey": "acompanhamentos", "quantity": 3, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acompanhamentos", "capacityLabel": "Acompanhamentos", "maxSelections": 3, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
-        { "key": "utensilios-2un", "targetType": "category", "targetKey": "utensilios", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
+        { "key": "carvao-2sacos", "targetType": "category", "targetKey": "carvao", "quantity": 2, "measurementUnitKey": "bag", "constraints": { "capacityKey": "carvao", "capacityLabel": "Carvao", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "acendedores-2un", "targetType": "category", "targetKey": "acendedores", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "acendedores", "capacityLabel": "Acendedores", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "utensilios-3un", "targetType": "category", "targetKey": "utensilios", "quantity": 3, "measurementUnitKey": "unit", "constraints": { "capacityKey": "utensilios", "capacityLabel": "Utensilios", "maxSelections": 3, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } },
+        { "key": "brindes-2un", "targetType": "category", "targetKey": "brindes", "quantity": 2, "measurementUnitKey": "unit", "constraints": { "capacityKey": "brindes", "capacityLabel": "Brindes", "maxSelections": 2, "allowedCommercialModes": ["subscription"], "requiresAvailability": true } }
       ]
     }
   ],

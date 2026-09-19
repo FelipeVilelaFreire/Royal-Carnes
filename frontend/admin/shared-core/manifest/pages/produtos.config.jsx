@@ -17,7 +17,7 @@ export const produtosConfig = {
       { key: "unit", labelKey: "produtos.tableHeaders.unit" },
       { key: "priceFormatted", labelKey: "produtos.tableHeaders.price" },
       { key: "commercialModeLabel", labelKey: "produtos.tableHeaders.commercialModes" },
-      { key: "statusLabelKey", labelKey: "produtos.tableHeaders.status", valueType: "translationKey" }
+      { key: "statusLabelKey", labelKey: "produtos.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" }
     ],
     filters: [
       {
@@ -127,6 +127,27 @@ export const produtosConfig = {
             titleKey: "produtos.detail.tabs.media",
             fields: [
               { key: "image", labelKey: "produtos.fields.primaryImage", type: "asset", editable: true }
+            ]
+          }
+        ]
+      },
+      {
+        id: "planosAssinatura",
+        labelKey: "produtos.detail.tabs.subscriptionPlans",
+        emptyKey: "produtos.detail.emptySubscriptionPlans",
+        sections: [
+          {
+            key: "subscriptionPlans",
+            type: "lineItems",
+            titleKey: "produtos.detail.sections.subscriptionPlans",
+            iconIntent: "commerce",
+            grid: { desktop: 1, tablet: 1, mobile: 1 },
+            itemsKey: "subscriptionPlans",
+            labelKey: "produtos.detail.sections.subscriptionPlans",
+            columns: [
+              { key: "planName", labelKey: "produtos.subscriptionPlans.plan", type: "text" },
+              { key: "capacityLabel", labelKey: "produtos.subscriptionPlans.capacity", type: "text" },
+              { key: "limitLabel", labelKey: "produtos.subscriptionPlans.limit", type: "text", align: "end" }
             ]
           }
         ]

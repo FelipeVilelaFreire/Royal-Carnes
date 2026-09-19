@@ -6,10 +6,14 @@ import { Button } from "../Button";
 import { CloseIcon } from "../Icon/AppIcons";
 import { Inline, Stack } from "../Layout";
 import { ConfirmationModal } from "../Modal";
+import { DropdownPicker } from "../DropdownPicker";
 import { Select } from "../Select";
 import styles from "./MultiSelect.module.css";
 
 export interface MultiSelectOption {
+  description?: string;
+  imageAlt?: string;
+  imageSrc?: string;
   label: string;
   value: string;
 }
@@ -21,10 +25,14 @@ export interface MultiSelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   confirmRemoveTitle?: string;
   disabled?: boolean;
   emptyOptionLabel: string;
+  emptySearchLabel?: string;
   onChange?: (value: string[]) => void;
+  optionPresentation?: "media" | "text";
   options?: MultiSelectOption[];
   removeLabel: (optionLabel: string) => string;
   removeModalCloseLabel?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
   value?: string[];
 }
 
@@ -41,10 +49,14 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function
     confirmRemoveTitle,
     disabled = false,
     emptyOptionLabel,
+    emptySearchLabel,
     onChange,
+    optionPresentation = "text",
     options = [],
     removeLabel,
     removeModalCloseLabel,
+    searchable = false,
+    searchPlaceholder,
     value,
     ...props
   },
@@ -86,15 +98,30 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function
       ref={ref}
     >
       <Stack gap="sm">
-        <Select
-          disabled={disabled || availableOptions.length === 0}
-          onChange={(event) => handleAdd(event.target.value)}
-          options={[
-            { label: emptyOptionLabel, value: "" },
-            ...availableOptions,
-          ]}
-          value=""
-        />
+        {searchable ? (
+          <DropdownPicker
+            ariaLabel={emptyOptionLabel}
+            disabled={disabled || availableOptions.length === 0}
+            emptySearchLabel={emptySearchLabel}
+            onChange={handleAdd}
+            optionPresentation={optionPresentation}
+            options={availableOptions}
+            placeholder={emptyOptionLabel}
+            searchable
+            searchPlaceholder={searchPlaceholder}
+            value=""
+          />
+        ) : (
+          <Select
+            disabled={disabled || availableOptions.length === 0}
+            onChange={(event) => handleAdd(event.target.value)}
+            options={[
+              { label: emptyOptionLabel, value: "" },
+              ...availableOptions,
+            ]}
+            value=""
+          />
+        )}
 
         {selectedOptions.length ? (
           <Inline className={styles.badgeList} gap="xs" wrap>
