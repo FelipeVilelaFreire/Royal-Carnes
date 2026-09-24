@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Grid, Inline, Stack, Surface, Text } from "@foundation/ui";
 import { OrderSummaryItem } from "@royalprime/product-components/ecommerce";
+import { formatClientCheckoutUsage } from "@royalprime/client/utils/checkout.formatters";
 import type {
   ClientCheckoutFreightOptionKey,
   ClientCheckoutProduct,
@@ -19,14 +20,16 @@ export interface ReviewStepProps {
   formatMeasure: (value: number, unit: string) => string;
   formatMoney: (value: number) => string;
   onBack: () => void;
-  onFinish: () => void;
+  onFinish: () => Promise<unknown>;
+  createdOrderCode: string;
+  isSubmitting: boolean;
   reviewCopy: any;
   selectedAddressSummary: string;
   selectedDeliveryDay: number;
-  selectedInstallments: number;
   selectedMode: ClientCheckoutProductExperience;
   selectedPaymentLabel: string;
   selectedProductEntries: Array<{ product: ClientCheckoutProduct; quantity: number }>;
+  submitError: string;
   selectedUnitsCount: number;
   strings: any;
   subscriptionCycleCharcoalUsed: number;
@@ -53,13 +56,15 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
   formatMoney,
   onBack,
   onFinish,
+  createdOrderCode,
+  isSubmitting,
   reviewCopy,
   selectedAddressSummary,
   selectedDeliveryDay,
-  selectedInstallments,
   selectedMode,
   selectedPaymentLabel,
   selectedProductEntries,
+  submitError,
   selectedUnitsCount,
   strings,
   subscriptionCycleCharcoalUsed,
@@ -68,7 +73,25 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
   subscriptionCycleUtensilsUsed,
   subscriptionCycleWeightUsed,
   tokens,
-}) => (
+}) => {
+  const submit = () => {
+    void onFinish().catch(() => undefined);
+  };
+
+  if (createdOrderCode) {
+    return (
+      <CheckoutPanel badge={reviewCopy.badge} description={reviewCopy.successDescription} title={reviewCopy.successTitle}>
+        <Surface appearance="soft" className={styles.reviewCard}>
+          <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
+            {reviewCopy.successOrderCode}
+          </Text>
+          <Text as="strong" tone="inherit" variant="h2">{createdOrderCode}</Text>
+        </Surface>
+      </CheckoutPanel>
+    );
+  }
+
+  return (
   <CheckoutPanel
     badge={reviewCopy.badge}
     description={reviewCopy.description}
@@ -97,25 +120,21 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
               value={`${strings.deliveryStep.royalBox.deliveryDayPrefix} ${selectedDeliveryDay}`}
             />
           ) : null}
-          <SummaryRow
-            label={strings.summary.selectedFreight}
-            value={
-              selectedMode === "royalDelivery" && currentFreightOption
-                ? `${currentFreightOption.label} - ${formatMoney(currentFreightPrice)}`
-                : selectedMode === "royalDelivery"
-                  ? strings.summary.freightNotSelected
+          {selectedMode !== "royalDelivery" || currentFreightOption ? (
+            <SummaryRow
+              label={strings.summary.selectedFreight}
+              value={
+                selectedMode === "royalDelivery" && currentFreightOption
+                  ? `${currentFreightOption.label} - ${formatMoney(currentFreightPrice)}`
                   : strings.deliveryStep.royalDelivery.includedFreight
-            }
-          />
+              }
+            />
+          ) : null}
         </Surface>
 
         <Surface appearance="soft" className={styles.reviewCard}>
           <Text as="h3" tone="inherit" variant="h3">{reviewCopy.paymentTitle}</Text>
           <SummaryRow label={strings.summary.selectedPayment} value={selectedPaymentLabel} />
-          <SummaryRow
-            label={strings.paymentStep.installmentsTitle}
-            value={`${selectedInstallments}${strings.paymentStep.installmentsSuffix}`}
-          />
         </Surface>
       </Grid>
 
@@ -150,8 +169,8 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           {selectedMode === "subscription" ? (
             <Stack className={styles.limitGroup} gap="sm">
               <Text as="h3" tone="inherit" variant="body" weight="semibold">{reviewCopy.limitsTitle}</Text>
-              <SummaryRow label={strings.summary.meatUsage} value={`${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(currentSubscriptionPlan.proteinKgLimit, "kg")}`} />
-              <SummaryRow label={strings.summary.charcoalUsage} value={`${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(currentSubscriptionPlan.charcoalKgLimit, "kg")}`} />
+              <SummaryRow label={strings.summary.meatUsage} value={formatClientCheckoutUsage(subscriptionCycleWeightUsed, currentSubscriptionPlan.proteinKgLimit, "kg", formatMeasure)} />
+              <SummaryRow label={strings.summary.charcoalUsage} value={formatClientCheckoutUsage(subscriptionCycleCharcoalUsed, currentSubscriptionPlan.charcoalKgLimit, "kg", formatMeasure)} />
               <SummaryRow label={strings.summary.seasoningUsage} value={`${subscriptionCycleSeasoningsUsed}/${currentSubscriptionPlan.seasoningSelectionLimit}`} />
               <SummaryRow label={strings.summary.sideUsage} value={`${subscriptionCycleSidesUsed}/${currentSubscriptionPlan.sideSelectionLimit}`} />
               <SummaryRow label={strings.summary.utensilUsage} value={`${subscriptionCycleUtensilsUsed}/${currentSubscriptionPlan.utensilSelectionLimit}`} />
@@ -164,12 +183,14 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
         <Button appearance="outline" onClick={onBack}>
           {reviewCopy.back}
         </Button>
-        <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onFinish}>
-          {reviewCopy.finish}
+        <Button appearance="solid" className={styles.checkoutPrimaryAction} disabled={isSubmitting} tone="neutral" onClick={submit}>
+          {isSubmitting ? reviewCopy.submitting : reviewCopy.finish}
         </Button>
       </Inline>
+      {submitError ? <Text className={styles.optionDescription} tone="inherit">{submitError}</Text> : null}
     </Stack>
   </CheckoutPanel>
-);
+  );
+};
 
 

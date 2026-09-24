@@ -4,6 +4,16 @@ export const sharedAssets = {
     brandLogo: "/assets/brand/royal-prime-logo.jpg",
     brandBadge: "/assets/brand/royal-prime-badge.jpg",
     brandIcon: "/assets/brand/royal-prime-icon.jpg",
+    home: {
+      churrasqueiraHeroFallback: "/assets/brand/home-churrasqueira-hero-v1.png",
+      collectionFallbacks: {
+        "colecao-inverno": "/assets/brand/home-collection-cortes-v1.png",
+        "colecao-verao": "/assets/brand/home-collection-churrasco-v1.png",
+        "colecao-familia": "/assets/brand/home-collection-compartilhar-v1.png",
+        "churrasco-premium": "/assets/brand/home-churrasqueira-hero-v1.png",
+        "dia-a-dia": "/assets/brand/home-collection-essenciais-v1.png",
+      },
+    },
     landing: {
       heroBackground: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop",
       heroProduct: "https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=1200&auto=format&fit=crop",

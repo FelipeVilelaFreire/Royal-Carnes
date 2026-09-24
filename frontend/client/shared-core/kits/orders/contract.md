@@ -6,6 +6,7 @@
 GET  /api/v1/orders/config/
 GET  /api/v1/orders/me/
 POST /api/v1/orders/me/
+POST /api/v1/orders/me/royal-box/
 GET  /api/v1/orders/me/:id/
 ```
 

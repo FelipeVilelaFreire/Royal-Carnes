@@ -120,6 +120,7 @@ export interface ClientCustomerAccount {
 }
 
 export interface ClientCustomerPlan {
+  description: string;
   key: ClientCustomerSubscriptionTier;
   name: string;
   monthlyPrice: number;

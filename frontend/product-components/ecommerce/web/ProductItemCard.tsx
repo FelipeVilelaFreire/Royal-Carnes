@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "../../../foundation/ui/web/Button";
 import { Card } from "../../../foundation/ui/web/Card";
-import { CartIcon, CheckIcon, FlameIcon, HeartIcon, MinusIcon, PlusIcon, StarIcon } from "../../../foundation/ui/web/Icon/AppIcons";
+import { CheckIcon, FlameIcon, MinusIcon, PlusIcon, StarIcon } from "../../../foundation/ui/web/Icon/AppIcons";
 import { Icon } from "../../../foundation/ui/web/Icon";
 import { Box, Inline, Stack } from "../../../foundation/ui/web/Layout";
 import { Text } from "../../../foundation/ui/web/Text";
@@ -18,6 +18,8 @@ import {
   type ProductItemCardQuantityMode,
 } from "../product-item-card.config";
 import styles from "./ProductItemCard.module.css";
+import { ProductItemCardCatalogContent } from "./ProductItemCard/ProductItemCardCatalogContent";
+import { ProductItemCardCatalogMedia } from "./ProductItemCard/ProductItemCardCatalogMedia";
 
 export interface ProductItemCardProps {
   preset?: ProductItemCardPreset;
@@ -191,100 +193,51 @@ export const ProductItemCard: React.FC<ProductItemCardProps> = ({
         size="md"
       >
         {resolvedShowImage ? (
-          <div className={styles.media}>
-            {hasMediaImage ? (
-              <img className={styles.mediaImage} src={image} alt="" aria-hidden="true" onError={() => setIsMediaUnavailable(true)} />
-            ) : (
-              <div className={styles.mediaFallback} aria-hidden="true"><FlameIcon size={28} /></div>
-            )}
-            {isCardDisabled ? <span className={styles.mediaScrim} aria-hidden="true" /> : null}
-            {resolvedShowBadge && badge ? (
-              <span className={styles.badge} data-tone={badgeTone}>{badge}</span>
-            ) : null}
-            {canToggleFavorite ? (
-              <Button
-                aria-label={favorite ? removeFavoriteAriaLabel : favoriteAriaLabel}
-                appearance="soft"
-                className={joinClassName(styles.favoriteButton, favorite ? styles.favoriteActive : undefined)}
-                icon={<HeartIcon fill={favorite ? "currentColor" : "none"} size={14} />}
-                iconPosition="only"
-                onClick={onFavoriteToggle}
-                size="sm"
-                tone="neutral"
-                type="button"
-              />
-            ) : null}
-          </div>
+          <ProductItemCardCatalogMedia
+            badge={badge}
+            badgeTone={badgeTone}
+            canToggleFavorite={canToggleFavorite}
+            favorite={favorite}
+            favoriteAriaLabel={favoriteAriaLabel}
+            image={image}
+            isCardDisabled={isCardDisabled}
+            isMediaUnavailable={isMediaUnavailable}
+            onFavoriteToggle={onFavoriteToggle}
+            onImageUnavailable={() => setIsMediaUnavailable(true)}
+            removeFavoriteAriaLabel={removeFavoriteAriaLabel}
+            showBadge={resolvedShowBadge}
+          />
         ) : null}
-        <div className={styles.catalogBody}>
-          {resolvedShowBadge && badge && !resolvedShowImage ? (
-            <span className={joinClassName(styles.badge, styles.badgeInline)} data-tone={badgeTone}>{badge}</span>
-          ) : null}
-          {shouldShowCategory || headerDetail ? (
-            <div className={styles.catalogMetaHeader}>
-              {shouldShowCategory ? <span className={styles.catalogCategory}>{categoryLabel}</span> : <span />}
-              {headerDetail ? <span className={styles.catalogHeaderDetail}>{headerDetail}</span> : null}
-            </div>
-          ) : null}
-          {resolvedShowName ? <Text as="h3" className={styles.catalogTitle} tone="inherit" variant="h3">{name}</Text> : null}
-          {resolvedShowDescription && description ? <Text className={styles.catalogDescription} tone="inherit" variant="caption">{description}</Text> : null}
-          {detailMetaLabel ? <span className={styles.catalogMeta}>{detailMetaLabel}</span> : null}
-          {(hasPrice || canShowAction) ? (
-            <div className={styles.catalogFooter}>
-              {hasPrice ? (
-                <div className={styles.priceBlock}>
-                  {priceLabel ? <span className={styles.priceLabel}>{priceLabel}</span> : null}
-                  {resolvedShowOriginalPrice && typeof originalPrice === "number" ? <span className={styles.originalPrice}>{formatPriceValue(originalPrice)}</span> : null}
-                  <strong className={styles.price}>{formatPriceValue(price)}</strong>
-                </div>
-              ) : null}
-              {canShowAction ? (
-                <div
-                  className={styles.catalogAction}
-                  data-expanded={canUseStepper && quantity > 0 || undefined}
-                  data-presentation={actionPresentation}
-                >
-                  <Button
-                    aria-label={actionText}
-                    appearance="solid"
-                    className={styles.catalogCartButton}
-                    disabled={actionDisabled}
-                    icon={<CartIcon />}
-                    iconPosition={actionPresentation === "label" ? "start" : "only"}
-                    onClick={onAction}
-                    size="sm"
-                    tone="primary"
-                    type="button"
-                  >
-                    {actionPresentation === "label" ? actionText : null}
-                  </Button>
-                  {canUseStepper ? (
-                    <div className={styles.catalogQuantityControl} role="group">
-                      <button
-                        aria-label={decreaseQuantityAriaLabel}
-                        className={styles.catalogQuantityButton}
-                        onClick={onDecrease}
-                        type="button"
-                      >
-                        <MinusIcon aria-hidden="true" size={14} />
-                      </button>
-                      <span className={styles.catalogQuantityValue}>{quantity}</span>
-                      <button
-                        aria-label={increaseQuantityAriaLabel}
-                        className={styles.catalogQuantityButton}
-                        disabled={actionDisabled}
-                        onClick={onAction}
-                        type="button"
-                      >
-                        <PlusIcon aria-hidden="true" size={14} />
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
+        <ProductItemCardCatalogContent
+          actionDisabled={actionDisabled}
+          actionPresentation={actionPresentation}
+          actionText={actionText}
+          badge={badge}
+          badgeTone={badgeTone}
+          canShowAction={canShowAction}
+          canUseStepper={canUseStepper}
+          categoryLabel={categoryLabel}
+          decreaseQuantityAriaLabel={decreaseQuantityAriaLabel}
+          description={description}
+          detailMetaLabel={detailMetaLabel}
+          formatPriceValue={formatPriceValue}
+          hasPrice={hasPrice}
+          headerDetail={headerDetail}
+          increaseQuantityAriaLabel={increaseQuantityAriaLabel}
+          name={name}
+          onAction={onAction}
+          onDecrease={onDecrease}
+          originalPrice={originalPrice}
+          price={price}
+          priceLabel={priceLabel}
+          quantity={quantity}
+          showBadge={resolvedShowBadge}
+          showCategory={shouldShowCategory}
+          showDescription={resolvedShowDescription}
+          showImage={resolvedShowImage}
+          showName={resolvedShowName}
+          showOriginalPrice={resolvedShowOriginalPrice}
+        />
       </Card>
     );
   }

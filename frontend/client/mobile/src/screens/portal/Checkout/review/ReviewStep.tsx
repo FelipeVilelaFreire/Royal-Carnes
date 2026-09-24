@@ -15,12 +15,15 @@ export interface ReviewStepProps {
   finalTotal: number;
   formatMoney: (value: number) => string;
   onBack: () => void;
-  onFinish: () => void;
+  onFinish: () => Promise<unknown>;
+  createdOrderCode: string;
+  isSubmitting: boolean;
   reviewCopy: any;
   selectedAddressSummary: string;
   selectedMode: ClientCheckoutProductExperience;
   selectedPaymentLabel: string;
   selectedProductEntries: Array<{ product: ClientCheckoutProduct; quantity: number }>;
+  submitError: string;
   strings: any;
   tokens: any;
 }
@@ -31,15 +34,37 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
   formatMoney,
   onBack,
   onFinish,
+  createdOrderCode,
+  isSubmitting,
   reviewCopy,
   selectedAddressSummary,
   selectedMode,
   selectedPaymentLabel,
   selectedProductEntries,
+  submitError,
   strings,
   tokens,
 }) => {
   const styles = createCheckoutStyles(tokens);
+  const submit = () => {
+    void onFinish().catch(() => undefined);
+  };
+
+  if (createdOrderCode) {
+    return (
+      <Surface style={styles.panel}>
+        <Stack style={styles.stack}>
+          <Text style={styles.accent} variant="caption">{reviewCopy.badge}</Text>
+          <Text style={styles.title} variant="h2">{reviewCopy.successTitle}</Text>
+          <Text style={styles.muted}>{reviewCopy.successDescription}</Text>
+          <Surface style={styles.option}>
+            <Text style={styles.muted}>{reviewCopy.successOrderCode}</Text>
+            <Text style={styles.title}>{createdOrderCode}</Text>
+          </Surface>
+        </Stack>
+      </Surface>
+    );
+  }
 
   return (
     <Surface style={styles.panel}>
@@ -61,8 +86,9 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           ))}
           <Text style={styles.accent}>{formatMoney(finalTotal)}</Text>
         </Surface>
-        <Button onAction={onBack}>{reviewCopy.back}</Button>
-        <Button onAction={onFinish} style={styles.action}>{reviewCopy.finish}</Button>
+        <Button disabled={isSubmitting} onAction={onBack}>{reviewCopy.back}</Button>
+        <Button disabled={isSubmitting} onAction={submit} style={styles.action}>{isSubmitting ? reviewCopy.submitting : reviewCopy.finish}</Button>
+        {submitError ? <Text style={styles.muted}>{submitError}</Text> : null}
       </Stack>
     </Surface>
   );

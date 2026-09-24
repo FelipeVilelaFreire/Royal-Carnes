@@ -58,7 +58,7 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
   );
   const flowSwitcher = config.visual.flowSwitcher || "tabs";
   const switcher = strings.switcher?.[activeFlowConfig.key];
-  const header = config.header || config.brand;
+  const header: AccessShellConfig["header"] = config.header || config.brand;
   const BrandImage = hosts.Image;
   const updateValue = (key: AccessShellFieldKey, value: string) => {
     setValues((current) => ({ ...current, [key]: value }));
@@ -114,7 +114,7 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
           </Inline>
         ) : null}
 
-        <Surface appearance="soft" padding="lg">
+        <Surface appearance={config.visual.formSurface === "flat" ? "transparent" : "soft"} padding="lg">
           <Stack gap="md">
           <Text variant="h3">{strings.flows[activeFlowConfig.key].title}</Text>
           <Text tone="muted">{strings.flows[activeFlowConfig.key].description}</Text>
@@ -129,6 +129,11 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
                 secureTextEntry={fieldKey === "password"}
                 value={values[fieldKey] || ""}
               />
+              {config.visual.showForgotPassword && activeFlowConfig.key === "login" && fieldKey === "password" && strings.forgotPassword ? (
+                <Button appearance="transparent" onPress={() => undefined} tone="primary">
+                  {strings.forgotPassword}
+                </Button>
+              ) : null}
             </Stack>
           ))}
 
@@ -140,7 +145,9 @@ export const NativeAccessShell: React.FC<NativeAccessShellProps> = ({
           >{strings.flows[activeFlowConfig.key].submit}</Button>
           {config.providers?.length && strings.providers ? (
             <Stack gap="xs">
-              <Text tone="muted" variant="caption">{strings.providers.divider}</Text>
+              <Inline style={{ alignItems: "center", justifyContent: "center" }}>
+                <Text tone="muted" variant="caption">{strings.providers.divider}</Text>
+              </Inline>
               {config.providers.map((provider) => (
                 <Button
                   appearance="soft"

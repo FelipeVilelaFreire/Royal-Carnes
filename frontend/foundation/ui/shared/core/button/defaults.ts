@@ -20,6 +20,7 @@ export const DEFAULT_BUTTON_CONFIG: ButtonConfig = {
       icon: level,
       surface: {
         level: surfaceLevel(level),
+        overrides: { radiusToken: "2xl" },
       },
       stateLayer: surfaceLevel(level),
       focusRing: surfaceLevel(level),

@@ -47,6 +47,7 @@ export function mapClientPlanDto(dto: ClientPlanDto): PlanBase {
     key: dto.key,
     name: dto.name,
     description: dto.description ?? null,
+    accentColor: dto.accent_color ?? "#FFC665",
     status: dto.status,
     billingInterval: dto.billing_interval,
     trialDays: dto.trial_days ?? 0,

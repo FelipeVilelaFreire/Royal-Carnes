@@ -46,7 +46,9 @@ export function resolveLineItemDisplayValue(
 ) {
   const rawValue = String(item[column.key] || "");
   const option = resolveLineItemOptions(column, item).find((candidate) => candidate.value === rawValue);
-  const value = option?.label || t(option?.labelKey || "", rawValue) || rawValue;
+  const value = column.valueType === "translationKey"
+    ? t(rawValue, rawValue)
+    : option?.label || t(option?.labelKey || "", rawValue) || rawValue;
   const suffix = column.suffixKey ? String(item[column.suffixKey] || "") : "";
   return suffix && value ? `${value} ${suffix}` : value;
 }

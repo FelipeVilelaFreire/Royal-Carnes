@@ -1,14 +1,15 @@
 import React from "react";
-import { Button, Inline, Stack, Surface, Text } from "@foundation/ui";
-import type { ClientCheckoutSubscriptionPlan, ClientCheckoutSubscriptionTier } from "@/view-models/checkout.view-model";
+import { Button, Stack, Surface, Text } from "@foundation/ui";
+import { formatClientCheckoutUsage } from "@royalprime/client/utils/checkout.formatters";
+import {
+  type ClientCheckoutCycleUsage,
+  type ClientCheckoutSubscriptionPlan,
+  type ClientCheckoutSubscriptionTier,
+} from "@/view-models/checkout.view-model";
 import styles from "../CheckoutView.module.css";
 
 export interface ActiveCycleSummaryProps {
-  activeCycleUsage?: {
-    charcoalKgLimit: number;
-    cutsLimit: number;
-    weightKgLimit: number;
-  } | null;
+  activeCycleUsage?: ClientCheckoutCycleUsage | null;
   activeSubscription?: {
     nextBillingLabel: string;
   };
@@ -37,20 +38,28 @@ export const ActiveCycleSummary: React.FC<ActiveCycleSummaryProps> = ({
   subscriptionCycleWeightUsed,
 }) => {
   const charcoalKgLimit = activeCycleUsage?.charcoalKgLimit || currentSubscriptionPlan.charcoalKgLimit;
+  const capacityMetrics = (activeCycleUsage?.capacity || [])
+    .filter((capacity) => capacity.limitQuantity > 0)
+    .map((capacity) => [
+      capacity.label,
+      formatClientCheckoutUsage(capacity.usedQuantity, capacity.limitQuantity, capacity.measurementUnitSymbol || "", formatMeasure),
+    ]);
   const metrics = activeSubscription
     ? [
         [strings.plans.renewalLabel, activeSubscription.nextBillingLabel],
+        ...(capacityMetrics.length ? capacityMetrics : [
         [
           strings.summary.meatUsage,
-          `${formatMeasure(subscriptionCycleWeightUsed, "kg")} / ${formatMeasure(
+          formatClientCheckoutUsage(subscriptionCycleWeightUsed,
             activeCycleUsage?.weightKgLimit || currentSubscriptionPlan.proteinKgLimit,
             "kg",
-          )}`,
+            formatMeasure),
         ],
         charcoalKgLimit > 0 ? [
           strings.summary.charcoalUsage,
-          `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")} / ${formatMeasure(charcoalKgLimit, "kg")}`,
+          formatClientCheckoutUsage(subscriptionCycleCharcoalUsed, charcoalKgLimit, "kg", formatMeasure),
         ] : null,
+        ]),
       ].filter(Boolean)
     : [];
 
@@ -63,14 +72,6 @@ export const ActiveCycleSummary: React.FC<ActiveCycleSummaryProps> = ({
     >
       {activeSubscription ? (
         <Stack className={styles.activePlanContent}>
-        <Inline align="start" className={styles.activePlanHeader} justify="between">
-          <div className={styles.activePlanCopy}>
-            <Text as="h2" className={styles.activePlanTitle} tone="inherit" variant="h3">
-              {strings.plans.activeTitle}
-            </Text>
-          </div>
-        </Inline>
-
         <div className={styles.activePlanMetrics}>
           {metrics.map(([label, value]: any) => (
             <Text as="span" className={styles.activePlanMetric} key={label} tone="inherit" variant="caption">
@@ -103,12 +104,11 @@ export const ActiveCycleSummary: React.FC<ActiveCycleSummaryProps> = ({
                   type="button"
                 >
                   <span className={styles.planButtonContent}>
-                    <Text as="strong" tone="inherit" variant="body" weight="semibold">
-                      {plan.name}
-                    </Text>
-                    <Text as="span" className={styles.planLimit} tone="inherit" variant="caption">
-                      {formatMeasure(plan.proteinKgLimit, "kg")}
-                    </Text>
+                    <span className={styles.planButtonHeading}>
+                      <Text as="strong" tone="inherit" variant="body" weight="semibold">
+                        {plan.name}
+                      </Text>
+                    </span>
                   </span>
                 </Button>
               );

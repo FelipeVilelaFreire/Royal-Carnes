@@ -23,6 +23,11 @@
   width: 100%;
 }
 
+.skeletonTrigger {
+  max-block-size: var(--semicomposed--dropdown-picker--skeleton-height);
+  min-block-size: var(--semicomposed--dropdown-picker--skeleton-height);
+}
+
 .trigger {
   --ui-button-font-size: var(--theme--typography-sizeSm);
   --ui-button-font-weight: var(--theme--typography-semibold);
@@ -45,6 +50,12 @@
   min-height: var(--theme--dimensions-height-lg);
   overflow: hidden;
   width: 100%;
+}
+
+.root[data-control-size="md"] .trigger {
+  flex-basis: var(--theme--dimensions-height-md);
+  max-height: var(--theme--dimensions-height-md);
+  min-height: var(--theme--dimensions-height-md);
 }
 
 .searchTrigger {
@@ -359,15 +370,4 @@
 :global(html[data-theme="light"]) .option[aria-selected="true"] *,
 :global(html[data-theme-mode="light"]) .option[aria-selected="true"] * {
   color: var(--theme--color-ivory) !important;
-}
-
-.option[aria-selected="true"]::before {
-  background: currentColor;
-  border-radius: var(--theme--radius-full);
-  bottom: var(--theme--spacing-spaceXs);
-  content: "";
-  inset-inline-start: var(--theme--spacing-space2xs);
-  position: absolute;
-  top: var(--theme--spacing-spaceXs);
-  width: var(--theme--borders-thick);
 }

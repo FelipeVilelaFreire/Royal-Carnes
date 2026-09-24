@@ -114,6 +114,16 @@ def inventory_item_for_order_item(*, organization, product: Product, variant: Pr
     return item
 
 
+def _box_cycle_has_valid_monthly_recurrence(box_cycle) -> bool:
+    recurrence_rule = box_cycle.subscription.schedule.recurrence_rule or {}
+    recurring_day = recurrence_rule.get("dayOfMonth")
+    return (
+        recurrence_rule.get("frequency") == "monthly"
+        and isinstance(recurring_day, int)
+        and 1 <= recurring_day <= 31
+    )
+
+
 @transaction.atomic
 def create_order(
     *,
@@ -124,9 +134,11 @@ def create_order(
     address=None,
     subscription=None,
     subscription_cycle=None,
+    box_cycle=None,
     notes: str = "",
     actor=None,
     create_delivery: bool | None = None,
+    unit_price_overrides: dict[tuple[str, str | None], int] | None = None,
 ) -> Order:
     if customer.organization_id != organization.id:
         raise OrderValidationError("customer_organization_mismatch", "Customer must belong to organization")
@@ -150,6 +162,23 @@ def create_order(
         key=kind_key,
         is_active=True,
     )
+    is_box_order = bool(kind.commercial_mode and kind.commercial_mode.key == "box")
+    if is_box_order:
+        if box_cycle is None:
+            raise OrderValidationError("box_cycle_required_for_order", "Royal Box order requires a box cycle")
+        if box_cycle.organization_id != organization.id:
+            raise OrderValidationError("box_cycle_organization_mismatch", "Box cycle must belong to organization")
+        if box_cycle.subscription.customer_id != customer.id:
+            raise OrderValidationError("box_cycle_customer_mismatch", "Box cycle must belong to customer")
+        if address is not None and box_cycle.subscription.default_delivery_address_id != address.id:
+            raise OrderValidationError("box_cycle_address_mismatch", "Box cycle must use its scheduled delivery address")
+        if not _box_cycle_has_valid_monthly_recurrence(box_cycle):
+            raise OrderValidationError(
+                "box_recurrence_required_for_order",
+                "Royal Box order requires a monthly recurrence day",
+            )
+    elif box_cycle is not None:
+        raise OrderValidationError("box_cycle_mismatch", "Only Royal Box orders can use a box cycle")
     if kind.commercial_mode and kind.commercial_mode.key == "subscription":
         if subscription is None:
             raise OrderValidationError("subscription_required_for_order", "Subscription order requires a subscription")
@@ -189,6 +218,7 @@ def create_order(
         address=address,
         subscription=subscription,
         subscription_cycle=subscription_cycle,
+        box_cycle=box_cycle,
         code=generate_code(organization=organization, key=kind.code_sequence_key),
         kind_key=kind.key,
         status_key=status.key,
@@ -208,7 +238,10 @@ def create_order(
             commercial_mode=kind.commercial_mode,
         )
         quantity = prepared_item["quantity"]
-        total_cents = int((Decimal(price.amount_cents) * quantity).to_integral_value(rounding=ROUND_HALF_UP))
+        unit_price_cents = (unit_price_overrides or {}).get((product.key, variant.sku if variant else None), price.amount_cents)
+        if unit_price_cents < 0:
+            raise OrderValidationError("order_price_invalid", "Order item price must not be negative")
+        total_cents = int((Decimal(unit_price_cents) * quantity).to_integral_value(rounding=ROUND_HALF_UP))
         OrderItem.objects.create(
             organization=organization,
             order=order,
@@ -217,7 +250,7 @@ def create_order(
             measurement_unit=measurement_unit,
             name_snapshot=variant.name if variant else product.name,
             quantity=quantity,
-            unit_price_cents=price.amount_cents,
+            unit_price_cents=unit_price_cents,
             total_cents=total_cents,
             weight_grams=variant.weight_grams if variant else None,
             source_type=item_data.get("source_type", ""),
@@ -271,7 +304,7 @@ def replace_order_items(*, organization, order: Order, items: list[dict], actor=
         raise OrderValidationError("organization_mismatch", "Order must belong to organization")
     if order.status_key != "received":
         raise OrderValidationError("order_items_locked", "Order items can only be changed while the order is received")
-    if order.subscription_cycle_id is not None:
+    if order.subscription_cycle_id is not None or order.box_cycle_id is not None:
         raise OrderValidationError("order_items_locked", "Subscription cycle order items cannot be changed")
     if not items:
         raise OrderValidationError("order_items_required", "Order requires at least one item")
@@ -372,13 +405,9 @@ def replace_order_items(*, organization, order: Order, items: list[dict], actor=
 def transition_order_status(*, organization, order: Order, to_status_key: str, actor=None, note: str = "") -> Order:
     if order.organization_id != organization.id:
         raise OrderValidationError("organization_mismatch", "Order must belong to organization")
-    current_status = OrderStatusDefinition.objects.get(organization=organization, key=order.status_key)
     next_status = OrderStatusDefinition.objects.get(organization=organization, key=to_status_key)
-    if current_status.is_terminal:
-        raise OrderValidationError("order_status_terminal", "Order status is terminal")
-    allowed_next_keys = current_status.allowed_next_keys or []
-    if allowed_next_keys and next_status.key not in allowed_next_keys:
-        raise OrderValidationError("order_status_transition_not_allowed", "Order status transition is not allowed")
+    if order.status_key == next_status.key:
+        return order
     previous = order.status_key
     order.status_key = next_status.key
     order.save(update_fields=["status_key", "updated_at"])
@@ -389,5 +418,13 @@ def transition_order_status(*, organization, order: Order, to_status_key: str, a
         to_status_key=next_status.key,
         actor=actor,
         note=note,
+    )
+    from apps.deliveries.services import synchronize_delivery_status_from_order
+
+    synchronize_delivery_status_from_order(
+        organization=organization,
+        order=order,
+        actor=actor,
+        note=note or f"Order status: {next_status.key}",
     )
     return order

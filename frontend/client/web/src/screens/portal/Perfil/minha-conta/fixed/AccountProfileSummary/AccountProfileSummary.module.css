@@ -1,0 +1,4 @@
+.skeleton { border: var(--theme--borders-hairline) solid var(--theme--color-border); display: grid; gap: var(--theme--spacing-spaceLg); padding: var(--theme--spacing-spaceLg); }
+.identity { align-items: center; display: flex; gap: var(--theme--spacing-spaceMd); }
+.stats { border-block-start: var(--theme--borders-hairline) solid var(--theme--color-border); display: grid; gap: var(--theme--spacing-spaceMd); grid-template-columns: repeat(4, minmax(0, 1fr)); padding-block-start: var(--theme--spacing-spaceLg); }
+@media (max-width: 40rem) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

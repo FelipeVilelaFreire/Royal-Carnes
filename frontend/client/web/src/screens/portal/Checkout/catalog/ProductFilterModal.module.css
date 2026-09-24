@@ -1,8 +1,3 @@
-.categoryTitle {
-  color: var(--theme--color-text-muted, var(--theme--color-textMuted));
-  font-weight: var(--theme--typography-bold);
-}
-
 .categoryList {
   --pedido-filter-option-active-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
   --pedido-filter-option-active-border: var(--theme--color-text);
@@ -11,9 +6,7 @@
   --pedido-filter-option-color: var(--theme--color-text);
   display: grid;
   gap: var(--theme--spacing-spaceXs);
-  max-height: min(calc(var(--theme--dimensions-height-lg) * 7), 58dvh);
-  overflow: auto;
-  padding-right: var(--theme--spacing-space2xs);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .categoryOption {
@@ -24,8 +17,8 @@
   --ui-surface-border: var(--pedido-filter-option-border);
   --ui-surface-color: var(--pedido-filter-option-color);
   --ui-surface-radius: var(--theme--radius-lg);
-  justify-content: flex-start;
-  text-align: left;
+  justify-content: center;
+  text-align: center;
   width: 100%;
 }
 

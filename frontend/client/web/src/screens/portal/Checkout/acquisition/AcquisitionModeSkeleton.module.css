@@ -1,0 +1,11 @@
+.grid { display: grid; gap: var(--theme--spacing-spaceLg); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.card { background: var(--theme--color-surface-container, var(--theme--color-surfaceContainer)); border: var(--theme--borders-hairline) solid var(--theme--color-border); border-radius: var(--theme--radius-2xl); display: grid; gap: var(--theme--spacing-spaceXl); grid-template-rows: minmax(0, 1fr) auto; min-height: calc(var(--theme--dimensions-height-3xl) + var(--theme--dimensions-height-3xl)); padding: var(--theme--spacing-spaceXl); position: relative; }
+.card::before { background: color-mix(in srgb, var(--theme--color-accent) 30%, transparent); block-size: var(--theme--borders-medium); content: ""; inset-block-start: 0; inset-inline: 0; position: absolute; }
+.cardContent { display: grid; align-content: start; gap: var(--theme--spacing-spaceLg); }
+.icon { border-radius: var(--theme--radius-lg); }
+.copy { display: grid; gap: var(--theme--spacing-spaceSm); }
+.title { margin-block-start: var(--theme--spacing-space2xs); }
+.description { display: grid; gap: var(--theme--spacing-space2xs); }
+.action { border-block-start: var(--theme--borders-hairline) solid var(--theme--color-border); padding-block-start: var(--theme--spacing-spaceMd); }
+@media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, minmax(var(--theme--dimensions-minWidth-3xl), 1fr)); overflow: hidden; } }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } .card { min-height: auto; padding: var(--theme--spacing-spaceLg); } }

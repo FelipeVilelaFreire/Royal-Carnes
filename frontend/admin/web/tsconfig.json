@@ -32,6 +32,7 @@
       "@foundation/ui/web": ["../../foundation/ui/web"],
       "@foundation/ui/web/*": ["../../foundation/ui/web/*"],
       "@foundation/ui/*": ["../../foundation/ui/web/*"],
+      "@product-components/*": ["../../product-components/*"],
       "@shared-core/*": ["../../shared-core/*"]
     }
   },

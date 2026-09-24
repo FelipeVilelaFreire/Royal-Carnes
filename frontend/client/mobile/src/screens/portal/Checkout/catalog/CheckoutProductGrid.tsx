@@ -33,7 +33,7 @@ export const CheckoutProductGrid: React.FC<CheckoutProductGridProps> = ({
   <Stack gap="md">
     {availableProducts.map((product) => {
       const quantity = selectedProductQuantities[product.id] || 0;
-      const actionDisabled = selectedMode === "subscription" && !canAddProduct(product) && quantity === 0;
+      const actionDisabled = selectedMode === "subscription" && !canAddProduct(product);
       const category = categoryById.get(product.categoryId);
 
       return (

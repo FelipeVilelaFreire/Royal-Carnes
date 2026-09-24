@@ -9,9 +9,9 @@ import { ArrowForwardIcon, ChevronRightIcon, FlameIcon, TruckIcon, UserIcon } fr
 import type { AdminDashboardViewModel, AdminDashboardWidgetKey } from "@/view-models/dashboard.view-model";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { DashboardConfig } from "../config/types";
+import { AdminScreenHeader } from "../../components/AdminScreenHeader/AdminScreenHeader";
 import styles from "./DashboardPage.module.css";
 import { DashboardPageSkeleton } from "./DashboardPageSkeleton";
-import { DashboardHeader } from "./DashboardHeader";
 
 export interface DashboardPageProps {
   config: DashboardConfig;
@@ -50,10 +50,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ config, isLoading 
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere={config.layout.atmosphere} usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
+      <AdminScreenHeader
+        description={t(config.subtitleKey)}
+        eyebrow={config.headerBadge ? t(config.headerBadge.labelKey) : undefined}
+        title={t(config.titleKey)}
+      />
+      <SectionContainer atmosphere={config.layout.atmosphere} headerSafety usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
-          <DashboardHeader config={config} t={t} />
-
           <Grid className={styles.kpiGrid} columns={config.layout.kpis.columns} gap={config.layout.kpis.gap}>
             {config.widgets.map((widget) => {
               const widgetView = widgetsByKey.get(widget.key as AdminDashboardWidgetKey);

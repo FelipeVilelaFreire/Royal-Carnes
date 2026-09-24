@@ -225,6 +225,16 @@ export const resolveNativeUiManifest = (
         },
       }),
       Input: primitive("Input", "text-input", {
+        active: {
+          ...fieldStyle(defaultField),
+          ...buttonStyle(activeButton),
+          justifyContent: "flex-start",
+          text: {
+            color: nativeTheme.colors.text,
+            fontFamily: nativeTheme.tokens.typography.bodyFamily,
+            fontSize: nativeTheme.tokens.typography.sizeMd,
+          },
+        },
         default: {
           ...fieldStyle(defaultField),
           ...buttonStyle(inactiveButton),

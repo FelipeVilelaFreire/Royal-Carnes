@@ -1,6 +1,36 @@
 {
   "schemaVersion": 1,
   "kit": "deliveries",
+  "promisePolicies": [
+    {
+      "key": "avulso-padrao",
+      "name": "Avulso padrão",
+      "minBusinessDays": 1,
+      "maxBusinessDays": 2,
+      "approachingBusinessDays": 1,
+      "orderKindKeys": ["delivery"],
+      "sortOrder": 1
+    },
+    {
+      "key": "royal-box-padrao",
+      "name": "Royal Box padrão",
+      "minBusinessDays": 2,
+      "maxBusinessDays": 4,
+      "approachingBusinessDays": 2,
+      "orderKindKeys": ["royal-box"],
+      "sortOrder": 2
+    },
+    {
+      "key": "assinaturas-royal",
+      "name": "Assinaturas Royal",
+      "minBusinessDays": 3,
+      "maxBusinessDays": 8,
+      "approachingBusinessDays": 2,
+      "orderKindKeys": ["subscription-cycle"],
+      "subscriptionPlanKeys": ["basic", "premium", "pro"],
+      "sortOrder": 3
+    }
+  ],
   "codeSequences": [
     {
       "key": "deliveries",
@@ -12,47 +42,62 @@
   ],
   "statuses": [
     {
-      "key": "pending",
-      "label": "Pendente",
+      "key": "received",
+      "label": "Recebido",
       "isInitial": true,
-      "allowedNextKeys": ["packing", "cancelled"],
-      "metadata": { "ui": { "statusColor": "pending", "statusTone": "warning" } },
+      "metadata": { "ui": { "statusColor": "received", "statusTone": "neutral" } },
       "sortOrder": 1
     },
     {
-      "key": "packing",
-      "label": "Separando entrega",
-      "allowedNextKeys": ["out-for-delivery", "cancelled"],
-      "metadata": { "ui": { "statusColor": "separating", "statusTone": "warning" } },
+      "key": "approved",
+      "label": "Aprovado",
+      "metadata": { "deliveryPromiseOutcome": "fulfilled", "ui": { "statusColor": "active", "statusTone": "success" } },
       "sortOrder": 2
+    },
+    {
+      "key": "separating",
+      "label": "Separando",
+      "metadata": { "ui": { "statusColor": "separating", "statusTone": "warning" } },
+      "sortOrder": 3
+    },
+    {
+      "key": "ready",
+      "label": "Pronto para envio",
+      "metadata": { "ui": { "statusColor": "ready", "statusTone": "neutral" } },
+      "sortOrder": 4
     },
     {
       "key": "out-for-delivery",
       "label": "Saiu para entrega",
-      "allowedNextKeys": ["delivered", "failed"],
-      "metadata": { "ui": { "statusColor": "outForDelivery", "statusTone": "primary" } },
-      "sortOrder": 3
+      "metadata": { "ui": { "statusColor": "outForDelivery", "statusTone": "neutral" } },
+      "sortOrder": 5
     },
     {
       "key": "delivered",
       "label": "Entregue",
       "isTerminal": true,
-      "effects": { "confirmDelivery": true },
-      "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
-      "sortOrder": 4
+      "metadata": { "deliveryPromiseOutcome": "fulfilled", "ui": { "statusColor": "active", "statusTone": "success" } },
+      "sortOrder": 6
     },
     {
-      "key": "failed",
-      "label": "Falhou",
+      "key": "completed",
+      "label": "ConcluÃ­do",
       "isTerminal": true,
-      "metadata": { "ui": { "statusColor": "canceled", "statusTone": "danger" } },
+      "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
+      "sortOrder": 7
+    },
+    {
+      "key": "delivery-failed",
+      "label": "Falha na entrega",
+      "isTerminal": true,
+      "metadata": { "deliveryPromiseOutcome": "closed", "ui": { "statusColor": "canceled", "statusTone": "danger" } },
       "sortOrder": 98
     },
     {
       "key": "cancelled",
       "label": "Cancelada",
       "isTerminal": true,
-      "metadata": { "ui": { "statusColor": "canceled", "statusTone": "danger" } },
+      "metadata": { "deliveryPromiseOutcome": "closed", "ui": { "statusColor": "canceled", "statusTone": "danger" } },
       "sortOrder": 99
     }
   ],
@@ -60,28 +105,24 @@
     {
       "key": "entrega-assinatura-pro-setembro",
       "orderKey": "pedido-assinatura-pro-setembro",
-      "statusPath": ["packing"],
       "confirmationCode": "9314",
       "notes": "Separacao em caixa termica com controle de cadeia fria."
     },
     {
       "key": "entrega-felipe-churrasco-familia",
       "orderKey": "pedido-felipe-churrasco-familia",
-      "statusPath": ["packing", "out-for-delivery"],
       "confirmationCode": "4827",
       "notes": "Rota prioritaria para janela de entrega do sabado."
     },
     {
       "key": "entrega-lucas-delivery-picanha",
       "orderKey": "pedido-lucas-delivery-picanha",
-      "statusPath": [],
       "confirmationCode": "7051",
       "notes": "Entrega aguardando embalagem."
     },
     {
       "key": "entrega-cliente-recebido",
       "orderKey": "pedido-cliente-recebido",
-      "statusPath": [],
       "confirmationCode": "1198",
       "notes": "Entrega sera criada apos aprovacao do pedido."
     }

@@ -59,6 +59,13 @@ export interface DeliveryBase {
   addressId?: string | number | null;
   statusKey: DeliveryStatusKey;
   confirmationCode: string;
+  promisedDeliveryStartsOn?: string | null;
+  promisedDeliveryByOn?: string | null;
+  deliveryPromiseSnapshot: Record<string, unknown>;
+  deliveryPromiseStatus: {
+    state: "approaching" | "closed" | "due_today" | "fulfilled" | "on_track" | "overdue" | "untracked";
+    remainingBusinessDays: number | null;
+  };
   addressSnapshot: Record<string, unknown>;
   notes: string;
   metadata: Record<string, unknown>;

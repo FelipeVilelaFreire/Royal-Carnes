@@ -1,0 +1,1 @@
+.skeleton { display: grid; gap: var(--theme--spacing-spaceLg); } .grid { display: grid; gap: var(--theme--spacing-spaceMd); grid-template-columns: repeat(5, minmax(0, 1fr)); } @media (max-width: 56em) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

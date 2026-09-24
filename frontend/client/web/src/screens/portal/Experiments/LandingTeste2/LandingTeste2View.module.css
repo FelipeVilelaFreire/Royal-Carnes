@@ -1,0 +1,24 @@
+.page { background: #0d0c0a; color: #f8f2e7; font-family: Arial, sans-serif; min-height: 100vh; }
+.top { display: grid; grid-template-columns: 1.05fr .95fr; min-height: 540px; }
+.top > div { align-items: flex-start; display: flex; flex-direction: column; justify-content: center; padding: 70px 9vw; }
+.top p, .moments header p, .catalog p, .selection p { color: #e5bf65; font-size: 11px; font-weight: 700; letter-spacing: .16em; margin: 0 0 20px; }
+.top h1 { font-family: Georgia, serif; font-size: clamp(40px, 4.8vw, 68px); font-weight: 400; letter-spacing: -.06em; line-height: .96; margin: 0 0 30px; }
+.top a, .catalog a { background: #e5bf65; color: #16120b; font-size: 12px; font-weight: 700; letter-spacing: .08em; padding: 15px 18px; text-decoration: none; text-transform: uppercase; }
+.top > img { height: 100%; min-height: 540px; object-fit: cover; width: 100%; }
+.moments { padding: 100px 9vw; }
+.moments header { display: grid; grid-template-columns: .65fr 1.35fr; margin-bottom: 48px; }
+.moments h2 { font-family: Georgia, serif; font-size: clamp(32px, 4vw, 58px); font-weight: 400; letter-spacing: -.05em; line-height: 1; margin: 0; }
+.cards { display: grid; gap: 22px; grid-template-columns: repeat(3, 1fr); }
+.cards article { background: #211d17; }
+.cards img { aspect-ratio: 1 / 1.15; display: block; object-fit: cover; width: 100%; }
+.cards div { padding: 20px; }
+.cards span { color: #cfbf9e; font-size: 12px; }
+.cards h3 { font-family: Georgia, serif; font-size: 28px; font-weight: 400; letter-spacing: -.04em; margin: 10px 0 22px; }
+.cards a { color: #e5bf65; font-size: 12px; font-weight: 700; text-decoration: none; }
+.selection { background: #e5bf65; color: #17120b; display: grid; grid-template-columns: 1fr 1fr; min-height: 350px; }
+.selection div { align-items: flex-start; display: flex; flex-direction: column; justify-content: center; padding: 52px 16%; }
+.selection p { color: #73531a; }.selection h2 { font: 400 clamp(30px, 3.8vw, 50px)/.98 Georgia, serif; letter-spacing: -.05em; margin: 0 0 28px; }.selection a { color: #17120b; font: 700 12px Arial, sans-serif; text-decoration: underline; text-underline-offset: 7px; }.selection img { height: 100%; object-fit: cover; width: 100%; }
+.catalog { align-items: center; background: #17120b; display: grid; gap: 50px; grid-template-columns: .5fr 1fr; padding: 76px 14vw; }
+.catalog > span { color: #e5bf65; font: 130px/.7 Georgia, serif; opacity: .7; }
+.catalog h2 { font: 400 clamp(32px, 4vw, 58px)/1 Georgia, serif; letter-spacing: -.055em; margin: 0 0 30px; }
+@media (max-width: 700px) { .top, .moments header, .selection, .catalog { grid-template-columns: 1fr; } .top > div, .moments { padding: 65px 24px; } .top > img { min-height: 380px; } .cards { grid-template-columns: 1fr; } .selection div { padding: 48px 24px; }.selection img { aspect-ratio: 1.25; } .catalog { padding: 65px 24px; } .catalog > span { font-size: 100px; } }

@@ -81,9 +81,12 @@ class PlanSerializer(serializers.ModelSerializer):
             "key",
             "name",
             "description",
+            "accent_color",
             "status",
             "billing_interval",
             "trial_days",
+            "delivery_min_business_days",
+            "delivery_max_business_days",
             "sort_order",
             "prices",
             "entitlements",
@@ -133,6 +136,11 @@ class PlanCreateSerializer(serializers.Serializer):
     key = serializers.SlugField(max_length=100)
     name = serializers.CharField(max_length=160)
     description = serializers.CharField(required=False, allow_blank=True, default="")
+    accent_color = serializers.RegexField(
+        regex=r"^#[0-9A-Fa-f]{6}$",
+        required=False,
+        default="#FFC665",
+    )
     status = serializers.ChoiceField(
         choices=Plan.Status.choices,
         required=False,
@@ -144,9 +152,16 @@ class PlanCreateSerializer(serializers.Serializer):
         default=Plan.BillingInterval.MONTH,
     )
     trial_days = serializers.IntegerField(min_value=0, required=False, default=0)
+    delivery_min_business_days = serializers.IntegerField(min_value=1, required=False, default=3)
+    delivery_max_business_days = serializers.IntegerField(min_value=1, required=False, default=8)
     sort_order = serializers.IntegerField(min_value=0, required=False, default=0)
     price_cents = serializers.IntegerField(min_value=0, required=False)
     entitlements = serializers.ListField(child=serializers.DictField(), required=False, default=list)
+
+    def validate(self, attrs):
+        if attrs["delivery_min_business_days"] > attrs["delivery_max_business_days"]:
+            raise serializers.ValidationError({"delivery_max_business_days": "Must be greater than or equal to delivery_min_business_days."})
+        return attrs
 
 
 class SubscriptionCycleItemSerializer(serializers.ModelSerializer):

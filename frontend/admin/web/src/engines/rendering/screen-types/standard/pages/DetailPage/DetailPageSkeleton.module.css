@@ -1,0 +1,15 @@
+.page { min-block-size: 100%; padding-block-end: var(--theme--spacing-space3xl); width: 100%; }
+.content, .header, .tabbedContent, .identity, .identityCopy, .quickInfo, .tabs, .sectionCard, .detailGrid { min-inline-size: 0; width: 100%; }
+.content { padding-block-start: var(--theme--spacing-spaceLg); }
+.header { border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border); padding-block-end: var(--theme--spacing-spaceMd); }
+.identity { flex: 1 1 auto; }
+.identityCopy { max-inline-size: var(--theme--layout-container-sm); }
+.quickInfoCard { min-inline-size: 0; }
+.tabs { border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border); padding-block-end: var(--theme--spacing-spaceSm); }
+.sectionCard { --ui-surface-padding-x: 0; --ui-surface-padding-y: 0; overflow: hidden; }
+.sectionHeader { background: var(--theme--color-surfaceContainer); border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border); padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceMd); }
+.sectionContent { padding: var(--theme--spacing-spaceLg); }
+.tableScroller { overflow: hidden; width: 100%; }
+.table { border-collapse: collapse; min-inline-size: var(--theme--layout-container-md); width: 100%; }
+.table th, .table td { border-block-end: var(--theme--borders-hairline) solid var(--theme--color-border); padding: var(--theme--spacing-spaceSm) var(--theme--spacing-spaceLg); text-align: start; }
+.table tr:last-child td { border-block-end: 0; }

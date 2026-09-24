@@ -3,6 +3,7 @@
 import React, { forwardRef, type CSSProperties } from "react";
 import { resolveSemiComposedConfig, resolveSemiTheme, resolveSurfaceRecipe } from "../../../semi-composed/core";
 import { useUiConfig } from "../UiProvider";
+import { Skeleton, type SkeletonShape, type SkeletonSize, type SkeletonWidth } from "../Skeleton";
 import type { UiSurfaceConfig } from "../../shared/core";
 import styles from "./Surface.module.css";
 
@@ -17,12 +18,16 @@ export interface SurfaceProps extends React.HTMLAttributes<HTMLDivElement> {
   geometry?: any;
   interactive?: boolean;
   shadowMode?: string;
+  skeletonShape?: SkeletonShape;
+  skeletonSize?: SkeletonSize;
+  skeletonWidth?: SkeletonWidth;
+  state?: "default" | "skeleton";
   surfaceOpacity?: number;
   children?: React.ReactNode;
 }
 
 export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(function Surface(
-  { as: Component = "div", appearance = "solid", tone = "neutral", recipe, geometry, interactive, shadowMode, surfaceOpacity, children, className, style, ...props },
+  { as: Component = "div", appearance = "solid", tone = "neutral", recipe, geometry, interactive, shadowMode, skeletonShape = "block", skeletonSize = "md", skeletonWidth = "full", state = "default", surfaceOpacity, children, className, style, ...props },
   ref
 ) {
   const ui = useUiConfig();
@@ -61,6 +66,20 @@ export const Surface = forwardRef<HTMLDivElement, SurfaceProps>(function Surface
     opacity: surfaceOpacity,
     ...style
   } as CSSProperties;
+
+  if (state === "skeleton") {
+    return (
+      <Skeleton
+        {...props}
+        ref={ref}
+        className={className}
+        shape={skeletonShape}
+        size={skeletonSize}
+        style={style}
+        width={skeletonWidth}
+      />
+    );
+  }
 
   return (
     <Component

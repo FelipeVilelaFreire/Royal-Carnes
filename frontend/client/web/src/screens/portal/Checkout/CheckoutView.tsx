@@ -16,26 +16,31 @@ import { useCheckoutRuntime } from "./runtime/useCheckoutRuntime";
 
 export interface CheckoutViewProps {
   isAuthenticated: boolean;
+  onOrderCreated: () => void;
   onRequestAccess: () => void;
 }
 
-export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onRequestAccess }) => {
+export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onOrderCreated, onRequestAccess }) => {
   const strings = useClientStrings().pedido;
-  const runtime = useCheckoutRuntime({ isAuthenticated, onRequestAccess });
+  const runtime = useCheckoutRuntime();
   const { tokens } = runtime;
   const checkout = useClientCheckout({ isAuthenticated });
   const {
     actions,
     activeCycleUsage,
+    addressSaveState,
     addresses,
+    canSaveNewAddress,
     catalogSubscriptionPlans,
     config,
     currentStep,
     filterModalOpen,
     freightOptions: rawFreightOptions,
+    hasCatalogError,
     isAddingAddress,
+    isAcquisitionLoading,
     newAddressDraft,
-    paymentInstallments,
+    orderCreateState,
     paymentMethods: rawPaymentMethods,
     productCategories,
     query,
@@ -43,13 +48,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
     selectedCategoryId,
     selectedDeliveryDay,
     selectedFreight,
-    selectedInstallments,
     selectedMode,
     selectedPaymentMethod,
     selectedPlanKey,
     selectedProductQuantities,
     viewModel,
+    whatsappUrl,
   } = checkout;
+  const requestProtectedStep = (step: typeof currentStep) => {
+    if (!actions.requestProtectedStep(step)) onRequestAccess();
+  };
   const {
     activeSubscriptionLabel,
     activeSubscriptionPlan,
@@ -108,9 +116,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
   return (
     <div className={styles.pageRoot}>
       <ScreenHeader
+        align="center"
         className={styles.screenHeader}
         description={strings.hero.description}
-        eyebrow={strings.hero.badge}
         mobileGutter="none"
         mobileMode="collapsible"
         mobileTitle={strings.hero.mobileTitle}
@@ -149,6 +157,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                     currentSubscriptionPlan,
                     formatMeasure: formatClientCheckoutMeasure,
                     formatMoney: formatClientCheckoutMoney,
+                    hasCatalogError,
+                    isCatalogLoading: isAcquisitionLoading,
                     onClearFilters: () => {
                       actions.setSelectedCategoryId("all");
                       actions.setQuery("");
@@ -157,6 +167,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                     onOpenFilters: () => actions.setFilterModalOpen(true),
                     onProductSelect: actions.addProduct,
                     onQueryChange: actions.setQuery,
+                    onReloadCatalog: actions.reloadCatalog,
                     onSelectPlan: actions.selectPlan,
                     query,
                     selectedCategoryId,
@@ -171,7 +182,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                   delivery={{
                     addresses,
                     checkoutConfig: config,
-                    currentFreightPrice,
                     deliveryCopy,
                     formatMoney: formatClientCheckoutMoney,
                     freightOptions,
@@ -179,8 +189,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                     newAddressDraft,
                     newAddressFields,
                     onBack: () => actions.setCurrentStep("montagem"),
-                    onNext: () => runtime.requestProtectedStep("pagamento", actions.setCurrentStep),
-                    onSubmitNewAddress: () => actions.submitNewAddress(strings.deliveryStep.common.newAddressLabelPrefix),
+                    onNext: () => requestProtectedStep("pagamento"),
+                    addressSaveState,
+                    canSaveNewAddress,
+                    onSubmitNewAddress: actions.submitNewAddress,
                     onSelectAddress: actions.setSelectedAddressId,
                     onSelectDeliveryDay: actions.setSelectedDeliveryDay,
                     onSelectFreight: actions.setSelectedFreight,
@@ -193,16 +205,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                     strings,
                   }}
                   payment={{
-                    onBack: () => actions.setCurrentStep("entrega"),
-                    onNext: () => runtime.requestProtectedStep("resumo", actions.setCurrentStep),
-                    onSelectInstallments: actions.setSelectedInstallments,
-                    onSelectPaymentMethod: actions.setSelectedPaymentMethod,
-                    paymentCopy,
-                    paymentInstallments,
-                    paymentMethods,
-                    selectedInstallments,
-                    selectedMode,
-                    selectedPaymentMethod,
+                  onBack: () => actions.setCurrentStep("entrega"),
+                  onContactWhatsApp: whatsappUrl ? () => window.open(whatsappUrl, "_blank", "noopener,noreferrer") : undefined,
+                  onNext: () => requestProtectedStep("resumo"),
+                  onSelectPaymentMethod: actions.setSelectedPaymentMethod,
+                  paymentCopy,
+                  paymentMethods,
+                  selectedPaymentMethod,
                   }}
                   review={{
                     currentFreightOption,
@@ -212,14 +221,24 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                     formatMeasure: formatClientCheckoutMeasure,
                     formatMoney: formatClientCheckoutMoney,
                     onBack: () => actions.setCurrentStep("pagamento"),
-                    onFinish: () => actions.submitOrder(),
+                    onFinish: async () => {
+                      const order = await actions.submitOrder();
+                      if (order) onOrderCreated();
+                      return order;
+                    },
+                    createdOrderCode: orderCreateState.createdOrderCode,
+                    isSubmitting: orderCreateState.isLoading,
                     reviewCopy,
                     selectedAddressSummary,
                     selectedDeliveryDay,
-                    selectedInstallments,
                     selectedMode,
-                    selectedPaymentLabel: selectedPayment?.label || paymentCopy.methods.creditCard,
+                    selectedPaymentLabel: selectedPayment?.label || paymentCopy.methods.pix,
                     selectedProductEntries,
+                    submitError: typeof orderCreateState.error?.detail === "string"
+                      ? orderCreateState.error.detail
+                      : orderCreateState.error
+                        ? reviewCopy.submitError
+                        : "",
                     selectedUnitsCount,
                     strings,
                     subscriptionCycleCharcoalUsed,
@@ -244,14 +263,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                   onAddProduct={actions.addProduct}
                   onNextStep={() => {
                     if (currentStep === "montagem") {
-                      runtime.requestProtectedStep("entrega", actions.setCurrentStep);
+                      requestProtectedStep("entrega");
                       return;
                     }
                     if (currentStep === "entrega") {
-                      runtime.requestProtectedStep("pagamento", actions.setCurrentStep);
+                      requestProtectedStep("pagamento");
                       return;
                     }
-                    if (currentStep === "pagamento") runtime.requestProtectedStep("resumo", actions.setCurrentStep);
+                    if (currentStep === "pagamento") requestProtectedStep("resumo");
                   }}
                   onRemoveProduct={actions.removeProduct}
                   orderEstimateTotal={orderEstimateTotal}
@@ -259,7 +278,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ isAuthenticated, onR
                   selectedCharcoalKg={selectedCharcoalKg}
                   selectedDeliveryDay={selectedDeliveryDay}
                   selectedMode={selectedMode}
-                  selectedPaymentLabel={selectedPayment?.label || paymentCopy.methods.creditCard}
+                  selectedPaymentLabel={selectedPayment?.label || paymentCopy.methods.pix}
                   selectedProductEntries={selectedProductEntries}
                   selectedProteinKg={selectedProteinKg}
                   selectedSeasoningCount={selectedSeasoningCount}

@@ -1,0 +1,16 @@
+.root {
+  background: var(--theme--color-background);
+  color: var(--theme--color-text);
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  min-block-size: 100%;
+}
+
+.feedback {
+  align-items: start;
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  justify-items: start;
+  padding: var(--theme--spacing-space3xl) var(--theme--layout-page-gutter);
+}

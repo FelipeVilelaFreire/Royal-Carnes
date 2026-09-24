@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useState, type HTMLAttributes } from "react";
 import { Badge } from "../Badge";
+import { AvatarCell } from "../Avatar";
 import { Button } from "../Button";
 import { CloseIcon } from "../Icon/AppIcons";
 import { Inline, Stack } from "../Layout";
@@ -33,6 +34,7 @@ export interface MultiSelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   removeModalCloseLabel?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
+  showSelectionIndicator?: boolean;
   value?: string[];
 }
 
@@ -57,6 +59,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function
     removeModalCloseLabel,
     searchable = false,
     searchPlaceholder,
+    showSelectionIndicator,
     value,
     ...props
   },
@@ -109,6 +112,7 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function
             placeholder={emptyOptionLabel}
             searchable
             searchPlaceholder={searchPlaceholder}
+            showSelectionIndicator={showSelectionIndicator}
             value=""
           />
         ) : (
@@ -127,6 +131,15 @@ export const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(function
           <Inline className={styles.badgeList} gap="xs" wrap>
             {selectedOptions.map((option) => (
               <Badge appearance="soft" className={styles.badge} key={option.value} tone="neutral">
+                {optionPresentation === "media" ? (
+                  <AvatarCell
+                    as="span"
+                    image={option.imageSrc}
+                    name={option.imageAlt || option.label}
+                    showName={false}
+                    size="sm"
+                  />
+                ) : null}
                 <span className={styles.badgeLabel}>{option.label}</span>
                 <Button
                   appearance="transparent"

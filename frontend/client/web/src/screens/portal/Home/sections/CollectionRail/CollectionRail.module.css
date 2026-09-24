@@ -1,0 +1,106 @@
+.root {
+  display: grid;
+  gap: var(--theme--spacing-spaceXl);
+}
+
+.cards {
+  display: grid;
+  gap: var(--theme--spacing-spaceXl);
+}
+
+.secondaryCards {
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card.card {
+  align-items: stretch;
+  background: transparent;
+  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-primary) 44%, transparent);
+  display: grid;
+  inline-size: 100%;
+  justify-content: stretch;
+  min-inline-size: 0;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+
+.featured {
+  aspect-ratio: 16 / 8;
+}
+
+.secondary {
+  aspect-ratio: 4 / 5;
+}
+
+.image,
+.scrim {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.image {
+  display: block;
+  object-fit: cover;
+  transition: transform var(--theme--motion-durationXl) var(--theme--motion-easingStandard);
+}
+
+.scrim {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme--color-background) calc(var(--theme--opacity-20) * 100%), transparent),
+    color-mix(in srgb, var(--theme--color-background) calc(var(--theme--opacity-80) * 100%), transparent)
+  );
+}
+
+.card > .scrim {
+  position: absolute;
+  z-index: 1;
+}
+
+.cardContent {
+  align-self: end;
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+  inline-size: 100%;
+  padding: var(--theme--spacing-spaceLg);
+  position: relative;
+  text-align: start;
+  z-index: 2;
+}
+
+.featured .cardContent {
+  max-inline-size: var(--theme--layout-container-sm);
+}
+
+.name {
+  color: var(--theme--color-ivory);
+  font-family: var(--theme--typography-headingFamily);
+  font-size: var(--theme--typography-sizeLg);
+  font-weight: var(--theme--typography-bold);
+}
+
+.description {
+  color: color-mix(in srgb, var(--theme--color-ivory) calc(var(--theme--opacity-80) * 100%), transparent);
+  font-size: var(--theme--typography-sizeSm);
+  line-height: var(--theme--typography-lineHeightSm);
+}
+
+@media (max-width: 48em) {
+  .featured {
+    aspect-ratio: 4 / 5;
+  }
+
+  .secondaryCards {
+    grid-template-columns: 1fr;
+  }
+
+  .secondary {
+    aspect-ratio: 4 / 5;
+  }
+}

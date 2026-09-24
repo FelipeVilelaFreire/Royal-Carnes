@@ -148,6 +148,15 @@ variacao real de composicao ou capacidade editavel, o manifest nasce em
 - Hook controla fluxo reutilizavel, loading, erro e acoes.
 - Screen pode controlar input imediato, modal, aba, selecao e estado visual.
   Mesmo com um unico consumidor, regra de negocio nao passa a pertencer a tela.
+- Loading que representa dados ainda desconhecidos usa skeletons por composicao,
+  nunca uma imitacao local da geometria de outro componente. Cada nivel espelha
+  o contrato que ja renderiza: uma screen compoe o skeleton de sua secao, uma
+  secao compoe skeletons de componentes de produto e estes compoem skeletons
+  das primitives Foundation que usam. Exemplo: `CatalogoProductGridSkeleton`
+  -> `ProductItemCardSkeleton` -> `ButtonSkeleton`. A primitive Foundation e
+  dona de sua contraparte de loading; a secao nao desenha um botao falso com
+  `div` ou CSS local. Skeleton preserva geometria durante loading normal;
+  estados de erro e vazio mantem feedback humano e acao real quando houver.
 - Uma rota Client so recebe o status "sem mock" depois que Web e Mobile foram
   revisados no mesmo fluxo: ambos devem consumir o shared-core, nao ter
   fallback de apresentacao e expor loading, erro e vazio reais. A conclusao em

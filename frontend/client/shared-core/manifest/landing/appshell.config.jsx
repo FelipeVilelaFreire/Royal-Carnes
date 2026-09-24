@@ -42,6 +42,9 @@ export const landingAppShellConfig = {
   },
   header: {
     enabled: true,
+    appearanceEditor: {
+      enabled: true
+    },
     layoutMode: "attached",
     surfaceStyle: "glassBlur",
     brandDisplay: "text",

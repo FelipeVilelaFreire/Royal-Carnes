@@ -62,7 +62,7 @@ export function useClientCustomer() {
   }, [apiConfig, customerApi, ordersApi, subscriptionsApi]);
   useEffect(() => { void load(); }, [load]);
   const updateProfileDraft = useCallback((field: keyof ClientCustomerProfileDraft, value: string) => { setProfileDraft((current) => ({ ...current, [field]: value })); setSaveState("idle"); }, []);
-  const saveProfileDraft = useCallback(async () => { await customerApi.update({ name: profileDraft.name, email: profileDraft.email, phone: profileDraft.phone, document: profileDraft.cpf, birth_date: profileDraft.birthdate || null, preferences: { preferred_doneness: profileDraft.preferredDoneness } }); setSaveState("saved"); await load(); }, [customerApi, load, profileDraft]);
+  const saveProfileDraft = useCallback(async () => { await customerApi.update({ name: profileDraft.name, email: profileDraft.email, phone: profileDraft.phone ? `+${profileDraft.phone.replace(/\D/g, "")}` : "", document: profileDraft.cpf.replace(/\D/g, ""), birth_date: profileDraft.birthdate || null, preferences: { preferred_doneness: profileDraft.preferredDoneness } }); setSaveState("saved"); await load(); }, [customerApi, load, profileDraft]);
   const updateNotification = useCallback(async (key: keyof ClientCustomerNotificationPreferences, value: boolean) => { const next = { ...notifications, [key]: value }; setNotifications(next); await customerApi.update({ notification_settings: next }); }, [customerApi, notifications]);
   const createAddress = useCallback(async (input: ClientCustomerAddressCreateInput) => {
     await customerApi.createAddress({
@@ -79,10 +79,18 @@ export function useClientCustomer() {
     });
     await load();
   }, [customerApi, load]);
+  const updateAddress = useCallback(async (addressId: string, input: ClientCustomerAddressCreateInput) => {
+    await customerApi.updateAddress(addressId, {
+      label: input.label, recipient_name: input.recipientName, street: input.street, number: input.number,
+      complement: input.complement, district: input.district, city: input.city, state: input.state,
+      postal_code: input.zipCode, is_default: input.isPrimary,
+    });
+    await load();
+  }, [customerApi, load]);
   const lookupAddressByPostalCode = useCallback(
     (postalCode: string) => lookupBrazilianPostalCode(postalCode),
     [],
   );
   const viewModel = useMemo(() => createClientCustomerAccountViewModel({ dataSource, selectedPlanKey }), [dataSource, selectedPlanKey]);
-  return { activeTab, dataSource, notifications, profileDraft, saveState, selectedPlanKey, source: "api" as const, viewModel, isLoading, error, actions: { createAddress, lookupAddressByPostalCode, saveProfileDraft, setActiveTab, updateNotification, updateProfileDraft, reload: load } };
+  return { activeTab, dataSource, notifications, profileDraft, saveState, selectedPlanKey, source: "api" as const, viewModel, isLoading, error, actions: { createAddress, updateAddress, lookupAddressByPostalCode, saveProfileDraft, setActiveTab, updateNotification, updateProfileDraft, reload: load } };
 }

@@ -17,6 +17,7 @@ export interface LineItemsEditorProps {
   emptyLabel: string;
   hierarchy?: AdminStandardLineItemsHierarchyViewModel;
   onChange: (value: Array<Record<string, any>>) => void;
+  onOpenRelatedRow?: (screenKey: string, row: Record<string, any>) => void;
   readOnly?: boolean;
   removeLabel: string;
   t: AdminTranslate;
@@ -29,6 +30,7 @@ export const LineItemsEditor: React.FC<LineItemsEditorProps> = ({
   emptyLabel,
   hierarchy,
   onChange,
+  onOpenRelatedRow,
   readOnly = false,
   removeLabel,
   t,
@@ -55,7 +57,7 @@ export const LineItemsEditor: React.FC<LineItemsEditorProps> = ({
   if (readOnly) {
     return (
       <div className={styles.editor}>
-        {items.length ? hierarchy ? <LineItemsHierarchy columns={columns} hierarchy={hierarchy} items={items} t={t} /> : <LineItemsReadTable columns={columns} items={items} t={t} /> : (
+        {items.length ? hierarchy ? <LineItemsHierarchy columns={columns} hierarchy={hierarchy} items={items} t={t} /> : <LineItemsReadTable columns={columns} items={items} onOpenRelatedRow={onOpenRelatedRow} t={t} /> : (
           <div className={styles.empty}>
             <Text tone="muted" variant="body">{emptyLabel}</Text>
           </div>

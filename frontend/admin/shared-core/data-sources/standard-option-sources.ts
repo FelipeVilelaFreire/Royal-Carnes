@@ -154,10 +154,22 @@ const adminStandardOptionSourceLoaders = {
       },
       value: kind.key,
     })),
+  tiposPedidoCriacaoManual: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
+    (await createAdminOrdersApi(apiConfig).config()).kinds
+      .filter((kind) => kind.commercialModeKey !== "box")
+      .map((kind) => ({
+        label: kind.label,
+        meta: {
+          commercialModeKey: kind.commercialModeKey,
+          createsDelivery: kind.createsDelivery,
+          requiresInventory: kind.requiresInventory,
+        },
+        value: kind.key,
+      })),
   orderStatuses: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
     (await createAdminOrdersApi(apiConfig).config()).statuses.map((status) => ({
       label: status.label,
-      meta: { ...resolveStatusOptionPresentation(status.metadata), allowedNextKeys: status.allowedNextKeys },
+      meta: resolveStatusOptionPresentation(status.metadata),
       value: status.key,
     })),
   deliveryStatuses: async (apiConfig: ApiClientConfig): Promise<AdminStandardFieldOption[]> =>
@@ -230,7 +242,12 @@ const adminStandardOptionSourceLoaders = {
     })),
 };
 
-function collectFieldSources(entityConfig: any): string[] {
+export type AdminStandardOptionSourceScope = "detail" | "form" | "list";
+
+function collectFieldSources(
+  entityConfig: any,
+  scope: AdminStandardOptionSourceScope,
+): string[] {
   const sourceSet = new Set<string>();
   const addFieldSources = (fields: any[] = []) => {
     fields.forEach((field) => {
@@ -243,23 +260,35 @@ function collectFieldSources(entityConfig: any): string[] {
     });
   };
 
-  (entityConfig?.detailPage?.tabs || []).forEach((tab: any) => {
-    addFieldSources(tab.fields || []);
-    (tab.sections || []).forEach((section: any) => addFieldSources(
-      section.type === "lineItems" ? [section] : section.fields || [],
-    ));
-  });
-  (entityConfig?.addPage?.sections || []).forEach((section: any) => addFieldSources(section.fields || []));
-  addFieldSources(entityConfig?.addPage?.fields || []);
-  addFieldSources(entityConfig?.form?.fields || []);
+  if (scope === "detail") {
+    (entityConfig?.detailPage?.tabs || []).forEach((tab: any) => {
+      addFieldSources(tab.fields || []);
+      (tab.sections || []).forEach((section: any) => addFieldSources(
+        section.type === "lineItems" ? [section] : section.fields || [],
+      ));
+    });
+  }
+
+  if (scope === "form") {
+    (entityConfig?.addPage?.sections || []).forEach((section: any) => addFieldSources(section.fields || []));
+    addFieldSources(entityConfig?.addPage?.fields || []);
+    addFieldSources(entityConfig?.form?.fields || []);
+  }
+
+  if (scope === "list") {
+    (entityConfig?.listPage?.filters || []).forEach((filter: any) => {
+      if (filter.source) sourceSet.add(filter.source);
+    });
+  }
   return [...sourceSet];
 }
 
 export async function loadAdminStandardOptionSources(
   entityConfig: any,
   apiConfig: ApiClientConfig = {},
+  options: { scope?: AdminStandardOptionSourceScope } = {},
 ): Promise<AdminStandardOptionSourceResult> {
-  const sources = collectFieldSources(entityConfig);
+  const sources = collectFieldSources(entityConfig, options.scope || "list");
   if (!sources.length) return { error: null, optionSources: {} };
 
   try {

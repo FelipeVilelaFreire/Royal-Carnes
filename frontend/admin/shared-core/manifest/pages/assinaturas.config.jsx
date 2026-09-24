@@ -15,6 +15,8 @@ export const assinaturasConfig = {
       { key: "currentCycleEndsAt", labelKey: "assinaturas.tableHeaders.currentCycleEndsAt" }
     ],
     filters: [
+      { key: "customerId", labelKey: "assinaturas.fields.customer", source: "clientes" },
+      { key: "planKey", labelKey: "assinaturas.fields.plan", source: "planos" },
       {
         key: "status",
         labelKey: "assinaturas.filters.status",

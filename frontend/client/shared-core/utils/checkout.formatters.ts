@@ -6,3 +6,10 @@ export const formatClientCheckoutMoney = (value: number, locale = "pt-BR", curre
 
 export const formatClientCheckoutMeasure = (value: number, unit: string) =>
   `${Number(value.toFixed(1))}${unit}`;
+
+export const formatClientCheckoutUsage = (
+  used: number,
+  limit: number,
+  unit: string,
+  formatMeasure: (value: number, unit: string) => string = formatClientCheckoutMeasure,
+) => `${formatMeasure(used, "")}/${formatMeasure(limit, "")}${unit ? ` ${unit}` : ""}`;

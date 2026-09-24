@@ -7,6 +7,7 @@ import { Text } from "../../../foundation/ui/web/Text";
 import styles from "./OrderSummaryItem.module.css";
 
 export interface OrderSummaryItemProps {
+  density?: "compact" | "comfortable";
   detail: string;
   image?: string;
   name: string;
@@ -26,6 +27,7 @@ export interface OrderSummaryItemProps {
 }
 
 export const OrderSummaryItem: React.FC<OrderSummaryItemProps> = ({
+  density = "compact",
   detail,
   image,
   name,
@@ -37,7 +39,7 @@ export const OrderSummaryItem: React.FC<OrderSummaryItemProps> = ({
   const hasImage = Boolean(image) && !isMediaUnavailable;
 
   return (
-    <article className={styles.item}>
+    <article className={styles.item} data-density={density}>
       <div aria-hidden="true" className={styles.media}>
         {hasImage ? (
           <img alt="" className={styles.image} src={image} onError={() => setIsMediaUnavailable(true)} />
@@ -49,7 +51,7 @@ export const OrderSummaryItem: React.FC<OrderSummaryItemProps> = ({
         <Text as="h3" className={styles.name} tone="inherit" variant="body" weight="semibold">
           {name}
         </Text>
-        <Text as="span" className={styles.detail} tone="inherit" variant="caption">
+        <Text as="span" className={styles.detail} tone="inherit" variant={density === "comfortable" ? "body" : "caption"}>
           {detail}
         </Text>
       </div>
@@ -69,11 +71,11 @@ export const OrderSummaryItem: React.FC<OrderSummaryItemProps> = ({
                 icon={<MinusIcon size={14} />}
                 iconPosition="only"
                 onClick={quantityControl.onDecrement}
-                size="sm"
+                size={density === "comfortable" ? "md" : "sm"}
                 tone="neutral"
                 type="button"
               />
-              <Text as="span" className={styles.quantityValue} tone="inherit" variant="caption" weight="semibold">
+              <Text as="span" className={styles.quantityValue} tone="inherit" variant={density === "comfortable" ? "body" : "caption"} weight="semibold">
                 {quantityControl.valueLabel}
               </Text>
               <Button
@@ -83,8 +85,8 @@ export const OrderSummaryItem: React.FC<OrderSummaryItemProps> = ({
                 icon={<PlusIcon size={14} />}
                 iconPosition="only"
                 onClick={quantityControl.onIncrement}
-                size="sm"
-                tone="neutral"
+                size={density === "comfortable" ? "md" : "sm"}
+                tone="primary"
                 type="button"
               />
             </div>

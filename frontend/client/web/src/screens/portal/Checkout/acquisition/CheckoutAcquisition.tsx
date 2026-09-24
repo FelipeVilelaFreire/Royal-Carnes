@@ -21,7 +21,7 @@ export const CheckoutAcquisition: React.FC<CheckoutAcquisitionProps> = ({
   selectedMode,
   strings,
 }) => (
-  <AcquisitionIntro isCompact={Boolean(selectedMode)} strings={strings.modeSelection}>
+  <AcquisitionIntro isCompact={Boolean(selectedMode)}>
     <AcquisitionModeGrid
       activeSubscription={activeSubscription}
       activeSubscriptionLabel={activeSubscriptionLabel}

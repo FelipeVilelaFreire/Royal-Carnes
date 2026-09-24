@@ -10,6 +10,7 @@ import {
   type ButtonTone,
 } from "../../shared/core";
 import { Icon } from "../Icon";
+import { Skeleton, type SkeletonWidth } from "../Skeleton";
 import { Surface } from "../Surface";
 import { useUiConfig } from "../UiProvider";
 import styles from "./Button.module.css";
@@ -19,7 +20,9 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: ReactNode;
   iconPosition?: "start" | "end" | "only";
   loading?: boolean;
+  skeletonWidth?: SkeletonWidth;
   size?: ButtonLevel;
+  state?: "default" | "skeleton";
   tone?: ButtonTone;
 };
 
@@ -46,7 +49,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     icon,
     iconPosition = "start",
     loading = false,
+    skeletonWidth = "md",
     size,
+    state = "default",
     style,
     type = "button",
     tone,
@@ -82,6 +87,20 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   } as CSSProperties;
 
   const textContent = iconPosition === "only" ? null : children;
+
+  if (state === "skeleton") {
+    return (
+      <Skeleton
+        aria-busy="true"
+        className={[styles.buttonSkeleton, className].filter(Boolean).join(" ")}
+        data-button-size={resolved.level}
+        shape="block"
+        size="xs"
+        style={buttonStyle}
+        width={skeletonWidth}
+      />
+    );
+  }
 
   const SurfaceButton = Surface as ComponentType<any>;
 

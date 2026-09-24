@@ -81,6 +81,16 @@ O filtro usa rascunho nas duas plataformas: categoria somente e confirmada ao
 aplicar. A lista de categorias nasce de todas as tags associadas aos produtos,
 e nao somente de `Carnes` e `Acompanhamentos`.
 
+No Web, `StickyOrderSummary` representa `currentStep` com quatro circulos
+numerados e conectores. A sequencia e `montagem -> entrega -> pagamento ->
+resumo`; os estados visuais sao derivados do indice da etapa e nao recebem
+regra comercial local.
+
+`DeliveryStep` Web mantem o formulario de novo endereco antes da grade de
+enderecos salvos quando `isAddingAddress` esta ativo. A mudanca e apenas de
+ordem visual: submissao, persistencia e selecao continuam em
+`useClientCheckout` e no shared-core.
+
 ## Nivel 01 - selecao
 
 ```text
@@ -122,6 +132,10 @@ editorial antes dos cards. No desktop, cada card tem area interna ampla e uma
 acao visual no rodape; a acao nao muda a regra de dominio, pois o clique do
 card continua sendo o unico evento de selecao de modalidade.
 
+No caso de assinatura ativa, `AcquisitionModeCard` recebe o estado real e
+exibe o badge de plano ativo sem abrir ou aumentar o card. O card permanece
+orientado por strings e tokens da Foundation.
+
 ## Paridade Web e Native
 
 Paridade significa mesmo caso de uso, modalidades, etapas, dados, copy, estados
@@ -156,7 +170,7 @@ acesso em vez de mudar a etapa localmente.
 
 ```text
 npm run verify:rules
-  -> passou, 0 violacoes novas
+  -> executado; apenas a violacao preexistente de Skeleton permanece
 
 git diff --check
   -> passou; avisos LF/CRLF existentes no worktree

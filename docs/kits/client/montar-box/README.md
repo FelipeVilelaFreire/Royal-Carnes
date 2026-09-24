@@ -13,7 +13,7 @@ produto que representa.
      -> 01.1: modalidade selecionada, ainda sem itens
      -> 01.2: busca, categoria e adicao de produtos reais
 
-futuros niveis, ainda sem referencia Stitch propria
+proximos niveis, ainda sem referencia Stitch propria
   -> nivel 02: entrega
   -> nivel 03: pagamento
   -> nivel 04: revisao e pedido
@@ -54,6 +54,21 @@ categoria e uma escolha temporaria; somente `Aplicar` atualiza a consulta. A
 elegibilidade comercial definitiva por plano ainda depende de entitlement e
 saldo autoritativos vindos do backend/shared-core.
 
+## Refinamentos atuais da composicao Web
+
+O resumo lateral apresenta a progressao como uma timeline horizontal de quatro
+circulos conectados. A timeline apenas le `currentStep`: ela diferencia as
+etapas concluidas, atual e pendentes, mas nao cria uma segunda forma de avancar
+o checkout.
+
+Na etapa de entrega, o formulario de novo endereco, quando aberto, antecede os
+enderecos salvos. O rotulo repetido da secao foi removido; os cards existentes
+continuam responsaveis pela escolha de endereco do ciclo.
+
+Na aquisicao de assinatura ativa, o card mostra um badge compacto de plano
+ativo no canto superior direito. O estado visual nao muda a modalidade nem o
+contrato de configuracao de ciclos.
+
 ## Regra de leitura
 
 Cada nivel deve registrar:
@@ -79,3 +94,7 @@ de paridade e o proximo corte seguro.
 
 Leia tambem [checkout-composicao.md](checkout-composicao.md) para a divisao
 visual entre aquisicao, ciclo, catalogo e resumo.
+
+Para o contrato operacional de Assinatura, Royal Box e Royal Delivery e o
+roteiro de homologacao por camadas, leia
+[fluxos-comerciais-e-matriz-de-testes.md](fluxos-comerciais-e-matriz-de-testes.md).

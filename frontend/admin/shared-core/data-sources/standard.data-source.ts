@@ -14,8 +14,12 @@ import {
   createAdminCollectionRowsViewModel,
   createAdminProductRowViewModel,
 } from "../view-models/catalog.view-model";
-import { createAdminCustomerRowViewModel } from "../view-models/customers.view-model";
+import {
+  createAdminCustomerDetailRowViewModel,
+  createAdminCustomerRowViewModel,
+} from "../view-models/customers.view-model";
 import { createAdminDeliveriesViewModel } from "../view-models/deliveries.view-model";
+import { createAdminDeliveryPromisePolicyRowViewModel } from "../view-models/delivery-promise-policies.view-model";
 import { createAdminInventoryViewModel } from "../view-models/inventory.view-model";
 import { createAdminOrdersViewModel } from "../view-models/orders.view-model";
 import { createAdminPaymentRowViewModel } from "../view-models/payments.view-model";
@@ -36,12 +40,21 @@ export type {
   AdminStandardMutationResult,
   AdminStandardOptionSourceResult,
 } from "./standard-data-source.types";
+export type { AdminStandardOptionSourceScope } from "./standard-option-sources";
 
 function mapOrderRows(rows: ReturnType<typeof createAdminOrdersViewModel>["orders"]) {
-  return rows.map((row) => ({
-    ...row,
-    status: row.statusKey,
-  }));
+  return rows
+    .map((row) => ({
+      ...row,
+      status: row.statusKey,
+    }))
+    .sort((left, right) => {
+      const priorityDifference = left.deliveryPromisePriority - right.deliveryPromisePriority;
+      if (priorityDifference !== 0) return priorityDifference;
+      return (left.deliveryDeadlineSortValue || "9999-12-31").localeCompare(
+        right.deliveryDeadlineSortValue || "9999-12-31",
+      );
+    });
 }
 
 function mapDeliveryRows(rows: ReturnType<typeof createAdminDeliveriesViewModel>["deliveries"]) {
@@ -235,6 +248,47 @@ function createCollectionProductRows(
     }));
 }
 
+function createCategoryProductRows(
+  categoryKey: string,
+  products: Awaited<ReturnType<ReturnType<typeof createAdminCatalogApi>["listProducts"]>>,
+  categories: Awaited<ReturnType<ReturnType<typeof createAdminCatalogApi>["listCategories"]>>,
+  collections: Awaited<ReturnType<ReturnType<typeof createAdminCatalogApi>["listCollections"]>>,
+) {
+  return products
+    .filter((product) => product.categories.some((productCategory) => productCategory.key === categoryKey))
+    .map((product) => createAdminProductRowViewModel(product, collections, categories))
+    .map((product) => ({
+      categoryLabel: product.primaryCategoryName,
+      id: product.id,
+      image: product.image,
+      name: product.name,
+      priceFormatted: product.priceLabel || "",
+      unit: product.unit,
+    }));
+}
+
+async function mapCatalogCategoryResult(
+  category: Awaited<ReturnType<ReturnType<typeof createAdminCatalogApi>["listAdminCategories"]>>[number],
+  apiConfig: ApiClientConfig,
+) {
+  const api = createAdminCatalogApi(apiConfig);
+  const [categories, collections, products] = await Promise.all([
+    api.listAdminCategories(),
+    api.listCollections(),
+    api.listProducts(),
+  ]);
+  const row = createAdminCategoryRowsViewModel(categories)
+    .find((candidate) => String(candidate.id) === String(category.id));
+
+  return {
+    ...(row || createAdminCategoryRowsViewModel([category])[0]),
+    categoryProductKeys: products
+      .filter((product) => product.categories.some((productCategory) => productCategory.key === category.key))
+      .map((product) => product.key),
+    products: createCategoryProductRows(category.key, products, categories, collections),
+  };
+}
+
 async function mapCatalogCollectionResult(
   collection: Awaited<ReturnType<ReturnType<typeof createAdminCatalogApi>["listAdminCollections"]>>[number],
   apiConfig: ApiClientConfig,
@@ -274,21 +328,19 @@ export async function loadAdminStandardRows(
 
   try {
     if (dataSource.key === "pedidos") {
-      const api = createAdminOrdersApi(apiConfig);
+      const ordersApi = createAdminOrdersApi(apiConfig);
       const deliveriesApi = createAdminDeliveriesApi(apiConfig);
-      const paymentsApi = createAdminPaymentsApi(apiConfig);
-      const [config, deliveryConfig, deliveries, orders, payments] = await Promise.all([
-        api.config(),
+      const [config, orders, deliveryConfig, deliveries] = await Promise.all([
+        ordersApi.config(),
+        ordersApi.list(),
         deliveriesApi.config(),
         deliveriesApi.list(),
-        api.list(),
-        paymentsApi.list(),
       ]);
       return {
         error: null,
         isFallback: false,
         rows: mapOrderRows(
-          createAdminOrdersViewModel(orders, config, deliveries, deliveryConfig, payments).orders,
+          createAdminOrdersViewModel(orders, config, deliveries, deliveryConfig).orders,
         ),
       };
     }
@@ -300,6 +352,15 @@ export async function loadAdminStandardRows(
         error: null,
         isFallback: false,
         rows: mapDeliveryRows(createAdminDeliveriesViewModel(deliveries, config).deliveries),
+      };
+    }
+
+    if (dataSource.key === "deliveryPromisePolicies") {
+      const policies = await createAdminDeliveriesApi(apiConfig).listPromisePolicies();
+      return {
+        error: null,
+        isFallback: false,
+        rows: policies.map(createAdminDeliveryPromisePolicyRowViewModel),
       };
     }
 
@@ -436,8 +497,31 @@ export async function loadAdminStandardRow(
 
   try {
     if (dataSource.key === "clientes") {
-      const customer = await createAdminCustomersApi(apiConfig).detail(rowId);
-      return { error: null, row: createAdminCustomerRowViewModel(customer) };
+      const customersApi = createAdminCustomersApi(apiConfig);
+      const subscriptionsApi = createAdminSubscriptionsApi(apiConfig);
+      const ordersApi = createAdminOrdersApi(apiConfig);
+      const paymentsApi = createAdminPaymentsApi(apiConfig);
+      const customer = await customersApi.detail(rowId);
+      const [subscriptionsResult, ordersResult, paymentsResult, orderConfigResult] = await Promise.allSettled([
+        subscriptionsApi.listSubscriptions(),
+        ordersApi.list(),
+        paymentsApi.list(),
+        ordersApi.config(),
+      ]);
+      const subscriptions = subscriptionsResult.status === "fulfilled" ? subscriptionsResult.value : [];
+      const orders = ordersResult.status === "fulfilled" ? ordersResult.value : [];
+      const payments = paymentsResult.status === "fulfilled" ? paymentsResult.value : [];
+      const orderConfig = orderConfigResult.status === "fulfilled" ? orderConfigResult.value : null;
+      return {
+        error: null,
+        row: createAdminCustomerDetailRowViewModel({
+          customer,
+          subscriptions,
+          orders,
+          payments,
+          orderConfig,
+        }),
+      };
     }
 
     if (dataSource.key === "produtos") {
@@ -445,26 +529,14 @@ export async function loadAdminStandardRow(
       return { error: null, row: await mapCatalogProductResult(product, apiConfig) };
     }
 
-    if (dataSource.key === "categorias") {
-      const api = createAdminCatalogApi(apiConfig);
-      const category = await api.updateCategory(rowId, {
-        isActive: parseOptionalBoolean(values.isActive),
-        key: values.key,
-        name: values.name,
-        parentKey: values.parentKey || "",
-        sortOrder: parseOptionalInteger(values.sortOrder),
-      });
-      const categories = await api.listAdminCategories();
-      return {
-        error: null,
-        row: createAdminCategoryRowsViewModel(categories).find((row) => row.id === category.id)
-          || createAdminCategoryRowsViewModel([category])[0],
-      };
-    }
-
     if (dataSource.key === "planos") {
       const plans = await createAdminSubscriptionsApi(apiConfig).listPlans();
       return { error: null, row: plans.map(createAdminPlanRowViewModel).find((row) => row.id === rowId) || null };
+    }
+
+    if (dataSource.key === "deliveryPromisePolicies") {
+      const policy = await createAdminDeliveriesApi(apiConfig).detailPromisePolicy(rowId);
+      return { error: null, row: createAdminDeliveryPromisePolicyRowViewModel(policy) };
     }
 
     if (dataSource.key === "assinaturas") {
@@ -509,8 +581,7 @@ export async function loadAdminStandardRow(
     if (dataSource.key === "categorias") {
       const categories = await createAdminCatalogApi(apiConfig).listAdminCategories();
       const category = categories.find((candidate) => candidate.id === rowId) || await createAdminCatalogApi(apiConfig).categoryDetail(rowId);
-      const rows = createAdminCategoryRowsViewModel(categories);
-      return { error: null, row: rows.find((row) => row.id === category.id) || createAdminCategoryRowsViewModel([category])[0] };
+      return { error: null, row: await mapCatalogCategoryResult(category, apiConfig) };
     }
 
     if (dataSource.key === "colecoes") {
@@ -582,40 +653,10 @@ export async function createAdminStandardRow(
       return { error: null, row: await mapCatalogProductResult(product, apiConfig) };
     }
 
-    if (dataSource.key === "colecoes") {
-      const api = createAdminCatalogApi(apiConfig);
-      const [collections, products] = await Promise.all([
-        api.listAdminCollections(),
-        api.listProducts(),
-      ]);
-      const collection = collections.find((candidate) => String(candidate.id) === String(rowId));
-      if (!collection) return { error: null, row: null };
-
-      const selectedProductKeys = new Set(splitKeys(values.collectionProductKeys));
-      const currentProductIds = new Set(collection.productIds.map(String));
-      const updates = products.flatMap((product) => {
-        const isCurrentlyLinked = currentProductIds.has(String(product.id)) || product.collectionKeys.includes(collection.key);
-        const shouldBeLinked = selectedProductKeys.has(product.key);
-        if (isCurrentlyLinked === shouldBeLinked) return [];
-
-        return [api.update(product.id, {
-          collectionKeys: shouldBeLinked
-            ? [...new Set([...product.collectionKeys, collection.key])]
-            : product.collectionKeys.filter((key) => key !== collection.key),
-        })];
-      });
-      await Promise.all(updates);
-      const refreshedCollection = (await api.listAdminCollections())
-        .find((candidate) => String(candidate.id) === String(rowId));
-      return {
-        error: null,
-        row: refreshedCollection ? await mapCatalogCollectionResult(refreshedCollection, apiConfig) : null,
-      };
-    }
-
     if (dataSource.key === "planos") {
       const plan = await createAdminSubscriptionsApi(apiConfig).createPlan({
         billingInterval: values.billingInterval || "month",
+        accentColor: values.accentColor || "#FFC665",
         description: values.description,
         entitlements: normalizePlanEntitlements(values.entitlements, values.itemLimits),
         key: values.key,
@@ -626,6 +667,22 @@ export async function createAdminStandardRow(
         trialDays: parseOptionalInteger(values.trialDays),
       });
       return { error: null, row: createAdminPlanRowViewModel(plan) };
+    }
+
+    if (dataSource.key === "deliveryPromisePolicies") {
+      const policy = await createAdminDeliveriesApi(apiConfig).createPromisePolicy({
+        key: values.key,
+        name: values.name,
+        minBusinessDays: parseOptionalInteger(values.minBusinessDays) ?? 1,
+        maxBusinessDays: parseOptionalInteger(values.maxBusinessDays) ?? 1,
+        approachingBusinessDays: parseOptionalInteger(values.approachingBusinessDays) ?? 0,
+        orderKindKeys: splitKeys(values.orderKindKeys),
+        subscriptionPlanKeys: splitKeys(values.subscriptionPlanKeys),
+        isDefault: parseOptionalBoolean(values.isDefault) ?? false,
+        isActive: parseOptionalBoolean(values.isActive) ?? true,
+        sortOrder: parseOptionalInteger(values.sortOrder) ?? 0,
+      });
+      return { error: null, row: createAdminDeliveryPromisePolicyRowViewModel(policy) };
     }
 
     if (dataSource.key === "assinaturas") {
@@ -725,6 +782,27 @@ export async function createAdminStandardRow(
   }
 }
 
+export async function transitionAdminStandardRow(
+  dataSource: AdminStandardDataSourceConfig | undefined,
+  rowId: string | number | undefined,
+  actionKey: string,
+  value: string,
+  apiConfig: ApiClientConfig = {},
+): Promise<AdminStandardMutationResult> {
+  if (!dataSource?.key || rowId === undefined) return { error: null, row: null };
+
+  try {
+    if (dataSource.key === "pedidos" && actionKey === "transition") {
+      const api = createAdminOrdersApi(apiConfig);
+      const [config, order] = await Promise.all([api.config(), api.transition(rowId, { statusKey: value })]);
+      return { error: null, row: mapOrderRows(createAdminOrdersViewModel([order], config).orders)[0] };
+    }
+    return { error: null, row: null };
+  } catch (err) {
+    return { error: normalizeApiError(err), row: null };
+  }
+}
+
 export async function updateAdminStandardRow(
   dataSource: AdminStandardDataSourceConfig | undefined,
   rowId: string | number | undefined,
@@ -815,12 +893,75 @@ export async function updateAdminStandardRow(
       return { error: null, row: await mapCatalogProductResult(product, apiConfig) };
     }
 
+    if (dataSource.key === "colecoes") {
+      const api = createAdminCatalogApi(apiConfig);
+      const [collections, products] = await Promise.all([
+        api.listAdminCollections(),
+        api.listProducts(),
+      ]);
+      const collection = collections.find((candidate) => String(candidate.id) === String(rowId));
+      if (!collection) return { error: null, row: null };
+
+      const selectedProductKeys = new Set(splitKeys(values.collectionProductKeys));
+      const currentProductIds = new Set(collection.productIds.map(String));
+      const updates = products.flatMap((product) => {
+        const isCurrentlyLinked = currentProductIds.has(String(product.id)) || product.collectionKeys.includes(collection.key);
+        const shouldBeLinked = selectedProductKeys.has(product.key);
+        if (isCurrentlyLinked === shouldBeLinked) return [];
+        return [api.update(product.id, {
+          collectionKeys: shouldBeLinked
+            ? [...new Set([...product.collectionKeys, collection.key])]
+            : product.collectionKeys.filter((key) => key !== collection.key),
+        })];
+      });
+      await Promise.all(updates);
+      const refreshedCollection = (await api.listAdminCollections())
+        .find((candidate) => String(candidate.id) === String(rowId));
+      return {
+        error: null,
+        row: refreshedCollection ? await mapCatalogCollectionResult(refreshedCollection, apiConfig) : null,
+      };
+    }
+
+    if (dataSource.key === "categorias") {
+      const api = createAdminCatalogApi(apiConfig);
+      const category = await api.updateCategory(rowId, {
+        isActive: parseOptionalBoolean(values.isActive),
+        key: values.key,
+        name: values.name,
+        parentKey: values.parentKey || "",
+        sortOrder: parseOptionalInteger(values.sortOrder),
+      });
+
+      if (values.categoryProductKeys !== undefined) {
+        const products = await api.listProducts();
+        const selectedProductKeys = new Set(splitKeys(values.categoryProductKeys));
+        const affectedProducts = products.filter((product) => (
+          selectedProductKeys.has(product.key)
+          || product.categories.some((productCategory) => productCategory.key === category.key)
+        ));
+        await Promise.all(affectedProducts.map((product) => {
+          const isLinked = product.categories.some((productCategory) => productCategory.key === category.key);
+          const shouldBeLinked = selectedProductKeys.has(product.key);
+          if (isLinked === shouldBeLinked) return null;
+          return api.update(product.id, {
+            categoryKeys: shouldBeLinked
+              ? [...new Set([...product.categories.map((productCategory) => productCategory.key), category.key])]
+              : product.categories.map((productCategory) => productCategory.key).filter((key) => key !== category.key),
+          });
+        }).filter(Boolean));
+      }
+
+      return { error: null, row: await mapCatalogCategoryResult(category, apiConfig) };
+    }
+
     if (dataSource.key === "planos") {
       const plans = await createAdminSubscriptionsApi(apiConfig).listPlans();
       const currentPlan = plans.find((plan) => plan.id === rowId);
       if (!currentPlan) return { error: null, row: null };
       const plan = await createAdminSubscriptionsApi(apiConfig).createPlan({
         billingInterval: values.billingInterval || currentPlan.billingInterval || "month",
+        accentColor: values.accentColor || currentPlan.accentColor || "#FFC665",
         description: values.description ?? currentPlan.description ?? undefined,
         key: currentPlan.key,
         name: values.name || currentPlan.name,
@@ -831,6 +972,24 @@ export async function updateAdminStandardRow(
         trialDays: parseOptionalInteger(values.trialDays) ?? currentPlan.trialDays,
       });
       return { error: null, row: createAdminPlanRowViewModel(plan) };
+    }
+
+    if (dataSource.key === "deliveryPromisePolicies") {
+      const api = createAdminDeliveriesApi(apiConfig);
+      const current = await api.detailPromisePolicy(rowId);
+      const policy = await api.updatePromisePolicy(rowId, {
+        key: current.key,
+        name: values.name || current.name,
+        minBusinessDays: parseOptionalInteger(values.minBusinessDays) ?? current.minBusinessDays,
+        maxBusinessDays: parseOptionalInteger(values.maxBusinessDays) ?? current.maxBusinessDays,
+        approachingBusinessDays: parseOptionalInteger(values.approachingBusinessDays) ?? current.approachingBusinessDays,
+        orderKindKeys: values.orderKindKeys === undefined ? current.orderKindKeys : splitKeys(values.orderKindKeys),
+        subscriptionPlanKeys: values.subscriptionPlanKeys === undefined ? current.subscriptionPlanKeys : splitKeys(values.subscriptionPlanKeys),
+        isDefault: parseOptionalBoolean(values.isDefault) ?? current.isDefault,
+        isActive: parseOptionalBoolean(values.isActive) ?? current.isActive,
+        sortOrder: parseOptionalInteger(values.sortOrder) ?? current.sortOrder,
+      });
+      return { error: null, row: createAdminDeliveryPromisePolicyRowViewModel(policy) };
     }
 
     if (dataSource.key === "assinaturas") {

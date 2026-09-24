@@ -1,9 +1,12 @@
 from decimal import Decimal
 
+from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from apps.core.models import CodeSequence
 from apps.core.seed_loader import BackendSeedApplier, BackendSeedLoader
+from apps.boxes.models import BoxCycle, BoxSubscription
+from apps.customers.models import Address, Customer
 from apps.deliveries.models import Delivery
 from apps.inventory.models import InventoryItem
 from apps.orders.models import Order, OrderKindDefinition, OrderStatusDefinition
@@ -94,7 +97,7 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(response.data["status_key"], "received")
         self.assertEqual(response.data["total_cents"], 8990)
         self.assertEqual(Delivery.objects.count(), 5)
-        self.assertEqual(Delivery.objects.get(order_id=response.data["id"]).status_key, "pending")
+        self.assertEqual(Delivery.objects.get(order_id=response.data["id"]).status_key, "received")
         item = InventoryItem.objects.get(variant__sku="PICANHA-1KG")
         self.assertEqual(item.reserved_quantity, Decimal("6.000"))
 
@@ -120,7 +123,7 @@ class OrdersApiTests(APITestCase):
         self.assertEqual(response.status_code, 400, response.data)
         self.assertEqual(response.data["code"], "order_item_quantity_invalid")
 
-    def test_customer_can_create_royal_box_order_from_seeded_kind(self):
+    def test_customer_cannot_create_royal_box_order_without_cycle(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
 
         response = self.client.post(
@@ -139,10 +142,51 @@ class OrdersApiTests(APITestCase):
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
 
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(response.data["code"], "box_cycle_required_for_order")
+
+    def test_customer_checkout_creates_recurring_royal_box_cycle_and_order(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+        customer = Customer.objects.get(email="cliente@royalprime.local")
+        address = Address.objects.create(
+            organization=customer.organization,
+            customer=customer,
+            recipient_name=customer.name,
+            street="Rua Nelson Mandela",
+            number="100",
+            city="Rio de Janeiro",
+            state="RJ",
+        )
+
+        response = self.client.post(
+            "/api/v1/orders/me/royal-box/",
+            {
+                "address_id": address.id,
+                "recurrence_day": 30,
+                "items": [
+                    {
+                        "product_key": "picanha",
+                        "variant_sku": "PICANHA-1KG",
+                        "quantity": "1.000",
+                    }
+                ],
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data["kind_key"], "royal-box")
-        self.assertEqual(response.data["total_cents"], 8990)
-        self.assertEqual(Delivery.objects.count(), 5)
+        self.assertEqual(response.data["box_recurrence_day"], 30)
+        cycle = BoxCycle.objects.get(id=response.data["box_cycle_id"])
+        self.assertEqual(cycle.status, BoxCycle.Status.ORDER_CREATED)
+        self.assertEqual(cycle.subscription.default_delivery_address_id, address.id)
+        self.assertEqual(cycle.subscription.schedule.recurrence_rule["dayOfMonth"], 30)
+        delivery = Delivery.objects.get(order_id=response.data["id"])
+        self.assertEqual(delivery.promised_delivery_starts_on, timezone.localdate(cycle.scheduled_for))
+        self.assertEqual(delivery.promised_delivery_by_on, timezone.localdate(cycle.scheduled_for))
+        self.assertEqual(delivery.delivery_promise_snapshot["source"], "royal_box_recurring_delivery_day")
+        self.assertEqual(BoxSubscription.objects.filter(customer=customer).count(), 1)
 
     def test_subscription_order_requires_cycle(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
@@ -249,11 +293,12 @@ class OrdersApiTests(APITestCase):
         )
 
         self.assertEqual(list_response.status_code, 200, list_response.data)
+        self.assertEqual(list_response.data[0]["id"], create_response.data["id"])
         self.assertEqual(transition_response.status_code, 200, transition_response.data)
         self.assertEqual(transition_response.data["status_key"], "approved")
         self.assertEqual(transition_response.data["status_history"][-1]["from_status_key"], "received")
 
-    def test_admin_can_follow_delivery_order_workflow(self):
+    def test_order_workflow_synchronizes_its_delivery_status(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
         create_response = self.client.post(
             "/api/v1/orders/me/",
@@ -276,6 +321,7 @@ class OrdersApiTests(APITestCase):
                 HTTP_X_ORGANIZATION_SLUG="royalprime",
             )
             self.assertEqual(response.status_code, 200, response.data)
+            self.assertEqual(Delivery.objects.get(order_id=order_id).status_key, status_key)
 
         self.assertEqual(response.data["status_key"], "delivered")
 
@@ -310,7 +356,7 @@ class OrdersApiTests(APITestCase):
         inventory_item.refresh_from_db()
         self.assertEqual(inventory_item.reserved_quantity, reserved_before + Decimal("1.000"))
 
-    def test_invalid_status_transition_is_blocked_by_seeded_workflow(self):
+    def test_admin_can_set_any_order_status_and_correct_a_terminal_status(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
         create_response = self.client.post(
             "/api/v1/orders/me/",
@@ -330,8 +376,27 @@ class OrdersApiTests(APITestCase):
             HTTP_X_ORGANIZATION_SLUG="royalprime",
         )
 
-        self.assertEqual(response.status_code, 400, response.data)
-        self.assertEqual(response.data["code"], "order_status_transition_not_allowed")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["status_key"], "ready")
+        self.assertEqual(Delivery.objects.get(order_id=create_response.data["id"]).status_key, "ready")
+
+        terminal_response = self.client.post(
+            f"/api/v1/orders/admin/orders/{create_response.data['id']}/transition/",
+            {"status_key": "delivered"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        self.assertEqual(terminal_response.status_code, 200, terminal_response.data)
+
+        correction_response = self.client.post(
+            f"/api/v1/orders/admin/orders/{create_response.data['id']}/transition/",
+            {"status_key": "approved"},
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+        self.assertEqual(correction_response.status_code, 200, correction_response.data)
+        self.assertEqual(correction_response.data["status_key"], "approved")
+        self.assertEqual(Delivery.objects.get(order_id=create_response.data["id"]).status_key, "approved")
 
     def test_customer_cannot_access_admin_orders(self):
         self.authenticate("cliente@royalprime.local", "RoyalPrime123!")

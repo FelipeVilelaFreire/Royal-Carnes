@@ -1,0 +1,16 @@
+.loading {
+  animation: catalog-loading-diagnostic var(--theme--duration-slow) var(--theme--easing-emphasized) both;
+  width: 100%;
+}
+
+@keyframes catalog-loading-diagnostic {
+  from {
+    opacity: var(--theme--opacity-0);
+    transform: translateY(var(--theme--spacing-sm));
+  }
+
+  to {
+    opacity: var(--theme--opacity-100);
+    transform: translateY(0);
+  }
+}

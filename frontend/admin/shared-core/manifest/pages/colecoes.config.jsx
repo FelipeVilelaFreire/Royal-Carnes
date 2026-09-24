@@ -76,7 +76,7 @@ export const colecoesConfig = {
               searchEmptyKey: "colecoes.detail.emptyProductSearch"
             },
             columns: [
-              { key: "name", labelKey: "produtos.tableHeaders.name", type: "text" },
+              { key: "name", labelKey: "produtos.tableHeaders.name", type: "text", presentation: "media" },
               { key: "categoryLabel", labelKey: "produtos.tableHeaders.category", type: "text" },
               { key: "unit", labelKey: "produtos.tableHeaders.unit", type: "text" },
               { key: "priceFormatted", labelKey: "produtos.tableHeaders.price", type: "text", align: "end" }

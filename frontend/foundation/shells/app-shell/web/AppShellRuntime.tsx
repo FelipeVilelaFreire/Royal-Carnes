@@ -14,6 +14,7 @@ import { AppShellFooter } from "./AppShellFooter";
 import { AppShellHeader } from "./AppShellHeader";
 import { AppShellSidebar } from "./AppShellSidebar";
 import { ScreenContent } from "./ScreenContent";
+import { AppearanceEditor } from "./AppearanceEditor";
 import { Background, UiProvider } from "../../../ui/web";
 import styles from "../AppShell.module.css";
 
@@ -56,6 +57,8 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(Boolean(config?.sidebar?.defaultCollapsed));
   const [themeMode, setThemeMode] = useState<string>(() => config?.theme?.defaultMode || "dark");
+  const [appearanceEditorOpen, setAppearanceEditorOpen] = useState(false);
+  const [appearanceDraft, setAppearanceDraft] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const storageKey = config?.theme?.modeStorageKey;
@@ -109,14 +112,29 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
 
   const resolvedConfig = useMemo(() => {
     if (!config?.theme?.modes?.[themeMode]) return config;
+    const editor = config.theme.appearanceEditor;
+    const findOption = (group: string) => editor?.[group]?.find((option: any) => option.id === appearanceDraft[group]) || editor?.[group]?.[0];
+    const palette = findOption("paletteOptions");
+    const font = findOption("fontOptions");
+    const radius = findOption("radiusOptions");
+    const border = findOption("borderOptions");
+    const glass = findOption("glassOptions");
     return {
       ...config,
       theme: {
         ...config.theme,
-        colors: config.theme.modes[themeMode],
+        colors: { ...config.theme.modes[themeMode], ...palette?.colors },
+        tokens: {
+          ...config.theme.tokens,
+          typography: { ...config.theme.tokens?.typography, ...font?.tokens },
+          radius: { ...config.theme.tokens?.radius, ...radius?.tokens },
+          borders: { ...config.theme.tokens?.borders, ...border?.tokens },
+          glass: { ...config.theme.tokens?.glass, ...glass?.tokens },
+        },
       },
+      visual: { ...config.visual, material: glass?.material || config.visual?.material },
     };
-  }, [config, themeMode]);
+  }, [appearanceDraft, config, themeMode]);
 
   const handleNavigate = (path: string) => {
     if (path.startsWith("#")) {
@@ -203,6 +221,7 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
           model={model}
           onNavigate={handleNavigate}
           onOpenDrawer={() => setIsDrawerOpen(true)}
+          onOpenAppearanceEditor={() => setAppearanceEditorOpen(true)}
           onThemeModeToggle={handleThemeModeToggle}
           rightSlot={rightSlot}
           surfaceStyle={resolvedConfig?.header?.surfaceStyle}
@@ -222,6 +241,9 @@ export const AppShellRuntime: React.FC<AppShellRuntimeProps> = ({
         onNavigate={handleNavigate}
       />
       <AppShellBottomTabBar model={model} onNavigate={handleNavigate} onOpenMore={() => setIsDrawerOpen(true)} />
+      {resolvedConfig?.header?.appearanceEditor?.enabled ? (
+        <AppearanceEditor config={resolvedConfig.theme?.appearanceEditor} experiments={resolvedConfig.header?.appearanceEditor?.experiments} onChange={setAppearanceDraft} onClose={() => setAppearanceEditorOpen(false)} onNavigate={handleNavigate} open={appearanceEditorOpen} strings={model.strings.appearanceEditor} value={appearanceDraft} />
+      ) : null}
       </div>
     </UiProvider>
   );

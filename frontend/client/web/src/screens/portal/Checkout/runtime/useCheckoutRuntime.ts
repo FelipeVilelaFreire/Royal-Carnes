@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { themeColorsDefault } from "@foundation/tokens/theme.tokens";
-import type { ClientCheckoutStepKey } from "@/manifest/checkout.config";
-import { requestClientCheckoutStep } from "@royalprime/client/utils/checkout-step-guard";
 
 type ThemeMode = "dark" | "light";
 const THEME_STORAGE_KEY = "royal_prime_theme";
@@ -16,13 +14,7 @@ const readThemeMode = (): ThemeMode => {
   return attr === "light" ? "light" : "dark";
 };
 
-export const useCheckoutRuntime = ({
-  isAuthenticated,
-  onRequestAccess,
-}: {
-  isAuthenticated: boolean;
-  onRequestAccess: () => void;
-}) => {
+export const useCheckoutRuntime = () => {
   const [themeMode, setThemeMode] = useState<ThemeMode>("dark");
 
   useEffect(() => {
@@ -42,12 +34,7 @@ export const useCheckoutRuntime = ({
     window.dispatchEvent(new Event("royal_theme_changed"));
   };
 
-  const requestProtectedStep = (step: ClientCheckoutStepKey, setCurrentStep: (step: ClientCheckoutStepKey) => void) => {
-    requestClientCheckoutStep({ isAuthenticated, onRequestAccess, setCurrentStep, step });
-  };
-
   return {
-    requestProtectedStep,
     themeMode,
     toggleTheme,
     tokens: themeMode === "dark" ? themeColorsDefault.dark : themeColorsDefault.light,

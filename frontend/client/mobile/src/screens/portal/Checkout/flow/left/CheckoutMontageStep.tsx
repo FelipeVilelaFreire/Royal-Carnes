@@ -9,7 +9,7 @@ interface CheckoutMontageStepProps {
 
 export const CheckoutMontageStep: React.FC<CheckoutMontageStepProps> = ({ catalog, cycle }) => (
   <>
-    {cycle ? <ActiveCycleSummary {...cycle} /> : null}
+    {cycle && !cycle.activeSubscription ? <ActiveCycleSummary {...cycle} /> : null}
     <ProductCatalogStep {...catalog} />
   </>
 );

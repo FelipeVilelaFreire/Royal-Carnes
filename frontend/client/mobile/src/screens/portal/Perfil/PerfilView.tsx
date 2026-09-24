@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@foundation/ui/native/Button";
 import { Container, Inline, Stack } from "@foundation/ui/native/Layout";
+import { Modal } from "@foundation/ui/native/Modal";
 import { Surface } from "@foundation/ui/native/Surface";
 import { Text } from "@foundation/ui/native/Text";
 import { useClientCustomer, type ClientCustomerTabKey } from "../../../../../shared-core/hooks/useClientCustomer";
@@ -12,11 +13,13 @@ import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen"
 
 export interface PerfilViewProps {
   activePath?: string;
+  onLogout?: () => Promise<void> | void;
   strings: ReturnType<typeof useClientStrings>;
   themeMode?: AppThemeMode;
 }
 
 export const PerfilView: React.FC<PerfilViewProps> = ({
+  onLogout,
   strings: allStrings,
   themeMode = "dark",
 }) => {
@@ -24,6 +27,8 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
   const theme = mobileConfig.theme;
   const strings = allStrings.minhaContaV2;
   const customer = useClientCustomer();
+  const [isLogoutConfirmationOpen, setIsLogoutConfirmationOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const tabs: Array<{ key: ClientCustomerTabKey; label: string }> = [
     { key: "overview", label: strings.tabs.overview },
     { key: "subscription", label: strings.tabs.subscription },
@@ -88,7 +93,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           </Stack>
         </Inline>
         <Inline style={{ gap: theme.spacing?.sm, flexWrap: "wrap" }}>
-          <SummaryPill label={strings.labels.plan} value={`${strings.planNamePrefix} ${customer.viewModel.activeSubscriptionLabel}`} />
+          <SummaryPill label={strings.labels.plan} value={customer.viewModel.activeSubscriptionLabel} />
           <SummaryPill label={strings.renewLabel} value={customer.viewModel.nextBillingLabel} />
           <SummaryPill label={strings.deliveryLabel} value={customer.viewModel.nextDeliveryLabel} />
           <SummaryPill label={strings.memberSinceLabel} value={customer.viewModel.customer.memberSince} />
@@ -102,12 +107,19 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
       <Surface style={basePanel}>
         <Stack style={stack}>
           <Text style={title}>{strings.sections.capacityTitle}</Text>
-          {customer.viewModel.usageMetrics.map((metric) => (
-            <Inline key={metric.key} style={{ justifyContent: "space-between", gap: theme.spacing?.sm }}>
-              <Text style={muted}>{metric.label}</Text>
-              <Text style={title}>{metric.valueLabel}</Text>
-            </Inline>
-          ))}
+          <Inline style={{ gap: theme.spacing?.xs, flexWrap: "wrap" }}>
+            {customer.viewModel.usageMetrics.map((metric) => (
+              <Surface key={metric.key} appearance="outline" style={{ ...basePanel, flexGrow: 1, minWidth: "46%" }}>
+                <Stack style={compactStack}>
+                  <Text style={muted} variant="caption">{metric.label}</Text>
+                  <Text style={title}>{metric.valueLabel}</Text>
+                  <Surface appearance="outline" style={{ backgroundColor: theme.border, height: theme.spacing?.xs, overflow: "hidden" }}>
+                    <Surface appearance="soft" style={{ backgroundColor: theme.primary, height: "100%", width: `${metric.percent}%` }} tone="primary" />
+                  </Surface>
+                </Stack>
+              </Surface>
+            ))}
+          </Inline>
         </Stack>
       </Surface>
       <OrdersPanel />
@@ -143,20 +155,31 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         <Surface style={basePanel}>
           <Stack style={stack}>
             <Text style={title}>{strings.sections.subscriptionTitle}</Text>
-            {customer.dataSource.plans.map((plan) => (
-              <Surface key={plan.key} appearance={plan.key === customer.selectedPlanKey ? "soft" : "outline"} tone="neutral" style={basePanel}>
-                <Stack style={compactStack}>
-                  <Text style={title}>{strings.planNamePrefix} {plan.name}</Text>
-                  <Text style={accent}>{strings.currencyPrefix} {plan.monthlyPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</Text>
-                  {plan.includedItems.map((item) => (
-                    <Stack key={item.id} style={compactStack}>
-                      <Text style={muted}>{strings.format.includedItem.replace("{quantity}", item.quantityLabel).replace("{item}", item.name)}</Text>
-                      {item.selectionLimit ? <Text style={muted}>{strings.format.selectionLimit.replace("{count}", String(item.selectionLimit))}</Text> : null}
+            {customer.dataSource.plans.map((plan) => {
+              const isCurrent = plan.key === customer.selectedPlanKey;
+              return (
+                <Surface key={plan.key} appearance={isCurrent ? "soft" : "outline"} tone="neutral" style={basePanel}>
+                  <Stack style={stack}>
+                    <Inline style={{ alignItems: "center", justifyContent: "space-between", gap: theme.spacing?.sm }}>
+                      <Text style={title} variant="h3">{plan.name}</Text>
+                      {isCurrent ? <Text tone="primary" variant="caption" weight="semibold">{strings.states.current}</Text> : null}
+                    </Inline>
+                    <Stack style={compactStack}>
+                      <Text style={{ color: theme.primary, fontWeight: "800" }} variant="h2">{strings.currencyPrefix} {plan.monthlyPrice.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</Text>
+                      {plan.description ? <Text style={muted} variant="caption">{plan.description}</Text> : null}
                     </Stack>
-                  ))}
-                </Stack>
-              </Surface>
-            ))}
+                    <Surface appearance="outline" style={{ backgroundColor: theme.border, height: theme.borderWidth?.hairline }} />
+                    <Stack style={compactStack}>
+                      {plan.includedItems.map((item) => (
+                        <Text key={item.id} style={muted} variant="caption">
+                          {strings.format.includedItem.replace("{quantity}", item.quantityLabel).replace("{item}", item.name)}
+                        </Text>
+                      ))}
+                    </Stack>
+                  </Stack>
+                </Surface>
+              );
+            })}
           </Stack>
         </Surface>
       );
@@ -229,6 +252,9 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           <SummaryPill label={strings.security.passwordTitle} value={strings.security.passwordDescription} />
           <SummaryPill label={strings.security.exportTitle} value={strings.security.exportDescription} />
           <SummaryPill label={strings.security.closeTitle} value={strings.security.closeDescription} />
+          <Button appearance="outline" onAction={() => setIsLogoutConfirmationOpen(true)} tone="danger">
+            {strings.actions.closeAccount}
+          </Button>
         </Stack>
       </Surface>
     );
@@ -258,6 +284,30 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         {renderPanel()}
         </Stack>
       </Container>
+      <Modal
+        closeLabel={strings.security.logoutConfirmation.cancel}
+        description={strings.security.logoutConfirmation.description}
+        open={isLogoutConfirmationOpen}
+        onClose={() => setIsLogoutConfirmationOpen(false)}
+        title={strings.security.logoutConfirmation.title}
+      >
+        <Button
+          appearance="solid"
+          disabled={isLoggingOut}
+          onAction={async () => {
+            setIsLoggingOut(true);
+            try {
+              await onLogout?.();
+              setIsLogoutConfirmationOpen(false);
+            } finally {
+              setIsLoggingOut(false);
+            }
+          }}
+          tone="danger"
+        >
+          {strings.security.logoutConfirmation.confirm}
+        </Button>
+      </Modal>
     </>
   );
 };

@@ -2,13 +2,12 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@foundation/ui/web/Button";
-import { Divider } from "@foundation/ui/web/Divider";
 import { Input } from "@foundation/ui/web/Input";
 import { Stack } from "@foundation/ui/web/Layout";
 import { BottomModal, Modal } from "@foundation/ui/web/Modal";
 import { Surface } from "@foundation/ui/web/Surface";
 import { Text } from "@foundation/ui/web/Text";
-import { CloseIcon, LockIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { AppleIcon, CloseIcon, GoogleIcon, LockIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   AccessShellConfig,
   AccessShellFieldKey,
@@ -43,6 +42,11 @@ const fieldIcon: Record<AccessShellFieldKey, React.ReactNode> = {
   password: <LockIcon />,
 };
 
+const providerIcon: Record<AccessShellProviderKey, React.ReactNode> = {
+  apple: <span className={styles.appleProviderIcon}><AppleIcon /></span>,
+  google: <span className={styles.googleProviderIcon}><GoogleIcon /></span>,
+};
+
 const getPresentation = (config: AccessShellConfig, isMobile: boolean): AccessShellPresentation =>
   isMobile ? config.presentation.mobile : config.presentation.desktop;
 
@@ -67,7 +71,7 @@ export const AccessShell: React.FC<AccessShellProps> = ({
   const presentation = getPresentation(config, isMobile);
   const flowSwitcher = config.visual.flowSwitcher || "tabs";
   const switcher = strings.switcher?.[activeFlowConfig.key];
-  const header = config.header || config.brand;
+  const header: AccessShellConfig["header"] = config.header || config.brand;
   const isRoomyModal = config.visual.modalDensity === "roomy";
 
   useEffect(() => {
@@ -93,7 +97,7 @@ export const AccessShell: React.FC<AccessShellProps> = ({
         <div className={styles.brand}>
           {header.logo ? <img alt="" className={styles.brandLogo} src={header.logo} /> : null}
           {header.name ? (
-            <Text as="span" className={styles.brandName} tone="inherit" variant="h3">
+            <Text as="span" className={styles.brandName} tone="primary" variant="h3">
               {header.name}
             </Text>
           ) : null}
@@ -145,7 +149,11 @@ export const AccessShell: React.FC<AccessShellProps> = ({
         </div>
       ) : null}
 
-      <Surface appearance="soft" className={`${styles.formPanel} ${config.visual.formSurface === "flat" ? styles.formPanelFlat : ""}`}>
+      <Surface
+        appearance={config.visual.formSurface === "flat" ? "transparent" : "soft"}
+        className={`${styles.formPanel} ${config.visual.formSurface === "flat" ? styles.formPanelFlat : ""}`}
+        shadowMode={config.visual.formSurface === "flat" ? "none" : undefined}
+      >
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formHeading}>
             <Text as="h2" className={styles.formTitle} tone="inherit" variant="h3">
@@ -156,19 +164,27 @@ export const AccessShell: React.FC<AccessShellProps> = ({
             </Text>
           </div>
           {activeFlowConfig.fieldKeys.map((fieldKey) => (
-            <Input
-              autoComplete={fieldKey === "password" ? "current-password" : fieldKey === "email" ? "email" : "name"}
-              key={fieldKey}
-              aria-label={strings.fields[fieldKey]}
-              icon={fieldIcon[fieldKey]}
-              label={config.visual.showFieldLabels === false ? undefined : strings.fields[fieldKey]}
-              name={fieldKey}
-              onChange={(event) => updateValue(fieldKey, event.target.value)}
-              placeholder={strings.placeholders[fieldKey]}
-              required
-              type={fieldInputType[fieldKey]}
-              value={values[fieldKey] || ""}
-            />
+            <React.Fragment key={fieldKey}>
+              <Input
+                autoComplete={fieldKey === "password" ? "current-password" : fieldKey === "email" ? "email" : "name"}
+                aria-label={strings.fields[fieldKey]}
+                icon={fieldIcon[fieldKey]}
+                label={config.visual.showFieldLabels === false ? undefined : strings.fields[fieldKey]}
+                name={fieldKey}
+                onChange={(event) => updateValue(fieldKey, event.target.value)}
+                placeholder={strings.placeholders[fieldKey]}
+                required
+                type={fieldInputType[fieldKey]}
+                value={values[fieldKey] || ""}
+              />
+              {config.visual.showForgotPassword && activeFlowConfig.key === "login" && fieldKey === "password" && strings.forgotPassword ? (
+                <div className={styles.forgotPassword}>
+                  <Button appearance="transparent" className={styles.forgotButton} size="sm" tone="primary" type="button">
+                    {strings.forgotPassword}
+                  </Button>
+                </div>
+              ) : null}
+            </React.Fragment>
           ))}
 
           {errorMessage ? (
@@ -177,31 +193,21 @@ export const AccessShell: React.FC<AccessShellProps> = ({
             </div>
           ) : null}
 
-          {config.visual.showForgotPassword && activeFlowConfig.key === "login" && strings.forgotPassword ? (
-            <div className={styles.formMeta}>
-              <Text as="span" className={styles.hint} tone="inherit" variant="caption">
-                {strings.registerHint}
-              </Text>
-              <Button appearance="transparent" className={styles.forgotButton} size="sm" tone="neutral" type="button">
-                {strings.forgotPassword}
-              </Button>
-            </div>
-          ) : null}
-
           <Button appearance="solid" className={styles.submitButton} icon={<UserIcon />} loading={isLoading} size="md" tone="primary" type="submit">
             {activeCopy.submit}
           </Button>
+
         </form>
       </Surface>
 
       {config.providers?.length && strings.providers ? (
         <div className={styles.providers}>
           <div className={styles.providerDivider}>
-            <Divider />
+            <span aria-hidden="true" className={styles.providerDividerLine} />
             <Text as="span" className={styles.providerDividerLabel} tone="inherit" variant="caption">
               {strings.providers.divider}
             </Text>
-            <Divider />
+            <span aria-hidden="true" className={styles.providerDividerLine} />
           </div>
           <div className={styles.providerButtons}>
             {config.providers.map((provider) => (
@@ -209,6 +215,7 @@ export const AccessShell: React.FC<AccessShellProps> = ({
                 appearance="outline"
                 className={styles.providerButton}
                 disabled={!onProviderAction}
+                icon={providerIcon[provider]}
                 key={provider}
                 onClick={() => onProviderAction?.(provider)}
                 size="md"

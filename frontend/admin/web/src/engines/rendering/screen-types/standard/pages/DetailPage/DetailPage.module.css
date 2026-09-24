@@ -6,18 +6,26 @@
 }
 
 .content {
-  padding-block-start: var(--theme--spacing-spaceLg);
+  padding-block-start: var(--theme--spacing-spaceMd);
   width: 100%;
 }
 
 .detailHeader {
   border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border);
-  padding-block-end: var(--theme--spacing-spaceMd);
+  padding-block-end: var(--theme--spacing-spaceSm);
   width: 100%;
 }
 
 .identity {
   min-inline-size: 0;
+}
+
+.backButton.backButton {
+  block-size: calc(var(--ui-button-height) + var(--theme--spacing-spaceSm));
+  inline-size: calc(var(--ui-button-height) + var(--theme--spacing-space2xs));
+  min-block-size: calc(var(--ui-button-height) + var(--theme--spacing-spaceSm));
+  min-inline-size: calc(var(--ui-button-height) + var(--theme--spacing-space2xs));
+  padding-inline: 0;
 }
 
 .identityCopy {
@@ -125,11 +133,12 @@
 }
 
 .assetPreview {
-  border: var(--theme--border-width-sm) solid var(--theme--color-border);
-  border-radius: var(--theme--radius-md);
+  block-size: var(--semicomposed--asset-preview--block-size);
+  border: var(--semicomposed--asset-preview--border);
+  border-radius: var(--semicomposed--asset-preview--radius);
   display: block;
-  inline-size: 100%;
-  max-block-size: var(--theme--dimensions-height-8xl);
+  inline-size: var(--semicomposed--asset-preview--inline-size);
+  max-inline-size: 100%;
   object-fit: cover;
 }
 

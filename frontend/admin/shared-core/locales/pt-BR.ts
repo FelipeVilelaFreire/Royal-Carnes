@@ -7,6 +7,7 @@ export const adminPtBR = {
     dashboard: "Dashboard",
     pedidos: "Pedidos",
     deliveries: "Entregas",
+    deliveryPromisePolicies: "Políticas de entrega",
     estoque: "Estoque",
     produtos: "Produtos",
     categorias: "Categorias",
@@ -29,6 +30,7 @@ export const adminPtBR = {
       dashboard: "Dashboard",
       pedidos: "Pedidos",
       deliveries: "Entregas",
+      deliveryPromisePolicies: "Políticas de entrega",
       estoque: "Estoque",
       produtos: "Produtos",
       categorias: "Categorias",
@@ -148,6 +150,7 @@ export const adminPtBR = {
     customer: "Cliente",
     cut: "Corte nobre",
     delivery: "Entrega",
+    deliveryPromisePolicy: "Política de entrega",
     inventoryMovement: "Movimento de estoque",
     member: "Sócio",
     order: "Pedido comercial",
@@ -258,7 +261,9 @@ export const adminPtBR = {
   },
   standard: {
     clearFilters: "Limpar filtros",
+    collapseTreeNode: "Recolher {name}",
     emptyFiltered: "Nenhum registro corresponde aos filtros aplicados.",
+    expandTreeNode: "Expandir {name}",
     apiErrorStatus: "Status",
     apiErrorTitle: "Nao foi possivel carregar os dados reais do backend.",
     apiErrorUnknown: "Erro sem status HTTP.",
@@ -272,6 +277,8 @@ export const adminPtBR = {
     resultsCount: "{count} registros",
     saving: "Salvando",
     searchLabel: "Buscar",
+    sortAscending: "Ordenar {column} em ordem crescente",
+    sortDescending: "Ordenar {column} em ordem decrescente",
     showingPage: "Exibindo {shown} de {total} registros"
   },
   pedidos: {
@@ -283,13 +290,37 @@ export const adminPtBR = {
       code: "Código",
       customerName: "Cliente",
       kindLabel: "Tipo de pedido",
-      recurrence: "Assinatura / ciclo",
+      recurrence: "Recorrência",
       deliveryStatus: "Entrega",
+      deliveryDeadline: "Entregar até",
+      deliveryPromise: "Situação do prazo",
+      deliveryBusinessDays: "Dias úteis",
       paymentStatus: "Pagamento",
       summary: "Resumo dos itens",
       total: "Valor total",
       status: "Status",
       createdAt: "Data do pedido"
+    },
+    workflow: {
+      empty: "Nenhum pedido neste status.",
+      moveLabel: "Mover pedido",
+      statusLabel: "Status do pedido",
+      viewLabel: "Visualização",
+      views: { table: "Tabela", kanban: "Kanban" }
+    },
+    filters: {
+      deliveryPromise: "Situação do prazo"
+    },
+    deliveryPromise: {
+      states: {
+        on_track: "No prazo",
+        approaching: "Próximo do prazo",
+        due_today: "Vence hoje",
+        overdue: "Atrasado",
+        fulfilled: "Entregue",
+        closed: "Encerrado",
+        untracked: "Sem prazo"
+      }
     },
     form: {
       code: "Código do pedido",
@@ -308,29 +339,62 @@ export const adminPtBR = {
       kind: "Tipo de pedido",
       notes: "Observacoes",
       payments: "Pagamentos",
-      recurrence: "Assinatura / ciclo",
+      recurrence: "Recorrência",
       status: "Status",
       subscription: "Assinatura",
       subscriptionCycle: "Ciclo de assinatura",
       subscriptionCycleStatus: "Status do ciclo",
+      subscriptionCycleWindow: "Período do ciclo",
+      boxTemplate: "Caixa recorrente",
+      boxCycle: "Ciclo Royal Box",
+      boxRecurrenceDay: "Entrega recorrente",
+      boxScheduledFor: "Próxima entrega",
+      boxCycleStatus: "Status do ciclo Royal Box",
+      boxOrderCreationPolicy: "Política de criação",
+      commercialOrigin: "Origem comercial",
+      subscriptionContext: "Contexto da assinatura",
       total: "Total"
+    },
+    subscriptionCycleStatuses: {
+      open: "Aberto",
+      locked: "Fechado para alteracoes",
+      fulfilled: "Concluido",
+      skipped: "Ignorado",
+      cancelled: "Cancelado"
+    },
+    boxCycleStatuses: {
+      prepared: "Preparado",
+      awaiting_payment: "Aguardando pagamento",
+      order_created: "Pedido criado",
+      failed: "Falhou",
+      skipped: "Ignorado",
+      cancelled: "Cancelado"
+    },
+    boxOrderCreationPolicies: {
+      immediate: "Criar pedido imediatamente",
+      payment_confirmed: "Criar apos pagamento confirmado"
     },
     detail: {
       title: "Detalhe do pedido",
+      sections: {
+        commercialOrigin: "Origem comercial e recorrência"
+      },
       tabs: {
         data: "Dados",
         delivery: "Entrega",
         history: "Historico",
         items: "Itens",
         payment: "Pagamento",
-        subscription: "Assinatura"
+        subscription: "Assinatura",
+        royalBox: "Royal Box"
       },
       emptyData: "Nenhum dado cadastrado para este pedido.",
       emptyDelivery: "Nenhuma entrega vinculada a este pedido.",
       emptyHistory: "Nenhum historico cadastrado para este pedido.",
       emptyItems: "Nenhum item cadastrado para este pedido.",
       emptyPayment: "Nenhum pagamento vinculado a este pedido.",
-      emptySubscription: "Pedido sem assinatura ou ciclo vinculado."
+      emptySubscription: "Pedido sem assinatura ou ciclo vinculado.",
+      emptyRoyalBox: "Pedido sem ciclo Royal Box vinculado."
     },
     add: {
       title: "Cadastrar pedido",
@@ -342,9 +406,11 @@ export const adminPtBR = {
     },
     items: {
       add: "Adicionar item",
+      emptyProductSearch: "Nenhum produto encontrado.",
       name: "Item",
       product: "Produto",
       quantity: "Quantidade",
+      searchProductPlaceholder: "Buscar produto...",
       source: "Origem",
       sourceKey: "Chave da origem",
       sourceTypes: {
@@ -365,6 +431,8 @@ export const adminPtBR = {
       address: "Endereco",
       code: "Entrega",
       confirmationCode: "Confirmacao",
+      promisedDeliveryStartsOn: "A partir de",
+      promisedDeliveryByOn: "Entregar até",
       notes: "Observacoes",
       status: "Status"
     },
@@ -383,12 +451,12 @@ export const adminPtBR = {
     tableHeaders: {
       id: "Caixa",
       customerName: "Assinante",
-      planName: "Plano",
-      status: "Status de envio",
+      planName: "Pedido de origem",
+      status: "Status do pedido",
       scheduledDate: "Data agendada"
     },
     filters: {
-      status: "Status de envio"
+      status: "Status do pedido"
     },
     form: {
       address: "Endereço de entrega",
@@ -419,6 +487,9 @@ export const adminPtBR = {
       status: "Status"
     },
     filters: {
+      category: "Categoria",
+      collection: "Coleção",
+      unit: "Unidade",
       status: "Status"
     },
     fields: {
@@ -515,9 +586,13 @@ export const adminPtBR = {
         relations: "Hierarquia"
       },
       tabs: {
-        data: "Dados"
+        data: "Dados",
+        products: "Produtos"
       },
-      emptyData: "Nenhum dado cadastrado para esta categoria."
+      emptyData: "Nenhum dado cadastrado para esta categoria.",
+      emptyProducts: "Nenhum produto vinculado a esta categoria.",
+      emptyProductSearch: "Nenhum produto encontrado.",
+      searchProductsPlaceholder: "Buscar produto..."
     },
     add: {
       title: "Cadastrar categoria",
@@ -593,6 +668,7 @@ export const adminPtBR = {
       pro: "Pro"
     },
     fields: {
+      accentColor: "Cor do plano",
       billingInterval: "Recorrencia",
       description: "Descricao",
       entitlementCount: "Itens inclusos",
@@ -604,6 +680,7 @@ export const adminPtBR = {
       addItemLimit: "Adicionar limite específico",
       allowedItems: "Pode escolher de",
       capacity: "Capacidade",
+      emptyCapacitySearch: "Nenhuma capacidade encontrada.",
       capacityGroup: "Grupo geral",
       capacityGroupKey: "Grupo geral",
       capacityCount: "Regras de capacidade",
@@ -618,6 +695,7 @@ export const adminPtBR = {
       includedItemType: "Tipo",
       includedItemTarget: "Item",
       limit: "Limite",
+      searchCapacityPlaceholder: "Buscar capacidade...",
       product: "Produto",
       quantity: "Quantidade",
       unit: "Unidade",
@@ -631,6 +709,8 @@ export const adminPtBR = {
       sortOrder: "Ordem",
       status: "Status",
       trialDays: "Dias de teste",
+      deliveryMinBusinessDays: "Entrega a partir de (dias úteis)",
+      deliveryMaxBusinessDays: "Entregar até (dias úteis)",
       totalCapacity: "Limites gerais"
     },
     form: {
@@ -649,6 +729,7 @@ export const adminPtBR = {
       sections: {
         identity: "Identificacao",
         commercial: "Comercial",
+        deliveryPromise: "Prazo de entrega",
         capacities: "Capacidades do plano",
         itemLimits: "Limites específicos"
       },
@@ -724,18 +805,37 @@ export const adminPtBR = {
       memberSince: "Cliente desde",
       defaultAddress: "Endereço principal",
       addressCount: "Endereços cadastrados",
+      activePlan: "Plano atual",
+      subscriptionSince: "Assinatura desde",
+      subscriptionStatus: "Status da assinatura",
+      currentCycle: "Ciclo atual",
+      deliveryWindow: "Janela de entrega",
       createdAt: "Criado em",
       updatedAt: "Atualizado em"
     },
     detail: {
       title: "Detalhe do cliente",
       tabs: {
+        overview: "Visão geral",
         data: "Dados",
         addresses: "Endereços",
+        subscriptions: "Assinaturas",
+        orders: "Pedidos",
+        payments: "Pagamentos",
         history: "Histórico"
       },
+      sections: {
+        subscriptionOverview: "Assinatura atual",
+        subscriptionsHistory: "Histórico de assinaturas",
+        ordersHistory: "Histórico de pedidos",
+        paymentsHistory: "Histórico de pagamentos"
+      },
+      emptyOverview: "Nenhuma assinatura ativa para este cliente.",
       emptyData: "Nenhum dado cadastrado para este cliente.",
       emptyAddresses: "Nenhum endereço cadastrado para este cliente.",
+      emptySubscriptions: "Nenhuma assinatura vinculada a este cliente.",
+      emptyOrders: "Nenhum pedido vinculado a este cliente.",
+      emptyPayments: "Nenhum pagamento vinculado a este cliente.",
       emptyHistory: "Nenhum histórico disponível para este cliente."
     },
     add: {
@@ -1101,6 +1201,46 @@ export const adminPtBR = {
       retention: "Retenção"
     }
   },
+  deliveryPromisePolicies: {
+    title: "Políticas de entrega",
+    subtitle: "Prazos e alertas reutilizáveis por tipo de pedido e plano.",
+    ctaAdd: "Nova política",
+    searchPlaceholder: "Buscar políticas",
+    tableHeaders: {
+      name: "Política",
+      promiseWindow: "Prazo útil",
+      alertWindow: "Alerta em"
+    },
+    status: {
+      active: "Ativa",
+      inactive: "Inativa"
+    },
+    booleanOptions: {
+      yes: "Sim",
+      no: "Não"
+    },
+    detail: {
+      title: "Política de entrega",
+      tabs: { data: "Dados" },
+      sections: { policy: "Regra de prazo" }
+    },
+    add: {
+      title: "Nova política de entrega",
+      submit: "Criar política"
+    },
+    fields: {
+      key: "Código",
+      name: "Nome",
+      minBusinessDays: "Mínimo de dias úteis",
+      maxBusinessDays: "Máximo de dias úteis",
+      approachingBusinessDays: "Alertar quando restarem",
+      orderKindKeys: "Tipos de pedido",
+      subscriptionPlanKeys: "Planos de assinatura",
+      isDefault: "Política padrão da empresa",
+      isActive: "Ativa",
+      sortOrder: "Ordem"
+    }
+  },
   details: {
     badgeTitle: "Detalhes do registro",
     tabs: {
@@ -1116,6 +1256,8 @@ export const adminPtBR = {
     addTitle: "Cadastrar",
     assetChooseFile: "Selecionar imagem",
     assetDropzone: "Arraste uma imagem ou selecione um arquivo.",
+    assetReplaceDropzone: "Solte para substituir a imagem.",
+    assetReplaceHint: "Arraste ou clique para trocar a imagem.",
     assetRemove: "Remover imagem",
     assetUrlPlaceholder: "Cole a URL da imagem",
     addLineItem: "Adicionar item",

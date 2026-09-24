@@ -72,6 +72,7 @@ export interface AdminOrderDto {
   customer_id: string | number;
   customer_name: string;
   address_id?: string | number | null;
+  address_label?: string;
   subscription_id?: string | number | null;
   subscription_plan_key?: string | null;
   subscription_plan_name?: string | null;
@@ -80,6 +81,13 @@ export interface AdminOrderDto {
   subscription_cycle_status?: string | null;
   subscription_cycle_starts_at?: string | null;
   subscription_cycle_ends_at?: string | null;
+  box_cycle_id?: string | number | null;
+  box_cycle_key?: string | null;
+  box_cycle_scheduled_for?: string | null;
+  box_cycle_status?: string | null;
+  box_template_name?: string | null;
+  box_order_creation_policy?: string | null;
+  box_recurrence_day?: number | null;
   currency: string;
   subtotal_cents: number;
   discount_cents: number;

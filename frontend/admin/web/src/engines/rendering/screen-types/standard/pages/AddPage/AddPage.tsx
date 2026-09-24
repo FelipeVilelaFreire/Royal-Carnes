@@ -4,15 +4,18 @@ import { Card } from "@foundation/ui/web/Card";
 import { FieldGrid, FieldGridItem } from "@foundation/ui/web/FieldGrid";
 import { Inline, Stack } from "@foundation/ui/web/Layout";
 import { SectionContainer } from "@foundation/ui/web/SectionContainer";
+import { AdminScreenHeader } from "../../../../components/AdminScreenHeader/AdminScreenHeader";
 import { Text } from "@foundation/ui/web/Text";
 import { ArrowBackIcon, CheckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type { AdminTranslate } from "@/locales/i18n";
 import type { AdminStandardFormViewModel } from "@/view-models/standard.view-model";
 import styles from "./AddPage.module.css";
 import { AddPageFormField } from "./AddPageFormField";
+import { AddPageSkeleton } from "./AddPageSkeleton";
 
 export interface AddPageProps {
   entityName: string;
+  isLoading?: boolean;
   isSubmitting?: boolean;
   onBack: () => void;
   onFieldChange: (key: string, value: any) => void;
@@ -23,6 +26,7 @@ export interface AddPageProps {
 
 export const AddPage: React.FC<AddPageProps> = ({
   entityName,
+  isLoading = false,
   isSubmitting = false,
   onBack,
   onFieldChange,
@@ -30,9 +34,11 @@ export const AddPage: React.FC<AddPageProps> = ({
   t,
   viewModel,
 }) => {
+  if (isLoading) return <AddPageSkeleton viewModel={viewModel} />;
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="transparent" usefulColumns={20} heightRecipe="auto">
+      <AdminScreenHeader title={viewModel.titleKey ? t(viewModel.titleKey) : `${t("forms.addTitle")} ${entityName}`} />
+      <SectionContainer atmosphere="transparent" headerSafety usefulColumns={20} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
           <Inline align="center" className={styles.pageHeader} justify="between" wrap>
             <Inline align="center" gap="md" wrap>
@@ -45,9 +51,6 @@ export const AddPage: React.FC<AddPageProps> = ({
                 size="sm"
                 tone="neutral"
               >{t("common.back")}</Button>
-              <Text as="h1" variant="h1">
-                {viewModel.titleKey ? t(viewModel.titleKey) : `${t("forms.addTitle")} ${entityName}`}
-              </Text>
             </Inline>
           </Inline>
 

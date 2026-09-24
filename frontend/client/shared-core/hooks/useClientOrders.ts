@@ -78,6 +78,26 @@ export function useClientOrders(options: UseClientOrdersOptions = {}) {
     [api],
   );
 
+  const createRoyalBox = useCallback(
+    async (input: ClientOrderCreateInput, recurrenceDay: number) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const order = await api.createRoyalBox(input, recurrenceDay);
+        setOrders((current) => [order, ...current]);
+        setSource("api");
+        return order;
+      } catch (err) {
+        const normalized = normalizeApiError(err);
+        setError(normalized);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [api],
+  );
+
   return useMemo(
     () => ({
       config,
@@ -89,7 +109,8 @@ export function useClientOrders(options: UseClientOrdersOptions = {}) {
       loadConfig,
       load,
       create,
+      createRoyalBox,
     }),
-    [config, create, error, isLoading, load, loadConfig, orders, source],
+    [config, create, createRoyalBox, error, isLoading, load, loadConfig, orders, source],
   );
 }

@@ -35,13 +35,13 @@ export const CatalogoToolbar: React.FC<CatalogoToolbarProps> = ({ catalogo, stri
     </div>
     <Inline className={styles.metaControls} justify="between">
       <Text as="span" className={styles.resultCount} tone="inherit" variant="caption">
-        {strings.resultPrefix} <strong className={styles.resultNumber}>{catalogo.filteredProducts.length}</strong> {strings.resultSuffix}
+        <span className={styles.resultDesktop}>{strings.resultPrefix} </span>
+        <strong className={styles.resultNumber}>{catalogo.filteredProducts.length}</strong> {strings.resultSuffix}
       </Text>
       <div className={styles.sortGroup}>
         <DropdownPicker
           ariaLabel={strings.sortAriaLabel}
           className={styles.sortPicker}
-          label={strings.sortLabel}
           onChange={(next) => catalogo.setSortBy(next as CatalogoSortKey)}
           options={catalogo.sortOptions}
           value={catalogo.sortBy}

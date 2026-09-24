@@ -23,6 +23,7 @@ export const pagamentosConfig = {
       { key: "dueAt", labelKey: "pagamentos.tableHeaders.dueAt" }
     ],
     filters: [
+      { key: "customerId", labelKey: "pagamentos.fields.customer", source: "clientes" },
       {
         key: "status",
         labelKey: "pagamentos.filters.status",

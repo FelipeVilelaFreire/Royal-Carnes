@@ -14,7 +14,7 @@ def order_kinds_for_organization(organization):
 def orders_for_customer(organization, customer):
     return (
         Order.objects.filter(organization=organization, customer=customer)
-        .select_related("customer", "address", "subscription__plan", "subscription_cycle")
+        .select_related("customer", "address", "subscription__plan", "subscription_cycle", "box_cycle__subscription__template", "box_cycle__subscription__schedule")
         .prefetch_related("items__product__media", "items__variant", "items__measurement_unit", "status_history")
     )
 
@@ -22,8 +22,9 @@ def orders_for_customer(organization, customer):
 def orders_for_organization(organization):
     return (
         Order.objects.filter(organization=organization)
-        .select_related("customer", "address", "subscription__plan", "subscription_cycle")
+        .select_related("customer", "address", "subscription__plan", "subscription_cycle", "box_cycle__subscription__template", "box_cycle__subscription__schedule")
         .prefetch_related("items__product__media", "items__variant", "items__measurement_unit", "status_history")
+        .order_by("-created_at", "-id")
     )
 
 

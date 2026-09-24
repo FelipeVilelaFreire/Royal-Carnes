@@ -6,6 +6,8 @@ import type {
   AdminDeliveryCreateDto,
   AdminDeliveryCreateInput,
   AdminDeliveryDto,
+  AdminDeliveryPromisePolicyDto,
+  AdminDeliveryPromisePolicyInput,
   AdminDeliveryPackageDto,
   AdminDeliveryStatusDto,
   AdminDeliveryStatusHistoryDto,
@@ -43,6 +45,37 @@ export function mapAdminDeliveryConfigDto(
 ): DeliveryConfigBase {
   return {
     statuses: (dto.statuses || []).map(mapAdminDeliveryStatusDto),
+  };
+}
+
+export function mapAdminDeliveryPromisePolicyDto(dto: AdminDeliveryPromisePolicyDto) {
+  return {
+    id: dto.id,
+    key: dto.key,
+    name: dto.name,
+    minBusinessDays: dto.min_business_days,
+    maxBusinessDays: dto.max_business_days,
+    approachingBusinessDays: dto.approaching_business_days,
+    orderKindKeys: dto.order_kind_keys || [],
+    subscriptionPlanKeys: dto.subscription_plan_keys || [],
+    isDefault: dto.is_default,
+    isActive: dto.is_active,
+    sortOrder: dto.sort_order ?? 0,
+  };
+}
+
+export function mapAdminDeliveryPromisePolicyInput(input: AdminDeliveryPromisePolicyInput) {
+  return {
+    key: input.key,
+    name: input.name,
+    min_business_days: input.minBusinessDays,
+    max_business_days: input.maxBusinessDays,
+    approaching_business_days: input.approachingBusinessDays,
+    order_kind_keys: input.orderKindKeys,
+    subscription_plan_keys: input.subscriptionPlanKeys,
+    is_default: input.isDefault,
+    is_active: input.isActive,
+    sort_order: input.sortOrder,
   };
 }
 
@@ -95,6 +128,10 @@ export function mapAdminDeliveryDto(dto: AdminDeliveryDto): DeliveryBase {
     addressId: dto.address_id ?? null,
     statusKey: dto.status_key,
     confirmationCode: dto.confirmation_code ?? "",
+    promisedDeliveryStartsOn: dto.promised_delivery_starts_on ?? null,
+    promisedDeliveryByOn: dto.promised_delivery_by_on ?? null,
+    deliveryPromiseSnapshot: dto.delivery_promise_snapshot || {},
+    deliveryPromiseStatus: dto.delivery_promise_status || { state: "untracked", remainingBusinessDays: null },
     addressSnapshot: dto.address_snapshot || {},
     notes: dto.notes ?? "",
     metadata: dto.metadata || {},

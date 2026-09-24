@@ -9,8 +9,8 @@ import { ScreenHeader } from "@foundation/product-components/screens/web/ScreenH
 import { useClientCustomer } from "@royalprime/client/hooks/useClientCustomer";
 import { useClientStrings } from "@royalprime/client/hooks/useClientStrings";
 import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen";
-import { AccountProfileSummary } from "./minha-conta/fixed/AccountProfileSummary";
-import { AccountSidebarNav } from "./minha-conta/fixed/AccountSidebarNav";
+import { AccountProfileSummary, AccountProfileSummarySkeleton } from "./minha-conta/fixed/AccountProfileSummary";
+import { AccountSidebarNav, AccountSidebarNavSkeleton } from "./minha-conta/fixed/AccountSidebarNav";
 import { ProfileModuleContent } from "./minha-conta/modules/ProfileModuleContent";
 import styles from "./minha-conta/styles.module.css";
 import type { AccountTabItem } from "./minha-conta/types";
@@ -49,30 +49,28 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onLogout, onNavigate }) 
     }
   };
 
-  if (customer.isLoading || customer.error || !hasCustomer) {
-    const title = customer.isLoading
-      ? strings.states.loading
-      : customer.error
+  if (!customer.isLoading && (customer.error || !hasCustomer)) {
+    const title = customer.error
         ? strings.states.error
         : strings.states.empty;
-    const description = customer.isLoading
-      ? strings.states.loadingDescription
-      : customer.error
+    const description = customer.error
         ? strings.states.errorDescription
         : strings.states.emptyDescription;
 
     return (
       <div className={styles.page}>
-        <EmptyStateScreen
-          actions={customer.error ? (
-            <Button appearance="outline" onClick={() => void customer.actions.reload()} tone="neutral">
-              {strings.states.retry}
-            </Button>
-          ) : undefined}
-          description={description}
-          icon={<UserIcon />}
-          title={title}
-        />
+        <main className={styles.emptyStateMain}>
+          <EmptyStateScreen
+            actions={customer.error ? (
+              <Button appearance="outline" onClick={() => void customer.actions.reload()} tone="neutral">
+                {strings.states.retry}
+              </Button>
+            ) : undefined}
+            description={description}
+            icon={<UserIcon />}
+            title={title}
+          />
+        </main>
       </div>
     );
   }
@@ -90,24 +88,18 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ onLogout, onNavigate }) 
         />
       </div>
       <Container className={styles.content} gutter="page" width="wide">
-        <div className={styles.mainGrid}>
-          <AccountSidebarNav
-            activeTab={customer.activeTab}
-            items={tabs}
-            onSelect={customer.actions.setActiveTab}
-            strings={strings}
-            viewModel={customer.viewModel}
-          />
-          <Stack gap="lg">
-            <AccountProfileSummary strings={strings} viewModel={customer.viewModel} />
+        <Stack gap="lg">
+          {customer.isLoading ? <AccountProfileSummarySkeleton /> : <AccountProfileSummary strings={strings} viewModel={customer.viewModel} />}
+          <div className={styles.mainGrid}>
+            {customer.isLoading ? <AccountSidebarNavSkeleton /> : <AccountSidebarNav activeTab={customer.activeTab} items={tabs} onSelect={customer.actions.setActiveTab} />}
             <ProfileModuleContent
               customer={customer}
               onLogoutRequest={() => setIsLogoutConfirmationOpen(true)}
               onNavigate={onNavigate}
               strings={strings}
             />
-          </Stack>
-        </div>
+          </div>
+        </Stack>
       </Container>
       <ConfirmationModal
         cancelLabel={strings.security.logoutConfirmation.cancel}

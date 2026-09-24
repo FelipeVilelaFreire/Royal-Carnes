@@ -12,6 +12,7 @@ export interface StandardScreenProps {
   onBackToList: () => void;
   onCreateRow?: () => void;
   onSelectRow?: (row: any) => void;
+  onOpenRelatedRow?: (screenKey: string, row: Record<string, any>) => void;
   onSubmit?: (values: Record<string, any>) => void;
   routeAction: "create" | "detail" | "list";
   selectedRow?: Record<string, any> | null;
@@ -23,6 +24,7 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
   onBackToList,
   onCreateRow,
   onSelectRow,
+  onOpenRelatedRow,
   onSubmit,
   routeAction,
   selectedRow,
@@ -34,12 +36,15 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
     initialSelectedRow: selectedRow,
     onBack: onBackToList,
     onSubmit,
+    routeAction,
   });
   const entityName = t(entityConfig?.entityNameKey || "", entityConfig?.entityName || t("common.records"));
 
   if (routeAction === "create") {
     return (
       <AddPage
+        entityName={entityName}
+        isLoading={standard.isFormInitialLoading}
         isSubmitting={standard.isSubmitting}
         onBack={onBackToList}
         onFieldChange={standard.setFormValue}
@@ -54,21 +59,25 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
     return (
       <DetailPage
         deleteAction={entityConfig?.detailPage?.deleteAction}
-        entityName={entityName}
+        error={standard.error}
         formValues={standard.formValues}
         image={selectedRow.image}
+        isLoading={standard.isDetailInitialLoading}
         isEditing={standard.isEditingDetail}
         isDeleting={standard.isDeletingDetail}
         isSubmitting={standard.isSubmitting}
         onBack={onBackToList}
         onCancelEdit={standard.cancelDetailEdit}
         onDelete={entityConfig?.detailPage?.deleteAction ? standard.deleteDetail : undefined}
-        onEdit={standard.beginDetailEdit}
+        onEdit={standard.hasEditableDetailFields ? standard.beginDetailEdit : undefined}
         onFieldChange={standard.setFormValue}
+        onOpenRelatedRow={onOpenRelatedRow}
         onSaveEdit={standard.submitDetailEdit}
+        onWorkflowStatusChange={(statusKey) => standard.transitionWorkflowRow(selectedRow.id, statusKey)}
         onTabChange={standard.setActiveTab}
         t={t}
         viewModel={standard.detailViewModel}
+        workflowUpdating={String(standard.updatingWorkflowRowId) === String(selectedRow.id)}
       />
     );
   }
@@ -83,9 +92,11 @@ export const StandardScreen: React.FC<StandardScreenProps> = ({
       onSearchChange={standard.setSearch}
       onSelectRow={onSelectRow}
       onSetFilter={standard.setFilterValue}
-      onSort={standard.setListSort}
+      onSort={standard.cycleListSortDirection}
+      onWorkflowStatusChange={standard.transitionWorkflowRow}
       search={standard.search}
       t={t}
+      updatingWorkflowRowId={standard.updatingWorkflowRowId}
       viewModel={standard.listViewModel}
     />
   );

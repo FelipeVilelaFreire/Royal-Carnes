@@ -54,3 +54,20 @@
 .categoryButton:not(:disabled) {
   color: var(--ui-surface-color) !important;
 }
+
+@media (max-width: 48em) {
+  .categoryList,
+  .categoryListSkeleton {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .categoryList > li,
+  .categoryListSkeleton > li {
+    flex: 0 0 calc((100% - var(--theme--spacing-space2xs)) / 2);
+  }
+
+  .categoryButton {
+    width: 100%;
+  }
+}

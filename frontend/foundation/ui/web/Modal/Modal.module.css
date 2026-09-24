@@ -41,7 +41,11 @@
 
 .panel[data-size="roomy"] {
   --ui-modal-width: var(--semicomposed--modal-width-auth);
-  min-height: var(--semicomposed--modal-min-height-roomy);
+  border-radius: var(--semicomposed--modal-radius-roomy);
+}
+
+.backdrop[data-size="roomy"] {
+  background: var(--semicomposed--modal-backdrop-roomy);
 }
 
 .panel[data-size="md"] {

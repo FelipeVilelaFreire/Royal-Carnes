@@ -40,7 +40,12 @@
 }
 
 .section[data-height="heroPeek"] {
-  min-height: calc(90vh - var(--app-shell-header-height, var(--theme--dimensions-height-2xl)));
+  --ui-section-hero-peek-content-block-size: calc(
+    var(--semicomposed--section-hero-peek-viewport) - var(--semicomposed--section-hero-peek-header-height) -
+      var(--semicomposed--section-hero-peek-content-padding)
+  );
+
+  min-height: calc(var(--semicomposed--section-hero-peek-viewport) - var(--semicomposed--section-hero-peek-header-height));
 }
 
 .section[data-height="fullScreen"] {
@@ -70,6 +75,30 @@
       180deg,
       color-mix(in srgb, var(--theme--color-background) 85%, transparent),
       color-mix(in srgb, var(--theme--color-background) 95%, transparent)
+    ),
+    var(--ui-section-background-image);
+  background-position: center;
+  background-size: cover;
+}
+
+.section[data-atmosphere="image"][data-image-overlay="soft"] {
+  background:
+    linear-gradient(
+      180deg,
+      var(--semicomposed--section-image-overlay-soft-start),
+      var(--semicomposed--section-image-overlay-soft-end)
+    ),
+    var(--ui-section-background-image);
+  background-position: center;
+  background-size: cover;
+}
+
+.section[data-atmosphere="image"][data-image-overlay="medium"] {
+  background:
+    linear-gradient(
+      180deg,
+      var(--semicomposed--section-image-overlay-medium-start),
+      var(--semicomposed--section-image-overlay-medium-end)
     ),
     var(--ui-section-background-image);
   background-position: center;

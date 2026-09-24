@@ -1,0 +1,30 @@
+.carousel { display: grid; gap: 14px; }
+.rail { display: grid; gap: 14px; grid-auto-columns: clamp(230px, calc((100% - 42px) / 4.45), 320px); grid-auto-flow: column; overflow-x: auto; overscroll-behavior-inline: contain; padding: 2px 0 10px; scroll-snap-type: inline mandatory; scrollbar-width: none; }
+.rail::-webkit-scrollbar { display: none; }
+.card { display: grid; min-width: 0; scroll-snap-align: start; text-decoration: none; }
+.card img { aspect-ratio: 1.18; object-fit: cover; width: 100%; }
+.content { display: grid; gap: 5px; padding: 15px; }
+.content strong { font: 400 23px Georgia, serif; }
+.content small { font: 12px Arial, sans-serif; }
+.content b { font: 700 13px Arial, sans-serif; margin-top: 5px; }
+.controls { align-items: center; display: flex; gap: 12px; justify-content: flex-end; }
+.controls button, .dots button { background: transparent; border: 1px solid currentcolor; color: inherit; cursor: pointer; font: 700 10px Arial, sans-serif; letter-spacing: .1em; padding: 9px 11px; text-transform: uppercase; }
+.controls span, .dragHint { font: 700 10px Arial, sans-serif; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
+.dragHint { color: inherit; opacity: .7; }
+.railFrame { align-items: center; display: grid; gap: 12px; grid-template-columns: 38px minmax(0, 1fr) 38px; }
+.sideButton { align-items: center; aspect-ratio: 1; background: transparent; border: 1px solid currentcolor; color: inherit; cursor: pointer; display: inline-flex; font: 400 24px Georgia, serif; justify-content: center; padding: 0; }
+.edgeFrame { position: relative; }
+.edgeButton { align-items: center; aspect-ratio: 1; background: #e4bd56; border: 0; color: #17140c; cursor: pointer; display: inline-flex; font: 400 25px Georgia, serif; justify-content: center; padding: 0; position: absolute; top: calc(50% - 12px); transform: translateY(-50%); width: 42px; z-index: 1; }
+.previous { left: 10px; }
+.next { right: 10px; }
+.dots { display: flex; gap: 7px; }
+.dots button { border-radius: 50%; font-size: 0; height: 11px; padding: 0; width: 11px; }
+.dots button[data-active] { background: currentcolor; }
+.grid .rail { grid-auto-columns: auto; grid-auto-flow: row; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; scrollbar-width: none; }
+.peek .rail { grid-auto-columns: minmax(280px, 34vw); }
+.ink .card { background: #17140c; color: #f6f0e5; }.ink .content small, .ink .content b, .ink .controls { color: #72571e; }
+.outline .card { background: #17140c; border: 1px solid #e4bd56; color: #f6f0e5; }.outline .content small, .outline .content b, .outline .controls { color: #e4bd56; }
+.cream .card { background: #f3e5bd; color: #17140c; }.cream .content small, .cream .content b, .cream .dots, .cream .sideButton { color: #7a5512; }
+.glass .card { background: rgb(18 16 12 / 78%); border: 1px solid rgb(246 240 229 / 40%); color: #f6f0e5; backdrop-filter: blur(10px); }.glass .content small, .glass .content b { color: #f3cd5d; }
+.line .card { background: #090909; border-bottom: 3px solid #e4bd56; color: #f6f0e5; }.line .content small, .line .content b { color: #e4bd56; }
+@media (max-width: 700px) { .rail { grid-auto-columns: minmax(238px, 78vw); }.grid .rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }.peek .rail { grid-auto-columns: 84vw; }.controls { justify-content: space-between; }.controls span { display: none; }.railFrame { grid-template-columns: 30px minmax(0, 1fr) 30px; }.sideButton { font-size: 20px; }.edgeButton { width: 34px; }.previous { left: 6px; }.next { right: 6px; } }

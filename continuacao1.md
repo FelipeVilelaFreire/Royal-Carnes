@@ -1,5 +1,10 @@
 # Continuacao 1 - Admin, operacoes e seletores compartilhados
 
+> Superado em 2026-09-20 para Pedido e Entrega: este registro descreve o
+> workflow sequencial anterior. O modelo vigente esta em `continuacao.md`:
+> Pedido e a fonte unica de verdade, o Admin pode escolher qualquer status
+> configurado e a Entrega apenas espelha esse status.
+
 ## Estado do trabalho
 
 - Branch: `feature/shared-core-kit-reset`.
@@ -40,48 +45,16 @@
 
 ## Pedidos e entregas
 
-### Workflow de Pedido configurado no backend
+### Modelo atual de Pedido e Entrega
 
-```text
-Recebido
-  -> Aprovado
-  -> Separando
-  -> Pronto para envio
-  -> Saiu para entrega
-  -> Entregue
-```
+Pedido possui os nove status configurados pelo seed e e a fonte unica de
+verdade. O Admin pode escolher qualquer status, inclusive para corrigir um
+estado terminal; a alteracao entra no historico com ator e nota.
 
-Saidas alternativas:
-
-```text
-Pronto para envio -> Concluido
-Saiu para entrega -> Falha na entrega
-Qualquer fase operacional -> Cancelado
-```
-
-Total: nove status de Pedido.
-
-- A definicao vive em `backend/seeds/royalprime/kits/orders.seed.json` e e
-  retornada por `/api/v1/orders/config/`; o Admin e o Portal resolvem label,
-  ordem e aparencia por esse contrato.
-- Entrega continua tendo seu workflow proprio (`Pendente`, `Separando entrega`,
-  `Saiu para entrega`, `Entregue`, `Falhou`, `Cancelada`).
-- Quando Entrega muda para despacho, confirmacao, falha ou cancelamento, o
-  backend atualiza o Pedido pai dentro da mesma transacao:
-  `out-for-delivery -> out-for-delivery`, `delivered -> delivered`,
-  `failed -> delivery-failed`, `cancelled -> cancelled`.
-- A aba **Entrega** foi incluida em `/pedidos/detalhes`, com acesso ao detalhe
-  da entrega relacionada.
-- O filtro de status de Pedidos vem de `orderStatuses`, nao de uma lista
-  hardcoded no manifest.
-
-### Seletor de status no detalhe
-
-- O seletor mostra todo o ciclo configurado, nao apenas tres itens.
-- Status que nao sao validos a partir do estado atual aparecem desabilitados;
-  apenas o status atual e as proximas transicoes permitidas podem ser clicados.
-- O backend continua bloqueando qualquer salto invalido, mesmo se alguem
-  manipular o frontend.
+Entrega nao possui workflow ou edicao de status proprios. Ela espelha o status
+do Pedido na mesma transacao e preserva somente dados logisticos, como endereco,
+pacotes, confirmacao e observacoes. O detalhe de Entrega tem uma aba Pedido que
+abre o Pedido vinculado para a alteracao real.
 
 ## Ajuste atual do DropdownPicker
 
@@ -131,8 +104,90 @@ py manage.py test apps.orders.tests.test_api apps.deliveries.tests.test_api
 
 Depois, recarregar `http://localhost:3001/pedidos/detalhes` e verificar:
 
-1. O status `Recebido` mostra os nove estados.
-2. Apenas `Aprovado` e `Cancelado` ficam clicaveis a partir de `Recebido`.
+1. O status `Recebido` mostra os nove estados, todos selecionaveis.
+2. Uma alteracao direta para qualquer status atualiza a Entrega vinculada.
 3. A lista rola sem cortar e abre acima perto do rodape.
-4. Entrega em `Saiu para entrega`, `Entregue`, `Falhou` e `Cancelada` atualiza
-   o Pedido pai conforme o workflow.
+4. O detalhe de Entrega nao oferece edicao e sua aba Pedido abre o registro que
+   controla o status.
+
+## Atualizacao 2026-09-21 - Origem comercial, Royal Box e Scheduling
+
+Pedido continua sendo o centro operacional do Admin. A leitura comercial
+vigente possui somente tres origens:
+
+```text
+Assinatura -> plano e ciclo de escolha do cliente
+Royal Box  -> caixa fixa recorrente
+Avulso     -> compra unica sem recorrencia
+```
+
+O detalhe de Pedido concentra endereco e contexto da origem dentro de `Dados`.
+Nao deve manter uma secao paralela de "Origem comercial" nem expor termos
+tecnicos desnecessarios. A apresentacao correta e:
+
+```text
+Assinatura -> plano e periodo do ciclo
+Royal Box  -> caixa e recorrencia simples, por exemplo "Dia 15"
+Avulso     -> endereco, itens, pagamento e status; sem ciclo/recorrencia
+```
+
+`SubscriptionCycle` pertence somente a Assinatura. `BoxCycle` e a ocorrencia
+interna de Royal Box; ele protege a criacao idempotente do Pedido, mas nao e
+um campo principal de leitura operacional. O Pedido conserva os snapshots de
+itens, preco e endereco; alterar uma adesao Royal Box vale apenas para os
+proximos pedidos.
+
+### Correcao do Checkout
+
+Foi encontrada e corrigida a causa de pedidos hibridos: `useClientCheckout`
+enviava `subscriptionId` e `subscriptionCycleId` para qualquer modalidade.
+Agora esses IDs so seguem no payload quando `selectedMode === "subscription"`.
+Assim, pedidos novos de Royal Box ou Avulso nao recebem vinculo de Assinatura.
+
+Pedidos antigos criados antes dessa correcao podem ter tipo `royal-box` e
+vinculo de `SubscriptionCycle`. O Admin ignora o periodo de assinatura quando
+o `kindKey` nao for `subscription-cycle`; a correcao definitiva de cada dado
+historico exige classificacao/migracao explicita, nunca edicao visual ambigua.
+
+### Scheduling e Royal Box
+
+O Kit 08 (`docs/kits/scheduling-recurrence-kit.md`) possui base backend local:
+
+```text
+Schedule + ScheduleOccurrence
+  -> regra temporal por organization/timezone e ocorrencia idempotente
+
+BoxSubscription + BoxCycle
+  -> caixa, endereco, politica de criacao e snapshot mensal
+
+Order + Delivery
+  -> no maximo um Pedido por BoxCycle; Entrega derivada do Pedido
+```
+
+Operacao automatica aceita duas entradas para o mesmo service:
+
+```text
+Antes do gateway -> scheduler gerenciado da hospedagem chama run_schedules
+Com gateway        -> webhook de Payment pago chama o adapter de BoxCycle
+```
+
+Nao gerar ciclo quando Admin/Client abre uma tela. O cron/scheduler e da
+infraestrutura e o gateway/webhook ainda nao possui endpoint publicado.
+
+### Navegacao Admin
+
+O menu principal foi reorganizado para refletir a operacao:
+
+```text
+Dashboard -> Pedidos -> Clientes -> Produtos -> Entregas
+```
+
+## Validacao desta atualizacao
+
+- `manage.py test apps.scheduling.tests apps.boxes.tests`: passou.
+- `manage.py check`: passou.
+- `manage.py makemigrations --check --dry-run`: sem migrations pendentes.
+- `git diff --check` dos arquivos tocados: passou.
+- A suite combinada de Orders ainda possui falhas no worktree atual ligadas a
+  expectativa de seed/reserva de Assinatura; nao foram usadas como evidencia
+  de Royal Box.

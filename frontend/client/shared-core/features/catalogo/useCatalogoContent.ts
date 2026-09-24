@@ -24,6 +24,7 @@ export interface UseCatalogoContentOptions {
 
 export const useCatalogoContent = ({ apiConfig, strings }: UseCatalogoContentOptions) => {
   const [activeCategoryId, setActiveCategoryId] = useState("all");
+  const [isInitialLoadingVisible, setIsInitialLoadingVisible] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<CatalogoSortKey>("relevance");
   const catalog = useClientCatalog({ apiConfig });
@@ -31,6 +32,11 @@ export const useCatalogoContent = ({ apiConfig, strings }: UseCatalogoContentOpt
   useEffect(() => {
     void catalog.load().catch(() => undefined);
   }, [catalog.load]);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setIsInitialLoadingVisible(false), 1800);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   const viewModel = useMemo(
     () => createCatalogoViewModel({
@@ -74,7 +80,7 @@ export const useCatalogoContent = ({ apiConfig, strings }: UseCatalogoContentOpt
     error: catalog.error,
     filteredProducts: viewModel.filteredProducts,
     isFiltered: Boolean(searchQuery) || activeCategoryId !== "all" || sortBy !== "relevance",
-    isLoading: catalog.isLoading,
+    isLoading: catalog.isLoading || isInitialLoadingVisible,
     reload: catalog.load,
     searchQuery,
     setActiveCategoryId,

@@ -21,7 +21,7 @@ export const clientPortalAccessShellConfig = {
     modalDensity: "roomy",
     showCallout: false,
     showFieldLabels: false,
-    showForgotPassword: false,
+    showForgotPassword: true,
     showLegal: false,
   },
 };

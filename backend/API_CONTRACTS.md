@@ -878,6 +878,9 @@ Objetivo:
 
 ```text
 criar ou atualizar plano administrativo basico
+configurar o catalogo comercial do plano. A politica de entrega e administrada
+separadamente em DeliveryPromisePolicy, para que possa servir mais de um plano
+ou tipo de pedido.
 ```
 
 Permissao:
@@ -1151,7 +1154,7 @@ quando `image_url` vier nulo ou a mídia não carregar.
 Kinds seedados no RoyalPrime:
 
 ```text
-delivery -> Royal Delivery, commercial mode delivery
+delivery -> Avulso, commercial mode delivery
 subscription-cycle -> ciclo de assinatura, commercial mode subscription
 royal-box -> Royal Box, commercial mode box
 ```
@@ -1162,6 +1165,49 @@ Regra para `subscription-cycle`:
 pedido recorrente exige subscription_id e subscription_cycle_id coerentes
 subscription precisa pertencer ao mesmo customer e organization
 subscription_cycle precisa pertencer a subscription informada
+```
+
+Regra para `royal-box`:
+
+```text
+o Pedido operacional e vinculado a um BoxCycle concreto
+o detalhe retorna box_cycle_id, box_cycle_key, box_cycle_scheduled_for,
+box_cycle_status, box_template_name, box_order_creation_policy e
+box_recurrence_day. Royal Box so pode ser criado a partir de um BoxCycle cuja
+BoxSubscription tenha uma recorrencia mensal valida (dia 1 a 31); nos meses
+sem esse dia, a ocorrencia e materializada no ultimo dia do mes. O endpoint
+generico rejeita tanto a ausencia do ciclo quanto a ausencia desse dia.
+esses campos descrevem a origem recorrente; status e historico operacionais
+continuam pertencendo ao Pedido
+o endpoint generico de Pedidos nao aceita criar Royal Box sem esse ciclo
+```
+
+### POST /api/v1/orders/me/royal-box/
+
+Objetivo:
+
+```text
+finalizar a primeira composicao recorrente de Royal Box do Customer autenticado
+```
+
+Entrada:
+
+```text
+address_id obrigatorio do Customer autenticado
+recurrence_day obrigatorio (1 a 31)
+items[] da composicao escolhida
+```
+
+Efeito:
+
+```text
+backend cria BoxTemplate, BoxSubscription, ScheduleOccurrence e BoxCycle;
+o Pedido Royal Box nasce somente desse ciclo. A recorrencia continua salva na
+BoxSubscription para as proximas ocorrencias mensais. `recurrence_day` e o
+dia prometido de entrega: o primeiro ciclo usa esse dia no mes atual se ele
+ainda nao passou; caso contrario, usa o mesmo dia no proximo mes. A promessa
+da entrega e fixada nessa data, enquanto a politica de dias uteis registra a
+janela operacional de preparo sem adiar a data prometida ao cliente.
 ```
 
 ### GET /api/v1/orders/me/:id/
@@ -1178,6 +1224,7 @@ Objetivo:
 
 ```text
 listar pedidos da request.organization para operacao/admin
+retornar por criacao mais recente primeiro; em empate, pelo maior id
 ```
 
 Permissao:
@@ -1219,7 +1266,8 @@ orders.read
 Objetivo:
 
 ```text
-mudar status do pedido validando allowedNextKeys do OrderStatusDefinition atual
+definir qualquer status de Pedido configurado para a organization e registrar
+a alteracao no historico
 ```
 
 Permissao:
@@ -1242,9 +1290,6 @@ Erros principais:
 ```text
 order_reference_not_found
 order_status_not_found
-order_status_transition_not_allowed
-order_status_terminal
-delivery_order_status_transition_not_allowed
 subscription_customer_mismatch
 subscription_cycle_mismatch
 subscription_required_for_cycle
@@ -1257,16 +1302,28 @@ reserved_exceeds_available
 Regra:
 
 ```text
-backend valida transicao por OrderStatusDefinition.allowedNextKeys.
+O Admin pode definir livremente qualquer status configurado de Pedido. Cada
+mudanca diferente do status atual entra no historico e sincroniza a Entrega
+vinculada; o backend apenas valida que o status existe na organization.
 OrderKindDefinition define commercialMode, requiresInventory, createsDelivery e
 codeSequenceKey.
 CodeSequence define prefixo, padding e template por organization.
-Quando createsDelivery=true, Orders cria a Delivery inicial sem regra hardcoded
-por nome comercial.
-No kit RoyalPrime, o fluxo de pedido e configurado como Recebido -> Aprovado ->
-Separando -> Pronto para envio. A partir dai, um pedido com entrega segue para
-Saiu para entrega -> Entregue ou Falha na entrega; retirada/sem entrega pode
-seguir para Concluido. Cancelamento e permitido nos estados nao terminais.
+Quando createsDelivery=true, Orders cria uma Delivery inicial que espelha o
+status inicial do Pedido, sem regra hardcoded por nome comercial.
+Na criacao, a Delivery tambem recebe promised_delivery_starts_on e
+promised_delivery_by_on: datas (sem horario) calculadas em dias uteis, e um
+snapshot da DeliveryPromisePolicy aplicada. A resolucao usa primeiro uma
+politica ligada ao plano de assinatura, depois uma ligada ao tipo de pedido e,
+por fim, a politica padrao da organization. Alterar uma politica nao altera
+promessas ja registradas.
+As respostas de Delivery incluem delivery_promise_status com state e
+remainingBusinessDays. O state e calculado no backend para no prazo, proximo,
+vence hoje, atrasado, entregue ou encerrado; apresentacao e cor pertencem ao
+Admin.
+No kit RoyalPrime, os nove status sao Recebido, Aprovado, Separando, Pronto
+para envio, Saiu para entrega, Entregue, Concluido, Falha na entrega e
+Cancelado. Eles formam um catalogo operacional, nao uma sequencia obrigatoria:
+o Admin pode registrar diretamente o estado real ou corrigir um estado final.
 ```
 
 ## Deliveries
@@ -1276,7 +1333,34 @@ seguir para Concluido. Cancelamento e permitido nos estados nao terminais.
 Objetivo:
 
 ```text
-retornar delivery status definitions da request.organization
+retornar as definicoes usadas para apresentar o status espelho da Entrega.
+O workflow pertence exclusivamente ao Pedido.
+```
+
+### GET/POST /api/v1/deliveries/admin/promise-policies/
+
+Objetivo:
+
+```text
+listar ou criar DeliveryPromisePolicy da organization. A politica declara
+key, name, min_business_days, max_business_days, approaching_business_days,
+order_kind_keys, subscription_plan_keys, is_default, is_active e sort_order.
+```
+
+Permissao:
+
+```text
+GET -> deliveries.read
+POST -> deliveries.manage
+```
+
+### GET/PUT /api/v1/deliveries/admin/promise-policies/:id/
+
+Objetivo:
+
+```text
+consultar ou atualizar uma politica da mesma organization. A key permanece
+imutavel para preservar referencias e snapshots auditaveis.
 ```
 
 ### GET /api/v1/deliveries/me/
@@ -1317,6 +1401,8 @@ Objetivo:
 criar entrega basica para Order existente
 gerar codigo por CodeSequence da organization
 copiar snapshot simples do endereco do pedido
+calcular e persistir o prazo da entrega em dias uteis, quando o tipo de pedido
+ou Plano tiver politica configurada
 ```
 
 Permissao:
@@ -1340,9 +1426,9 @@ Request:
 Objetivo:
 
 ```text
-mudar status da entrega validando allowedNextKeys do DeliveryStatusDefinition atual
-e, quando o status representa despacho, entrega, falha ou cancelamento, alinhar
-o Order relacionado pela transicao configurada do workflow.
+endpoint mantido apenas por compatibilidade; retorna
+delivery_status_is_derived. O status da Entrega e alterado somente pela
+transicao do Pedido relacionado.
 ```
 
 Permissao:
@@ -1356,8 +1442,8 @@ deliveries.manage
 Objetivo:
 
 ```text
-registrar confirmacao de entrega
-se existir status terminal com effects.confirmDelivery=true, transicionar para ele
+registrar a evidencia de confirmacao da entrega. Nao altera o status: a
+operacao deve editar o Pedido relacionado para registrar Entregue.
 ```
 
 Permissao:
@@ -1370,8 +1456,9 @@ Scheduling:
 
 ```text
 fora da Fase 5 atual.
-Entrega recorrente, janela de entrega, capacidade e calendario ficam para kit
-futuro de Delivery Scheduling.
+Entrega recorrente, capacidade e calendario de feriados ficam para kit futuro
+de Delivery Scheduling. A promessa inicial considera apenas segunda a sexta e
+nao possui horario.
 ```
 
 ## Payments

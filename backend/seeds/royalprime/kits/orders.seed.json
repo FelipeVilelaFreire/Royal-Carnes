@@ -13,7 +13,7 @@
   "kinds": [
     {
       "key": "delivery",
-      "label": "Royal Delivery",
+      "label": "Avulso",
       "commercialModeKey": "delivery",
       "codeSequenceKey": "orders",
       "requiresInventory": true,
@@ -44,35 +44,30 @@
       "key": "received",
       "label": "Recebido",
       "isInitial": true,
-      "allowedNextKeys": ["approved", "cancelled"],
       "metadata": { "ui": { "statusColor": "received", "statusTone": "neutral" } },
       "sortOrder": 1
     },
     {
       "key": "approved",
       "label": "Aprovado",
-      "allowedNextKeys": ["separating", "cancelled"],
       "metadata": { "ui": { "statusColor": "active", "statusTone": "success" } },
       "sortOrder": 2
     },
     {
       "key": "separating",
       "label": "Separando",
-      "allowedNextKeys": ["ready", "cancelled"],
       "metadata": { "ui": { "statusColor": "separating", "statusTone": "warning" } },
       "sortOrder": 3
     },
     {
       "key": "ready",
       "label": "Pronto para envio",
-      "allowedNextKeys": ["out-for-delivery", "completed", "cancelled"],
       "metadata": { "ui": { "statusColor": "ready", "statusTone": "neutral" } },
       "sortOrder": 4
     },
     {
       "key": "out-for-delivery",
       "label": "Saiu para entrega",
-      "allowedNextKeys": ["delivered", "delivery-failed", "cancelled"],
       "metadata": { "ui": { "statusColor": "outForDelivery", "statusTone": "neutral" } },
       "sortOrder": 5
     },
@@ -135,22 +130,22 @@
     {
       "key": "pedido-felipe-churrasco-familia",
       "customerKey": "felipe-vilela",
-      "kindKey": "royal-box",
+      "kindKey": "delivery",
       "statusPath": ["approved", "separating", "ready"],
-      "notes": "Royal Box para churrasco de familia no fim de semana.",
+      "notes": "Pedido avulso para churrasco de familia no fim de semana.",
       "items": [
         {
           "product_key": "maminha",
           "variant_sku": "MAMINHA-1KG",
           "quantity": 2,
-          "source_type": "royal-box",
+          "source_type": "delivery",
           "source_key": "familia"
         },
         {
           "product_key": "carvao-premium",
           "variant_sku": "CARVAO-5KG",
           "quantity": 1,
-          "source_type": "royal-box",
+          "source_type": "delivery",
           "source_key": "familia"
         }
       ]

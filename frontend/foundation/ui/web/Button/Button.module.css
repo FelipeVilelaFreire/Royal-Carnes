@@ -25,6 +25,13 @@
     box-shadow var(--ui-button-duration) var(--ui-button-easing);
 }
 
+.buttonSkeleton.buttonSkeleton {
+  block-size: var(--ui-button-height);
+  border-radius: var(--semicomposed--button-radius);
+  min-block-size: var(--ui-button-height);
+  min-inline-size: var(--ui-button-min-width);
+}
+
 .button::before,
 .button::after {
   content: "";
@@ -52,16 +59,20 @@
   z-index: 1;
 }
 
-.button:not(:disabled)[data-appearance="outline"],
-.button:not(:disabled)[data-appearance="transparent"] {
+.button:not(:disabled)[data-appearance="outline"][data-tone="neutral"],
+.button:not(:disabled)[data-appearance="transparent"][data-tone="neutral"] {
   --ui-button-readable-color: var(--theme--color-text);
   color: var(--ui-button-readable-color) !important;
 }
 
+.button:not(:disabled)[data-appearance="transparent"][data-tone="primary"] {
+  --ui-button-readable-color: var(--semicomposed--button-color-glass);
+}
+
 .button:disabled {
-  color: var(--theme--color-text-muted);
+  color: var(--ui-surface-color);
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.58;
 }
 
 .button:not(:disabled):hover {

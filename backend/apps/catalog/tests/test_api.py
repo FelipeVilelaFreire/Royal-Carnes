@@ -30,7 +30,7 @@ class CatalogApiTests(APITestCase):
 
     def test_seed_creates_collections_and_products(self):
         self.assertEqual(Collection.objects.count(), 5)
-        self.assertEqual(Category.objects.count(), 23)
+        self.assertEqual(Category.objects.count(), 14)
         self.assertEqual(Product.objects.count(), 38)
         self.assertEqual(ProductMedia.objects.count(), 38)
         self.assertEqual(MeasurementUnit.objects.count(), 5)
@@ -44,7 +44,24 @@ class CatalogApiTests(APITestCase):
         )
         self.assertTrue(Category.objects.filter(key="bovinos", parent__key="carnes").exists())
         self.assertTrue(Category.objects.filter(key="espetos", parent__key="utensilios").exists())
-        self.assertTrue(Category.objects.filter(key="brindes", parent__isnull=True).exists())
+        self.assertTrue(Category.objects.filter(key="temperos", parent__isnull=True).exists())
+        self.assertTrue(Category.objects.filter(key="utensilios", parent__isnull=True).exists())
+
+    def test_reapplying_catalog_seed_hides_categories_removed_from_its_contract(self):
+        organization = Category.objects.get(key="carnes").organization
+        Category.objects.create(
+            organization=organization,
+            key="categoria-antiga",
+            name="Categoria antiga",
+            is_active=True,
+        )
+
+        BackendSeedApplier(BackendSeedLoader().load("royalprime")).apply()
+
+        self.assertFalse(Category.objects.filter(key="categoria-antiga").exists())
+        stale_category = Category.all_objects.get(key="categoria-antiga")
+        self.assertFalse(stale_category.is_active)
+        self.assertIsNotNone(stale_category.deleted_at)
 
     def test_public_catalog_endpoints(self):
         collections_response = self.client.get(
@@ -74,7 +91,7 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(modes_response.status_code, 200, modes_response.data)
         self.assertEqual(units_response.status_code, 200, units_response.data)
         self.assertTrue(collections_response.data[0]["image_url"])
-        self.assertGreaterEqual(len(categories_response.data), 15)
+        self.assertGreaterEqual(len(categories_response.data), 14)
         self.assertGreaterEqual(len(units_response.data), 5)
         self.assertTrue(any(category["key"] == "bovinos" for category in categories_response.data))
         self.assertGreaterEqual(len(products_response.data), 14)
@@ -106,7 +123,7 @@ class CatalogApiTests(APITestCase):
                 "name": "Patinho",
                 "description": "Corte magro para rotina",
                 "status": "draft",
-                "category_keys": ["carnes", "combos"],
+                "category_keys": ["carnes", "bovinos"],
                 "unit": "kg",
                 "price_cents": 5490,
                 "commercial_mode_keys": ["delivery"],
@@ -128,7 +145,7 @@ class CatalogApiTests(APITestCase):
         self.assertEqual(create_response.data["primary_media_url"], "https://example.com/patinho.jpg")
         self.assertEqual(
             [category["key"] for category in create_response.data["categories"]],
-            ["carnes", "combos"],
+            ["carnes", "bovinos"],
         )
 
     def test_admin_can_update_category_and_admin_list_keeps_inactive(self):

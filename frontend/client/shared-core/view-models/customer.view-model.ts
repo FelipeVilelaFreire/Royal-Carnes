@@ -75,7 +75,13 @@ const readNumber = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-const formatQuantity = (quantity: string, unit: string | null) => [quantity, unit || ""].filter(Boolean).join(" ");
+const formatQuantity = (quantity: string, unit: string | null) => {
+  const parsed = Number(quantity);
+  const value = Number.isFinite(parsed)
+    ? new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(parsed)
+    : quantity;
+  return [value, unit || ""].filter(Boolean).join(" ");
+};
 
 export const createClientCustomerPlans = (plans: ClientPlanView[]): ClientCustomerPlan[] => plans.map((plan) => {
   const entitlements = plan.entitlements || [];
@@ -93,6 +99,7 @@ export const createClientCustomerPlans = (plans: ClientPlanView[]): ClientCustom
     })(),
   }));
   return {
+    description: plan.description || "",
     key: plan.key,
     name: plan.name,
     monthlyPrice: (monthlyPrice?.amountCents || 0) / 100,
@@ -158,6 +165,9 @@ export const createClientCustomerRecentOrders = (ordersViewModel: ClientOrdersVi
   imageUrl: order.imageUrl,
 }));
 
+const formatCapacityUsage = (used: number, limit: number, unit: string) =>
+  unit ? `${used} / ${limit} ${unit}` : `${used} / ${limit}`;
+
 export const createClientCustomerAccountViewModel = ({
   dataSource,
   selectedPlanKey,
@@ -168,6 +178,7 @@ export const createClientCustomerAccountViewModel = ({
     plans.find((plan) => plan.key === customer.activeSubscription?.planKey) || {
       key: "",
       name: "",
+      description: "",
       monthlyPrice: 0,
       includedItems: [],
       productSelectionLimit: 0,
@@ -198,24 +209,16 @@ export const createClientCustomerAccountViewModel = ({
     nextDeliveryLabel: customer.activeSubscription?.nextDeliveryLabel || "",
     planPriceLabel: formatPlanPrice(activePlan.monthlyPrice),
     primaryAddressLabel: primaryAddress ? `${primaryAddress.label} - ${primaryAddress.neighborhoodLine}` : "",
-    usageMetrics: (usage?.capacity || []).flatMap((item) => {
+    usageMetrics: (usage?.capacity || [])
+      .filter((item) => item.limitQuantity > 0)
+      .map((item) => {
       const unit = item.measurementUnitSymbol || "";
-      const metrics: ClientCustomerUsageMetric[] = [];
-      if (item.limitSelections !== null && item.limitSelections !== undefined) {
-        metrics.push({
-          key: `${item.key}-selections`,
-          label: item.selectionLabel || item.label,
-          valueLabel: `${item.usedSelections} / ${item.limitSelections}`,
-          percent: clampPercent(item.usedSelections, item.limitSelections),
-        });
-      }
-      metrics.push({
-        key: `${item.key}-quantity`,
+      return {
+        key: item.key,
         label: item.label,
-        valueLabel: `${item.usedQuantity}${unit} / ${item.limitQuantity}${unit}`,
+        valueLabel: formatCapacityUsage(item.usedQuantity, item.limitQuantity, unit),
         percent: clampPercent(item.usedQuantity, item.limitQuantity),
-      });
-      return metrics;
+      };
     }),
   };
 };

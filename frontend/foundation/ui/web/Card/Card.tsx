@@ -8,11 +8,15 @@ import {
   type CardLevel,
 } from "../../shared/core";
 import { Surface } from "../Surface";
+import { Skeleton, type SkeletonSize, type SkeletonWidth } from "../Skeleton";
 import { useUiConfig } from "../UiProvider";
 import styles from "./Card.module.css";
 
 export type CardProps = HTMLAttributes<HTMLDivElement> & {
   size?: CardLevel;
+  skeletonSize?: SkeletonSize;
+  skeletonWidth?: SkeletonWidth;
+  state?: "default" | "skeleton";
 };
 
 const resolveManifestCardConfig = (card: unknown): Partial<CardConfig> | undefined => {
@@ -22,7 +26,7 @@ const resolveManifestCardConfig = (card: unknown): Partial<CardConfig> | undefin
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { children, className, size, style, ...props },
+  { children, className, size, skeletonSize = "xl", skeletonWidth = "full", state = "default", style, ...props },
   ref
 ) {
   const ui = useUiConfig();
@@ -35,6 +39,20 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     "--ui-card-padding-y": `${resolved.padding}px`,
     ...style,
   } as CSSProperties;
+
+  if (state === "skeleton") {
+    return (
+      <Skeleton
+        aria-busy="true"
+        className={[styles.cardSkeleton, className].filter(Boolean).join(" ")}
+        data-size={resolved.level}
+        shape="block"
+        size={skeletonSize}
+        style={cardStyle}
+        width={skeletonWidth}
+      />
+    );
+  }
 
   return (
     <Surface

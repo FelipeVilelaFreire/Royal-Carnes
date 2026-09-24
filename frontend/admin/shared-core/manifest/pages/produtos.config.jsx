@@ -16,10 +16,12 @@ export const produtosConfig = {
       { key: "categoryLabel", labelKey: "produtos.tableHeaders.category" },
       { key: "unit", labelKey: "produtos.tableHeaders.unit" },
       { key: "priceFormatted", labelKey: "produtos.tableHeaders.price" },
-      { key: "commercialModeLabel", labelKey: "produtos.tableHeaders.commercialModes" },
       { key: "statusLabelKey", labelKey: "produtos.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" }
     ],
     filters: [
+      { key: "categoryKeys", labelKey: "produtos.filters.category", source: "categorias" },
+      { key: "collectionKeys", labelKey: "produtos.filters.collection", source: "colecoes" },
+      { key: "unit", labelKey: "produtos.filters.unit", source: "unidades" },
       {
         key: "status",
         labelKey: "produtos.filters.status",
@@ -87,17 +89,10 @@ export const produtosConfig = {
               }
             ]
           },
-        ]
-      },
-      {
-        id: "precos",
-        labelKey: "produtos.detail.tabs.prices",
-        emptyKey: "produtos.detail.emptyPrices",
-        sections: [
           {
-            key: "prices",
+            key: "commercial",
             type: "fields",
-            grid: { desktop: 1, tablet: 1, mobile: 1 },
+            grid: { desktop: 2, tablet: 2, mobile: 1 },
             iconIntent: "commerce",
             titleKey: "produtos.detail.tabs.prices",
             fields: [
@@ -111,46 +106,42 @@ export const produtosConfig = {
                 editable: true
               }
             ]
-          }
+          },
         ]
       },
       {
-        id: "midia",
+        id: "media",
         labelKey: "produtos.detail.tabs.media",
         emptyKey: "produtos.detail.emptyMedia",
-        sections: [
-          {
-            key: "media",
-            type: "fields",
-            grid: { desktop: 1, tablet: 1, mobile: 1 },
-            iconIntent: "box",
-            titleKey: "produtos.detail.tabs.media",
-            fields: [
-              { key: "image", labelKey: "produtos.fields.primaryImage", type: "asset", editable: true }
-            ]
-          }
-        ]
+        sections: [{
+          key: "media",
+          type: "fields",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          iconIntent: "box",
+          titleKey: "produtos.detail.tabs.media",
+          fields: [
+            { key: "image", labelKey: "produtos.fields.primaryImage", type: "asset", editable: true }
+          ]
+        }]
       },
       {
-        id: "planosAssinatura",
+        id: "subscriptionPlans",
         labelKey: "produtos.detail.tabs.subscriptionPlans",
         emptyKey: "produtos.detail.emptySubscriptionPlans",
-        sections: [
-          {
-            key: "subscriptionPlans",
-            type: "lineItems",
-            titleKey: "produtos.detail.sections.subscriptionPlans",
-            iconIntent: "commerce",
-            grid: { desktop: 1, tablet: 1, mobile: 1 },
-            itemsKey: "subscriptionPlans",
-            labelKey: "produtos.detail.sections.subscriptionPlans",
-            columns: [
-              { key: "planName", labelKey: "produtos.subscriptionPlans.plan", type: "text" },
-              { key: "capacityLabel", labelKey: "produtos.subscriptionPlans.capacity", type: "text" },
-              { key: "limitLabel", labelKey: "produtos.subscriptionPlans.limit", type: "text", align: "end" }
-            ]
-          }
-        ]
+        sections: [{
+          key: "subscriptionPlans",
+          type: "lineItems",
+          titleKey: "produtos.detail.sections.subscriptionPlans",
+          iconIntent: "commerce",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          itemsKey: "subscriptionPlans",
+          labelKey: "produtos.detail.sections.subscriptionPlans",
+          columns: [
+            { key: "planName", labelKey: "produtos.subscriptionPlans.plan", type: "text" },
+            { key: "capacityLabel", labelKey: "produtos.subscriptionPlans.capacity", type: "text" },
+            { key: "limitLabel", labelKey: "produtos.subscriptionPlans.limit", type: "text", align: "end" }
+          ]
+        }]
       }
     ]
   },

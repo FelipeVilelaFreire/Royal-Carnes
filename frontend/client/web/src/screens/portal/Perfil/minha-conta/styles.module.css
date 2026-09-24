@@ -18,6 +18,12 @@
   padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
 }
 
+.emptyStateMain {
+  display: flex;
+  flex: 1 1 auto;
+  min-block-size: calc(100dvh - var(--app-shell-header-height, var(--theme--dimensions-height-3xl)));
+}
+
 .shellGrid {
   align-items: start;
 }
@@ -26,6 +32,30 @@
   display: grid;
   gap: var(--theme--spacing-spaceXl);
   grid-template-columns: minmax(0, 4fr) minmax(0, 16fr);
+}
+
+.profileSkeletonSummary,
+.profileSkeletonNavigation,
+.profileSkeletonModule {
+  border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  padding: var(--theme--spacing-spaceLg);
+}
+
+.profileSkeletonSummary {
+  align-items: center;
+  display: flex;
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.profileSkeletonNavigation,
+.profileSkeletonModule,
+.profileSkeletonCards {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+}
+
+.profileSkeletonCards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .statsGrid,
@@ -43,8 +73,24 @@
   grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
 }
 
+.profileFields {
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profileIdentityField {
+  grid-column: span 2;
+}
+
+.profileActions {
+  border-block-start: var(--theme--borders-hairline) solid var(--theme--color-border);
+  padding-block-start: var(--theme--spacing-spaceLg);
+}
+
 .metricsGrid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--theme--spacing-spaceSm);
 }
 
 .sidebar {
@@ -76,6 +122,11 @@
   overflow: hidden;
 }
 
+.heroIdentity {
+  border-block-end: var(--theme--borders-hairline) solid var(--theme--color-border);
+  padding-block-end: var(--theme--spacing-spaceLg);
+}
+
 .panelCard {
   --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 92%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 8%);
   --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 76%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 24%);
@@ -86,6 +137,85 @@
   --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 82%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 18%);
 }
 
+.metricCard {
+  min-inline-size: 0;
+}
+
+.metricValue {
+  white-space: nowrap;
+}
+
+.planCard {
+  block-size: 100%;
+  min-inline-size: 0;
+}
+
+.planCardCurrent {
+  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 78%, var(--theme--color-accent-surface, var(--theme--color-accentSurface)) 22%);
+  --ui-surface-border: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  box-shadow: var(--theme--elevation-sm);
+}
+
+.planCardContent {
+  block-size: 100%;
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  grid-template-rows: auto minmax(var(--theme--dimensions-height-3xl), auto) var(--theme--borders-hairline) 1fr;
+}
+
+.planHeader {
+  min-inline-size: 0;
+}
+
+.planEyebrow,
+.planPricePeriod {
+  color: var(--theme--color-text-muted);
+}
+
+.planBenefits {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.planIntro {
+  min-block-size: var(--theme--dimensions-height-3xl);
+}
+
+.planPrice {
+  color: var(--theme--color-accent);
+}
+
+.planPriceRow {
+  min-block-size: var(--theme--dimensions-height-xl);
+}
+
+.planDescription {
+  min-block-size: var(--theme--dimensions-height-xl);
+}
+
+.planDivider {
+  background: var(--theme--color-border);
+  block-size: var(--theme--borders-hairline);
+  inline-size: 100%;
+}
+
+.planBenefit {
+  align-items: center;
+  border-block-end: var(--theme--borders-hairline) solid var(--theme--color-border);
+  min-inline-size: 0;
+  padding-block-end: var(--theme--spacing-space2xs);
+}
+
+.planBenefit svg {
+  color: var(--theme--color-accent);
+  flex: 0 0 auto;
+}
+
+.planBenefit:last-child {
+  border-block-end: 0;
+  padding-block-end: 0;
+}
+
 .highlightCard {
   --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface) 84%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 16%);
   --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 55%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 45%);
@@ -93,16 +223,18 @@
 
 .avatar {
   align-items: center;
-  background: var(--theme--color-accent-surface, var(--theme--color-accentSurface));
-  border: var(--theme--borders-hairline) solid var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
+  background: var(--theme--color-accent);
+  border: var(--theme--borders-hairline) solid var(--theme--color-accent);
   border-radius: var(--theme--radius-full);
-  color: var(--theme--color-text);
+  color: var(--theme--color-accent-contrast, var(--theme--color-background));
   display: inline-flex;
   flex-shrink: 0;
   font-weight: var(--theme--typography-bold);
-  height: var(--theme--dimensions-height-2xl);
+  box-shadow: var(--theme--elevation-sm);
+  font-size: var(--theme--typography-sizeLg);
+  height: var(--theme--dimensions-height-3xl);
   justify-content: center;
-  width: var(--theme--dimensions-height-2xl);
+  width: var(--theme--dimensions-height-3xl);
 }
 
 .chip {
@@ -210,15 +342,24 @@
   }
 }
 
+@media (max-width: 72em) {
+  .metricsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 56em) {
   .content {
     padding-block: var(--theme--spacing-spaceLg) calc(var(--theme--spacing-space3xl) + env(safe-area-inset-bottom));
   }
 
   .mainGrid,
-  .statsGrid,
-  .metricsGrid {
+  .statsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .sidebar {
@@ -258,7 +399,28 @@
 }
 
 @media (max-width: 48rem) {
+  .emptyStateMain {
+    min-block-size: calc(100dvh - var(--app-shell-header-height, var(--theme--dimensions-height-2xl)));
+  }
+
   .mobileScreenHeader {
     display: block;
+  }
+}
+
+@media (max-width: 40rem) {
+  .profileSkeletonCards {
+    grid-template-columns: 1fr;
+  }
+  .profileFields {
+    grid-template-columns: 1fr;
+  }
+
+  .profileIdentityField {
+    grid-column: auto;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

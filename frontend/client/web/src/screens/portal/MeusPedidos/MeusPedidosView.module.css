@@ -24,12 +24,14 @@
   padding-block: var(--theme--spacing-spaceXl) var(--theme--spacing-space3xl);
 }
 
-.summary {
+.syncNotice {
+  border-bottom: var(--theme--borders-hairline) solid var(--theme--color-border);
   margin-bottom: var(--theme--spacing-spaceLg);
+  padding-bottom: var(--theme--spacing-spaceSm);
 }
 
-.statsGrid,
 .currentGrid,
+.currentDetails,
 .historyRow,
 .modalMetaGrid,
 .modalItemsGrid,
@@ -39,33 +41,15 @@
   gap: var(--theme--spacing-spaceMd);
 }
 
-.statsGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.statCard {
-  --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface-container) 82%, var(--theme--color-accent-surface, var(--theme--color-accentSurface, var(--theme--color-accent))) 18%);
-  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 68%, var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent))) 32%);
-
-  min-height: var(--theme--dimensions-height-3xl);
-  position: relative;
-}
-
-.statCard::before {
-  background: var(--theme--color-accent);
-  border-radius: var(--theme--radius-full);
-  content: "";
-  height: var(--theme--borders-medium);
-  left: var(--theme--spacing-spaceMd);
-  position: absolute;
-  right: var(--theme--spacing-spaceMd);
-  top: 0;
-}
-
 .currentGrid {
   align-items: stretch;
   grid-template-columns: minmax(0, 12fr) minmax(0, 8fr);
   margin-bottom: var(--theme--spacing-spaceXl);
+}
+
+.currentDetails {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: var(--theme--spacing-spaceMd) 0;
 }
 
 .panelHeader {
@@ -134,17 +118,19 @@
   padding: var(--theme--spacing-spaceLg);
 }
 
-.historyRow {
-  align-items: center;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 3fr) minmax(0, 4fr);
-  transition:
-    border-color var(--theme--motion-durationSm) var(--theme--motion-easingStandard),
-    transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+.historyList {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .historyRow:hover {
   border-color: var(--theme--color-accent-border, var(--theme--color-accentBorder, var(--theme--color-accent)));
   transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
+}
+
+.historyMeta {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
 }
 
 .actions {
@@ -242,8 +228,8 @@
   }
 
   .currentGrid,
-  .historyRow,
-  .statsGrid,
+  .currentDetails,
+  .historyList,
   .modalItemsGrid {
     grid-template-columns: 1fr;
   }
@@ -251,4 +237,5 @@
   .actions {
     justify-content: flex-start;
   }
+
 }

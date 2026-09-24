@@ -14,7 +14,16 @@ export const estoqueConfig = {
       { key: "statusLabelKey", labelKey: "common.status", valueType: "translationKey", statusToneKey: "statusTone" },
       { key: "updatedAt", labelKey: "estoque.subtitle" },
     ],
-    filters: [],
+    filters: [{
+      key: "status",
+      labelKey: "common.status",
+      options: [
+        { value: "available", labelKey: "common.statusAvailable" },
+        { value: "limited", labelKey: "common.statusLimited" },
+        { value: "unavailable", labelKey: "common.statusUnavailable" },
+        { value: "disabled", labelKey: "common.statusDisabled" }
+      ]
+    }],
   },
   detailPage: {
     titleKey: "estoque.title",

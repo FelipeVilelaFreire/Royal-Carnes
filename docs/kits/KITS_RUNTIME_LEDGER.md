@@ -46,6 +46,7 @@ entrega o view-model e qual endpoint/fallback ainda sustenta o dado.
 | 05 Orders | local foundation + admin base real | config/me/detail/create, fallback, view-model, admin standard | `MeusPedidosView` web/mobile; Admin Pedidos com detalhe 360 | validar Pedidos no browser e expor acoes de status |
 | 06 Fulfillment & Delivery | local foundation | deliveries API/hooks/view-models | usado indiretamente em pedidos | tela delivery/admin operacional |
 | 07 Payments | local foundation + admin 360 real | admin payments API/mapper/view-model/contexto | Admin Pagamentos, Pedido e Assinaturas | validacao browser e acoes Pix/gateway futuras |
+| 08 Scheduling & Recurrence | local foundation | backend Schedule, ScheduleOccurrence e comando idempotente | nenhum | conectar adaptadores reais de assinatura e Royal Box antes de publicar UI/API |
 
 ## Kit 01 - Auth & Users
 

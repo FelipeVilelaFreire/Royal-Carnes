@@ -17,6 +17,7 @@ export const royalPrimeBaseColors = {
   linen: "#F2F1ED",
   charcoal: "#1A1A1A",
   graphite: "#4A4A4A",
+  google: "#4285F4",
 };
 
 export const royalPrimeDarkColors = royalPrimeBaseColors;
@@ -40,6 +41,7 @@ export const royalPrimeLightColors = {
   linen: "#F2F1ED",
   charcoal: "#1A1A1A",
   graphite: "#4A4A4A",
+  google: "#4285F4",
 };
 
 export const royalPrimeGlobalThemeModes = {

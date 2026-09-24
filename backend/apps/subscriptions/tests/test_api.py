@@ -48,6 +48,8 @@ class SubscriptionsApiTests(APITestCase):
         self.assertEqual(entitlement.quantity, Decimal("10.000"))
         self.assertEqual(pro.entitlements.get(key="acompanhamentos-3un").quantity, Decimal("3.000"))
         self.assertEqual(pro.entitlements.get(key="utensilios-2un").measurement_unit.key, "unit")
+        self.assertEqual(pro.delivery_min_business_days, 3)
+        self.assertEqual(pro.delivery_max_business_days, 8)
 
     def test_public_plans_endpoint_returns_entitlements(self):
         response = self.client.get(
@@ -146,6 +148,7 @@ class SubscriptionsApiTests(APITestCase):
             {
                 "key": "familia",
                 "name": "Familia",
+                "accent_color": "#B87333",
                 "status": "draft",
                 "trial_days": 7,
                 "sort_order": 30,
@@ -170,8 +173,11 @@ class SubscriptionsApiTests(APITestCase):
 
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data["key"], "familia")
+        self.assertEqual(response.data["accent_color"], "#B87333")
         self.assertEqual(response.data["status"], "draft")
         self.assertEqual(response.data["trial_days"], 7)
+        self.assertEqual(response.data["delivery_min_business_days"], 3)
+        self.assertEqual(response.data["delivery_max_business_days"], 8)
         self.assertEqual(response.data["sort_order"], 30)
         self.assertEqual(response.data["entitlements"][0]["target_key"], "carnes")
         self.assertEqual(response.data["entitlements"][0]["measurement_unit_key"], "kg")

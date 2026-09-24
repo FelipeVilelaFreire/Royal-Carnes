@@ -11,6 +11,7 @@ import type {
   EntitlementTargetType,
   PlanEntitlementId,
   PlanEntitlementKey,
+  PlanAccentColor,
   PlanId,
   PlanKey,
   PlanPriceId,
@@ -52,9 +53,12 @@ export interface PlanBase {
   key: PlanKey;
   name: string;
   description?: string | null;
+  accentColor: PlanAccentColor;
   status: PlanStatus;
   billingInterval: BillingInterval;
   trialDays: number;
+  deliveryMinBusinessDays: number;
+  deliveryMaxBusinessDays: number;
   sortOrder: number;
   prices: PlanPriceBase[];
   entitlements: PlanEntitlementBase[];

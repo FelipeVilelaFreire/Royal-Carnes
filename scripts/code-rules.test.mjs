@@ -25,9 +25,14 @@ test('semantic UI and CSS Modules pass', () => {
   assert.deepEqual(rules('import styles from "./Example.module.css"; import { useOrders } from "@royalprime/admin/hooks/useOrders"; const view = <Card className={styles.root}><Text>{strings.title}</Text></Card>;'), []);
 });
 test('native style is supported', () => assert.ok(!rules('<View style={resolved} />', 'frontend/client/mobile/src/Screen.tsx').includes('inline-style')));
+test('Foundation Avatar permits only its centralized accent binding', () => assert.ok(!rules('<div style={avatarStyle} />', 'frontend/foundation/ui/web/Avatar/AvatarCell.tsx').includes('inline-style')));
 test('comments are not UI text', () => assert.deepEqual(rules('// <Text>Salvar</Text>\nconst x = <Text>{strings.title}</Text>;'), []));
 test('CSS values require tokens', () => assert.ok(rules('.root { padding: 16px; color: #fff; }', screen.replace('.tsx', '.module.css')).includes('css-token')));
 test('CSS token values pass', () => assert.deepEqual(rules('.root { padding: var(--theme--spacing-md); display: grid; }', screen.replace('.tsx', '.module.css')), []));
+test('isolated static visual experiments are exempt from product UI rules', () => assert.deepEqual(
+  rules('<main><h1>Teste visual</h1></main>', 'frontend/client/web/src/screens/portal/Experiments/LandingTeste1/LandingTeste1View.tsx'),
+  [],
+));
 test('UI CSS cannot read Theme', () => assert.ok(rules('.root { color: var(--theme--color-white); }', 'frontend/foundation/ui/Text/Text.module.css').includes('ui-theme')));
 test('new JSX render files are rejected', () => assert.ok(rules('<Card />', screen.replace('.tsx', '.jsx')).includes('tsx-component')));
 test('malformed CSS fails closed', () => assert.ok(rules('.x {', screen.replace('.tsx', '.module.css')).includes('syntax')));

@@ -38,6 +38,15 @@ export function createClientCustomerApi(config: ApiClientConfig = {}) {
       await throwIfApiError(response);
       return (await response.json()) as NonNullable<ClientCustomerDto["addresses"]>[number];
     },
+    async updateAddress(addressId: string, input: Record<string, unknown>): Promise<NonNullable<ClientCustomerDto["addresses"]>[number]> {
+      const response = await fetcher(resolveUrl(config.baseUrl, `/api/v1/customers/me/addresses/${addressId}/`), {
+        method: "PATCH",
+        headers: buildApiHeaders({ token: config.getAccessToken?.(), organizationSlug: config.organizationSlug }),
+        body: JSON.stringify(input),
+      });
+      await throwIfApiError(response);
+      return (await response.json()) as NonNullable<ClientCustomerDto["addresses"]>[number];
+    },
     async update(input: Record<string, unknown>): Promise<ClientCustomerDto> {
       const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/customers/me/"), {
         method: "PATCH",

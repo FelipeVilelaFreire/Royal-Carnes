@@ -1,0 +1,59 @@
+.content {
+  align-items: end;
+  align-self: stretch;
+  display: grid;
+  min-block-size: var(--ui-section-hero-peek-content-block-size);
+}
+
+.copy {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  max-inline-size: var(--theme--layout-container-sm);
+}
+
+.title,
+.description,
+.membership {
+  margin: 0;
+}
+
+.actions {
+  justify-self: start;
+}
+
+.skeletonRoot {
+  display: grid;
+  min-block-size: calc(100dvh - var(--app-shell-header-height, var(--theme--dimensions-height-3xl)));
+}
+
+.visualSkeleton.visualSkeleton {
+  block-size: 100%;
+  grid-area: 1 / 1;
+}
+
+@media (max-width: 48em) {
+  .content {
+    align-items: end;
+    min-block-size: calc(100dvh - var(--theme--dimensions-height-3xl) - (var(--theme--spacing-space2xl) * 2));
+  }
+
+  .copy {
+    gap: var(--theme--spacing-spaceMd);
+    max-inline-size: none;
+    width: 100%;
+  }
+
+  .actions {
+    display: grid;
+    inline-size: 100%;
+  }
+
+  .actions > * {
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  .skeletonRoot {
+    min-block-size: calc(100dvh - var(--app-shell-header-height, var(--theme--dimensions-height-2xl)));
+  }
+}

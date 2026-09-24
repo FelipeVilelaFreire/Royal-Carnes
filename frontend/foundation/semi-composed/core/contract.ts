@@ -14,6 +14,8 @@ export type ThemeBorderToken = "none" | "hairline" | "thin" | "medium" | "thick"
 export type ThemeRadiusToken = "none" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | string;
 
 export type SemiThemeInput = {
+  colors?: UiColorTokens;
+  defaultMode?: string;
   modes: {
     dark: UiColorTokens;
     light: UiColorTokens;

@@ -16,6 +16,7 @@ import styles from "./ColorField.module.css";
 
 export type ColorFieldProps = {
   description?: ReactNode;
+  disabled?: boolean;
   error?: ReactNode;
   id?: string;
   label?: ReactNode;
@@ -35,6 +36,7 @@ const resolveManifestColorFieldConfig = (colorField: unknown): Partial<ColorFiel
 
 export function ColorField({
   description,
+  disabled = false,
   error,
   id,
   label,
@@ -82,6 +84,7 @@ export function ColorField({
           <input
             aria-label={typeof label === "string" ? label : undefined}
             className={styles.picker}
+            disabled={disabled}
             id={id}
             onChange={(event) => onValueChange?.(event.currentTarget.value)}
             type="color"

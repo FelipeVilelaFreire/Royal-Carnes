@@ -29,14 +29,16 @@ export const LineItemsEditCell: React.FC<LineItemsEditCellProps> = ({ column, it
     return <Text as="span" className={styles.readOnlyValue} variant="body">{resolveLineItemDisplayValue(column, item, t) || t("common.emptyValue")}</Text>;
   }
 
-  if (column.type === "select" && column.presentation === "media") {
-    return <DropdownPicker ariaLabel={t(column.labelKey)} onChange={(value) => onChangeColumn(column, value)} options={selectOptions.map((option) => {
-      const source = options.find((candidate) => candidate.value === option.value);
+  if (column.type === "select" && (column.presentation === "media" || column.searchable)) {
+    return <DropdownPicker ariaLabel={t(column.labelKey)} onChange={(value) => onChangeColumn(column, value)} options={options.map((option) => {
       return {
-        description: typeof source?.meta?.description === "string" ? source.meta.description : undefined,
-        ...option,
+        description: typeof option.meta?.description === "string" ? option.meta.description : undefined,
+        imageAlt: typeof option.meta?.imageAlt === "string" ? option.meta.imageAlt : undefined,
+        imageSrc: typeof option.meta?.imageSrc === "string" ? option.meta.imageSrc : undefined,
+        label: option.label || t(option.labelKey || "", option.value),
+        value: option.value,
       };
-    })} placeholder={t("forms.selectOption")} value={selectedValue} />;
+    })} emptySearchLabel={column.searchEmptyKey ? t(column.searchEmptyKey) : undefined} optionPresentation={column.presentation} placeholder={t("forms.selectOption")} searchable={column.searchable} searchPlaceholder={column.searchPlaceholderKey ? t(column.searchPlaceholderKey) : undefined} showSelectionIndicator={false} value={selectedValue} />;
   }
 
   if (column.type === "select") return <Select onChange={(event) => onChangeColumn(column, event.target.value)} options={selectOptions} value={selectedValue} />;

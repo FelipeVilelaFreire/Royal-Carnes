@@ -15,7 +15,7 @@ export const clientPtBR = {
     catalogo: "Catálogo",
     produtos: "Montar Box",
     royalBox: "Royal Box",
-    royalDelivery: "Royal Delivery",
+    royalDelivery: "Avulso",
     meusPedidos: "Meus Pedidos",
     minhaConta: "Minha Conta",
     carrinho: "Carrinho",
@@ -35,6 +35,69 @@ export const clientPtBR = {
       themeDark: "Dark",
       enterPortal: "Entrar no Portal"
     },
+    appearanceEditor: {
+      open: "Ajustar aparencia",
+      title: "Aparencia da experiencia",
+      description: "Teste as escolhas no portal antes de publicar uma nova direcao visual.",
+      close: "Fechar ajustes de aparencia",
+      sections: {
+        palette: "Cores e superficies",
+        font: "Tipografia",
+        radius: "Arredondamento",
+        border: "Presenca das bordas",
+        glass: "Material"
+      },
+      options: {
+        royal: "Royal escuro",
+        warm: "Carvao quente",
+        linen: "Linho claro",
+        jakarta: "Jakarta e Playfair",
+        inter: "Inter e Montserrat",
+        montserrat: "Montserrat",
+        balanced: "Equilibrado",
+        rounded: "Mais arredondado",
+        subtle: "Sutil",
+        defined: "Definida",
+        solid: "Solido",
+        glass: "Glass"
+      },
+      previewKicker: "PREVIA EM TEMPO REAL",
+      previewTitle: "Uma direcao visual, toda a experiencia.",
+      previewDescription: "As escolhas aplicadas aqui atualizam tipografia, superficies, bordas, raio e material do AppShell durante este teste.",
+      previewPrimaryAction: "Acao principal",
+      previewSecondaryAction: "Acao secundaria",
+      experiments: {
+        title: "Protótipos visuais",
+        description: "Abra uma direção estática sem alterar a Home ou o Catálogo oficiais.",
+        groups: {
+          home: { title: "Home", description: "Compare a primeira secao da vitrine." },
+          orders: { title: "Meus Pedidos", description: "Compare cinco telas completas de acompanhamento." },
+          landing: { title: "Landing", description: "Compare direcoes para a pagina institucional." },
+          catalog: { title: "Catalogo", description: "Compare uma direcao para descoberta de produtos." },
+        },
+        items: {
+          meusPedidosTeste1: "Tela 1 - acompanhamento",
+          meusPedidosTeste2: "Tela 2 - linha do tempo",
+          meusPedidosTeste3: "Tela 3 - pedido em foco",
+          meusPedidosTeste4: "Tela 4 - painel de etapas",
+          meusPedidosTeste5: "Tela 5 - central do pedido",
+          homeTeste1: "Home teste 1 · coleção",
+          homeTeste2: "Home teste 2 · momento",
+          homeTeste3: "Home teste 3 · produtos",
+          homeTeste4: "Home teste 4 · preparo",
+          homeTeste5: "Home teste 5 · módulos",
+          homeTeste6: "Home teste 6 · cliente",
+          homeTeste7: "Home teste 7 · mobile visitante",
+          homeTeste8: "Home teste 8 · mobile cliente",
+          landingTeste1: "Landing teste 1 · cinematográfica",
+          landingTeste2: "Landing teste 2 · editorial",
+          landingTeste3: "Landing teste 3 · coleções",
+          landingTeste4: "Landing teste 4 · essencial",
+          landingTeste5: "Landing teste 5 · direta",
+          catalogoTeste1: "Catálogo teste 1 · vitrine",
+        },
+      },
+    },
     navigation: {
       home: "Home",
       cortes: "Cortes",
@@ -45,7 +108,7 @@ export const clientPtBR = {
       products: "Produtos",
       produtos: "Montar Box",
       royalBox: "Royal Box",
-      royalDelivery: "Royal Delivery",
+      royalDelivery: "Avulso",
       productOptions: "Formas",
       faq: "FAQ",
       meusPedidos: "Meus Pedidos",
@@ -92,7 +155,15 @@ export const clientPtBR = {
   authEmptyState: {
     title: "Entre para continuar",
     description: "Esta área guarda suas escolhas, pedidos, endereços e preferências Royal Prime.",
-    action: "Ver cortes"
+    action: "Ver cortes",
+    orders: {
+      title: "Entre para ver seus pedidos",
+      description: "Acompanhe seus pedidos e entregas depois de entrar.",
+    },
+    profile: {
+      title: "Entre para acessar sua conta",
+      description: "Veja seus dados, endereços e preferências depois de entrar.",
+    },
   },
   accessShell: {
     close: "Fechar",
@@ -111,7 +182,7 @@ export const clientPtBR = {
       }
     },
     providers: {
-      divider: "ou continue com",
+      divider: "ou",
       google: "Continuar com Google",
       apple: "Continuar com Apple"
     },
@@ -196,6 +267,7 @@ export const clientPtBR = {
     currentOrder: {
       badge: "Pedido atual",
       total: "Valor total",
+      subscription: "Incluído na assinatura",
       deliveryCode: "Codigo de entrega",
       deliveryCodeHint: "Forneca ao entregador",
       items: "Itens do pedido",
@@ -236,7 +308,9 @@ export const clientPtBR = {
       payment: "Pagamento",
       deliveryCode: "Codigo",
       items: "Itens do pedido",
-      tracking: "Acompanhamento"
+      tracking: "Acompanhamento",
+      awaitingConfirmation: "Aguardando confirmação",
+      includedInSubscription: "Incluído no ciclo da assinatura"
     }
   },
   minhaCaixa: {
@@ -301,6 +375,7 @@ export const clientPtBR = {
   },
   pedido: {
     format: {
+      dashSeparated: "{first} - {second}",
       productQuantity: "{quantity}x {product}",
     },
     hero: {
@@ -311,10 +386,6 @@ export const clientPtBR = {
       searchPlaceholder: "Buscar produto",
       filterLabel: "Filtrar",
       clearFilters: "Limpar filtros"
-    },
-    modeSelection: {
-      eyebrow: "Modalidade de aquisicao",
-      description: "Selecione o formato de expedicao."
     },
     modes: {
       subscription: {
@@ -332,9 +403,9 @@ export const clientPtBR = {
         details: ["Todo o estoque Royal", "Dia do mês escolhido", "Carvão e utensílios"]
       },
       royalDelivery: {
-        title: "Royal Delivery",
-        eyebrow: "Envio imediato",
-        description: "Faca um pedido avulso com endereco e frete definidos na etapa seguinte.",
+        title: "Avulso",
+        eyebrow: "Compra unica",
+        description: "Faca uma compra unica com endereco e frete definidos na etapa seguinte.",
         action: "Comecar pedido",
         details: ["Sem recorrência", "Endereço flexível", "Repetir último pedido"]
       }
@@ -352,6 +423,9 @@ export const clientPtBR = {
       catalog: {
         title: "Produtos disponíveis",
         subtitle: "Primeira camada do configurador: produtos, categorias, preço e disponibilidade.",
+        errorTitle: "Nao foi possivel carregar os produtos",
+        errorDescription: "Confira a conexao com o catalogo e tente novamente.",
+        retry: "Tentar novamente",
         emptyTitle: "Nenhum produto encontrado",
         emptyDescription: "Ajuste a busca ou selecione outra categoria.",
         foundLabel: "itens encontrados"
@@ -377,6 +451,7 @@ export const clientPtBR = {
       modalTitle: "Filtrar produtos",
       categoryTitle: "Categoria",
       allCategories: "Todas as categorias",
+      activeCategoryLabel: "Categoria: {category}",
       close: "Fechar",
       apply: "Aplicar"
     },
@@ -399,6 +474,7 @@ export const clientPtBR = {
       selectedItems: "Itens selecionados",
       selectedLimit: "Itens escolhidos",
       selectedItemsCount: "{count} itens",
+      quantityAction: "{action}: {product}",
       modePlanBadge: "{mode} · {plan}",
       fixedPlanPrice: "Preço fixo do plano",
       variableEstimate: "Estimativa",
@@ -409,9 +485,8 @@ export const clientPtBR = {
       sideUsage: "acompanhamentos",
       utensilUsage: "utensílios",
       deliveryAddress: "Endereço",
-      recurrenceDay: "Recorrência",
+      recurrenceDay: "Entrega recorrente",
       selectedFreight: "Frete",
-      freightNotSelected: "Selecionar na etapa de entrega",
       selectedPayment: "Pagamento",
       remove: "Remover",
       estimate: "Estimativa",
@@ -430,60 +505,68 @@ export const clientPtBR = {
     },
     deliveryStep: {
       badge: "Etapa 2",
-      title: "Entrega e recorrência",
-      description: "Confirme para onde o pedido vai e como essa modalidade deve ser entregue.",
+      title: "Entrega",
+      description: "Escolha o endereço de entrega.",
       back: "Voltar para montagem",
       next: "Continuar para pagamento",
       common: {
         addressTitle: "Endereço de entrega",
         addressLabel: "Endereço principal",
         addressValue: "Rua das Palmeiras, 120 - Centro",
-        addressHint: "Usado como padrão para este fluxo. Você pode trocar antes de finalizar.",
+        addressHint: "Selecionado para este ciclo.",
         primaryAddress: "Principal",
         zipPrefix: "CEP:",
         phonePrefix: "Tel:",
         removeAddress: "Remover",
         addAddress: "Adicionar outro endereço",
         newAddressTitle: "Novo endereço",
-        newAddressLabelPrefix: "Endereco",
+        label: "Nome do endereço",
         zipCode: "CEP",
         street: "Rua",
         number: "Número",
         neighborhood: "Bairro",
         city: "Cidade",
+        state: "Estado",
         complement: "Complemento",
         addressPlaceholders: {
+          label: "Ex: Casa, Trabalho ou Chácara",
           zipCode: "00000-000",
           street: "Rua das Palmeiras",
           number: "120",
           neighborhood: "Centro",
           city: "Sao Paulo",
+          state: "SP",
           complement: "Apto, bloco ou referencia"
         },
         saveAddress: "Salvar endereço",
+        addressSaveError: "Preencha o nome, CEP, rua, cidade e estado para salvar o endereço.",
         cancelAddress: "Cancelar",
         notesTitle: "Observações",
         notesPlaceholder: "Ex: deixar embalado por tipo de corte, horário preferencial ou ponto de referência."
       },
       subscription: {
         title: "Assinatura fechada",
-        description: "Entrega vinculada ao cadastro do cliente. A forma de pagamento e ciclo de cobrança entram na próxima etapa.",
+        description: "Escolha o endereço deste ciclo.",
         fields: ["Usar endereço do cadastro", "Entrega recorrente da assinatura", "Preferências gerais do pacote"]
       },
       royalBox: {
         title: "Royal Box",
-        description: "A Box fica recorrente no dia escolhido do mês, com a mesma composição montada na etapa anterior.",
-        deliveryDayLabel: "Dia do mês",
+        description: "Defina o endereço e o dia mensal da sua Royal Box.",
+        deliveryDayLabel: "Dia de entrega",
         deliveryDayPrefix: "Todo dia",
-        deliveryDayHint: "Escolha o dia fixo em que a caixa será preparada para entrega mensal.",
+        deliveryDayHint: "Escolha o dia fixo para o preparo e a entrega mensal.",
+        customDayAction: "Personalizado",
+        customDayLabel: "Dia personalizado",
+        customDayShortPlaceholder: "Dia",
+        customDayPlaceholder: "Digite um dia de 1 a 31",
+        customDayInvalid: "Informe um dia entre 1 e 31.",
+        lastDayOfMonthHint: "Dia 31: entrega no ultimo dia de cada mes.",
         fields: ["Endereço mensal da Box", "Receber todo mês nesse dia", "Observações da caixa"]
       },
       royalDelivery: {
         title: "Royal Delivery",
         description: "Pedido avulso para entrega agora, com endereço flexível e frete definido antes do pagamento.",
         freightLabel: "Frete",
-        calculatedFreight: "Frete calculado",
-        pendingFreight: "Escolha uma opção de frete",
         includedFreight: "Frete incluso",
         pickup: "Retirada",
         standardDelivery: "Entrega padrão",
@@ -495,24 +578,19 @@ export const clientPtBR = {
     paymentStep: {
       badge: "Etapa 3",
       title: "Pagamento",
-      description: "Escolha como o cliente pretende finalizar. Por enquanto é uma etapa mockada para validar o fluxo do pedido.",
+      description: "Escolha a forma de pagamento ou fale com nosso atendimento para finalizar seu pedido.",
       back: "Voltar para entrega",
       next: "Continuar para resumo",
       methodsTitle: "Forma de pagamento",
-      recurrenceTitle: "Cobrança recorrente",
-      recurrenceDescription: "Para assinatura e Royal Box, o cartão pode ficar como método padrão das próximas cobranças.",
-      installmentsTitle: "Parcelamento",
-      installmentsSuffix: "x sem juros",
+      whatsappAction: "Falar pelo WhatsApp",
       totalTitle: "Total desta etapa",
       methods: {
         pix: "Pix",
-        pixDescription: "Gera uma chave mockada para pagamento rápido.",
-        creditCard: "Cartão de crédito",
-        creditCardDescription: "Melhor opção para cobrança recorrente e confirmação automática.",
+        pixDescription: "Receba as instruções de pagamento após confirmar o pedido.",
         payOnDelivery: "Pagar na entrega",
         payOnDeliveryDescription: "O cliente paga quando receber o pedido, combinando com a entrega.",
-        whatsapp: "Finalizar pelo WhatsApp",
-        whatsappDescription: "Envia a montagem para atendimento concluir manualmente."
+        whatsapp: "Falar pelo WhatsApp",
+        whatsappDescription: "Fale diretamente com nosso atendimento para concluir seu pedido."
       }
     },
     reviewStep: {
@@ -529,11 +607,41 @@ export const clientPtBR = {
       totalTitle: "Total",
       emptyItems: "Nenhum item selecionado ainda.",
       fixedPlanHint: "Valor fixo da assinatura selecionada.",
-      variableOrderHint: "Estimativa com produtos e frete selecionados."
+      variableOrderHint: "Estimativa com produtos e frete selecionados.",
+      submitting: "Enviando pedido...",
+      submitError: "Não foi possível enviar seu pedido. Revise os dados e tente novamente.",
+      successTitle: "Pedido enviado",
+      successDescription: "Recebemos seu pedido. Você pode acompanhar as próximas atualizações em Meus pedidos.",
+      successOrderCode: "Código do pedido"
     }
   },
   home: {
     vitrine: {
+      home: {
+        title: "Home",
+        mobileTitle: "Home",
+        description: "Descubra a curadoria RoyalPrime para o seu proximo momento.",
+        hero: {
+          eyebrow: "Assinatura Royal",
+          action: "Explorar colecoes",
+          defaultDescription: "Cortes selecionados e experiencias para reunir quem importa.",
+          defaultTitle: "A selecao certa para o seu proximo encontro",
+          fallbackImageAlt: "Imagem da colecao {name}",
+          loadingAriaLabel: "Carregando colecao em destaque",
+          membership: "Assine sua selecao e transforme cada encontro em um ritual Royal.",
+          subscriptionAction: "Conhecer assinaturas",
+        },
+        collectionRail: {
+          title: "Selecoes para o seu momento",
+        },
+        states: {
+          errorTitle: "Nao foi possivel carregar a vitrine",
+          errorDescription: "Atualize para buscar as colecoes disponiveis agora.",
+          retry: "Tentar novamente",
+          emptyTitle: "Nenhuma colecao esta disponivel",
+          emptyDescription: "Quando a curadoria estiver publicada, ela aparecera aqui.",
+        },
+      },
       hero: {
         badge: "Vitrine Royal",
         guestTitle: "Novidades, cortes e formas de comprar em um so lugar",
@@ -1118,6 +1226,155 @@ export const clientPtBR = {
     }
   },
   library: {
+    page: {
+      title: "Library",
+      mobileTitle: "Library",
+      description: "Referência visual das primitives reais que compõem a experiência RoyalPrime.",
+    },
+    button: {
+      title: "Button",
+      description: "Aparências, tamanhos e estados disponíveis no contrato atual.",
+      actionLabel: "Ação de exemplo",
+      appearances: {
+        solid: "Solid",
+        soft: "Soft",
+        outline: "Outline",
+        transparent: "Transparent",
+        glass: "Glass",
+      },
+      sizes: {
+        sm: "Pequeno",
+        md: "Médio",
+        lg: "Grande",
+      },
+      states: {
+        disabled: "Desabilitado",
+        loading: "Carregando",
+        skeleton: "ButtonSkeleton",
+      },
+    },
+    surface: {
+      title: "Surface",
+      description: "Materiais reais para superfícies, containers e áreas de conteúdo.",
+      sampleDescription: "A mesma composição usando a receita ativa.",
+      appearances: {
+        solid: "Solid",
+        soft: "Soft",
+        outline: "Outline",
+        transparent: "Transparent",
+        glass: "Glass",
+      },
+    },
+    cards: {
+      title: "Cards e componentes de produto",
+      description: "Composicoes reais de Card, item de catalogo e resumo de pedido usadas pelas telas do portal.",
+      sizeSample: "Nivel de espacamento e superficie",
+      account: {
+        badge: "Ativo",
+        title: "Resumo de conta",
+        description: "Hierarquia curta para status, contexto e uma acao complementar.",
+        action: "Ver detalhes",
+      },
+      metric: {
+        label: "Proximo ciclo",
+        value: "04 out",
+        description: "Card de dado objetivo, sem reproduzir uma tela inteira.",
+      },
+      loading: {
+        title: "Card em loading",
+        description: "A geometria do Card continua presente enquanto os dados chegam.",
+      },
+      product: {
+        title: "ProductItemCard",
+        name: "Corte de exemplo",
+        description: "Demonstra a anatomia reutilizavel do ProductItemCard.",
+        category: "Catalogo",
+        detail: "Peso aproximado 1 kg",
+        priceLabel: "A partir de",
+        price: "R$ {value}",
+        action: "Adicionar",
+        selectedAction: "Adicionado",
+        favorite: "Favoritar item de exemplo",
+        removeFavorite: "Remover item de exemplo dos favoritos",
+        increaseQuantity: "Aumentar quantidade do item de exemplo",
+        decreaseQuantity: "Diminuir quantidade do item de exemplo",
+      },
+      order: {
+        title: "Resumo de pedido",
+        description: "Linha compacta reutilizada em revisao e resumo de compra.",
+        itemName: "Item de exemplo",
+        itemDetail: "Quantidade e detalhes do item",
+        itemPrice: "R$ 42",
+        action: "Acao secundaria",
+      },
+    },
+    categories: {
+      foundation: {
+        title: "Foundation",
+        description: "Primitives visuais, receitas de superficie, Cards e estados de loading.",
+      },
+      controls: {
+        title: "Controles",
+        description: "Acoes, campos e seletores com suas aparencias, tamanhos e estados permitidos.",
+      },
+      feedback: {
+        title: "Feedback",
+        description: "Status, ausencia de conteudo, dados de leitura e camadas temporarias.",
+      },
+      layout: {
+        title: "Layout e dados",
+        description: "Blocos estruturais para organizar uma screen sem recriar a Foundation.",
+      },
+      product: {
+        title: "Componentes de produto",
+        description: "Composicoes reutilizaveis de ecommerce consumidas pelas telas reais do portal.",
+      },
+    },
+    input: {
+      title: "Input",
+      description: "Estados de campo disponíveis antes de serem compostos em uma screen.",
+      default: {
+        label: "Campo padrão",
+        placeholder: "Digite uma informação",
+      },
+      icon: {
+        label: "Campo com ícone",
+        placeholder: "Buscar na Library",
+      },
+      error: {
+        label: "Campo com erro",
+        placeholder: "Valor inválido",
+        message: "Confira a informação informada.",
+      },
+      disabled: {
+        label: "Campo desabilitado",
+        placeholder: "Indisponível",
+      },
+    },
+    skeleton: {
+      title: "Skeleton",
+      description: "Blocos de loading compostos pelas primitives da Foundation.",
+    },
+    options: { one: "Opção um", two: "Opção dois", three: "Opção três" },
+    forms: {
+      title: "Campos e seletores",
+      description: "Controles de entrada, seleção, formatação e composição de formulários.",
+      textArea: { label: "Área de texto", placeholder: "Escreva uma observação" },
+      currency: { label: "Valor monetário" },
+      formatted: { label: "Valor formatado" },
+      field: { label: "Field composto", description: "Label, ajuda e controle em uma única estrutura.", placeholder: "Informe um valor" },
+      select: { label: "Select" },
+      dropdown: { label: "DropdownPicker", placeholder: "Busque uma opção" },
+    },
+    multiSelect: { placeholder: "Adicione uma opção", searchPlaceholder: "Busque para adicionar", remove: "Remover {label}", confirmTitle: "Remover opção", confirmDescription: "Deseja remover {label}?", confirm: "Remover", cancel: "Cancelar" },
+    feedback: {
+      title: "Feedback e dados", description: "Sinais de estado, informações de leitura e ausência de conteúdo.", success: "Ativo", warning: "Atenção", danger: "Indisponível",
+      data: { label: "DataField", description: "Informação apenas para leitura.", value: "Valor demonstrativo" },
+      empty: { title: "Nenhum resultado", description: "Use esta composição quando não houver conteúdo para listar.", action: "Ação disponível" },
+    },
+    composition: { title: "Composição", description: "Primitives estruturais para alternar contexto e construir seções.", sectionContainer: "SectionContainer com atmosfera e grade declarativas." },
+    asset: { title: "AssetPicker", description: "Seleção de arquivo ou URL, com preview e remoção confirmada.", dropzone: "Arraste um arquivo ou selecione uma imagem.", choose: "Escolher arquivo", remove: "Remover arquivo", urlPlaceholder: "Cole a URL da imagem", previewAlt: "Preview do asset", confirmTitle: "Remover arquivo", confirmDescription: "Deseja remover o asset selecionado?", confirm: "Remover", cancel: "Cancelar" },
+    modal: { title: "Modal", description: "Uma camada temporária controlada localmente nesta referência.", open: "Abrir modal", close: "Fechar", dialogTitle: "Exemplo de modal", dialogDescription: "Cabeçalho, descrição, foco e fechamento por teclado.", dialogBody: "O conteúdo do modal continua composto por primitives reais." },
     hero: {
       badge: "Library RoyalPrime",
       title: "Library",
@@ -1257,12 +1514,12 @@ export const clientPtBR = {
       paymentMethodSummary: "{holder} | {expiresLabel}: {expiresAt}",
       invoiceSummary: "{date} | {paymentMethod} | {id}",
       includedItem: "{quantity} de {item}",
-      selectionLimit: "Ate {count} escolhas no ciclo",
       valueWithUnit: "{value} {unit}",
     },
-    title: "Minha Conta",
-    subtitle: "Gerencie plano, pedidos, dados pessoais, enderecos, pagamentos e preferencias.",
-    eyebrow: "Area do cliente",
+    title: "Cliente RoyalPrime",
+    accountSummaryLabel: "Resumo da conta",
+    subtitle: "Gerencie seu plano, enderecos, metodos de pagamento e preferencias da sua conta.",
+    eyebrow: "Minha conta",
     headerGreeting: "Gerencie seu plano, enderecos, metodos de pagamento e preferencias da sua conta.",
     greetingPrefix: "Ola",
     badge: "SOCIO ATIVO",
@@ -1333,6 +1590,7 @@ export const clientPtBR = {
       preferredDoneness: "Ponto de carne preferido",
       plan: "Plano",
       price: "Mensalidade",
+      perMonth: "/ mes",
       billing: "Cobranca",
       delivery: "Entrega",
       status: "Status",

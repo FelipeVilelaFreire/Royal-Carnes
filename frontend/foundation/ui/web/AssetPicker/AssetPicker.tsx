@@ -23,6 +23,8 @@ export interface AssetPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   dropzoneLabel: string;
   onChange?: (value: File | string | null) => void;
   previewAlt: string;
+  replaceHintLabel?: string;
+  replaceDropzoneLabel?: string;
   removeModalCloseLabel?: string;
   removeLabel: string;
   urlPlaceholder: string;
@@ -46,6 +48,8 @@ export const AssetPicker = forwardRef<HTMLDivElement, AssetPickerProps>(function
     dropzoneLabel,
     onChange,
     previewAlt,
+    replaceHintLabel,
+    replaceDropzoneLabel,
     removeModalCloseLabel,
     removeLabel,
     urlPlaceholder,
@@ -57,6 +61,7 @@ export const AssetPicker = forwardRef<HTMLDivElement, AssetPickerProps>(function
   const inputRef = useRef<HTMLInputElement>(null);
   const [objectUrl, setObjectUrl] = useState("");
   const [isConfirmingRemoval, setIsConfirmingRemoval] = useState(false);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const previewUrl = isFileValue(value) ? objectUrl : typeof value === "string" ? value : "";
 
   useEffect(() => {
@@ -78,8 +83,19 @@ export const AssetPicker = forwardRef<HTMLDivElement, AssetPickerProps>(function
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    setIsDraggingOver(false);
     if (disabled) return;
     handleFiles(event.dataTransfer.files);
+  };
+
+  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (!disabled) setIsDraggingOver(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node)) return;
+    setIsDraggingOver(false);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -101,10 +117,12 @@ export const AssetPicker = forwardRef<HTMLDivElement, AssetPickerProps>(function
       <Stack gap="sm">
         <Card
           aria-disabled={disabled || undefined}
-          className={styles.dropZone}
+          className={[styles.dropZone, isDraggingOver ? styles.isDraggingOver : ""].filter(Boolean).join(" ")}
           onClick={() => {
             if (!disabled) inputRef.current?.click();
           }}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
           onDragOver={(event) => event.preventDefault()}
           onDrop={handleDrop}
           onKeyDown={handleKeyDown}
@@ -112,7 +130,10 @@ export const AssetPicker = forwardRef<HTMLDivElement, AssetPickerProps>(function
           tabIndex={disabled ? undefined : 0}
         >
           {previewUrl ? (
-            <img alt={previewAlt} className={styles.previewImage} src={previewUrl} />
+            <>
+              <img alt={previewAlt} className={styles.previewImage} src={previewUrl} />
+              <Text as="span" className={styles.replaceHint} tone="inverse" variant="body">{isDraggingOver ? replaceDropzoneLabel || dropzoneLabel : replaceHintLabel || dropzoneLabel}</Text>
+            </>
           ) : (
             <Text as="span" tone="muted" variant="body">
               {dropzoneLabel}
@@ -155,7 +176,7 @@ export const AssetPicker = forwardRef<HTMLDivElement, AssetPickerProps>(function
               icon={<CloseIcon aria-hidden="true" />}
               onClick={requestRemove}
               size="sm"
-              tone="neutral"
+              tone="danger"
               type="button"
             >
               {removeLabel}

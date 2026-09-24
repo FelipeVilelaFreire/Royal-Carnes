@@ -30,6 +30,13 @@ export interface ClientCheckoutSelectedProductEntry {
 }
 
 export interface ClientCheckoutCycleUsage {
+  capacity: Array<{
+    key: string;
+    label: string;
+    limitQuantity: number;
+    measurementUnitSymbol?: string | null;
+    usedQuantity: number;
+  }>;
   cutsUsed: number;
   cutsLimit: number;
   weightKgUsed: number;
@@ -111,10 +118,8 @@ const formatAddressSummary = (address: ClientCheckoutAddress | undefined, fallba
   address ? `${address.streetLine} - ${address.neighborhoodLine}` : fallback;
 
 export const getClientCheckoutProductMeasure = (product: ClientCheckoutProduct) => {
-  if (product.kind === "charcoal") {
-    const kgMatch = product.weightLabel?.match(/(\d+(?:[.,]\d+)?)\s*kg/i);
-    return kgMatch ? Number(kgMatch[1].replace(",", ".")) : 1;
-  }
+  const kgMatch = product.weightLabel?.match(/(\d+(?:[.,]\d+)?)\s*kg/i);
+  if (kgMatch) return Number(kgMatch[1].replace(",", "."));
   return 1;
 };
 
@@ -138,11 +143,11 @@ export const createClientCheckoutViewModel = ({
   selectedProductQuantities,
 }: ClientCheckoutViewModelInput): ClientCheckoutViewModel => {
   const selectedPlan = plans.find((plan) => plan.key === selectedPlanKey) || plans[0] || {
-    id: "", key: "", name: "", subtitle: "", monthlyPrice: 0, annualMonthlyPrice: 0,
+    id: "", key: "", name: "", accentColor: "#FFC665", subtitle: "", monthlyPrice: 0, annualMonthlyPrice: 0,
     billingModes: [], productSelectionLimit: 0, proteinKgLimit: 0, allowedPlanTiers: [],
     includedCharcoalPackages: 0, charcoalKgLimit: 0, seasoningSelectionLimit: 0,
     sideSelectionLimit: 0, utensilSelectionLimit: 0, includesUtensilProductIds: [],
-    shipping: "calculated" as const, description: "", features: [],
+    shipping: "calculated" as const, description: "", features: [], capacity: [],
   };
   const activeSubscriptionPlan = activeSubscription
     ? plans.find((plan) => plan.key === activeSubscription.planKey)
@@ -185,7 +190,7 @@ export const createClientCheckoutViewModel = ({
     .reduce((total, entry) => total + entry.quantity, 0);
   const selectedProteinKg = selectedProductEntries
     .filter((entry) => entry.product.kind === "meat")
-    .reduce((total, entry) => total + entry.quantity, 0);
+    .reduce((total, entry) => total + getClientCheckoutProductMeasure(entry.product) * entry.quantity, 0);
   const selectedCharcoalKg = selectedProductEntries
     .filter((entry) => entry.product.kind === "charcoal")
     .reduce((total, entry) => total + getClientCheckoutProductMeasure(entry.product) * entry.quantity, 0);
@@ -248,11 +253,49 @@ export const createClientCheckoutViewModel = ({
     return subscriptionSummaryUsage.cutsUsed;
   };
 
+  const selectedQuantityForCapacity = (capacityKey: string, measurementUnitSymbol?: string | null) => {
+    const isWeightCapacity = measurementUnitSymbol?.toLowerCase() === "kg";
+    const knownCapacityKeys = new Set(currentSubscriptionPlan.capacity.map((capacity) => capacity.key));
+
+    return selectedProductEntries
+      .filter(({ product }) => {
+        if (product.productKey === capacityKey || product.tags.includes(capacityKey)) return true;
+
+        return capacityKey === "carnes" && product.kind === "meat" && !product.tags.some((tag) => knownCapacityKeys.has(tag));
+      })
+      .reduce((total, { product, quantity }) => (
+        total + (isWeightCapacity ? getClientCheckoutProductMeasure(product) : 1) * quantity
+      ), 0);
+  };
+
+  const capacityLimitsForProduct = (product: ClientCheckoutProduct) => currentSubscriptionPlan.capacity
+    .filter((capacity) => capacity.limitQuantity > 0)
+    .filter((capacity) => (
+      product.productKey === capacity.key ||
+      product.tags.includes(capacity.key) ||
+      (capacity.key === "carnes" && product.kind === "meat")
+    ))
+    .map((planCapacity) => {
+      const cycleCapacity = subscriptionSummaryUsage?.capacity.find((capacity) => capacity.key === planCapacity.key);
+      return cycleCapacity || { ...planCapacity, usedQuantity: 0 };
+    });
+
   const canAddProduct = (product: ClientCheckoutProduct) => {
     if (selectedMode !== "subscription") return true;
+    const matchingCapacityLimits = capacityLimitsForProduct(product);
+    if (matchingCapacityLimits.length) {
+      const fitsEveryCapacity = matchingCapacityLimits.every((capacity) => {
+        const unit = capacity.measurementUnitSymbol || "";
+        const increment = unit.toLowerCase() === "kg" ? getClientCheckoutProductMeasure(product) : 1;
+        const nextUsage = capacity.usedQuantity + selectedQuantityForCapacity(capacity.key, unit) + increment;
+        return nextUsage <= capacity.limitQuantity;
+      });
+      if (!fitsEveryCapacity) return false;
+    }
+
     const nextKindUsage =
       getCycleUsedKindCount(product) + getSelectedKindCount(product) + getClientCheckoutProductMeasure(product);
-    if (nextKindUsage > getSubscriptionKindLimit(product)) return false;
+    if (!matchingCapacityLimits.length && nextKindUsage > getSubscriptionKindLimit(product)) return false;
     if (product.kind === "meat" && subscriptionSummaryUsage) {
       return subscriptionSummaryUsage.cutsUsed + selectedMeatUnitsCount + 1 <= subscriptionSummaryUsage.cutsLimit;
     }

@@ -79,6 +79,12 @@ export function useAdminRuntime() {
     window.history.pushState({}, "", getRoutePathByAction(routeState.screenKey, "detail"));
   };
 
+  const openRelatedDetail = (screenKey: string, row: Record<string, any>) => {
+    setSelectedRow(row);
+    setRouteState({ action: "detail", screenKey });
+    window.history.pushState({}, "", getRoutePathByAction(screenKey, "detail"));
+  };
+
   const backToList = () => {
     setSelectedRow(null);
     setRouteState((current) => ({ ...current, action: "list" }));
@@ -91,6 +97,7 @@ export function useAdminRuntime() {
     backToList,
     createNew,
     navigate,
+    openRelatedDetail,
     routeAction: routeState.action,
     selectedRow,
     selectRow,

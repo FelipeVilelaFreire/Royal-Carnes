@@ -1,0 +1,3 @@
+import { Skeleton } from "@foundation/ui/web/Skeleton";
+import styles from "./SubscriptionModule.module.css";
+export function SubscriptionModuleSkeleton() { return <section aria-busy="true" className={styles.skeleton}><Skeleton shape="text" size="lg" width="md" /><Skeleton shape="text" size="sm" width="lg" /><div className={styles.grid}>{Array.from({ length: 3 }, (_, index) => <div className={styles.card} key={index}><Skeleton shape="text" size="sm" width="sm" /><Skeleton shape="text" size="lg" width="md" /><Skeleton shape="text" size="sm" width="full" /><Skeleton shape="text" size="sm" width="full" /><Skeleton shape="text" size="sm" width="md" /></div>)}</div></section>; }

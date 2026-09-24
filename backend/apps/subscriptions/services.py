@@ -31,9 +31,12 @@ def upsert_plan(
     key: str,
     name: str,
     description: str = "",
+    accent_color: str = "#FFC665",
     status: str = Plan.Status.ACTIVE,
     billing_interval: str = Plan.BillingInterval.MONTH,
     trial_days: int = 0,
+    delivery_min_business_days: int = 3,
+    delivery_max_business_days: int = 8,
     sort_order: int = 0,
 ) -> Plan:
     plan, _created = Plan.objects.update_or_create(
@@ -42,9 +45,12 @@ def upsert_plan(
         defaults={
             "name": name,
             "description": description,
+            "accent_color": accent_color,
             "status": status,
             "billing_interval": billing_interval,
             "trial_days": trial_days,
+            "delivery_min_business_days": delivery_min_business_days,
+            "delivery_max_business_days": delivery_max_business_days,
             "sort_order": sort_order,
         },
     )

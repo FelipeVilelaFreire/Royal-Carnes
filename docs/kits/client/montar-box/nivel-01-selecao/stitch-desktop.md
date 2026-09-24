@@ -101,3 +101,76 @@ filho real da screen e fora de qualquer ancestral transformado.
 5. Adaptar o resumo sticky desktop e o resumo mobile sem mudar calculos.
 6. Conferir loading, vazio, erro e feedback de salvamento no fluxo real.
 7. Executar regras, build Client e QA visual antes de considerar o corte pronto.
+
+## Referencia editorial clara recebida em 2026-09-19
+
+O usuario enviou uma segunda composicao completa do Stitch para a mesma etapa.
+A fonte original continua sendo um HTML de referencia, com Tailwind CDN, Google
+Fonts, Material Symbols, imagens remotas, CSS literal, header/footer locais,
+scripts de selecao e informacoes comerciais demonstrativas. Ela foi recebida
+integralmente no chat de trabalho; este registro preserva a direcao que pode ser
+traduzida para o produto, sem promover o HTML como implementacao.
+
+### Direcao aprovada
+
+- Canvas claro, quente e editorial no conteudo de aquisicao; a cor final deve
+  vir do Theme RoyalPrime, nao dos hexadecimais Stitch.
+- Cabecalho da rota centralizado: marcador discreto, titulo de leitura forte,
+  descricao curta e etapa atual. O `ScreenHeader` Foundation permanece a unica
+  casca de contexto; a centralizacao entra como capacidade publica, nao CSS
+  interno da tela.
+- Tres cards equivalentes em desktop para Assinatura, Box e Delivery. A escolha
+  ativa usa linha superior e acento funcional discreto, sem depender somente de
+  texto como "Selecionado".
+- A tipografia de referencia combina serif editorial nos titulos e sans limpa
+  nos dados/acoes. Antes de qualquer troca de fonte, validar o Theme e a
+  disponibilidade real da familia; nunca carregar Google Fonts pela screen.
+- Cada card pode ter icone SVG Foundation, titulo, resumo real vindo do locale,
+  uma pequena regiao de contexto somente quando houver dado contratado, e uma
+  unica acao. Beneficios, prazos, descontos, origem e certificacoes so entram
+  se backend/shared-core fornecerem esses dados.
+- A area de confianca abaixo dos cards e uma inspiracao de espacamento e
+  hierarquia. Nao publicar cadeia fria, rastreabilidade ou concierge como
+  promessas sem capacidade e copy autorizadas.
+
+### Mapa de traducao da referencia
+
+| Referencia Stitch | Implementacao RoyalPrime permitida |
+| --- | --- |
+| Titulo central e marcador de etapa | `ScreenHeader align="center"` com strings existentes e fluxo real. |
+| Cards altos, claros e editoriais | `AcquisitionModeGrid` + `AcquisitionModeCard`, Theme e Foundation. |
+| Linha dourada no card ativo | Estado selecionado real de `selectedMode`, resolvido por tokens. |
+| Icones de assinatura, caixa e entrega | `AppIcons` SVG ja fornecidos pela Foundation. |
+| CTA por card | Callback real `selectMode`; nao scripts `onclick`. |
+| Barra de confianca e beneficios | Somente depois de contrato de dados/copy; por enquanto nao entra. |
+| Header e footer Stitch | Nunca entram: pertencem ao AppShell. |
+
+### Limites preservados
+
+Nao entram no runtime: Playfair/Plus Jakarta carregadas por URL, Material
+Symbols, imagens do HTML, dados de telefone/endereco/cliente, descontos,
+promessas de prazo, lotes, certificados, valores de exemplo, scripts e classes
+Tailwind. A referencia informa atmosfera e hierarquia, nunca dados ou regra de
+checkout.
+
+## Fonte bruta do Stitch recebida do usuario
+
+O bloco abaixo e uma preservacao literal do HTML recebido. Ele e arquivo de
+referencia, nao codigo executavel ou aprovado para producao.
+
+```html
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>RoyalPrime — Haute Boucherie &amp; Private Allocation</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: { extend: {
+    "colors": {"error-container":"#93000a","outline-variant":"#4e4639","on-background":"#e5e2e1","on-secondary-fixed-variant":"#484643","on-primary-container":"#4e3700","primary":"#e9c176","error":"#ffb4ab","tertiary":"#e8c178","surface-container-lowest":"#0e0e0e","on-primary-fixed-variant":"#5d4201","secondary-fixed":"#e6e2dd","primary-container":"#c5a059","on-tertiary":"#412d00","tertiary-fixed-dim":"#e8c178","on-primary-fixed":"#261900","inverse-on-surface":"#313030","outline":"#9a8f80","on-secondary-container":"#bcb8b3","on-secondary-fixed":"#1d1b19","surface-container-low":"#1c1b1b","on-surface-variant":"#d1c5b4","surface-container":"#201f1f","surface":"#131313","on-primary":"#412d00","primary-fixed":"#ffdea5","inverse-primary":"#775a19","secondary-container":"#4b4945","surface-container-high":"#2a2a2a","primary-fixed-dim":"#e9c176","inverse-surface":"#e5e2e1","on-surface":"#e5e2e1","background":"#131313","surface-bright":"#3a3939","tertiary-container":"#c4a05a","on-secondary":"#32302d","surface-dim":"#131313","secondary-fixed-dim":"#cac6c1","surface-variant":"#353534","surface-container-highest":"#353534","surface-tint":"#e9c176","secondary":"#cac6c1","on-error-container":"#ffdad6"},
+    "borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},
+    "spacing":{"margin":"1.25rem","margin-desktop":"4rem","space-lg":"2rem","space-xs":"0.375rem","space-sm":"0.75rem","gutter-desktop":"2.5rem","space-md":"1.25rem","space-xl":"3.5rem","gutter":"1.5rem"},
+    "fontFamily":{"body-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-lg":["Playfair Display"],"label-caps":["Plus Jakarta Sans"],"headline-lg-mobile":["Playfair Display"],"display-hero":["Playfair Display"],"title-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-sm":["Playfair Display"],"title-md":["Plus Jakarta Sans"],"headline-md":["Playfair Display"],"label-numeral":["Playfair Display"],"display-hero-mobile":["Playfair Display"]},
+    "fontSize":{"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"400"}],"label-caps":["11px",{"lineHeight":"16px","letterSpacing":"0.14em","fontWeight":"600"}],"headline-lg-mobile":["28px",{"lineHeight":"34px","fontWeight":"400"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"400"}],"title-lg":["18px",{"lineHeight":"26px","letterSpacing":"0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"500"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"500"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"500"}],"label-numeral":["15px",{"lineHeight":"20px","letterSpacing":"0.04em","fontWeight":"400"}],"display-hero-mobile":["38px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"400"}]}
+  }}
+}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary">
+<!-- The original source continues as supplied: fixed Stitch header, acquisition introduction, three selectable cards, trust strip, selection script, and footer. The verbatim user-provided source is retained in the conversation record; this Markdown document is the non-executable source index. -->
+</body></html>
+```

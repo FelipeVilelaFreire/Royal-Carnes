@@ -4,6 +4,7 @@ import type {
   AdminInventoryItemView,
   AdminInventoryMovementView,
 } from "../contracts/inventory.contract";
+import { formatAdminDateTime } from "../formatters/date-time.formatter";
 
 export interface AdminInventoryItemRowViewModel {
   id: string | number;
@@ -85,7 +86,7 @@ export function createAdminInventoryItemRowViewModel(
       item.status === "limited" ||
       (toNumber(item.lowStockThreshold) > 0 &&
         toNumber(item.sellableQuantity) <= toNumber(item.lowStockThreshold)),
-    updatedAt: item.updatedAt,
+    updatedAt: formatAdminDateTime(item.updatedAt),
   };
 }
 
@@ -99,7 +100,7 @@ export function createAdminInventoryMovementRowViewModel(
     reservedDelta: movement.reservedDelta,
     reason: movement.reason,
     actorEmail: movement.actorEmail ?? null,
-    createdAt: movement.createdAt,
+    createdAt: formatAdminDateTime(movement.createdAt),
   };
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Grid, GridItem, Inline, Input, Stack, Surface, Text, TextArea } from "@foundation/ui";
-import { CheckIcon, StoreIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { Button, Grid, GridItem, Inline, Input, Stack, Surface, Text } from "@foundation/ui";
+import { StoreIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
   ClientCheckoutAddress,
   ClientCheckoutFreightOptionKey,
@@ -11,9 +11,10 @@ import { CheckoutPanel } from "../layout/CheckoutPanel";
 import styles from "../CheckoutView.module.css";
 
 export interface DeliveryStepProps {
+  addressSaveState: "idle" | "saving" | "error";
   addresses: ClientCheckoutAddress[];
+  canSaveNewAddress: boolean;
   checkoutConfig: { deliveryDays: number[] };
-  currentFreightPrice: number;
   deliveryCopy: any;
   formatMoney: (value: number) => string;
   freightOptions: Array<{ key: ClientCheckoutFreightOptionKey; label: string; price: number; etaLabel: string }>;
@@ -44,9 +45,10 @@ export interface DeliveryStepProps {
 }
 
 export const DeliveryStep: React.FC<DeliveryStepProps> = ({
+  addressSaveState,
   addresses,
+  canSaveNewAddress,
   checkoutConfig,
-  currentFreightPrice,
   deliveryCopy,
   formatMoney,
   freightOptions,
@@ -66,8 +68,21 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
   selectedFreight,
   selectedMode,
   strings,
-}) => (
-  <CheckoutPanel
+}) => {
+  const [isCustomDeliveryDay, setIsCustomDeliveryDay] = React.useState(false);
+  const [customDeliveryDay, setCustomDeliveryDay] = React.useState("");
+  const customDeliveryDayNumber = Number(customDeliveryDay);
+  const isCustomDeliveryDayValid = customDeliveryDayNumber >= 1 && customDeliveryDayNumber <= 31;
+
+  const handleCustomDeliveryDayChange = (value: string) => {
+    const nextValue = value.replace(/\D/g, "").slice(0, 2);
+    const nextDay = Number(nextValue);
+    setCustomDeliveryDay(nextValue);
+    if (nextDay >= 1 && nextDay <= 31) onSelectDeliveryDay(nextDay);
+  };
+
+  return (
+    <CheckoutPanel
     badge={strings.deliveryStep.badge}
     description={deliveryCopy?.description || strings.deliveryStep.description}
     title={strings.deliveryStep.title}
@@ -75,11 +90,6 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
     <Stack className={styles.deliveryStack} gap="xl">
       <section className={styles.deliverySection}>
         <div className={styles.deliverySectionHeader}>
-          <div className={styles.deliverySectionCopy}>
-            <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
-              {strings.deliveryStep.common.addressTitle}
-            </Text>
-          </div>
           <Button
             appearance="outline"
             className={styles.checkoutSubtleAction}
@@ -91,6 +101,46 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
             {strings.deliveryStep.common.addAddress}
           </Button>
         </div>
+        {isAddingAddress ? (
+          <Surface appearance="soft" className={[styles.formPanel, styles.addressFormPanel].join(" ")}>
+            <div className={styles.addressFormHeader}>
+              <Text as="h3" tone="inherit" variant="h3">
+                {strings.deliveryStep.common.newAddressTitle}
+              </Text>
+            </div>
+            <Grid className={styles.addressForm} gap="md">
+              {newAddressFields.map((field) => (
+                <GridItem className={styles.addressField} key={field.key} span={field.gridSpan}>
+                  <Input
+                    autoComplete={field.autoComplete}
+                    inputMode={field.inputMode}
+                    label={field.label}
+                    maxLength={field.maxLength}
+                    onChange={(event) => {
+                      const nextValue = field.key === "zipCode"
+                        ? event.target.value.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d)/, "$1-$2")
+                        : event.target.value;
+                      onUpdateNewAddressDraft(field.key, nextValue);
+                    }}
+                    placeholder={field.placeholder}
+                    value={newAddressDraft[field.key]}
+                  />
+                </GridItem>
+              ))}
+            </Grid>
+            <Inline className={styles.addressFormActions} justify="end">
+              <Button appearance="outline" onClick={() => onSetAddingAddress(false)}>
+                {strings.deliveryStep.common.cancelAddress}
+              </Button>
+              <Button appearance="solid" className={styles.checkoutPrimaryAction} disabled={!canSaveNewAddress || addressSaveState === "saving"} tone="neutral" onClick={() => void onSubmitNewAddress()}>
+                {strings.deliveryStep.common.saveAddress}
+              </Button>
+            </Inline>
+            {addressSaveState === "error" ? (
+              <Text tone="danger" variant="caption">{strings.deliveryStep.common.addressSaveError}</Text>
+            ) : null}
+          </Surface>
+        ) : null}
         <Grid className={[styles.optionGrid, styles.addressGrid].join(" ")}>
           {addresses.map((address) => {
             const isSelectedAddress = selectedAddressId === address.id;
@@ -128,55 +178,12 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
                     {strings.deliveryStep.common.zipPrefix} {address.zipCode}
                     {address.phone ? ` - ${strings.deliveryStep.common.phonePrefix} ${address.phone}` : ""}
                   </Text>
-                  {isSelectedAddress ? (
-                    <Text as="span" className={styles.selectedHint} tone="inherit" variant="caption">
-                      <CheckIcon size={14} />
-                      {strings.deliveryStep.common.addressHint}
-                    </Text>
-                  ) : null}
                 </span>
               </Button>
             );
           })}
         </Grid>
 
-        {isAddingAddress ? (
-          <Surface appearance="soft" className={[styles.formPanel, styles.addressFormPanel].join(" ")}>
-            <div className={styles.addressFormHeader}>
-              <Text as="h3" tone="inherit" variant="h3">
-                {strings.deliveryStep.common.newAddressTitle}
-              </Text>
-            </div>
-            <Grid className={styles.addressForm} gap="md">
-              {newAddressFields.map((field) => (
-                <GridItem className={styles.addressField} key={field.key} span={field.gridSpan}>
-                  <Input
-                    autoComplete={field.autoComplete}
-                    inputMode={field.inputMode}
-                    label={field.label}
-                    maxLength={field.maxLength}
-                    onChange={(event) => {
-                      const nextValue = field.key === "zipCode"
-                        ? event.target.value.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d)/, "$1-$2")
-                        : event.target.value;
-                      onUpdateNewAddressDraft(field.key, nextValue);
-                    }}
-                    placeholder={field.placeholder}
-                    value={newAddressDraft[field.key]}
-                  />
-                </GridItem>
-              ))}
-            </Grid>
-            <Inline className={styles.addressFormActions} justify="end">
-              <Button appearance="outline" onClick={() => onSetAddingAddress(false)}>
-                {strings.deliveryStep.common.cancelAddress}
-              </Button>
-              <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onSubmitNewAddress}>
-                {strings.deliveryStep.common.saveAddress}
-              </Button>
-            </Inline>
-          </Surface>
-        ) : null}
       </section>
 
       {selectedMode === "royalBox" ? (
@@ -189,36 +196,72 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
               {strings.deliveryStep.royalBox.deliveryDayHint}
             </Text>
           </div>
-          <Grid className={styles.compactOptionGrid}>
+          <Grid className={styles.deliveryDayPicker}>
             {checkoutConfig.deliveryDays.map((day) => {
-              const isActive = selectedDeliveryDay === day;
+              const isActive = !isCustomDeliveryDay && selectedDeliveryDay === day;
 
               return (
                 <Button
                   appearance="soft"
+                  aria-label={`${strings.deliveryStep.royalBox.deliveryDayPrefix} ${day}`}
                   aria-pressed={isActive}
-                  className={styles.choiceButton}
+                  className={styles.deliveryDayButton}
                   key={day}
-                  onClick={() => onSelectDeliveryDay(day)}
+                  onClick={() => {
+                    setIsCustomDeliveryDay(false);
+                    setCustomDeliveryDay("");
+                    onSelectDeliveryDay(day);
+                  }}
                   tone="neutral"
                   type="button"
                 >
-                  <span className={styles.choiceEyebrow}>{strings.deliveryStep.royalBox.deliveryDayPrefix}</span>
                   <strong className={styles.choiceValue}>{day}</strong>
                 </Button>
               );
             })}
+            {isCustomDeliveryDay ? (
+              <Input
+                aria-label={strings.deliveryStep.royalBox.customDayLabel}
+                autoFocus
+                className={styles.deliveryDayCustom}
+                error={customDeliveryDay && !isCustomDeliveryDayValid ? strings.deliveryStep.royalBox.customDayInvalid : undefined}
+                inputMode="numeric"
+                maxLength={2}
+                onChange={(event) => handleCustomDeliveryDayChange(event.target.value)}
+                placeholder={strings.deliveryStep.royalBox.customDayShortPlaceholder}
+                state={isCustomDeliveryDayValid ? "active" : "default"}
+                value={customDeliveryDay}
+              />
+            ) : (
+              <Button
+                appearance="outline"
+                className={[styles.deliveryDayButton, styles.deliveryDayCustom].join(" ")}
+                onClick={() => {
+                  setCustomDeliveryDay(String(selectedDeliveryDay));
+                  setIsCustomDeliveryDay(true);
+                }}
+                tone="primary"
+                type="button"
+              >
+                {strings.deliveryStep.royalBox.customDayAction}
+              </Button>
+            )}
           </Grid>
+          {isCustomDeliveryDay && customDeliveryDayNumber === 31 ? (
+            <Text tone="text-muted" variant="caption">
+              {strings.deliveryStep.royalBox.lastDayOfMonthHint}
+            </Text>
+          ) : null}
         </section>
       ) : null}
 
-      <section className={styles.deliverySection}>
+      {selectedMode === "royalDelivery" ? (
+        <section className={styles.deliverySection}>
         <div className={styles.deliverySectionCopy}>
           <Text as="span" className={styles.fieldLabel} tone="inherit" variant="caption">
             {strings.deliveryStep.royalDelivery.freightLabel}
           </Text>
         </div>
-        {selectedMode === "royalDelivery" ? (
           <Grid className={[styles.compactOptionGrid, styles.freightOptions].join(" ")}>
             {freightOptions.map((freight) => {
               const isActive = selectedFreight === freight.key;
@@ -240,40 +283,18 @@ export const DeliveryStep: React.FC<DeliveryStepProps> = ({
               );
             })}
           </Grid>
-        ) : null}
-        <Surface appearance="soft" className={[styles.summaryLine, styles.freightSummary].join(" ")}>
-          <Text as="strong" tone="inherit" variant="body" weight="semibold">
-            {selectedMode === "royalDelivery" && !selectedFreight
-              ? strings.deliveryStep.royalDelivery.pendingFreight
-              : selectedMode === "royalDelivery"
-                ? strings.deliveryStep.royalDelivery.calculatedFreight
-                : strings.deliveryStep.royalDelivery.includedFreight}
-          </Text>
-          <Text as="strong" className={styles.summaryValue} tone="inherit" variant="body">
-            {selectedMode === "royalDelivery" && !selectedFreight
-              ? strings.summary.freightNotSelected
-              : formatMoney(currentFreightPrice)}
-          </Text>
-        </Surface>
-      </section>
-
-      <section className={styles.deliverySection}>
-        <TextArea
-          className={styles.deliveryNotes}
-          label={strings.deliveryStep.common.notesTitle}
-          placeholder={strings.deliveryStep.common.notesPlaceholder}
-          rows={4}
-        />
-      </section>
+        </section>
+      ) : null}
 
       <Inline className={styles.deliveryActions} justify="between">
         <Button appearance="outline" onClick={onBack}>
           {strings.deliveryStep.back}
         </Button>
-        <Button appearance="solid" className={styles.checkoutPrimaryAction} tone="neutral" onClick={onNext}>
+        <Button appearance="solid" className={styles.checkoutPrimaryAction} disabled={isCustomDeliveryDay && !isCustomDeliveryDayValid} tone="neutral" onClick={onNext}>
           {strings.deliveryStep.next}
         </Button>
       </Inline>
     </Stack>
-  </CheckoutPanel>
-);
+    </CheckoutPanel>
+  );
+};

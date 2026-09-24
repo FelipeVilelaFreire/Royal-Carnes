@@ -5,10 +5,12 @@ import type {
   AdminDeliveryTransitionInput,
   AdminDeliveryView,
 } from "../contracts/deliveries.contract";
+import { formatAdminDate, formatAdminDateTime } from "../formatters/date-time.formatter";
 
 export interface AdminDeliveryRowViewModel {
   id: string | number;
   code: string;
+  orderId: string | number;
   orderCode: string;
   customerName: string;
   statusKey: string;
@@ -17,6 +19,12 @@ export interface AdminDeliveryRowViewModel {
   statusTone?: "danger" | "neutral" | "primary" | "success" | "warning";
   packageCount: number;
   hasConfirmation: boolean;
+  promisedDeliveryStartsOn: string;
+  promisedDeliveryByOn: string;
+  deliveryPromiseStatusLabelKey: string;
+  deliveryPromiseStatusTone: "danger" | "neutral" | "success" | "warning";
+  deliveryBusinessDays: number | null;
+  linkedOrder: Array<{ code: string; id: string | number; statusLabel: string }>;
   createdAt: string;
 }
 
@@ -58,7 +66,7 @@ function resolveStatusLabel(
 function resolveStatusPresentation(
   config: AdminDeliveryConfigView | null,
   statusKey: string,
-) {
+): Pick<AdminDeliveryRowViewModel, "statusColor" | "statusTone"> {
   const presentation = config?.statuses.find((status) => status.key === statusKey)?.metadata?.ui;
   if (!presentation || typeof presentation !== "object") return {};
   const { statusColor, statusTone } = presentation as Record<string, unknown>;
@@ -70,14 +78,33 @@ function resolveStatusPresentation(
   };
 }
 
+function resolveDeliveryPromisePresentation(state: string) {
+  const toneByState = {
+    approaching: "warning",
+    closed: "neutral",
+    due_today: "warning",
+    fulfilled: "success",
+    on_track: "success",
+    overdue: "danger",
+    untracked: "neutral",
+  } as const;
+  return {
+    labelKey: `pedidos.deliveryPromise.states.${state}`,
+    tone: toneByState[state as keyof typeof toneByState] || "neutral",
+  };
+}
+
 export function createAdminDeliveryRowViewModel(
   delivery: AdminDeliveryView,
   config: AdminDeliveryConfigView | null = null,
 ): AdminDeliveryRowViewModel {
   const statusPresentation = resolveStatusPresentation(config, delivery.statusKey);
+  const promise = delivery.deliveryPromiseStatus || { state: "untracked", remainingBusinessDays: null };
+  const promisePresentation = resolveDeliveryPromisePresentation(promise.state);
   return {
     id: delivery.id,
     code: delivery.code,
+    orderId: delivery.orderId,
     orderCode: delivery.orderCode,
     customerName: delivery.customerName,
     statusKey: delivery.statusKey,
@@ -85,7 +112,17 @@ export function createAdminDeliveryRowViewModel(
     ...statusPresentation,
     packageCount: delivery.packages.length,
     hasConfirmation: Boolean(delivery.confirmation),
-    createdAt: delivery.createdAt,
+    promisedDeliveryStartsOn: formatAdminDate(delivery.promisedDeliveryStartsOn),
+    promisedDeliveryByOn: formatAdminDate(delivery.promisedDeliveryByOn),
+    deliveryPromiseStatusLabelKey: promisePresentation.labelKey,
+    deliveryPromiseStatusTone: promisePresentation.tone,
+    deliveryBusinessDays: promise.remainingBusinessDays === null ? null : Math.abs(promise.remainingBusinessDays),
+    linkedOrder: [{
+      code: delivery.orderCode,
+      id: delivery.orderId,
+      statusLabel: resolveStatusLabel(config, delivery.statusKey),
+    }],
+    createdAt: formatAdminDateTime(delivery.createdAt),
   };
 }
 

@@ -16,7 +16,7 @@
   align-items: center;
   background: color-mix(in srgb, var(--theme--color-surface-container) 84%, var(--theme--color-background));
   border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--theme--color-border) 72%, transparent);
-  border-radius: var(--theme--radius-lg);
+  border-radius: var(--semicomposed--input-radius);
   box-sizing: border-box;
   color: var(--theme--color-text);
   display: flex;
@@ -32,10 +32,21 @@
   width: 100%;
 }
 
+.skeletonControl {
+  max-block-size: var(--semicomposed--input-skeleton-height);
+  min-block-size: var(--semicomposed--input-skeleton-height);
+}
+
 .control:focus-within {
   background: color-mix(in srgb, var(--theme--color-surface-container) 92%, var(--theme--color-background));
   border-color: color-mix(in srgb, var(--theme--color-copper) 58%, var(--theme--color-border));
   box-shadow: 0 0 0 var(--theme--borders-medium) color-mix(in srgb, var(--theme--color-copper) 10%, transparent);
+}
+
+.root[data-state="active"] .control {
+  background: var(--semicomposed--input-active-background);
+  border-color: var(--semicomposed--input-active-border-color);
+  box-shadow: 0 0 0 var(--semicomposed--input-active-ring) var(--semicomposed--input-active-ring-color);
 }
 
 .control:hover {

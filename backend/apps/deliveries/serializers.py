@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Delivery, DeliveryConfirmation, DeliveryPackage, DeliveryStatusDefinition, DeliveryStatusHistory
+from .models import Delivery, DeliveryConfirmation, DeliveryPackage, DeliveryPromisePolicy, DeliveryStatusDefinition, DeliveryStatusHistory
+from .services import delivery_promise_status
 
 
 class DeliveryStatusSerializer(serializers.ModelSerializer):
@@ -18,6 +19,44 @@ class DeliveryStatusSerializer(serializers.ModelSerializer):
             "effects",
             "metadata",
         )
+
+
+class DeliveryPromisePolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeliveryPromisePolicy
+        fields = (
+            "id",
+            "key",
+            "name",
+            "min_business_days",
+            "max_business_days",
+            "approaching_business_days",
+            "order_kind_keys",
+            "subscription_plan_keys",
+            "is_default",
+            "is_active",
+            "sort_order",
+        )
+
+
+class DeliveryPromisePolicyWriteSerializer(serializers.Serializer):
+    key = serializers.SlugField(max_length=80)
+    name = serializers.CharField(max_length=120)
+    min_business_days = serializers.IntegerField(min_value=1)
+    max_business_days = serializers.IntegerField(min_value=1)
+    approaching_business_days = serializers.IntegerField(min_value=0, required=False, default=2)
+    order_kind_keys = serializers.ListField(child=serializers.SlugField(max_length=80), required=False, default=list)
+    subscription_plan_keys = serializers.ListField(child=serializers.SlugField(max_length=100), required=False, default=list)
+    is_default = serializers.BooleanField(required=False, default=False)
+    is_active = serializers.BooleanField(required=False, default=True)
+    sort_order = serializers.IntegerField(min_value=0, required=False, default=0)
+
+    def validate(self, attrs):
+        if attrs["min_business_days"] > attrs["max_business_days"]:
+            raise serializers.ValidationError({"max_business_days": "Must be greater than or equal to min_business_days."})
+        if attrs["approaching_business_days"] > attrs["max_business_days"]:
+            raise serializers.ValidationError({"approaching_business_days": "Must not exceed max_business_days."})
+        return attrs
 
 
 class DeliveryPackageSerializer(serializers.ModelSerializer):
@@ -50,6 +89,10 @@ class DeliverySerializer(serializers.ModelSerializer):
     packages = DeliveryPackageSerializer(many=True, read_only=True)
     status_history = DeliveryStatusHistorySerializer(many=True, read_only=True)
     confirmation = DeliveryConfirmationSerializer(read_only=True)
+    delivery_promise_status = serializers.SerializerMethodField()
+
+    def get_delivery_promise_status(self, delivery):
+        return delivery_promise_status(delivery)
 
     class Meta:
         model = Delivery
@@ -63,6 +106,10 @@ class DeliverySerializer(serializers.ModelSerializer):
             "address_id",
             "status_key",
             "confirmation_code",
+            "promised_delivery_starts_on",
+            "promised_delivery_by_on",
+            "delivery_promise_snapshot",
+            "delivery_promise_status",
             "address_snapshot",
             "notes",
             "metadata",

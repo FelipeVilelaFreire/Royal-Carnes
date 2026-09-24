@@ -4,6 +4,46 @@ from django.db import models
 from apps.core.models import OrganizationScopedModel, TimestampedModel
 
 
+class DeliveryPromisePolicy(OrganizationScopedModel, TimestampedModel):
+    """Organization-owned promise rules resolved when a delivery is created."""
+
+    key = models.SlugField(max_length=80)
+    name = models.CharField(max_length=120)
+    min_business_days = models.PositiveIntegerField()
+    max_business_days = models.PositiveIntegerField()
+    approaching_business_days = models.PositiveIntegerField(default=2)
+    order_kind_keys = models.JSONField(default=list, blank=True)
+    subscription_plan_keys = models.JSONField(default=list, blank=True)
+    is_default = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organization", "key"],
+                name="deliveries_promise_policy_unique_key",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(min_business_days__lte=models.F("max_business_days")),
+                name="deliveries_promise_policy_business_days_range",
+            ),
+            models.UniqueConstraint(
+                fields=["organization"],
+                condition=models.Q(is_default=True),
+                name="deliveries_promise_policy_one_default",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["organization", "is_active", "sort_order"]),
+            models.Index(fields=["organization", "is_default"]),
+        ]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class DeliveryStatusDefinition(OrganizationScopedModel, TimestampedModel):
     key = models.SlugField(max_length=80)
     label = models.CharField(max_length=120)
@@ -53,6 +93,9 @@ class Delivery(OrganizationScopedModel, TimestampedModel):
     code = models.CharField(max_length=80)
     status_key = models.SlugField(max_length=80)
     confirmation_code = models.CharField(max_length=40, blank=True)
+    promised_delivery_starts_on = models.DateField(null=True, blank=True)
+    promised_delivery_by_on = models.DateField(null=True, blank=True)
+    delivery_promise_snapshot = models.JSONField(default=dict, blank=True)
     address_snapshot = models.JSONField(default=dict, blank=True)
     notes = models.TextField(blank=True)
     metadata = models.JSONField(default=dict, blank=True)

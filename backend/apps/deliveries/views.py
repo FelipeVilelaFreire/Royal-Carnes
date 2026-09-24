@@ -13,22 +13,63 @@ from .selectors import (
     deliveries_for_customer,
     deliveries_for_organization,
     delivery_detail,
+    delivery_promise_policy_detail,
+    delivery_promise_policies_for_organization,
     delivery_statuses_for_organization,
 )
 from .serializers import (
     DeliveryConfirmSerializer,
     DeliveryCreateSerializer,
+    DeliveryPromisePolicySerializer,
+    DeliveryPromisePolicyWriteSerializer,
     DeliverySerializer,
     DeliveryStatusSerializer,
     DeliveryStatusTransitionSerializer,
 )
-from .services import DeliveryValidationError, confirm_delivery, create_delivery_for_order, transition_delivery_status
+from .services import DeliveryValidationError, confirm_delivery, create_delivery_for_order, transition_delivery_status, upsert_delivery_promise_policy
 
 
 @api_view(["GET"])
 def delivery_config(request):
     organization = get_request_organization(request)
     return Response({"statuses": DeliveryStatusSerializer(delivery_statuses_for_organization(organization), many=True).data})
+
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def admin_delivery_promise_policies(request):
+    organization = get_request_organization(request)
+    if request.method == "GET":
+        require_organization_permission(request.user, organization, "deliveries.read")
+        return Response(DeliveryPromisePolicySerializer(delivery_promise_policies_for_organization(organization), many=True).data)
+    require_organization_permission(request.user, organization, "deliveries.manage")
+    serializer = DeliveryPromisePolicyWriteSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    try:
+        policy = upsert_delivery_promise_policy(organization=organization, **serializer.validated_data)
+    except DeliveryValidationError as error:
+        return Response({"code": error.code, "detail": error.detail}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(DeliveryPromisePolicySerializer(policy).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET", "PUT"])
+@permission_classes([IsAuthenticated])
+def admin_delivery_promise_policy_detail(request, policy_id):
+    organization = get_request_organization(request)
+    if request.method == "GET":
+        require_organization_permission(request.user, organization, "deliveries.read")
+        return Response(DeliveryPromisePolicySerializer(delivery_promise_policy_detail(policy_id, organization)).data)
+    require_organization_permission(request.user, organization, "deliveries.manage")
+    current = delivery_promise_policy_detail(policy_id, organization)
+    serializer = DeliveryPromisePolicyWriteSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    if serializer.validated_data["key"] != current.key:
+        return Response({"code": "delivery_promise_key_immutable"}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        policy = upsert_delivery_promise_policy(organization=organization, **serializer.validated_data)
+    except DeliveryValidationError as error:
+        return Response({"code": error.code, "detail": error.detail}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(DeliveryPromisePolicySerializer(policy).data)
 
 
 @api_view(["GET"])

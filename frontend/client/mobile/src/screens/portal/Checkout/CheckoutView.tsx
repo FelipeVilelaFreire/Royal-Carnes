@@ -11,7 +11,6 @@ import { CheckoutAcquisition } from "./acquisition/CheckoutAcquisition";
 import { CheckoutFlow } from "./flow/CheckoutFlow";
 import { CheckoutFlowMain } from "./flow/left/CheckoutFlowMain";
 import { CheckoutFlowSummary } from "./flow/right/CheckoutFlowSummary";
-import { useCheckoutRuntime } from "./runtime/useCheckoutRuntime";
 import { createCheckoutStyles } from "./checkout.styles";
 
 export interface CheckoutViewProps {
@@ -44,17 +43,21 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const ScrollContainer = hosts.ScrollView || hosts.View;
   const screenHeaderScrollRange = Math.max(Number(designSystem.theme.tokens.spacing?.space3xl || 0), 1);
   const strings = clientStrings.pedido;
-  const runtime = useCheckoutRuntime({ isAuthenticated, onRequestAccess });
   const checkout = useClientCheckout({ isAuthenticated });
   const {
     actions,
     activeCycleUsage,
+    addressSaveState,
     addresses,
+    canSaveNewAddress,
     catalogSubscriptionPlans,
     config,
     currentStep,
     freightOptions: rawFreightOptions,
-    paymentInstallments,
+    hasCatalogError,
+    isAddingAddress,
+    newAddressDraft,
+    orderCreateState,
     paymentMethods: rawPaymentMethods,
     productCategories,
     query,
@@ -62,7 +65,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     selectedCategoryId,
     selectedDeliveryDay,
     selectedFreight,
-    selectedInstallments,
     selectedMode,
     selectedPaymentMethod,
     selectedPlanKey,
@@ -82,7 +84,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       label: paymentCopy.methods[method.labelKey],
     }));
   const selectedPayment = paymentMethods.find((method) => method.key === selectedPaymentMethod) || paymentMethods[0];
-  const requestProtectedStep = (step: typeof currentStep) => runtime.requestProtectedStep(step, actions.setCurrentStep);
+  const requestProtectedStep = (step: typeof currentStep) => {
+    if (!actions.requestProtectedStep(step)) onRequestAccess();
+  };
 
   return (
     <ScrollContainer
@@ -94,7 +98,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     >
       <ScreenHeader
         description={strings.hero.description}
-        eyebrow={strings.hero.badge}
         mobileMode="collapsible"
         mobileTitle={strings.hero.mobileTitle}
         scrollProgress={headerScrollProgress}
@@ -140,6 +143,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     categories: productCategories,
                     categoryById: viewModel.categoryById,
                     formatMoney: formatClientCheckoutMoney,
+                    hasCatalogError,
+                    isCatalogLoading: checkout.isAcquisitionLoading,
                     onClearFilters: () => {
                       actions.setSelectedCategoryId("all");
                       actions.setQuery("");
@@ -147,6 +152,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     onDecreaseProduct: actions.removeProduct,
                     onProductSelect: actions.addProduct,
                     onQueryChange: actions.setQuery,
+                    onReloadCatalog: actions.reloadCatalog,
                     onSelectCategory: actions.setSelectedCategoryId,
                     query,
                     selectedCategoryId,
@@ -162,11 +168,23 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   currentFreightPrice: viewModel.currentFreightPrice,
                   formatMoney: formatClientCheckoutMoney,
                   freightOptions,
+                  isAddingAddress,
+                  newAddressDraft,
+                  newAddressFields: config.addressFields.map((field) => ({
+                    key: field.key,
+                    label: strings.deliveryStep.common[field.labelKey],
+                    placeholder: strings.deliveryStep.common.addressPlaceholders[field.placeholderKey],
+                  })),
                   onBack: () => actions.setCurrentStep("montagem"),
                   onNext: () => requestProtectedStep("pagamento"),
+                  onSetAddingAddress: actions.setIsAddingAddress,
                   onSelectAddress: actions.setSelectedAddressId,
                   onSelectDeliveryDay: actions.setSelectedDeliveryDay,
                   onSelectFreight: actions.setSelectedFreight,
+                  addressSaveState,
+                  canSaveNewAddress,
+                  onSubmitNewAddress: actions.submitNewAddress,
+                  onUpdateNewAddressDraft: actions.updateNewAddressDraft,
                   selectedAddressId,
                   selectedDeliveryDay,
                   selectedFreight,
@@ -177,12 +195,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 payment={{
                   onBack: () => actions.setCurrentStep("entrega"),
                   onNext: () => requestProtectedStep("resumo"),
-                  onSelectInstallments: actions.setSelectedInstallments,
                   onSelectPaymentMethod: actions.setSelectedPaymentMethod,
                   paymentCopy,
-                  paymentInstallments,
                   paymentMethods,
-                  selectedInstallments,
                   selectedPaymentMethod,
                   tokens: theme,
                 }}
@@ -191,14 +206,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   finalTotal: viewModel.finalTotal,
                   formatMoney: formatClientCheckoutMoney,
                   onBack: () => actions.setCurrentStep("pagamento"),
-                  onFinish: () => {
-                    void actions.submitOrder();
-                  },
+                  onFinish: actions.submitOrder,
+                  createdOrderCode: orderCreateState.createdOrderCode,
+                  isSubmitting: orderCreateState.isLoading,
                   reviewCopy: strings.reviewStep,
                   selectedAddressSummary: viewModel.selectedAddressSummary,
                   selectedMode,
-                  selectedPaymentLabel: selectedPayment?.label || paymentCopy.methods.creditCard,
+                  selectedPaymentLabel: selectedPayment?.label || paymentCopy.methods.pix,
                   selectedProductEntries: viewModel.selectedProductEntries,
+                  submitError: typeof orderCreateState.error?.detail === "string"
+                    ? orderCreateState.error.detail
+                    : orderCreateState.error
+                      ? strings.reviewStep.submitError
+                      : "",
                   strings,
                   tokens: theme,
                 }}
@@ -206,13 +226,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             )}
             summary={currentStep === "montagem" ? (
               <CheckoutFlowSummary
-                itemCount={viewModel.selectedUnitsCount}
-                itemLabel={selectedMode === "subscription" ? strings.summary.selectedLimit : strings.summary.selectedItems}
-                estimateLabel={selectedMode === "subscription" ? strings.summary.fixedPlanPrice : strings.summary.variableEstimate}
-                estimateValue={formatClientCheckoutMoney(selectedMode === "subscription" ? viewModel.currentSubscriptionPlan.monthlyPrice : viewModel.orderEstimateTotal)}
-                contextLabel={strings.steps[currentStep]}
-                nextStepLabel={strings.summary.nextStep}
+                activeSubscription={checkout.activeSubscription}
+                activeSubscriptionLabel={viewModel.activeSubscriptionLabel}
+                currentStep={currentStep}
+                currentSubscriptionPlan={viewModel.currentSubscriptionPlan}
+                formatMeasure={formatClientCheckoutMeasure}
+                onAddProduct={actions.addProduct}
                 onNextStep={() => requestProtectedStep("entrega")}
+                onRemoveProduct={actions.removeProduct}
+                selectedMode={selectedMode}
+                selectedProductEntries={viewModel.selectedProductEntries}
+                stepOrder={config.stepOrder}
+                strings={strings}
+                subscriptionSummaryUsage={viewModel.subscriptionSummaryUsage}
                 title={strings.summary.title}
                 tokens={theme}
               />

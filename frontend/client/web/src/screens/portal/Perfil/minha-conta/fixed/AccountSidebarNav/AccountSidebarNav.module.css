@@ -1,0 +1,1 @@
+.skeleton { border: var(--theme--borders-hairline) solid var(--theme--color-border); display: grid; gap: var(--theme--spacing-spaceMd); padding: var(--theme--spacing-spaceLg); }

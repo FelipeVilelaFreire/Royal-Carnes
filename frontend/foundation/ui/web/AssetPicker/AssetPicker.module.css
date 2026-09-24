@@ -1,11 +1,18 @@
 .assetPicker {
-  width: 100%;
+  inline-size: 100%;
+  max-inline-size: var(--semicomposed--asset-picker--preview-max-width);
 }
 
 .dropZone {
+  --ui-surface-padding-x: 0 !important;
+  --ui-surface-padding-y: 0 !important;
+  aspect-ratio: var(--semicomposed--asset-picker--preview-aspect-ratio);
   cursor: pointer;
+  display: grid;
   overflow: hidden;
-  width: 100%;
+  inline-size: 100%;
+  place-items: center;
+  position: relative;
 }
 
 .dropZone[aria-disabled="true"] {
@@ -17,8 +24,30 @@
 }
 
 .previewImage {
+  block-size: 100%;
   display: block;
-  height: auto;
+  inline-size: 100%;
   object-fit: cover;
-  width: 100%;
+}
+
+.dropZone:not([aria-disabled="true"]):hover .previewImage,
+.dropZone:focus-visible .previewImage,
+.isDraggingOver .previewImage {
+  opacity: var(--semicomposed--asset-picker--drag-preview-opacity);
+}
+
+.replaceHint {
+  background: var(--semicomposed--asset-picker--drag-overlay-bg);
+  border-radius: var(--semicomposed--asset-picker--drag-overlay-radius);
+  padding: var(--semicomposed--asset-picker--drag-overlay-padding);
+  opacity: var(--semicomposed--asset-picker--drag-hint-hidden-opacity);
+  pointer-events: none;
+  position: absolute;
+  transition: var(--semicomposed--asset-picker--drag-hint-transition);
+}
+
+.dropZone:not([aria-disabled="true"]):hover .replaceHint,
+.dropZone:focus-visible .replaceHint,
+.isDraggingOver .replaceHint {
+  opacity: var(--semicomposed--asset-picker--drag-hint-visible-opacity);
 }

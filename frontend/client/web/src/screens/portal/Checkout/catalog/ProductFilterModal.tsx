@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Inline, Modal, Stack, Text } from "@foundation/ui";
+import { Button, Inline, Modal, Stack } from "@foundation/ui";
 import type { ClientCheckoutProductCategory } from "@/view-models/checkout.view-model";
 import styles from "./ProductFilterModal.module.css";
 
@@ -11,7 +11,6 @@ export interface ProductFilterModalProps {
   strings: {
     allCategories: string;
     apply: string;
-    categoryTitle: string;
     close: string;
     modalTitle: string;
   };
@@ -25,15 +24,13 @@ export const ProductFilterModal: React.FC<ProductFilterModalProps> = ({
   strings,
 }) => {
   const [draftCategoryId, setDraftCategoryId] = React.useState(selectedCategoryId);
+  const parentCategories = categories.filter((category) => !category.parentId);
 
   return (
     <Modal closeLabel={strings.close} onClose={onClose} open title={strings.modalTitle} variant="auto">
       <Stack gap="md">
-        <Text className={styles.categoryTitle} tone="inherit" variant="body">
-          {strings.categoryTitle}
-        </Text>
         <Stack className={styles.categoryList} role="listbox">
-          {[{ id: "all", name: strings.allCategories }, ...categories].map((category) => {
+          {[{ id: "all", name: strings.allCategories }, ...parentCategories].map((category) => {
             const active = draftCategoryId === category.id;
 
             return (

@@ -7,7 +7,7 @@ import type {
   ClientCheckoutProductExperience,
 } from "@/view-models/checkout.view-model";
 import styles from "../CheckoutView.module.css";
-import { CheckoutProductGrid } from "./CheckoutProductGrid";
+import { CheckoutProductGrid, CheckoutProductGridSkeleton } from "./CheckoutProductGrid";
 
 export interface ProductCatalogStepProps {
   availableProducts: ClientCheckoutProduct[];
@@ -15,11 +15,14 @@ export interface ProductCatalogStepProps {
   categoryById: Map<string, ClientCheckoutProductCategory>;
   formatMoney: (value: number) => string;
   header?: React.ReactNode;
+  hasCatalogError: boolean;
+  isCatalogLoading: boolean;
   onClearFilters: () => void;
   onDecreaseProduct: (productId: string) => void;
   onOpenFilters: () => void;
   onProductSelect: (product: ClientCheckoutProduct) => void;
   onQueryChange: (value: string) => void;
+  onReloadCatalog: () => Promise<unknown>;
   query: string;
   selectedCategoryId: string;
   selectedMode: ClientCheckoutProductExperience | null;
@@ -41,11 +44,14 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
   categoryById,
   formatMoney,
   header,
+  hasCatalogError,
+  isCatalogLoading,
   onClearFilters,
   onDecreaseProduct,
   onOpenFilters,
   onProductSelect,
   onQueryChange,
+  onReloadCatalog,
   query,
   selectedCategoryId,
   selectedMode,
@@ -54,6 +60,9 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
   tokens,
 }) => {
   const hasActiveFilter = selectedCategoryId !== "all" || Boolean(query);
+  const selectedCategoryName = selectedCategoryId === "all"
+    ? strings.filters.allCategories
+    : categoryById.get(selectedCategoryId)?.name || strings.filters.allCategories;
 
   return (
     <Surface
@@ -84,16 +93,37 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
 
         {hasActiveFilter ? (
           <Inline className={styles.filterResultBar} justify="between">
-            <Text as="span" tone="muted" variant="caption">
-              {availableProducts.length} {strings.catalog.foundLabel}
-            </Text>
+            <div className={styles.filterResultCopy}>
+              <Text as="span" tone="muted" variant="caption">
+                {availableProducts.length} {strings.catalog.foundLabel}
+              </Text>
+              {selectedCategoryId !== "all" ? (
+                <Text as="span" className={styles.activeCategory} tone="inherit" variant="caption">
+                  {strings.filters.activeCategoryLabel.replace("{category}", selectedCategoryName)}
+                </Text>
+              ) : null}
+            </div>
             <Button appearance="transparent" tone="neutral" size="sm" type="button" onClick={onClearFilters}>
               {strings.hero.clearFilters}
             </Button>
           </Inline>
         ) : null}
 
-        {availableProducts.length ? (
+        {hasCatalogError ? (
+          <Surface appearance="outline" className={styles.catalogFeedback}>
+            <Text as="h3" tone="inherit" variant="h3">
+              {strings.catalog.errorTitle}
+            </Text>
+            <Text className={styles.emptyCatalogDescription} tone="inherit">
+              {strings.catalog.errorDescription}
+            </Text>
+            <Button appearance="outline" disabled={isCatalogLoading} onClick={() => void onReloadCatalog()} tone="neutral">
+              {strings.catalog.retry}
+            </Button>
+          </Surface>
+        ) : isCatalogLoading ? (
+          <CheckoutProductGridSkeleton selectedMode={selectedMode} />
+        ) : availableProducts.length ? (
           <CheckoutProductGrid
             availableProducts={availableProducts}
             canAddProduct={canAddProduct}
@@ -106,7 +136,7 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
             strings={strings}
           />
         ) : (
-          <Surface appearance="outline" className={styles.emptyCatalog}>
+          <Surface appearance="outline" className={styles.catalogFeedback}>
             <CutMeatIcon className={styles.emptyCatalogIcon} size={28} />
             <Text as="h3" tone="inherit" variant="h3">
               {strings.catalog.emptyTitle}

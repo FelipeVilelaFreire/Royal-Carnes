@@ -11,6 +11,19 @@
 
   /* Receitas de Botão (Button) */
   --semicomposed--button-radius: var(--theme--radius-md);
+  --semicomposed--input-radius: var(--theme--radius-2xl);
+  --semicomposed--input-skeleton-height: var(--theme--dimensions-height-lg);
+  --semicomposed--input-active-background: color-mix(in srgb, var(--theme--color-copper) 16%, var(--theme--color-surface-container));
+  --semicomposed--input-active-border-color: var(--theme--color-copper);
+  --semicomposed--input-active-ring: var(--theme--borders-medium);
+  --semicomposed--input-active-ring-color: color-mix(in srgb, var(--theme--color-copper) 10%, transparent);
+  --semicomposed--card-skeleton-min-height: var(--theme--dimensions-height-3xl);
+  --semicomposed--card-skeleton-radius: var(--theme--radius-xl);
+
+  /* Altura editorial para sections que deixam a proxima camada da vitrine visivel. */
+  --semicomposed--section-hero-peek-viewport: var(--theme--layout-hero-peek-viewport);
+  --semicomposed--section-hero-peek-header-height: var(--app-shell-header-height, var(--theme--dimensions-height-2xl));
+  --semicomposed--section-hero-peek-content-padding: calc(var(--theme--spacing-spaceLg) + var(--theme--spacing-space2xl));
 
   /* Largura semantica para modais compactos de autenticacao e confirmacao. */
   --semicomposed--modal-width-xs: var(--theme--layout-container-xs);
@@ -22,7 +35,12 @@
   --semicomposed--access-shell--header-control-size: var(--theme--dimensions-height-sm);
   --semicomposed--access-shell--header-control-padding: 0;
   --semicomposed--access-shell--header-corner-offset: calc(var(--theme--spacing-spaceSm) * -1);
-  --semicomposed--modal-min-height-roomy: calc(var(--theme--spacing-space3xl) * 8);
+  --semicomposed--access-shell--provider-divider-border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --semicomposed--access-shell--provider-gap: var(--theme--spacing-spaceLg);
+  --semicomposed--access-shell--provider-google-color: var(--theme--color-google);
+  --semicomposed--access-shell--provider-apple-color: var(--theme--color-text);
+  --semicomposed--modal-radius-roomy: var(--theme--radius-2xl);
+  --semicomposed--modal-backdrop-roomy: color-mix(in srgb, var(--theme--color-background) 60%, transparent);
 
   /* Feedback de confirmacao: a primitive consome estes tokens, sem ler Theme direto. */
   --semicomposed--confirmation-modal--icon-bg: color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-15), transparent);
@@ -39,6 +57,21 @@
   --semicomposed--confirmation-modal--icon-radius: var(--theme--radius-full);
   --semicomposed--confirmation-modal--description-max-width: var(--theme--dimensions-minWidth-4xl);
   --semicomposed--confirmation-modal--content-bleed: calc((var(--theme--spacing-spaceXl) - var(--theme--spacing-spaceMd)) * -1);
+
+  /* Previa de arquivo: limite editorial para formularios de catalogo. */
+  --semicomposed--asset-picker--preview-max-width: var(--theme--dimensions-minWidth-4xl);
+  --semicomposed--asset-picker--preview-aspect-ratio: 4 / 3;
+  --semicomposed--asset-picker--drag-preview-opacity: var(--theme--opacity-50);
+  --semicomposed--asset-picker--drag-overlay-bg: color-mix(in srgb, var(--theme--color-background) var(--theme--opacity-75), transparent);
+  --semicomposed--asset-picker--drag-overlay-radius: var(--theme--radius-md);
+  --semicomposed--asset-picker--drag-overlay-padding: var(--theme--spacing-spaceSm);
+  --semicomposed--asset-picker--drag-hint-hidden-opacity: 0;
+  --semicomposed--asset-picker--drag-hint-visible-opacity: 1;
+  --semicomposed--asset-picker--drag-hint-transition: opacity var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+  --semicomposed--asset-preview--inline-size: calc(var(--theme--dimensions-minWidth-4xl) * 0.667);
+  --semicomposed--asset-preview--block-size: calc(var(--theme--dimensions-minWidth-4xl) * 0.5);
+  --semicomposed--asset-preview--border: var(--theme--borders-hairline) solid var(--theme--color-border);
+  --semicomposed--asset-preview--radius: var(--theme--radius-md);
 
   /* Appearance Solid */
   --semicomposed--button-bg-solid: var(--theme--color-primary);
@@ -60,6 +93,18 @@
   --semicomposed--dropdown-picker--layer: var(--theme--z-index-top-layer);
   --semicomposed--dropdown-picker--option-padding-y: var(--theme--spacing-spaceSm);
   --semicomposed--dropdown-picker--option-description-gap: var(--theme--spacing-space2xs);
+  --semicomposed--dropdown-picker--option-gap: var(--theme--spacing-space2xs);
+  --semicomposed--dropdown-picker--scrollbar-size: var(--theme--spacing-spaceXs);
+  --semicomposed--dropdown-picker--scrollbar-radius: var(--theme--radius-full);
+  --semicomposed--dropdown-picker--scrollbar-track: color-mix(in srgb, var(--theme--color-surface-container) 72%, transparent);
+  --semicomposed--dropdown-picker--scrollbar-thumb: color-mix(in srgb, var(--theme--color-accent) 56%, var(--theme--color-surface-container));
+  --semicomposed--dropdown-picker--scrollbar-thumb-hover: var(--theme--color-accent);
+  --semicomposed--dropdown-picker--scrollbar-thumb-border: var(--theme--borders-hairline) solid var(--theme--color-background);
+  --semicomposed--dropdown-picker--control-size: var(--theme--dimensions-height-lg);
+  --semicomposed--dropdown-picker--skeleton-height: var(--theme--dimensions-height-lg);
+  --semicomposed--dropdown-picker--accent-color: var(--theme--color-copper);
+  --semicomposed--dropdown-picker--motion-duration: var(--theme--motion-durationSm);
+  --semicomposed--dropdown-picker--motion-easing: var(--theme--motion-easingStandard);
   --semicomposed--dropdown-picker--panel-max-height: calc(var(--theme--dimensions-height-lg) * 7);
   --semicomposed--dropdown-picker--panel-min-width: var(--theme--sizing-24);
 
@@ -78,19 +123,28 @@
   --semicomposed--segmented-control--underline-active-shadow: inset 0 calc(var(--theme--spacing-spaceSm) * -1) var(--theme--spacing-spaceMd) color-mix(in srgb, var(--theme--color-primary) var(--theme--opacity-25), transparent);
 
   /* Receita de Skeleton */
+  --semicomposed--skeleton--base: color-mix(in srgb, var(--theme--color-ivory) calc(var(--theme--opacity-25) * 100%), var(--theme--color-surface-container));
+  --semicomposed--skeleton--reflection: color-mix(in srgb, var(--theme--color-ivory) calc(var(--theme--opacity-75) * 100%), var(--semicomposed--skeleton--base));
+  --semicomposed--section-image-overlay-soft-end: color-mix(in srgb, var(--theme--color-background) calc(var(--theme--opacity-50) * 100%), transparent);
+  --semicomposed--section-image-overlay-soft-start: color-mix(in srgb, var(--theme--color-background) calc(var(--theme--opacity-20) * 100%), transparent);
+  --semicomposed--section-image-overlay-medium-end: color-mix(in srgb, var(--theme--color-background) calc(var(--theme--opacity-75) * 100%), transparent);
+  --semicomposed--section-image-overlay-medium-start: color-mix(in srgb, var(--theme--color-background) calc(var(--theme--opacity-50) * 100%), transparent);
   --semicomposed--skeleton--border: var(--theme--borders-none);
+  --semicomposed--skeleton--background: linear-gradient(90deg, var(--semicomposed--skeleton--base), var(--semicomposed--skeleton--reflection), var(--semicomposed--skeleton--base));
+  --semicomposed--skeleton--background-size: 220% 100%;
+  --semicomposed--skeleton--shadow: none;
   --semicomposed--skeleton--radius-circle: var(--theme--radius-full);
   --semicomposed--skeleton--radius-text: var(--theme--radius-sm);
-  --semicomposed--skeleton--shimmer: color-mix(in srgb, currentColor var(--theme--opacity-10), transparent);
-  --semicomposed--skeleton--pulse-duration: var(--theme--motion-durationLg);
-  --semicomposed--skeleton--sweep-duration: var(--theme--motion-duration2xl);
+  --semicomposed--skeleton--wave-duration: calc(var(--theme--motion-duration3xl) * 2);
   --semicomposed--skeleton--easing: var(--theme--motion-easingStandard);
-  --semicomposed--skeleton--pulse-opacity: var(--theme--opacity-muted);
   --semicomposed--skeleton--size-xs: var(--theme--spacing-space2xs);
   --semicomposed--skeleton--size-sm: var(--theme--spacing-spaceXs);
   --semicomposed--skeleton--size-md: var(--theme--spacing-spaceSm);
   --semicomposed--skeleton--size-lg: var(--theme--spacing-spaceLg);
   --semicomposed--skeleton--size-xl: var(--theme--spacing-space3xl);
+  --semicomposed--skeleton--button-height-sm: var(--theme--dimensions-height-sm);
+  --semicomposed--skeleton--button-height-md: var(--theme--dimensions-height-md);
+  --semicomposed--skeleton--button-height-lg: var(--theme--dimensions-height-lg);
   --semicomposed--skeleton--width-lg: var(--theme--layout-container-xs);
   --semicomposed--skeleton--width-md: var(--theme--sizing-control-xl);
   --semicomposed--skeleton--width-sm: var(--theme--sizing-control-lg);

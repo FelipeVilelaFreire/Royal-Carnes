@@ -4,6 +4,7 @@ import type {
 } from "../contracts/orders.contract";
 import type { AdminPaymentStatus, AdminPaymentView } from "../contracts/payments.contract";
 import type { AdminSubscriptionView } from "../contracts/subscriptions.contract";
+import { formatAdminDate, formatAdminDateTime } from "../formatters/date-time.formatter";
 
 export interface AdminPaymentRowViewModel {
   id: string | number;
@@ -64,17 +65,6 @@ const paymentStatusTones: Record<AdminPaymentStatus, AdminPaymentRowViewModel["s
   refunded: "neutral",
 };
 
-function formatDate(value: string | null | undefined): string | null {
-  if (!value) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
-}
-
 function formatDateTimeInput(value: string | null | undefined): string {
   if (!value) return "";
   const date = new Date(value);
@@ -107,7 +97,7 @@ function resolveOriginLabelKey(payment: AdminPaymentView): string {
 }
 
 function resolveCycleWindow(startsAt: string | null | undefined, endsAt: string | null | undefined): string {
-  return [formatDate(startsAt), formatDate(endsAt)].filter(Boolean).join(" - ");
+  return [formatAdminDate(startsAt), formatAdminDate(endsAt)].filter(Boolean).join(" - ");
 }
 
 export function createAdminPaymentRowViewModel(
@@ -123,8 +113,8 @@ export function createAdminPaymentRowViewModel(
   const currentCycle = linkedSubscription?.cycles.find((cycle) => cycle.status === "open")
     || linkedSubscription?.cycles[0]
     || null;
-  const createdAt = formatDate(payment.createdAt) || payment.createdAt;
-  const updatedAt = formatDate(payment.updatedAt) || payment.updatedAt;
+  const createdAt = formatAdminDateTime(payment.createdAt);
+  const updatedAt = formatAdminDateTime(payment.updatedAt);
 
   return {
     id: payment.id,
@@ -148,14 +138,14 @@ export function createAdminPaymentRowViewModel(
     amountCents: payment.amountCents,
     amountLabel: formatMoney(payment.amountCents, payment.currency),
     currency: payment.currency,
-    dueAt: formatDate(payment.dueAt),
+    dueAt: formatAdminDateTime(payment.dueAt) || null,
     dueAtInput: formatDateTimeInput(payment.dueAt),
-    paidAt: formatDate(payment.paidAt),
+    paidAt: formatAdminDateTime(payment.paidAt) || null,
     paidAtInput: formatDateTimeInput(payment.paidAt),
     notes: payment.notes,
     linkedOrders: linkedOrder ? [{
       code: linkedOrder.code,
-      createdAt: formatDate(linkedOrder.createdAt) || linkedOrder.createdAt,
+      createdAt: formatAdminDateTime(linkedOrder.createdAt),
       id: linkedOrder.id,
       statusLabel: resolveOrderStatusLabel(orderConfig, linkedOrder.statusKey),
       totalLabel: formatMoney(linkedOrder.totalCents, linkedOrder.currency),

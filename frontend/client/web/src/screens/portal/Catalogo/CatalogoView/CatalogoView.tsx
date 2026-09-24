@@ -31,7 +31,6 @@ export const CatalogoView: React.FC = () => {
     <main className={styles.root}>
       <ScreenHeader
         description={strings.description}
-        eyebrow={strings.badge}
         mobileGutter="none"
         mobileMode="collapsible"
         mobileTitle={strings.mobileTitle}

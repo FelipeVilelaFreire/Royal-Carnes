@@ -26,6 +26,7 @@ export default defineConfig({
       "@royalprime/admin": path.resolve(__dirname, "../shared-core"),
       "@": path.resolve(__dirname, "./src"),
       "@foundation": path.resolve(__dirname, "../../foundation"),
+      "@product-components": path.resolve(__dirname, "../../product-components"),
       "@shared-core": path.resolve(__dirname, "../../shared-core")
     }
   }

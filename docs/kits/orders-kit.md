@@ -108,12 +108,14 @@ Order pertence a organization.
 Customer e Address precisam pertencer a mesma organization.
 Tipo de pedido vem de OrderKindDefinition.
 Status inicial vem de OrderStatusDefinition.
-Transicao de status usa allowedNextKeys.
+O Admin pode escolher qualquer status de Pedido configurado. A alteracao e
+auditada no historico e sincroniza a Entrega vinculada.
 Codigo vem de CodeSequence por organization.
 Product/Variant/MeasurementUnit vem do Catalog.
 Preco e subtotal sao calculados no backend.
 Quando requiresInventory=true, o backend reserva estoque no create_order.
-Quando createsDelivery=true, o backend cria Delivery inicial no create_order.
+Quando createsDelivery=true, o backend cria Delivery inicial no create_order
+com o mesmo status do Pedido.
 ```
 
 ## 4. Escopo Shared-Core
@@ -183,7 +185,7 @@ historico de status auditavel
 ## 7. O Que E Especifico Do RoyalPrime
 
 ```text
-label Royal Delivery
+tipos comerciais: Royal Box, Assinatura e Avulso
 prefixo RP
 status recebido/aprovado/separando/pronto/concluido
 produtos como Picanha, Ancho e Carvao
@@ -191,6 +193,26 @@ copy operacional futura
 ```
 
 Nada disso deve virar branch no backend.
+
+### Origens comerciais de Pedido
+
+No RoyalPrime, um Pedido tem exatamente uma origem comercial. `Delivery` e a
+operacao logistica derivada do Pedido; nao e uma quarta origem comercial.
+
+| Tipo | Vinculo obrigatorio | Contexto no detalhe Admin |
+| --- | --- | --- |
+| Royal Box | `BoxSubscription` e `BoxCycle` | caixa, ciclo, dia recorrente, data prevista, status do ciclo e politica de criacao |
+| Assinatura | `Subscription` e `SubscriptionCycle` | plano e ciclo da assinatura |
+| Avulso | nenhum ciclo recorrente | somente dados do Pedido e, quando existir, sua Entrega |
+
+O backend decide essa validade. Um Pedido Royal Box sem `BoxCycle`, ou sem uma
+recorrencia mensal valida (dia 1 a 28) na sua `BoxSubscription`, e rejeitado;
+um Pedido de Assinatura sem `SubscriptionCycle` tambem. A criacao manual no
+Admin nao oferece Royal Box: ele nasce exclusivamente pelo fluxo de ciclo.
+Para auditar dados legados inconsistentes, o detalhe Admin ainda mostra a aba
+Royal Box com `Recorrência` e `Dia recorrente: -`; isso nao torna o registro um
+estado valido. Status e historico continuam no Pedido; Entrega e o espelho
+logistico.
 
 ## 8. Como Copiar/Adaptar
 

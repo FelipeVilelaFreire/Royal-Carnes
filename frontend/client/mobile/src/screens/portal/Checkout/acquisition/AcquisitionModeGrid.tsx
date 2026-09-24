@@ -65,9 +65,7 @@ export const AcquisitionModeGrid: React.FC<AcquisitionModeGridProps> = ({
               <Surface style={styles.modeCardContent}>
                 <Text style={styles.accent} variant="caption">{modeEyebrow}</Text>
                 <Text style={styles.title} variant="h3">{modeTitle}</Text>
-                {isActiveSubscriptionMode ? (
-                  <Text style={styles.accent} variant="caption">{strings.summary.activeSubscriptionBadge}</Text>
-                ) : null}
+                {isActiveSubscriptionMode ? <Text style={styles.accent} variant="caption">{strings.summary.activeSubscriptionBadge}</Text> : null}
                 <Text style={styles.muted}>{modeDescription}</Text>
               </Surface>
             </Button>

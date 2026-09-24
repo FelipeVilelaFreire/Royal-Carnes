@@ -1,8 +1,11 @@
 import React from "react";
 import { Badge, Button, Stack, Surface, Text } from "@foundation/ui";
+import { BoxIcon, StoreIcon, TruckIcon } from "@foundation/ui/web/Icon/AppIcons";
+import { formatClientCheckoutUsage } from "@royalprime/client/utils/checkout.formatters";
 import { OrderSummaryItem } from "@royalprime/product-components/ecommerce";
 import type { ClientCheckoutStepKey } from "@/manifest/checkout.config";
-import type { ClientCheckoutProduct, ClientCheckoutProductExperience } from "@/view-models/checkout.view-model";
+import { getClientCheckoutProductMeasure } from "@/view-models/checkout.view-model";
+import type { ClientCheckoutCycleUsage, ClientCheckoutProduct, ClientCheckoutProductExperience, ClientCheckoutSubscriptionPlan } from "@/view-models/checkout.view-model";
 import { SummaryRow } from "./SummaryRow";
 import styles from "../CheckoutView.module.css";
 
@@ -30,15 +33,7 @@ export interface StickyOrderSummaryProps {
   };
   currentFreightPrice: number;
   currentStep: ClientCheckoutStepKey;
-  currentSubscriptionPlan: {
-    charcoalKgLimit: number;
-    monthlyPrice: number;
-    proteinKgLimit: number;
-    seasoningSelectionLimit: number;
-    sideSelectionLimit: number;
-    utensilSelectionLimit: number;
-    name: string;
-  };
+  currentSubscriptionPlan: ClientCheckoutSubscriptionPlan;
   formatMeasure: (value: number, unit: string) => string;
   formatMoney: (value: number) => string;
   onAddProduct: (product: ClientCheckoutProduct) => void;
@@ -63,14 +58,7 @@ export interface StickyOrderSummaryProps {
   subscriptionCycleSidesUsed: number;
   subscriptionCycleUtensilsUsed: number;
   subscriptionCycleWeightUsed: number;
-  subscriptionSummaryUsage: {
-    charcoalKgLimit: number;
-    cutsLimit: number;
-    seasoningsLimit: number;
-    sidesLimit: number;
-    utensilsLimit: number;
-    weightKgLimit: number;
-  } | null;
+  subscriptionSummaryUsage: ClientCheckoutCycleUsage | null;
   tokens: SummaryTokens;
 }
 
@@ -110,29 +98,66 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
 }) => {
   const summaryBadge = selectedMode
     ? selectedMode === "subscription"
-      ? strings.summary.modePlanBadge
-        .replace("{mode}", activeSubscription ? strings.summary.activeSubscriptionMode : strings.modes[selectedMode].title)
-        .replace("{plan}", activeSubscriptionLabel || currentSubscriptionPlan.name)
+      ? currentSubscriptionPlan.name
       : strings.modes[selectedMode].title
     : null;
   const hasSelectedProduct = (predicate: (product: ClientCheckoutProduct) => boolean) => (
     selectedProductEntries.some(({ product }) => predicate(product))
   );
-  const subscriptionUsageRows = selectedMode === "subscription"
-    ? [
+  const selectedQuantityForCapacity = (capacityKey: string, measurementUnitSymbol?: string | null) => {
+    const isWeightCapacity = measurementUnitSymbol?.toLowerCase() === "kg";
+    const knownCapacityKeys = new Set(currentSubscriptionPlan.capacity.map((capacity) => capacity.key));
+    return selectedProductEntries
+      .filter(({ product }) => {
+        const matchesExactCapacity = product.productKey === capacityKey || product.tags.includes(capacityKey);
+        if (matchesExactCapacity) return true;
+
+        const isMeatFamilyCapacity = capacityKey === "carnes" && product.kind === "meat";
+        const belongsToAnotherCapacity = product.tags.some((tag) => knownCapacityKeys.has(tag));
+        return isMeatFamilyCapacity && !belongsToAnotherCapacity;
+      })
+      .reduce((total, { product, quantity }) => (
+        total + (isWeightCapacity ? getClientCheckoutProductMeasure(product) : 1) * quantity
+      ), 0);
+  };
+  const backendCapacityRows = (subscriptionSummaryUsage?.capacity || [])
+    .filter((capacity) => capacity.limitQuantity > 0)
+    .map((capacity) => ({
+      isVisible: true,
+      label: capacity.label,
+      value: formatClientCheckoutUsage(
+        capacity.usedQuantity + selectedQuantityForCapacity(capacity.key, capacity.measurementUnitSymbol),
+        capacity.limitQuantity,
+        capacity.measurementUnitSymbol || "",
+        formatMeasure,
+      ),
+    }));
+  const planCapacityRows = currentSubscriptionPlan.capacity
+    .filter((capacity) => capacity.limitQuantity > 0)
+    .map((capacity) => ({
+      isVisible: true,
+      label: capacity.label,
+      value: formatClientCheckoutUsage(
+        selectedQuantityForCapacity(capacity.key, capacity.measurementUnitSymbol),
+        capacity.limitQuantity,
+        capacity.measurementUnitSymbol || "",
+        formatMeasure,
+      ),
+    }));
+  const fallbackSubscriptionUsageRows = [
       {
         isVisible: subscriptionCycleCutsUsed > 0 || subscriptionCycleWeightUsed > 0 || hasSelectedProduct((product) => product.kind === "meat"),
         label: strings.summary.meatUsage,
         value: subscriptionSummaryUsage
-          ? `${formatMeasure(subscriptionCycleWeightUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.weightKgLimit, "kg")}`
-          : `${formatMeasure(selectedProteinKg, "kg")}/${formatMeasure(currentSubscriptionPlan.proteinKgLimit, "kg")}`,
+          ? formatClientCheckoutUsage(subscriptionCycleWeightUsed, subscriptionSummaryUsage.weightKgLimit, "kg", formatMeasure)
+          : formatClientCheckoutUsage(selectedProteinKg, currentSubscriptionPlan.proteinKgLimit, "kg", formatMeasure),
       },
       {
         isVisible: subscriptionCycleCharcoalUsed > 0 || hasSelectedProduct((product) => product.kind === "charcoal"),
         label: strings.summary.charcoalUsage,
         value: subscriptionSummaryUsage
-          ? `${formatMeasure(subscriptionCycleCharcoalUsed, "kg")}/${formatMeasure(subscriptionSummaryUsage.charcoalKgLimit, "kg")}`
-          : `${formatMeasure(selectedCharcoalKg, "kg")}/${formatMeasure(currentSubscriptionPlan.charcoalKgLimit, "kg")}`,
+          ? formatClientCheckoutUsage(subscriptionCycleCharcoalUsed, subscriptionSummaryUsage.charcoalKgLimit, "kg", formatMeasure)
+          : formatClientCheckoutUsage(selectedCharcoalKg, currentSubscriptionPlan.charcoalKgLimit, "kg", formatMeasure),
       },
       {
         isVisible: subscriptionCycleSeasoningsUsed > 0 || hasSelectedProduct((product) => product.kind === "seasoning"),
@@ -155,7 +180,9 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
           ? `${subscriptionCycleUtensilsUsed}/${subscriptionSummaryUsage.utensilsLimit}`
           : `${selectedUtensilCount}/${currentSubscriptionPlan.utensilSelectionLimit}`,
       },
-    ].filter((row) => row.isVisible)
+    ].filter((row) => row.isVisible);
+  const subscriptionUsageRows = selectedMode === "subscription"
+    ? backendCapacityRows.length ? backendCapacityRows : planCapacityRows.length ? planCapacityRows : fallbackSubscriptionUsageRows
     : [];
   const productGroupKey = (product: ClientCheckoutProduct) => (
     product.kind === "kit" && product.tags.includes("acompanhamento") ? "side" : product.kind
@@ -181,11 +208,9 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
     groups.push({ entries: [entry], key });
     return groups;
   }, []);
-  const usageByLabel = new Map(subscriptionUsageRows.map((row) => [row.label, row.value]));
-
   return (
     <Surface appearance="soft" as="aside" className={styles.summary}>
-      <Stack gap="sm">
+      <Stack className={styles.summaryContent} gap="sm">
         <div className={styles.summaryHeader}>
           <Text as="h2" className={styles.summaryTitle} variant="h3" tone="inherit">
             {strings.summary.title}
@@ -197,41 +222,60 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
           ) : null}
         </div>
         <div className={styles.summaryProgress}>
-          {stepOrder.map((step, index) => (
-            <span
-              aria-current={step === currentStep ? "step" : undefined}
-              aria-label={strings.steps[step]}
-              className={styles.summaryProgressItem}
-              data-current={step === currentStep || undefined}
-              key={step}
-            >
-              {index + 1}
-            </span>
-          ))}
+          {stepOrder.map((step, index) => {
+            const state = index < stepOrder.indexOf(currentStep) ? "done" : step === currentStep ? "current" : "pending";
+
+            return (
+              <React.Fragment key={step}>
+                <span
+                  aria-current={step === currentStep ? "step" : undefined}
+                  aria-label={strings.steps[step]}
+                  className={styles.summaryProgressItem}
+                  data-state={state}
+                >
+                  {index + 1}
+                </span>
+                {index < stepOrder.length - 1 ? (
+                  <span aria-hidden="true" className={styles.summaryProgressConnector} data-state={state} />
+                ) : null}
+              </React.Fragment>
+            );
+          })}
         </div>
+
+        {subscriptionUsageRows.length ? (
+          <div className={styles.summaryCapacity}>
+            {subscriptionUsageRows.map((row) => (
+              <SummaryRow key={row.label} label={row.label} value={row.value} />
+            ))}
+          </div>
+        ) : null}
 
         {selectedMode ? (
           <>
             {currentStep !== "montagem" ? (
               <Surface appearance="soft" className={styles.summaryGroup}>
                 <Stack gap="sm">
-                  <SummaryRow label={strings.summary.deliveryAddress} value={selectedAddressSummary} />
+                  <SummaryRow icon={<StoreIcon size={16} />} label={strings.summary.deliveryAddress} truncate value={selectedAddressSummary} />
                   {selectedMode === "royalBox" ? (
                     <SummaryRow
+                      icon={<BoxIcon size={16} />}
                       label={strings.summary.recurrenceDay}
                       value={`${strings.deliveryStep.royalBox.deliveryDayPrefix} ${selectedDeliveryDay}`}
                     />
                   ) : null}
-                  <SummaryRow
-                    label={strings.summary.selectedFreight}
-                    value={
-                      selectedMode === "royalDelivery" && currentFreightOption
-                        ? `${currentFreightOption.label} - ${formatMoney(currentFreightPrice)}`
-                        : selectedMode === "royalDelivery"
-                          ? strings.summary.freightNotSelected
+                  {selectedMode !== "royalDelivery" || currentFreightOption ? (
+                    <SummaryRow
+                      detail={selectedMode === "royalDelivery" && currentFreightOption ? formatMoney(currentFreightPrice) : undefined}
+                      icon={<TruckIcon size={16} />}
+                      label={strings.summary.selectedFreight}
+                      value={
+                        selectedMode === "royalDelivery" && currentFreightOption
+                          ? currentFreightOption.label
                           : strings.deliveryStep.royalDelivery.includedFreight
-                    }
-                  />
+                      }
+                    />
+                  ) : null}
                   {currentStep === "pagamento" ? (
                     <SummaryRow label={strings.summary.selectedPayment} value={selectedPaymentLabel} />
                   ) : null}
@@ -249,15 +293,11 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
                         <Text as="h3" className={styles.summarySelectionTitle} tone="inherit" variant="caption" weight="semibold">
                           {label}
                         </Text>
-                        {selectedMode === "subscription" && usageByLabel.get(label) ? (
-                          <Text as="span" className={styles.summarySelectionUsage} tone="inherit" variant="caption">
-                            {usageByLabel.get(label)}
-                          </Text>
-                        ) : null}
                       </div>
                       <Stack gap="xs">
                         {entries.slice(0, 5).map(({ product, quantity }) => (
                           <OrderSummaryItem
+                            density="comfortable"
                             detail={product.weightLabel || product.unit}
                             image={product.image}
                             key={product.id}
@@ -279,24 +319,6 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
               </Stack>
             ) : null}
 
-            {selectedMode !== "subscription" ? (
-              <div className={styles.summaryTotal}>
-                <Text as="span" className={styles.summaryTotalLabel} variant="caption" tone="inherit">
-                  {strings.summary.variableEstimate}
-                </Text>
-                <Text as="strong" className={styles.summaryTotalValue} variant="h3" tone="inherit">
-                  {formatMoney(orderEstimateTotal)}
-                </Text>
-              </div>
-            ) : null}
-
-            <Button appearance="solid" className={styles.summaryPrimaryAction} tone="neutral" onClick={onNextStep}>
-              {currentStep === "montagem"
-                ? strings.summary.nextStep
-                : currentStep === "entrega"
-                  ? strings.summary.paymentNextStep
-                  : strings.summary.finishStep}
-            </Button>
           </>
         ) : (
           <Text className={styles.summaryMutedText} tone="inherit">
@@ -304,6 +326,27 @@ export const StickyOrderSummary: React.FC<StickyOrderSummaryProps> = ({
           </Text>
         )}
       </Stack>
+      {selectedMode ? (
+        <div className={styles.summaryActionArea}>
+          {selectedMode !== "subscription" ? (
+            <div className={styles.summaryTotal}>
+              <Text as="span" className={styles.summaryTotalLabel} variant="caption" tone="inherit">
+                {strings.summary.variableEstimate}
+              </Text>
+              <Text as="strong" className={styles.summaryTotalValue} variant="h3" tone="inherit">
+                {formatMoney(orderEstimateTotal)}
+              </Text>
+            </div>
+          ) : null}
+          <Button appearance="soft" className={styles.summaryPrimaryAction} size="md" tone="primary" onClick={onNextStep}>
+            {currentStep === "montagem"
+              ? strings.summary.nextStep
+              : currentStep === "entrega"
+                ? strings.summary.paymentNextStep
+                : strings.summary.finishStep}
+          </Button>
+        </div>
+      ) : null}
     </Surface>
   );
 };

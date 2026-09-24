@@ -50,7 +50,6 @@
 }
 
 .brandName {
-  color: var(--theme--color-accent);
   text-align: center;
 }
 
@@ -75,7 +74,7 @@
   --ui-surface-radius: var(--theme--radius-xl);
 }
 
-.formPanelFlat {
+.formPanel.formPanelFlat {
   --ui-surface-bg: transparent;
   --ui-surface-border: transparent;
   --ui-surface-padding-x: 0;
@@ -170,12 +169,9 @@
   max-width: var(--semicomposed--confirmation-modal--description-max-width);
 }
 
-.formMeta {
-  align-items: center;
+.forgotPassword {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--theme--spacing-spaceSm);
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .forgotButton {
@@ -190,14 +186,19 @@
 
 .providers {
   display: grid;
-  gap: var(--theme--spacing-spaceSm);
+  gap: var(--semicomposed--access-shell--provider-gap);
+  margin-top: var(--semicomposed--formatted-input--gap);
 }
 
 .providerDivider {
   align-items: center;
-  display: grid;
+  display: flex;
   gap: var(--theme--spacing-spaceSm);
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.providerDividerLine {
+  border-top: var(--semicomposed--access-shell--provider-divider-border);
+  flex: 1;
 }
 
 .providerDividerLabel {
@@ -207,6 +208,14 @@
 
 .providerButton {
   width: 100%;
+}
+
+.googleProviderIcon {
+  color: var(--semicomposed--access-shell--provider-google-color);
+}
+
+.appleProviderIcon {
+  color: var(--semicomposed--access-shell--provider-apple-color);
 }
 
 .providerButtons {

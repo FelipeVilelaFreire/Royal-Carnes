@@ -9,6 +9,7 @@ from apps.core.tenant import get_request_organization
 from apps.customers.models import Address, Customer
 from apps.organizations.models import OrganizationSettings
 from apps.subscriptions.models import Subscription, SubscriptionCycle
+from apps.boxes.services import BoxValidationError, create_checkout_royal_box_order
 
 from .models import OrderKindDefinition
 from .selectors import (
@@ -21,6 +22,7 @@ from .selectors import (
 from .serializers import (
     AdminOrderCreateSerializer,
     OrderCreateSerializer,
+    RoyalBoxCheckoutSerializer,
     OrderKindSerializer,
     OrderSerializer,
     OrderStatusSerializer,
@@ -118,6 +120,34 @@ def my_order_detail(request, order_id):
     if order.customer_id != customer.id:
         return Response({"code": "order_not_found"}, status=status.HTTP_404_NOT_FOUND)
     return Response(OrderSerializer(order).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def my_royal_box_order(request):
+    organization = get_request_organization(request)
+    customer = Customer.objects.filter(organization=organization, user=request.user).first()
+    if customer is None:
+        return Response({"code": "customer_not_found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = RoyalBoxCheckoutSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    try:
+        address = Address.objects.get(organization=organization, customer=customer, id=data["address_id"])
+        order = create_checkout_royal_box_order(
+            organization=organization,
+            customer=customer,
+            address=address,
+            monthly_day=data["recurrence_day"],
+            items=data["items"],
+            actor=request.user,
+        )
+    except ObjectDoesNotExist:
+        return Response({"code": "order_reference_not_found"}, status=status.HTTP_400_BAD_REQUEST)
+    except (BoxValidationError, OrderValidationError) as error:
+        return Response({"code": error.code, "detail": error.detail}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["GET", "POST"])

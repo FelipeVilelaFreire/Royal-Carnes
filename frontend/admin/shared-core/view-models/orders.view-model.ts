@@ -9,29 +9,52 @@ import type {
   AdminDeliveryView,
 } from "../contracts/deliveries.contract";
 import type { AdminPaymentView } from "../contracts/payments.contract";
+import { formatAdminDate, formatAdminDateTime } from "../formatters/date-time.formatter";
 import { createAdminPaymentRowViewModel } from "./payments.view-model";
 
 export interface AdminOrderRowViewModel {
   id: string | number;
+  customerId: string | number;
   code: string;
   customerName: string;
+  addressLabel: string;
+  subscriptionCycleWindow: string;
   kindKey: string;
   kindLabel: string;
+  workflowLabel: string;
   recurrenceLabel: string;
   deliveryStatusLabel: string;
   deliveryCode: string;
+  deliveryDeadline: string;
+  deliveryDeadlineSortValue: string;
+  deliveryPromiseState: string;
+  deliveryPromisePriority: number;
+  deliveryPromiseStatusLabelKey: string;
+  deliveryPromiseStatusTone: "danger" | "neutral" | "success" | "warning";
+  deliveryBusinessDays: number | null;
   paymentStatusLabelKey: string;
   paymentReference: string;
   subscriptionCycleLabel: string;
   subscriptionCycleStatus: string;
+  subscriptionCycleStatusLabelKey: string;
   subscriptionId: string | number | null;
   subscriptionCycleId: string | number | null;
+  boxCycleId: string | number | null;
+  boxCycleLabel: string;
+  boxCycleScheduledFor: string;
+  boxCycleStatus: string;
+  boxTemplateName: string;
+  boxOrderCreationPolicy: string;
+  boxOrderCreationPolicyLabelKey: string;
+  boxRecurrenceDay: string;
+  boxCycleStatusLabelKey: string;
   statusKey: string;
   statusLabel: string;
   statusLabelKey: string;
   statusColor?: string;
   statusTone?: "danger" | "neutral" | "success" | "warning";
   totalLabel: string;
+  totalCents: number;
   totalFormatted: string;
   summary: string;
   itemCount: number;
@@ -45,8 +68,14 @@ export interface AdminOrderRowViewModel {
     id: string | number;
     code: string;
     statusLabel: string;
+    statusTone?: "danger" | "neutral" | "primary" | "success" | "warning";
     address: string;
     confirmationCode: string;
+    promisedDeliveryStartsOn: string;
+    promisedDeliveryByOn: string;
+    deliveryPromiseStatusLabelKey: string;
+    deliveryPromiseStatusTone: "danger" | "neutral" | "success" | "warning";
+    deliveryBusinessDays: number | null;
     notes: string;
   }>;
   payments: Array<{
@@ -105,7 +134,10 @@ function resolveStatusLabel(config: AdminOrderConfigView | null, statusKey: stri
   return config?.statuses.find((status) => status.key === statusKey)?.label || statusKey;
 }
 
-function resolveStatusPresentation(config: AdminOrderConfigView | null, statusKey: string) {
+function resolveStatusPresentation(
+  config: AdminOrderConfigView | null,
+  statusKey: string,
+): Pick<AdminOrderRowViewModel, "statusColor" | "statusTone"> {
   const metadata = config?.statuses.find((status) => status.key === statusKey)?.metadata;
   const presentation = metadata?.ui;
   if (!presentation || typeof presentation !== "object") return {};
@@ -125,6 +157,47 @@ function resolveDeliveryStatusLabel(
   statusKey: string,
 ): string {
   return config?.statuses.find((status) => status.key === statusKey)?.label || statusKey;
+}
+
+function resolveDeliveryStatusPresentation(
+  config: AdminDeliveryConfigView | null,
+  statusKey: string,
+): { statusColor?: string; statusTone?: "danger" | "neutral" | "primary" | "success" | "warning" } {
+  const presentation = config?.statuses.find((status) => status.key === statusKey)?.metadata?.ui;
+  if (!presentation || typeof presentation !== "object") return {};
+  const { statusColor, statusTone } = presentation as Record<string, unknown>;
+  return {
+    statusColor: typeof statusColor === "string" ? statusColor : undefined,
+    statusTone: statusTone === "danger" || statusTone === "neutral" || statusTone === "primary" || statusTone === "success" || statusTone === "warning"
+      ? statusTone
+      : undefined,
+  };
+}
+
+function resolveDeliveryPromisePresentation(state: string) {
+  const toneByState = {
+    approaching: "warning",
+    closed: "neutral",
+    due_today: "warning",
+    fulfilled: "success",
+    on_track: "success",
+    overdue: "danger",
+    untracked: "neutral",
+  } as const;
+  const priorityByState: Record<string, number> = {
+    overdue: 0,
+    due_today: 1,
+    approaching: 2,
+    on_track: 3,
+    untracked: 4,
+    fulfilled: 5,
+    closed: 6,
+  };
+  return {
+    labelKey: `pedidos.deliveryPromise.states.${state}`,
+    tone: toneByState[state as keyof typeof toneByState] || "neutral",
+    priority: priorityByState[state] ?? 4,
+  };
 }
 
 function formatAddressSnapshot(snapshot: Record<string, unknown>): string {
@@ -155,24 +228,49 @@ export function createAdminOrderRowViewModel(
   const primaryDelivery = relatedDeliveries[0] || null;
   const primaryPayment = relatedPayments[0] || null;
   const paymentRow = primaryPayment ? createAdminPaymentRowViewModel(primaryPayment) : null;
-  const isSubscriptionCycle = Boolean(order.subscriptionId || order.subscriptionCycleId);
+  const deliveryPromise = primaryDelivery?.deliveryPromiseStatus || { state: "untracked", remainingBusinessDays: null };
+  const deliveryPromisePresentation = resolveDeliveryPromisePresentation(deliveryPromise.state);
+  const isSubscriptionCycle = order.kindKey === "subscription-cycle" && Boolean(order.subscriptionId || order.subscriptionCycleId);
+  const isRoyalBox = order.kindKey === "royal-box";
+  const isBoxCycle = Boolean(order.boxCycleId);
   const subscriptionCycleLabel = order.subscriptionCycleNumber
     ? String(order.subscriptionCycleNumber)
     : "";
   const recurrenceLabel = isSubscriptionCycle
     ? [order.subscriptionPlanName, subscriptionCycleLabel].filter(Boolean).join(" - ")
-    : "";
+    : isRoyalBox
+      ? [order.boxTemplateName, order.boxCycleKey].filter(Boolean).join(" - ")
+      : "";
   const totalLabel = formatMoney(order.totalCents, order.currency);
   const statusPresentation = resolveStatusPresentation(config, order.statusKey);
+  const kindLabel = resolveKindLabel(config, order.kindKey);
+  const workflowLabel = isSubscriptionCycle
+    ? order.subscriptionPlanName || kindLabel
+    : kindLabel;
 
   return {
     id: order.id,
+    customerId: order.customerId,
     code: order.code,
     customerName: order.customerName,
+    addressLabel: order.addressLabel || "",
+    subscriptionCycleWindow: isSubscriptionCycle ? [formatAdminDateTime(order.subscriptionCycleStartsAt), formatAdminDateTime(order.subscriptionCycleEndsAt)].filter(Boolean).join(" - ") : "",
     kindKey: order.kindKey,
-    kindLabel: resolveKindLabel(config, order.kindKey),
+    kindLabel,
+    workflowLabel,
     recurrenceLabel,
     deliveryCode: primaryDelivery?.code || "",
+    deliveryDeadline: primaryDelivery?.promisedDeliveryByOn
+      ? formatAdminDate(primaryDelivery.promisedDeliveryByOn)
+      : "",
+    deliveryDeadlineSortValue: primaryDelivery?.promisedDeliveryByOn || "",
+    deliveryPromiseState: deliveryPromise.state,
+    deliveryPromisePriority: deliveryPromisePresentation.priority,
+    deliveryPromiseStatusLabelKey: deliveryPromisePresentation.labelKey,
+    deliveryPromiseStatusTone: deliveryPromisePresentation.tone,
+    deliveryBusinessDays: deliveryPromise.remainingBusinessDays === null
+      ? null
+      : Math.abs(deliveryPromise.remainingBusinessDays),
     deliveryStatusLabel: primaryDelivery
       ? resolveDeliveryStatusLabel(deliveryConfig, primaryDelivery.statusKey)
       : "",
@@ -180,13 +278,28 @@ export function createAdminOrderRowViewModel(
     paymentStatusLabelKey: paymentRow?.statusLabelKey || "",
     subscriptionCycleLabel,
     subscriptionCycleStatus: order.subscriptionCycleStatus || "",
+    subscriptionCycleStatusLabelKey: order.subscriptionCycleStatus ? `pedidos.subscriptionCycleStatuses.${order.subscriptionCycleStatus}` : "",
     subscriptionId: order.subscriptionId ?? null,
     subscriptionCycleId: order.subscriptionCycleId ?? null,
+    boxCycleId: order.boxCycleId ?? null,
+    boxCycleLabel: order.boxCycleKey || "",
+    boxCycleScheduledFor: formatAdminDateTime(order.boxCycleScheduledFor),
+    boxCycleStatus: order.boxCycleStatus || "",
+    boxCycleStatusLabelKey: order.boxCycleStatus ? `pedidos.boxCycleStatuses.${order.boxCycleStatus}` : "",
+    boxTemplateName: order.boxTemplateName || "",
+    boxOrderCreationPolicy: order.boxOrderCreationPolicy || "",
+    boxOrderCreationPolicyLabelKey: order.boxOrderCreationPolicy ? `pedidos.boxOrderCreationPolicies.${order.boxOrderCreationPolicy}` : "",
+    boxRecurrenceDay: isRoyalBox && typeof order.boxRecurrenceDay === "number"
+      ? String(order.boxRecurrenceDay)
+      : isRoyalBox
+        ? "-"
+        : "",
     statusKey: order.statusKey,
     statusLabel: resolveStatusLabel(config, order.statusKey),
     statusLabelKey: `common.status${order.statusKey.charAt(0).toUpperCase()}${order.statusKey.slice(1)}`,
     ...statusPresentation,
     totalLabel,
+    totalCents: order.totalCents,
     totalFormatted: totalLabel,
     summary: order.items.map((item) => `${item.nameSnapshot} x ${item.quantity}`).join(", "),
     itemCount: order.items.length,
@@ -197,14 +310,24 @@ export function createAdminOrderRowViewModel(
       totalFormatted: formatMoney(item.totalCents, order.currency),
       unitPriceFormatted: formatMoney(item.unitPriceCents, order.currency),
     })),
-    deliveries: relatedDeliveries.map((delivery) => ({
-      id: delivery.id,
-      code: delivery.code,
-      statusLabel: resolveDeliveryStatusLabel(deliveryConfig, delivery.statusKey),
-      address: formatAddressSnapshot(delivery.addressSnapshot),
-      confirmationCode: delivery.confirmationCode,
-      notes: delivery.notes,
-    })),
+    deliveries: relatedDeliveries.map((delivery) => {
+      const promise = delivery.deliveryPromiseStatus || { state: "untracked", remainingBusinessDays: null };
+      const presentation = resolveDeliveryPromisePresentation(promise.state);
+      return {
+        id: delivery.id,
+        code: delivery.code,
+        statusLabel: resolveDeliveryStatusLabel(deliveryConfig, delivery.statusKey),
+        ...resolveDeliveryStatusPresentation(deliveryConfig, delivery.statusKey),
+        address: formatAddressSnapshot(delivery.addressSnapshot),
+        confirmationCode: delivery.confirmationCode,
+        promisedDeliveryStartsOn: formatAdminDate(delivery.promisedDeliveryStartsOn),
+        promisedDeliveryByOn: formatAdminDate(delivery.promisedDeliveryByOn),
+        deliveryPromiseStatusLabelKey: presentation.labelKey,
+        deliveryPromiseStatusTone: presentation.tone,
+        deliveryBusinessDays: promise.remainingBusinessDays === null ? null : Math.abs(promise.remainingBusinessDays),
+        notes: delivery.notes,
+      };
+    }),
     payments: relatedPayments.map((payment) => {
       const row = createAdminPaymentRowViewModel(payment);
       return {
@@ -216,8 +339,11 @@ export function createAdminOrderRowViewModel(
         paidAt: row.paidAt,
       };
     }),
-    statusHistory: order.statusHistory,
-    createdAt: order.createdAt,
+    statusHistory: order.statusHistory.map((entry) => ({
+      ...entry,
+      createdAt: formatAdminDateTime(entry.createdAt),
+    })),
+    createdAt: formatAdminDateTime(order.createdAt),
   };
 }
 

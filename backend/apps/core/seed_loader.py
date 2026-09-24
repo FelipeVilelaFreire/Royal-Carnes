@@ -59,7 +59,8 @@ from apps.orders.services import (
 from apps.deliveries.models import Delivery, DeliveryStatusDefinition
 from apps.deliveries.services import (
     create_delivery_for_order,
-    transition_delivery_status,
+    synchronize_delivery_status_from_order,
+    upsert_delivery_promise_policy,
     upsert_delivery_status,
 )
 from apps.payments.models import Payment
@@ -155,6 +156,7 @@ class BackendSeedApplier:
         self.order_statuses_by_key: dict[str, OrderStatusDefinition] = {}
         self.deliveries_by_key: dict[str, Delivery] = {}
         self.delivery_statuses_by_key: dict[str, DeliveryStatusDefinition] = {}
+        self.delivery_promise_policies_by_key = {}
         self.payments_by_key: dict[str, Payment] = {}
 
     def apply(self) -> list[str]:
@@ -168,6 +170,12 @@ class BackendSeedApplier:
             for module in self.manifest.modules:
                 if module.kit == "organizations":
                     self.apply_organizations(module.data)
+            for module in self.manifest.modules:
+                if module.kit == "deliveries":
+                    self.apply_delivery_promise_policies(module.data)
+            for module in self.manifest.modules:
+                if module.kit == "organizations":
+                    continue
                 elif module.kit == "auth-users":
                     self.apply_auth_users(module.data)
                 elif module.kit == "customers":
@@ -269,6 +277,7 @@ class BackendSeedApplier:
                 description=collection_data.get("description", ""),
                 image_url=collection_data.get("imageUrl", ""),
                 image_alt=collection_data.get("imageAlt", collection_data["name"]),
+                sort_order=collection_data.get("sortOrder", 0),
             )
 
         for category_data in data.get("categories", []):
@@ -378,6 +387,15 @@ class BackendSeedApplier:
                             amount_cents=variant_price_cents,
                             currency=organization.currency,
                         )
+        if data.get("reconcileCategories"):
+            seeded_category_keys = set(self.categories_by_key)
+            stale_categories = Category.objects.filter(organization=organization).exclude(
+                key__in=seeded_category_keys,
+            )
+            for category in stale_categories:
+                category.is_active = False
+                category.save(update_fields=["is_active", "updated_at"])
+                category.soft_delete()
         self.summary.append(f"applied catalog: products={len(data.get('products', []))}")
 
     def apply_subscriptions(self, data: dict[str, Any]) -> None:
@@ -388,9 +406,12 @@ class BackendSeedApplier:
                 key=plan_data["key"],
                 name=plan_data["name"],
                 description=plan_data.get("description", ""),
+                accent_color=plan_data.get("accentColor", "#FFC665"),
                 status=plan_data.get("status", Plan.Status.ACTIVE),
                 billing_interval=plan_data.get("billingInterval", Plan.BillingInterval.MONTH),
                 trial_days=plan_data.get("trialDays", 0),
+                delivery_min_business_days=plan_data.get("deliveryMinBusinessDays", 3),
+                delivery_max_business_days=plan_data.get("deliveryMaxBusinessDays", 8),
                 sort_order=plan_data.get("sortOrder", sort_order),
             )
             self.plans_by_key[plan.key] = plan
@@ -649,22 +670,40 @@ class BackendSeedApplier:
             delivery.confirmation_code = delivery_data.get("confirmationCode", delivery.confirmation_code)
             delivery.notes = delivery_data.get("notes", delivery.notes)
             delivery.save(update_fields=["metadata", "confirmation_code", "notes", "updated_at"])
-            status_path = delivery_data.get("statusPath")
-            if status_path is None and delivery_data.get("statusKey"):
-                status_path = [delivery_data["statusKey"]]
-            if delivery.status_key in (status_path or []):
-                status_path = status_path[status_path.index(delivery.status_key) + 1:]
-            for target_status_key in status_path or []:
-                if target_status_key == delivery.status_key:
-                    continue
-                transition_delivery_status(
-                    organization=organization,
-                    delivery=delivery,
-                    to_status_key=target_status_key,
-                    note="Seed status",
-                )
+            synchronize_delivery_status_from_order(
+                organization=organization,
+                order=order,
+                note="Seed order status",
+            )
             self.deliveries_by_key[delivery_data["key"]] = delivery
+        for delivery in Delivery.objects.select_related("order").filter(organization=organization):
+            synchronize_delivery_status_from_order(
+                organization=organization,
+                order=delivery.order,
+                note="Seed order status",
+            )
+        active_status_keys = set(self.delivery_statuses_by_key)
+        DeliveryStatusDefinition.objects.filter(organization=organization).exclude(key__in=active_status_keys).delete()
         self.summary.append(f"applied deliveries: deliveries={len(data.get('deliveries', []))}")
+
+    def apply_delivery_promise_policies(self, data: dict[str, Any]) -> None:
+        organization = self.require_organization()
+        for sort_order, policy_data in enumerate(data.get("promisePolicies", [])):
+            policy = upsert_delivery_promise_policy(
+                organization=organization,
+                key=policy_data["key"],
+                name=policy_data["name"],
+                min_business_days=policy_data["minBusinessDays"],
+                max_business_days=policy_data["maxBusinessDays"],
+                approaching_business_days=policy_data.get("approachingBusinessDays", 2),
+                order_kind_keys=policy_data.get("orderKindKeys", []),
+                subscription_plan_keys=policy_data.get("subscriptionPlanKeys", []),
+                is_default=policy_data.get("isDefault", False),
+                is_active=policy_data.get("isActive", True),
+                sort_order=policy_data.get("sortOrder", sort_order),
+            )
+            self.delivery_promise_policies_by_key[policy.key] = policy
+        self.summary.append(f"applied delivery promise policies: policies={len(data.get('promisePolicies', []))}")
 
     def apply_payments(self, data: dict[str, Any]) -> None:
         organization = self.require_organization()

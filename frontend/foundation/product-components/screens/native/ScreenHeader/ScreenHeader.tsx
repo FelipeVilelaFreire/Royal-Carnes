@@ -8,10 +8,12 @@ import {
   normalizeScreenHeaderScrollProgress,
   shouldRenderScreenHeaderDescription,
   type ScreenHeaderContent,
+  type ScreenHeaderAlign,
   type ScreenHeaderMobileMode,
 } from "../../shared";
 
 export interface ScreenHeaderProps extends ScreenHeaderContent {
+  align?: ScreenHeaderAlign;
   collapsed?: boolean;
   mobileMode?: ScreenHeaderMobileMode;
   scrollProgress?: number;
@@ -19,6 +21,7 @@ export interface ScreenHeaderProps extends ScreenHeaderContent {
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
+  align = "start",
   collapsed = false,
   description,
   eyebrow,
@@ -64,16 +67,19 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
       overflow: "hidden" as const,
     }
     : undefined;
+  const contentStyle = align === "center"
+    ? { alignItems: "center", textAlign: "center" }
+    : undefined;
 
   return (
     <Surface appearance={resolvedMobileMode === "collapsible" ? "soft" : "transparent"} style={headerStyle}>
-      <Stack gap="sm">
-        {eyebrow && resolvedMobileMode === "full" ? <Text tone="primary" variant="caption" weight="bold">{eyebrow}</Text> : null}
-        <Text style={titleStyle} variant="h2" weight="bold">
+      <Stack gap="sm" style={contentStyle}>
+        {eyebrow && resolvedMobileMode === "full" ? <Text style={contentStyle} tone="primary" variant="caption" weight="bold">{eyebrow}</Text> : null}
+        <Text style={{ ...titleStyle, ...contentStyle }} variant="h2" weight="bold">
           {resolveScreenHeaderMobileTitle({ mobileTitle, title })}
         </Text>
         {description && shouldRenderScreenHeaderDescription(resolvedMobileMode) ? (
-          <Text style={descriptionStyle} tone="muted">{description}</Text>
+          <Text style={{ ...descriptionStyle, ...contentStyle }} tone="muted">{description}</Text>
         ) : null}
       </Stack>
     </Surface>

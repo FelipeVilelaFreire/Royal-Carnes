@@ -11,14 +11,14 @@ export const categoriasConfig = {
     subtitleKey: "categorias.subtitle",
     actionLabelKey: "categorias.ctaAdd",
     searchPlaceholderKey: "categorias.searchPlaceholder",
+    tree: { nodeKey: "key", parentKey: "parentKey" },
     columns: [
-      { key: "hierarchyLabel", labelKey: "categorias.tableHeaders.hierarchy" },
-      { key: "name", labelKey: "categorias.tableHeaders.name" },
-      { key: "parentName", labelKey: "categorias.tableHeaders.parent" },
-      { key: "sortOrder", labelKey: "categorias.tableHeaders.sortOrder" },
-      { key: "statusLabelKey", labelKey: "categorias.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" }
+      { key: "name", labelKey: "categorias.tableHeaders.name", presentation: "tree", sortable: false },
+      { key: "sortOrder", labelKey: "categorias.tableHeaders.sortOrder", sortable: false },
+      { key: "statusLabelKey", labelKey: "categorias.tableHeaders.status", sortable: false, valueType: "translationKey", statusToneKey: "statusTone" }
     ],
     filters: [
+      { key: "parentKey", labelKey: "categorias.fields.parent", source: "categorias" },
       {
         key: "isActive",
         labelKey: "categorias.filters.status",
@@ -72,6 +72,36 @@ export const categoriasConfig = {
             { key: "childCategoriesSummary", labelKey: "categorias.fields.children" }
           ]
         }]
+      },
+      {
+        id: "products",
+        labelKey: "categorias.detail.tabs.products",
+        emptyKey: "categorias.detail.emptyProducts",
+        sections: [{
+          key: "products",
+          type: "fields",
+          iconIntent: "catalog",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          fields: [{
+            key: "categoryProductKeys",
+            labelKey: "categorias.detail.tabs.products",
+            display: { key: "products", type: "lineItems" },
+            edit: {
+              type: "multiSelect",
+              source: "produtos",
+              searchable: true,
+              optionPresentation: "media",
+              searchPlaceholderKey: "categorias.detail.searchProductsPlaceholder",
+              searchEmptyKey: "categorias.detail.emptyProductSearch",
+            },
+            columns: [
+              { key: "name", labelKey: "produtos.tableHeaders.name", type: "text", presentation: "media" },
+              { key: "categoryLabel", labelKey: "produtos.tableHeaders.category", type: "text" },
+              { key: "unit", labelKey: "produtos.tableHeaders.unit", type: "text" },
+              { key: "priceFormatted", labelKey: "produtos.tableHeaders.price", type: "text", align: "end" },
+            ],
+          }],
+        }],
       }
     ]
   },

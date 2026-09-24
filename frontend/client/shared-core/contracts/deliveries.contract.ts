@@ -60,6 +60,13 @@ export interface ClientDeliveryDto {
   address_id?: string | number | null;
   status_key: string;
   confirmation_code?: string;
+  promised_delivery_starts_on?: string | null;
+  promised_delivery_by_on?: string | null;
+  delivery_promise_snapshot?: Record<string, unknown>;
+  delivery_promise_status?: {
+    state: "approaching" | "closed" | "due_today" | "fulfilled" | "on_track" | "overdue" | "untracked";
+    remainingBusinessDays: number | null;
+  };
   address_snapshot?: Record<string, unknown>;
   notes?: string;
   metadata?: Record<string, unknown>;

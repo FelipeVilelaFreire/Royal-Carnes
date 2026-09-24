@@ -232,6 +232,25 @@ Responsabilidades:
 - formulario visual de produto;
 - estados de loading/erro/empty.
 
+### Loading do Catalogo
+
+O loading normal do catalogo preserva a composicao final e nao substitui a
+pagina por um empty state generico:
+
+```text
+CatalogoLoading
+  -> CatalogoCategoryRailSkeleton
+  -> CatalogoToolbarSkeleton
+  -> CatalogoProductGridSkeleton
+       -> ProductItemCardSkeleton
+            -> Foundation skeletons, inclusive ButtonSkeleton
+```
+
+Header e AppShell continuam reais, pois rota, navegacao e copy ja sao
+conhecidos. Categories e produtos usam skeleton enquanto o hook aguarda a API.
+Ao concluir, a tela escolhe dados reais, erro com retry ou vazio filtrado; ela
+nunca mantem skeleton para mascarar falha.
+
 Proibido na tela:
 
 - calcular preco;

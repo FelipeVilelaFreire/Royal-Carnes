@@ -1,6 +1,8 @@
 import React from "react";
 import { AssetPicker } from "@foundation/ui/web/AssetPicker";
+import { Badge } from "@foundation/ui/web/Badge";
 import { CurrencyInput } from "@foundation/ui/web/CurrencyInput";
+import { ColorField } from "@foundation/ui/web/Field";
 import { DropdownPicker } from "@foundation/ui/web/DropdownPicker";
 import { Stack } from "@foundation/ui/web/Layout";
 import { FormattedInput, formatFormattedInputValue } from "@foundation/ui/web/FormattedInput";
@@ -21,8 +23,10 @@ interface DetailContentCardProps {
   isEditing: boolean;
   onFieldChange?: (key: string, value: any) => void;
   onOpenRelatedRow?: (screenKey: string, row: Record<string, any>) => void;
+  onWorkflowStatusChange?: (statusKey: string) => void;
   t: AdminTranslate;
   viewModel: AdminStandardDetailViewModel;
+  workflowUpdating?: boolean;
 }
 
 function resolveDisplayValue(entry: DetailEntry, t: AdminTranslate): string {
@@ -39,18 +43,18 @@ function resolveEditableOptions(entry: DetailEntry) {
   if (!entry.transitionOnly) return options;
   const currentValue = String(entry.rawValue ?? "");
   const currentOption = options.find((option) => option.value === currentValue);
-  const allowedNextKeys = Array.isArray(currentOption?.meta?.allowedNextKeys)
-    ? currentOption.meta.allowedNextKeys.map(String)
-    : [];
+  const allowedNextKeys = currentOption?.meta?.allowedNextKeys;
+  if (!Array.isArray(allowedNextKeys)) return options;
   return options.map((option) => ({
     ...option,
-    disabled: option.value !== currentValue && !allowedNextKeys.includes(option.value),
+    disabled: option.value !== currentValue && !allowedNextKeys.map(String).includes(option.value),
   }));
 }
 
 function renderEditableValue(entry: DetailEntry, formValues: Record<string, any>, onFieldChange: DetailContentCardProps["onFieldChange"], t: AdminTranslate, disabled = false) {
   const editType = entry.editType || entry.type;
-  if (editType === "asset") return <AssetPicker cancelRemoveLabel={t("common.cancel")} chooseFileLabel={t("forms.assetChooseFile")} confirmRemoveDescription={t("forms.confirmRemoveImageDescription")} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveImageTitle")} disabled={disabled} dropzoneLabel={t("forms.assetDropzone")} onChange={(value) => onFieldChange?.(entry.key, value)} previewAlt={t(entry.labelKey, entry.key)} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={t("forms.assetRemove")} urlPlaceholder={t("forms.assetUrlPlaceholder")} value={formValues[entry.key] ?? entry.rawValue ?? ""} />;
+  if (editType === "asset") return <AssetPicker cancelRemoveLabel={t("common.cancel")} chooseFileLabel={t("forms.assetChooseFile")} confirmRemoveDescription={t("forms.confirmRemoveImageDescription")} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveImageTitle")} disabled={disabled} dropzoneLabel={t("forms.assetDropzone")} onChange={(value) => onFieldChange?.(entry.key, value)} previewAlt={t(entry.labelKey, entry.key)} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={t("forms.assetRemove")} replaceDropzoneLabel={t("forms.assetReplaceDropzone")} replaceHintLabel={t("forms.assetReplaceHint")} urlPlaceholder={t("forms.assetUrlPlaceholder")} value={formValues[entry.key] ?? entry.rawValue ?? ""} />;
+  if (editType === "color") return <ColorField disabled={disabled} onValueChange={(value) => onFieldChange?.(entry.key, value)} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
   if (editType === "lineItems") return <LineItemsEditor addLabel={t(entry.addLabelKey || "forms.addLineItem")} columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]} emptyLabel={t("forms.emptyLineItems")} hierarchy={entry.hierarchy} onChange={(value) => onFieldChange?.(entry.key, value)} readOnly={disabled} removeLabel={t("forms.removeLineItem")} t={t} value={Array.isArray(formValues[entry.key]) ? formValues[entry.key] : Array.isArray(entry.rawValue) ? entry.rawValue : []} />;
   if (editType === "multiSelect") return <MultiSelect cancelRemoveLabel={t("common.cancel")} confirmRemoveDescription={(option) => t("forms.confirmRemoveSelectedOptionDescription", "", { option })} confirmRemoveLabel={t("forms.confirmRemoveAction")} confirmRemoveTitle={t("forms.confirmRemoveSelectedOptionTitle")} disabled={disabled} emptyOptionLabel={t("forms.selectOption")} emptySearchLabel={entry.searchEmptyKey ? t(entry.searchEmptyKey) : undefined} onChange={(value) => onFieldChange?.(entry.key, value)} optionPresentation={entry.optionPresentation} options={(entry.options || []).map((option) => ({ description: typeof option.meta?.description === "string" ? option.meta.description : undefined, imageAlt: typeof option.meta?.imageAlt === "string" ? option.meta.imageAlt : undefined, imageSrc: typeof option.meta?.imageSrc === "string" ? option.meta.imageSrc : undefined, label: option.label || t(option.labelKey || "", option.value), value: option.value }))} removeModalCloseLabel={t("forms.closeConfirmation")} removeLabel={(option) => t("forms.removeSelectedOption", "", { option })} searchable={entry.searchable} searchPlaceholder={entry.searchPlaceholderKey ? t(entry.searchPlaceholderKey) : undefined} showSelectionIndicator={false} value={Array.isArray(formValues[entry.key]) ? formValues[entry.key].map(String) : Array.isArray(entry.rawValue) ? entry.rawValue.map(String) : []} />;
   if (editType === "select") return <DropdownPicker ariaLabel={t(entry.labelKey, entry.key)} disabled={disabled} emptySearchLabel={entry.searchEmptyKey ? t(entry.searchEmptyKey) : undefined} onChange={(value) => onFieldChange?.(entry.key, value)} optionPresentation={entry.optionPresentation} options={resolveEditableOptions(entry).map((option) => ({ description: typeof option.meta?.description === "string" ? option.meta.description : undefined, disabled: option.disabled, imageAlt: typeof option.meta?.imageAlt === "string" ? option.meta.imageAlt : undefined, imageSrc: typeof option.meta?.imageSrc === "string" ? option.meta.imageSrc : undefined, label: option.label || t(option.labelKey || "", option.value), value: option.value }))} searchable={entry.searchable} searchPlaceholder={entry.searchPlaceholderKey ? t(entry.searchPlaceholderKey) : undefined} showSelectionIndicator={false} value={String(formValues[entry.key] ?? entry.rawValue ?? "")} />;
@@ -65,14 +69,21 @@ function renderEditableValue(entry: DetailEntry, formValues: Record<string, any>
 
 function renderReadonlyValue(entry: DetailEntry, onFieldChange: DetailContentCardProps["onFieldChange"], onOpenRelatedRow: DetailContentCardProps["onOpenRelatedRow"], t: AdminTranslate, viewModel: AdminStandardDetailViewModel) {
   if (entry.type === "lineItems") return <LineItemsEditor addLabel={t(entry.addLabelKey || "forms.addLineItem")} columns={(entry.columns || []) as AdminStandardLineItemColumnViewModel[]} emptyLabel={t(viewModel.emptyKey || "forms.emptyLineItems")} hierarchy={entry.hierarchy} onChange={(value) => onFieldChange?.(entry.key, value)} onOpenRelatedRow={onOpenRelatedRow} readOnly removeLabel={t("forms.removeLineItem")} t={t} value={Array.isArray(entry.value) ? entry.value : []} />;
+  if (entry.type === "color") return <ColorField disabled value={String(entry.rawValue ?? "")} />;
   if (entry.type === "asset" && entry.value) return <img alt={viewModel.displayName} className={styles.assetPreview} src={entry.value} />;
   return resolveDisplayValue(entry, t);
 }
 
 function renderFieldValue(entry: DetailEntry, props: DetailContentCardProps) {
+  if (!props.isEditing && entry.transitionOnly && props.onWorkflowStatusChange) {
+    return <DropdownPicker ariaLabel={props.t(entry.labelKey, entry.key)} disabled={props.workflowUpdating} onChange={props.onWorkflowStatusChange} options={resolveEditableOptions(entry).map((option) => ({ disabled: option.disabled, label: option.label || props.t(option.labelKey || "", option.value), value: option.value }))} showSelectionIndicator={false} value={String(entry.rawValue ?? "")} />;
+  }
   const value = props.isEditing
     ? renderEditableValue(entry, props.formValues, props.onFieldChange, props.t, !entry.editable)
     : renderReadonlyValue(entry, props.onFieldChange, props.onOpenRelatedRow, props.t, props.viewModel);
+  if (!props.isEditing && entry.statusTone && typeof value === "string") {
+    return <Badge appearance="soft" indicator tone={entry.statusTone}>{value}</Badge>;
+  }
   return typeof value === "string" ? <Text as="span" className={styles.detailFieldValue} tone="default" variant="body" weight="semibold">{value}</Text> : value;
 }
 

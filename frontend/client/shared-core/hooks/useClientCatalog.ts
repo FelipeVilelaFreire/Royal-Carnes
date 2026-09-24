@@ -33,7 +33,7 @@ export function useClientCatalog(options: UseClientCatalogOptions = {}) {
     options.initialSnapshot || emptySnapshot,
   );
   const [query, setQuery] = useState<ClientCatalogQuery>(options.initialQuery || {});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(() => !options.initialSnapshot);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
 
   const load = useCallback(async () => {

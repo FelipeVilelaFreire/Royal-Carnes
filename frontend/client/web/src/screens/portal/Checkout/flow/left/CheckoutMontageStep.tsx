@@ -22,11 +22,14 @@ interface CheckoutMontageStepProps {
   currentSubscriptionPlan: ClientCheckoutSubscriptionPlan;
   formatMeasure: (value: number, unit: string) => string;
   formatMoney: (value: number) => string;
+  hasCatalogError: boolean;
+  isCatalogLoading: boolean;
   onClearFilters: () => void;
   onDecreaseProduct: (productId: string) => void;
   onOpenFilters: () => void;
   onProductSelect: (product: ClientCheckoutProduct) => void;
   onQueryChange: (value: string) => void;
+  onReloadCatalog: () => Promise<unknown>;
   onSelectPlan: (planKey: ClientCheckoutSubscriptionTier) => void;
   query: string;
   selectedCategoryId: string;
@@ -49,11 +52,14 @@ export const CheckoutMontageStep: React.FC<CheckoutMontageStepProps> = ({
   currentSubscriptionPlan,
   formatMeasure,
   formatMoney,
+  hasCatalogError,
+  isCatalogLoading,
   onClearFilters,
   onDecreaseProduct,
   onOpenFilters,
   onProductSelect,
   onQueryChange,
+  onReloadCatalog,
   onSelectPlan,
   query,
   selectedCategoryId,
@@ -65,7 +71,7 @@ export const CheckoutMontageStep: React.FC<CheckoutMontageStepProps> = ({
   subscriptionCycleWeightUsed,
   tokens,
 }) => {
-  const cycleSummary = selectedMode === "subscription" ? (
+  const planSelector = selectedMode === "subscription" && !activeSubscription ? (
     <ActiveCycleSummary
       activeCycleUsage={activeCycleUsage}
       activeSubscription={activeSubscription}
@@ -87,12 +93,15 @@ export const CheckoutMontageStep: React.FC<CheckoutMontageStepProps> = ({
       canAddProduct={canAddProduct}
       categoryById={categoryById}
       formatMoney={formatMoney}
-      header={cycleSummary}
+      header={planSelector}
+      hasCatalogError={hasCatalogError}
+      isCatalogLoading={isCatalogLoading}
       onClearFilters={onClearFilters}
       onDecreaseProduct={onDecreaseProduct}
       onOpenFilters={onOpenFilters}
       onProductSelect={onProductSelect}
       onQueryChange={onQueryChange}
+      onReloadCatalog={onReloadCatalog}
       query={query}
       selectedCategoryId={selectedCategoryId}
       selectedMode={selectedMode}

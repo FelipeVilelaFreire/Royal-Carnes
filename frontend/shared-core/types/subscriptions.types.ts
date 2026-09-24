@@ -8,6 +8,7 @@ export type SubscriptionCycleItemId = SubscriptionEntityId;
 
 export type PlanKey = string;
 export type PlanEntitlementKey = string;
+export type PlanAccentColor = string;
 
 export type BillingInterval = "day" | "week" | "month" | "year";
 export type PlanStatus = "active" | "draft" | "archived";

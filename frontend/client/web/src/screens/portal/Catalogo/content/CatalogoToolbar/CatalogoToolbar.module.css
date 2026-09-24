@@ -1,15 +1,20 @@
 .toolbar {
   background: var(--theme--color-surface-container-low, var(--theme--color-surfaceContainerLow));
   border: 0;
-  border-radius: var(--theme--radius-xl);
+  border-radius: var(--theme--radius-2xl);
   display: grid;
   gap: var(--theme--spacing-spaceMd);
+  overflow: clip;
   padding: var(--theme--spacing-spaceSm);
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .searchField {
   min-width: 0;
+  width: 100%;
+}
+
+.searchSkeleton {
   width: 100%;
 }
 
@@ -28,6 +33,7 @@
 
 .metaControls {
   align-items: center;
+  flex-wrap: nowrap;
   gap: var(--theme--spacing-spaceSm);
   min-width: 0;
   width: auto;
@@ -41,6 +47,10 @@
   width: auto;
 }
 
+.sortSkeleton {
+  display: block;
+}
+
 .sortPicker > button {
   --ui-surface-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
   --ui-surface-border: transparent;
@@ -50,6 +60,9 @@
 
 .resultCount {
   color: var(--theme--color-text-muted, var(--theme--color-textMuted));
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  white-space: nowrap;
 }
 
 .resultNumber {
@@ -66,5 +79,13 @@
     align-items: center;
     gap: var(--theme--spacing-spaceXs);
     width: 100%;
+  }
+
+  .resultDesktop {
+    display: none;
+  }
+
+  .sortPicker > button {
+    --ui-button-padding-x: var(--theme--spacing-spaceSm);
   }
 }

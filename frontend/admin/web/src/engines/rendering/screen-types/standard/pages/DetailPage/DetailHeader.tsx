@@ -20,7 +20,8 @@ function resolveHeaderValue(entry: DetailHeaderEntry, t: AdminTranslate): string
   return entry.value;
 }
 
-function resolveStatusTone(value: unknown): "danger" | "neutral" | "primary" | "success" | "warning" {
+function resolveStatusTone(value: unknown, explicitTone?: DetailHeaderEntry["statusTone"]): "danger" | "neutral" | "primary" | "success" | "warning" {
+  if (explicitTone) return explicitTone;
   const status = String(value || "").toLowerCase();
   if (["archived", "blocked", "canceled", "cancelled", "inactive"].includes(status)) return "danger";
   if (["draft", "paused", "pending"].includes(status)) return "warning";
@@ -54,18 +55,17 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
   viewModel,
 }) => (
   <Inline align="center" className={styles.detailHeader} justify="between" wrap>
-    <Inline align="center" className={styles.identity} gap="md" wrap={false}>
-      <Button aria-label={t("common.back")} appearance="transparent" icon={<ArrowBackIcon aria-hidden="true" />} iconPosition="only" onClick={onBack} size="sm" tone="neutral">
+    <Inline align="center" className={styles.identity} gap="sm" wrap={false}>
+      <Button aria-label={t("common.back")} appearance="soft" className={styles.backButton} icon={<ArrowBackIcon aria-hidden="true" />} iconPosition="only" onClick={onBack} size="sm" tone="neutral">
         {t("common.back")}
       </Button>
 
       <AvatarCell image={image} name={viewModel.displayName} showName={false} size="lg" />
       <Stack className={styles.identityCopy} gap="2xs">
-        <Text as="h1" variant="h1">{viewModel.displayName}</Text>
         {viewModel.headerMeta.length || viewModel.headerStatus ? (
           <Inline className={styles.headerMeta} gap="sm" wrap>
             {viewModel.headerMeta.map((entry) => <Text as="span" key={entry.key} tone="muted" variant="caption">{resolveHeaderValue(entry, t)}</Text>)}
-            {viewModel.headerStatus ? <Badge appearance="soft" indicator tone={resolveStatusTone(viewModel.headerStatus.rawValue)}>{resolveHeaderValue(viewModel.headerStatus, t)}</Badge> : null}
+            {!isEditing && viewModel.headerStatus ? <Badge appearance="soft" indicator tone={resolveStatusTone(viewModel.headerStatus.rawValue, viewModel.headerStatus.statusTone)}>{resolveHeaderValue(viewModel.headerStatus, t)}</Badge> : null}
           </Inline>
         ) : null}
       </Stack>

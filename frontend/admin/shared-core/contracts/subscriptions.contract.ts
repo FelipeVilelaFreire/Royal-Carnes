@@ -42,9 +42,12 @@ export interface AdminPlanDto {
   key: string;
   name: string;
   description?: string | null;
+  accent_color?: string;
   status: "active" | "draft" | "archived";
   billing_interval: "day" | "week" | "month" | "year";
   trial_days?: number;
+  delivery_min_business_days?: number;
+  delivery_max_business_days?: number;
   sort_order?: number;
   prices?: AdminPlanPriceDto[];
   entitlements?: AdminPlanEntitlementDto[];
@@ -107,9 +110,12 @@ export interface AdminPlanFormInput {
   key: string;
   name: string;
   description?: string;
+  accentColor?: string;
   status?: "active" | "draft" | "archived";
   billingInterval?: "day" | "week" | "month" | "year";
   trialDays?: number;
+  deliveryMinBusinessDays?: number;
+  deliveryMaxBusinessDays?: number;
   sortOrder?: number;
   priceCents?: number;
   entitlements?: AdminPlanEntitlementFormInput[];
@@ -119,9 +125,12 @@ export interface AdminPlanCreateDto {
   key: string;
   name: string;
   description?: string;
+  accent_color?: string;
   status?: "active" | "draft" | "archived";
   billing_interval?: "day" | "week" | "month" | "year";
   trial_days?: number;
+  delivery_min_business_days?: number;
+  delivery_max_business_days?: number;
   sort_order?: number;
   price_cents?: number;
   entitlements?: Array<{

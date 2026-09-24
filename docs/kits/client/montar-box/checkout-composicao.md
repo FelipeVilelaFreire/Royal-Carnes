@@ -32,6 +32,15 @@ lateral e acompanha o checkout enquanto houver espaco de viewport. No Native,
 as mesmas regioes seguem em uma unica coluna; o resumo respeita o contrato do
 host e da BottomTabBar, sem sobreposicao local.
 
+O resumo lateral Web mostra a etapa por uma timeline compacta: circulos
+numerados conectados, com a trilha concluida ate a etapa atual. Ela consome
+somente `currentStep`; a navegacao e a guarda de autenticacao continuam nos
+callbacks do runtime.
+
+Na entrega Web, o formulario de novo endereco vem antes da grade de enderecos
+salvos quando solicitado. Essa ordem nao substitui a escolha do endereco ativo
+nem cria estado local para persistencia.
+
 ## Produto no configurador
 
 O Catalogo e o Checkout usam o mesmo `ProductItemCard`. Nao existe

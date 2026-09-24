@@ -109,6 +109,13 @@ function formatKg(value: number): string {
   return Number.isInteger(value) ? `${value}kg` : `${value.toFixed(1)}kg`;
 }
 
+function formatOrderDate(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? value
+    : new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(date);
+}
+
 function resolveMetadata<T>(order: ClientOrderView, key: string): T | undefined {
   return order.metadata?.[key] as T | undefined;
 }
@@ -183,7 +190,7 @@ export function createClientOrderRowViewModel(
   const title = resolveMetadata<string>(order, "title") || order.items.map((item) => item.nameSnapshot).join(", ") || order.code;
   const summary = resolveMetadata<string>(order, "summary") || order.notes;
   const imageUrl = resolveMetadata<string>(order, "imageUrl") || order.items.find((item) => item.imageUrl)?.imageUrl || "";
-  const createdAtLabel = resolveMetadata<string>(order, "createdAtLabel") || order.createdAt;
+  const createdAtLabel = resolveMetadata<string>(order, "createdAtLabel") || formatOrderDate(order.createdAt);
 
   return {
     id: order.id,
@@ -207,8 +214,10 @@ export function createClientOrderRowViewModel(
     items: order.items.map((item) => ({
       id: item.id,
       name: item.nameSnapshot,
-      quantityLabel: `${item.quantity} - ${String(item.metadata?.unitLabel || item.measurementUnitKey || "")}`.trim(),
-      categoryLabel: String(item.metadata?.category || item.sourceType || ""),
+      quantityLabel: item.weightGrams
+        ? `${item.quantity} · ${item.weightGrams / 1000} kg`
+        : `${item.quantity} · ${String(item.metadata?.unitLabel || item.measurementUnitKey || "")}`.trim(),
+      categoryLabel: String(item.metadata?.category || ""),
     })),
     timelineSteps: createTimelineSteps(order, config),
     cycleUsage: createCycleUsageViewModel(order),

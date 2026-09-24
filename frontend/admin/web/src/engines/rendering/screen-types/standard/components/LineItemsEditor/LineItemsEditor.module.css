@@ -157,6 +157,20 @@
   overflow-wrap: anywhere;
 }
 
+.detailRow {
+  cursor: pointer;
+}
+
+.detailRow:hover td,
+.detailRow:focus-visible td {
+  background: var(--theme--color-surface-container);
+}
+
+.detailRow:focus-visible {
+  outline: var(--theme--border-width-sm) solid var(--theme--color-primary);
+  outline-offset: calc(var(--theme--border-width-sm) * -1);
+}
+
 .hierarchy,
 .hierarchyChildren {
   display: grid;

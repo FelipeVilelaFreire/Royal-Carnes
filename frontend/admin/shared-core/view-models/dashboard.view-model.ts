@@ -1,4 +1,5 @@
 import type { AdminDashboardSummaryView } from "../contracts/dashboard.contract";
+import { formatAdminDateTime } from "../formatters/date-time.formatter";
 
 export type AdminDashboardWidgetKey = "mrr" | "subscribers" | "deliveries" | "retention";
 export type AdminDashboardMetricKey =
@@ -59,16 +60,6 @@ function formatMoney(amountCents: number, currency = "BRL"): string {
     currency,
     style: "currency",
   }).format(amountCents / 100);
-}
-
-function formatDate(value: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
 }
 
 function resolveMonthlyPriceCents(summary: AdminDashboardSummaryView): number {
@@ -241,7 +232,7 @@ export function createAdminDashboardViewModel(
       .slice(0, recentOrdersLimit)
       .map((order) => ({
         box: resolveOrderBox(summary, order.id) || resolveKindLabel(summary, order.kindKey),
-        date: formatDate(order.createdAt),
+        date: formatAdminDateTime(order.createdAt),
         id: order.code,
         member: order.customerName,
         plan: resolveOrderPlan(summary, order.subscriptionId) || resolveKindLabel(summary, order.kindKey),

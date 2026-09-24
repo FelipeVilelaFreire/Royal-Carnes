@@ -1,0 +1,7 @@
+.page { min-block-size: 100%; padding-block-end: var(--theme--spacing-space3xl); width: 100%; }
+.content, .pageHeader, .formCard, .form, .formSection, .fieldGrid, .field, .formActions { min-inline-size: 0; width: 100%; }
+.content { padding-block-start: var(--theme--spacing-spaceMd); }
+.pageHeader { border-block-end: var(--theme--border-width-sm) solid var(--theme--color-border); padding-block-end: var(--theme--spacing-spaceMd); }
+.formSection + .formSection { border-block-start: var(--theme--border-width-sm) solid var(--theme--color-border); padding-block-start: var(--theme--spacing-spaceMd); }
+.multilineField { min-block-size: var(--theme--dimensions-height-3xl); }
+.formActions { border-block-start: var(--theme--border-width-sm) solid var(--theme--color-border); justify-content: flex-end; padding-block-start: var(--theme--spacing-spaceMd); }

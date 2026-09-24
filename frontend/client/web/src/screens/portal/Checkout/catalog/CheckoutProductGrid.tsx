@@ -1,5 +1,5 @@
 import React from "react";
-import { ProductItemCard } from "@royalprime/product-components/ecommerce";
+import { ProductItemCard, ProductItemCardSkeleton } from "@royalprime/product-components/ecommerce";
 import type {
   ClientCheckoutProduct,
   ClientCheckoutProductCategory,
@@ -18,6 +18,20 @@ interface CheckoutProductGridProps {
   selectedProductQuantities: Record<string, number>;
   strings: any;
 }
+
+const productSkeletonItems = Array.from({ length: 6 }, (_, index) => index);
+
+export const CheckoutProductGridSkeleton: React.FC<Pick<CheckoutProductGridProps, "selectedMode">> = ({ selectedMode }) => (
+  <div aria-busy="true" className={styles.productGrid}>
+    {productSkeletonItems.map((index) => (
+      <ProductItemCardSkeleton
+        key={index}
+        preset="catalogo"
+        showPrice={selectedMode !== "subscription"}
+      />
+    ))}
+  </div>
+);
 
 /**
  * Checkout owns the product-selection rules; the visual product anatomy stays

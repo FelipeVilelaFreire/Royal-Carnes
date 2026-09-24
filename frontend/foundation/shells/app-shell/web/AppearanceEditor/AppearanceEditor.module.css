@@ -1,0 +1,55 @@
+.layout {
+  display: block;
+}
+
+.experiments {
+  display: grid;
+  gap: var(--theme--spacing-spaceLg);
+}
+
+.experimentGroup {
+  border-top: var(--theme--borders-hairline) solid var(--theme--color-border);
+  display: grid;
+  gap: var(--theme--spacing-spaceMd);
+  padding-top: var(--theme--spacing-spaceMd);
+}
+
+.experimentGroup:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.experimentGroupHeader {
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+}
+
+.experimentGroupHeader h2,
+.experimentGroupHeader p {
+  margin: 0;
+}
+
+.experimentGroupHeader h2 {
+  color: var(--theme--color-text);
+  font-size: var(--theme--typography-sizeLg);
+  font-weight: var(--theme--typography-bold);
+  line-height: var(--theme--typography-lineHeightLg);
+}
+
+.experimentGroupHeader p {
+  color: var(--theme--color-text-muted);
+  font-size: var(--theme--typography-sizeSm);
+  line-height: var(--theme--typography-lineHeightSm);
+}
+
+.experimentGrid {
+  display: grid;
+  gap: var(--theme--spacing-spaceSm);
+  grid-template-columns: repeat(auto-fit, minmax(var(--theme--dimensions-minWidth-3xl), 1fr));
+}
+
+.experimentButton {
+  justify-content: flex-start;
+  min-inline-size: 0;
+  text-align: start;
+}

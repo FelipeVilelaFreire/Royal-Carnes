@@ -5,6 +5,7 @@ import { Button } from "@foundation/ui/web/Button";
 import { Card } from "@foundation/ui/web/Card";
 import { Input } from "@foundation/ui/web/Input";
 import { Inline, Stack } from "@foundation/ui/web/Layout";
+import { Modal } from "@foundation/ui/web/Modal";
 import { Text } from "@foundation/ui/web/Text";
 import { CartIcon, CheckIcon, FlameIcon, TruckIcon, UserIcon } from "@foundation/ui/web/Icon/AppIcons";
 import type {
@@ -37,6 +38,21 @@ const statusClassName = (tone: string) => {
   return "";
 };
 
+const formatCpf = (value: string) => value
+  .replace(/\D/g, "")
+  .slice(0, 11)
+  .replace(/(\d{3})(\d)/, "$1.$2")
+  .replace(/(\d{3})(\d)/, "$1.$2")
+  .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+const formatBrazilPhone = (value: string) => {
+  const digits = value.replace(/\D/g, "").replace(/^55/, "").slice(0, 11);
+  if (!digits) return "";
+  if (digits.length <= 2) return `+55 (${digits}`;
+  if (digits.length <= 6) return `+55 (${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  return `+55 (${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+};
+
 export function AccountSectionHeader({
   description,
   title,
@@ -56,48 +72,32 @@ export function AccountSidebarNav({
   activeTab,
   items,
   onSelect,
-  strings,
-  viewModel,
 }: {
   activeTab: ClientCustomerTabKey;
   items: AccountTabItem[];
   onSelect: (tab: ClientCustomerTabKey) => void;
-  strings: MinhaContaStrings;
-  viewModel: ClientCustomerAccountViewModel;
 }) {
   return (
     <aside className={styles.sidebar}>
-      <Stack gap="lg">
-        <Card className={styles.highlightCard} size="sm">
-          <Stack gap="sm">
-            <Inline justify="between" wrap={false}>
-              <Text variant="caption" tone="text-muted">{strings.planLabel}</Text>
-              <AccountChip>{strings.badge}</AccountChip>
-            </Inline>
-            <Text weight="var(--theme--typography-bold)">{strings.planNamePrefix} {viewModel.activeSubscriptionLabel}</Text>
-            <Text variant="caption" tone="text-muted">{strings.format.labelValue.replace("{label}", strings.renewLabel).replace("{value}", viewModel.nextBillingLabel)}</Text>
-          </Stack>
-        </Card>
-        <nav>
-          <Inline className={styles.tabList} gap="xs">
-            {items.map((item) => {
-              const isActive = item.key === activeTab;
-              return (
-                <Button
-                  appearance="transparent"
-                  className={[styles.tabButton, isActive ? styles.tabButtonActive : ""].filter(Boolean).join(" ")}
-                  key={item.key}
-                  onClick={() => onSelect(item.key)}
-                  size="sm"
-                  tone="neutral"
-                >
-                  {item.label}
-                </Button>
-              );
-            })}
-          </Inline>
-        </nav>
-      </Stack>
+      <nav>
+        <Inline className={styles.tabList} gap="xs">
+          {items.map((item) => {
+            const isActive = item.key === activeTab;
+            return (
+              <Button
+                appearance="transparent"
+                className={[styles.tabButton, isActive ? styles.tabButtonActive : ""].filter(Boolean).join(" ")}
+                key={item.key}
+                onClick={() => onSelect(item.key)}
+                size="sm"
+                tone="neutral"
+              >
+                {item.label}
+              </Button>
+            );
+          })}
+        </Inline>
+      </nav>
     </aside>
   );
 }
@@ -112,17 +112,18 @@ export function AccountHeroSummary({
   return (
     <Card className={[styles.heroCard, styles.highlightCard].join(" ")} size="lg">
       <Stack gap="lg">
-        <Inline align="start" justify="between">
+        <Inline className={styles.heroIdentity} align="start" justify="between">
           <Inline align="center" gap="md">
             <AccountAvatar initials={viewModel.initials} />
             <Stack gap="xs">
-              <Text as="h2" variant="h1">{viewModel.customer.name}</Text>
+              <Text variant="caption" tone="text-muted">{strings.accountSummaryLabel}</Text>
+              <Text as="h2" variant="h1">{strings.title}</Text>
               <Text tone="text-muted">{strings.headerGreeting}</Text>
             </Stack>
           </Inline>
         </Inline>
         <div className={styles.statsGrid}>
-          <SummaryStat label={strings.labels.plan} value={`${strings.planNamePrefix} ${viewModel.activeSubscriptionLabel}`} />
+          <SummaryStat label={strings.labels.plan} value={viewModel.activeSubscriptionLabel} />
           <SummaryStat label={strings.renewLabel} value={viewModel.nextBillingLabel} />
           <SummaryStat label={strings.deliveryLabel} value={viewModel.nextDeliveryLabel} />
           <SummaryStat label={strings.memberSinceLabel} value={viewModel.customer.memberSince} />
@@ -168,10 +169,10 @@ function MetricCard({
   metric: ClientCustomerUsageMetric;
 }) {
   return (
-    <Card className={styles.nestedCard} size="sm">
-      <Stack gap="sm">
+    <Card className={[styles.nestedCard, styles.metricCard].join(" ")} size="xs">
+      <Stack gap="xs">
         <Text variant="caption" tone="text-muted">{metric.label}</Text>
-        <Text variant="h3">{metric.valueLabel}</Text>
+        <Text className={styles.metricValue} variant="h3">{metric.valueLabel}</Text>
         <AccountProgress value={metric.percent} />
       </Stack>
     </Card>
@@ -281,25 +282,32 @@ function PlanCard({
   valueLabel: string;
 }) {
   return (
-    <Card className={isCurrent ? styles.highlightCard : styles.nestedCard} size="sm" onClick={onSelect}>
-      <Stack gap="sm">
-        <Inline justify="between">
-          <Text variant="caption" tone="text">{strings.planNamePrefix} {plan.name}</Text>
+    <Card className={[styles.planCard, isCurrent ? styles.planCardCurrent : styles.nestedCard].join(" ")} size="sm" onClick={onSelect}>
+      <div className={styles.planCardContent}>
+        <Inline className={styles.planHeader} justify="between">
+          <Stack gap="2xs">
+            <Text className={styles.planEyebrow} variant="caption">{strings.labels.plan}</Text>
+            <Text as="h3" variant="h3">{plan.name}</Text>
+          </Stack>
           {isCurrent ? <AccountChip>{strings.states.current}</AccountChip> : null}
         </Inline>
-        <Text variant="h3">{strings.currencyPrefix} {valueLabel}</Text>
-        <Stack gap="xs">
+        <Stack className={styles.planIntro} gap="xs">
+          <Inline align="end" className={styles.planPriceRow} gap="2xs">
+            <Text className={styles.planPrice} variant="h2">{strings.currencyPrefix} {valueLabel}</Text>
+            <Text className={styles.planPricePeriod} variant="caption">{strings.labels.perMonth}</Text>
+          </Inline>
+          {plan.description ? <Text className={styles.planDescription} variant="caption" tone="text-muted">{plan.description}</Text> : null}
+        </Stack>
+        <div className={styles.planDivider} />
+        <Stack className={styles.planBenefits} gap="2xs">
           {plan.includedItems.map((item) => (
-            <Inline key={item.id} gap="xs" wrap={false}>
+            <Inline className={styles.planBenefit} gap="xs" key={item.id} wrap={false}>
               <CheckIcon size={14} />
-              <Stack gap="xs">
-                <Text variant="caption">{strings.format.includedItem.replace("{quantity}", item.quantityLabel).replace("{item}", item.name)}</Text>
-                {item.selectionLimit ? <Text variant="caption" tone="text-muted">{strings.format.selectionLimit.replace("{count}", String(item.selectionLimit))}</Text> : null}
-              </Stack>
+              <Text variant="caption">{strings.format.includedItem.replace("{quantity}", item.quantityLabel).replace("{item}", item.name)}</Text>
             </Inline>
           ))}
         </Stack>
-      </Stack>
+      </div>
     </Card>
   );
 }
@@ -321,15 +329,15 @@ export function ProfileFormPanel({
     <Card className={styles.panelCard}>
       <Stack gap="lg">
         <AccountSectionHeader title={strings.sections.personalTitle} description={strings.sections.personalDescription} />
-        <div className={styles.cardsGrid}>
-          <Input label={strings.labels.name} value={draft.name} onChange={(event) => onUpdate("name", event.target.value)} />
-          <Input label={strings.labels.email} value={draft.email} onChange={(event) => onUpdate("email", event.target.value)} />
-          <Input label={strings.labels.phone} value={draft.phone} onChange={(event) => onUpdate("phone", event.target.value)} />
-          <Input label={strings.labels.cpf} value={draft.cpf} onChange={(event) => onUpdate("cpf", event.target.value)} />
-          <Input label={strings.labels.birthdate} type="date" value={draft.birthdate} onChange={(event) => onUpdate("birthdate", event.target.value)} />
+        <div className={styles.profileFields}>
+          <Input autoComplete="name" className={styles.profileIdentityField} label={strings.labels.name} value={draft.name} onChange={(event) => onUpdate("name", event.target.value)} />
+          <Input autoComplete="email" label={strings.labels.email} type="email" value={draft.email} onChange={(event) => onUpdate("email", event.target.value)} />
+          <Input autoComplete="tel" inputMode="tel" label={strings.labels.phone} maxLength={19} value={formatBrazilPhone(draft.phone)} onChange={(event) => onUpdate("phone", formatBrazilPhone(event.target.value))} />
+          <Input inputMode="numeric" label={strings.labels.cpf} maxLength={14} value={formatCpf(draft.cpf)} onChange={(event) => onUpdate("cpf", formatCpf(event.target.value))} />
+          <Input className={styles.profileIdentityField} label={strings.labels.birthdate} type="date" value={draft.birthdate} onChange={(event) => onUpdate("birthdate", event.target.value)} />
           <Input label={strings.labels.preferredDoneness} value={draft.preferredDoneness} onChange={(event) => onUpdate("preferredDoneness", event.target.value)} />
         </div>
-        <Inline>
+        <Inline className={styles.profileActions}>
           <Button appearance="outline" tone="neutral" onClick={onSave}>{strings.actions.saveChanges}</Button>
           {saveState === "saved" ? (
             <Text className={styles.statusSuccess} weight="var(--theme--typography-semibold)">
@@ -345,11 +353,13 @@ export function ProfileFormPanel({
 export function AddressListPanel({
   addresses,
   onCreate,
+  onUpdate,
   onLookupPostalCode,
   strings,
 }: {
   addresses: ClientCustomerAddress[];
   onCreate: (input: ClientCustomerAddressCreateInput) => Promise<void>;
+  onUpdate: (addressId: string, input: ClientCustomerAddressCreateInput) => Promise<void>;
   onLookupPostalCode: (postalCode: string) => Promise<Pick<ClientCustomerAddressCreateInput, "street" | "district" | "city" | "state"> | null>;
   strings: MinhaContaStrings;
 }) {
@@ -367,6 +377,7 @@ export function AddressListPanel({
   };
   const [draft, setDraft] = React.useState(emptyDraft);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
+  const [editingAddressId, setEditingAddressId] = React.useState<string | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
   const [isSaved, setIsSaved] = React.useState(false);
   const [postalCodeState, setPostalCodeState] = React.useState<"idle" | "loading" | "notFound" | "error">("idle");
@@ -403,8 +414,10 @@ export function AddressListPanel({
   const save = async () => {
     setIsSaving(true);
     try {
-      await onCreate(draft);
+      if (editingAddressId) await onUpdate(editingAddressId, draft);
+      else await onCreate(draft);
       setDraft({ ...emptyDraft, isPrimary: false });
+      setEditingAddressId(null);
       setIsFormOpen(false);
       setIsSaved(true);
     } finally {
@@ -417,10 +430,10 @@ export function AddressListPanel({
       <Stack gap="lg">
         <Inline justify="between">
           <AccountSectionHeader title={strings.sections.addressesTitle} description={strings.sections.addressesDescription} />
-          <Button appearance="outline" tone="neutral" onClick={() => setIsFormOpen(true)}>{strings.actions.addAddress}</Button>
+          <Button appearance="outline" tone="neutral" onClick={() => { setEditingAddressId(null); setDraft(emptyDraft); setIsFormOpen(true); }}>{strings.actions.addAddress}</Button>
         </Inline>
         {isFormOpen ? (
-          <Card className={styles.nestedCard} size="sm">
+          <Modal closeLabel={strings.actions.closeModal} onClose={() => setIsFormOpen(false)} open title={strings.sections.addressesTitle} variant="auto">
             <Stack gap="md">
               <div className={styles.cardsGrid}>
                 <Input
@@ -448,7 +461,7 @@ export function AddressListPanel({
                 <Button appearance="transparent" disabled={isSaving} tone="neutral" onClick={() => setIsFormOpen(false)}>{strings.actions.closeModal}</Button>
               </Inline>
             </Stack>
-          </Card>
+          </Modal>
         ) : null}
         {isSaved ? <Text className={styles.statusSuccess} weight="var(--theme--typography-semibold)">{strings.feedback.addressSaved}</Text> : null}
         <div className={styles.cardsGrid}>
@@ -468,6 +481,7 @@ export function AddressListPanel({
                   <Text tone="text-muted">{address.neighborhoodLine}</Text>
                   <Text variant="caption" tone="text-muted">{address.zipCode}{address.phone ? ` | ${address.phone}` : ""}</Text>
                 </Stack>
+                <Button appearance="transparent" size="sm" tone="neutral" onClick={() => { setEditingAddressId(address.id); setDraft({ label: address.label, recipientName: address.recipientName, street: address.street, number: address.number, complement: address.complement, district: address.district, city: address.city, state: address.state, zipCode: address.zipCode, isPrimary: Boolean(address.isPrimary) }); setIsFormOpen(true); }}>{strings.actions.edit}</Button>
               </Stack>
             </Card>
           ))}
@@ -479,40 +493,13 @@ export function AddressListPanel({
 
 export function PaymentPanel({
   invoices,
-  paymentMethods,
   strings,
 }: {
   invoices: ClientCustomerInvoice[];
-  paymentMethods: ClientCustomerPaymentMethod[];
   strings: MinhaContaStrings;
 }) {
   return (
     <Stack gap="lg">
-      <Card className={styles.panelCard}>
-        <Stack gap="lg">
-          <Inline justify="between">
-            <AccountSectionHeader title={strings.sections.paymentTitle} description={strings.sections.paymentDescription} />
-            <Button appearance="outline" tone="neutral">{strings.actions.addPaymentMethod}</Button>
-          </Inline>
-          <div className={styles.cardsGrid}>
-            {paymentMethods.map((paymentMethod) => (
-              <Card className={styles.nestedCard} key={paymentMethod.id} size="sm">
-                <Stack gap="sm">
-                  <Inline justify="between">
-                    <Inline gap="xs">
-                      <CartIcon size={18} />
-                      <Text variant="h3">{paymentMethod.brand}</Text>
-                    </Inline>
-                    {paymentMethod.isDefault ? <AccountChip>{strings.labels.defaultPayment}</AccountChip> : null}
-                  </Inline>
-                  <Text weight="var(--theme--typography-bold)">{strings.labels.cardEnding} {paymentMethod.last4}</Text>
-                  <Text variant="caption" tone="text-muted">{strings.format.paymentMethodSummary.replace("{holder}", paymentMethod.holderName).replace("{expiresLabel}", strings.labels.expiresAt).replace("{expiresAt}", paymentMethod.expiresAt)}</Text>
-                </Stack>
-              </Card>
-            ))}
-          </div>
-        </Stack>
-      </Card>
       <Card className={styles.panelCard}>
         <Stack gap="lg">
           <AccountSectionHeader title={strings.sections.invoiceTitle} description={strings.sections.invoiceDescription} />

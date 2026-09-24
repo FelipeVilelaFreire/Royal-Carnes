@@ -9,12 +9,9 @@ import { createCheckoutStyles } from "../checkout.styles";
 export interface PaymentStepProps {
   onBack: () => void;
   onNext: () => void;
-  onSelectInstallments: (installments: number) => void;
   onSelectPaymentMethod: (method: ClientCheckoutPaymentMethodKey) => void;
   paymentCopy: any;
-  paymentInstallments: number[];
   paymentMethods: Array<{ key: ClientCheckoutPaymentMethodKey; label: string; description: string }>;
-  selectedInstallments: number;
   selectedPaymentMethod: ClientCheckoutPaymentMethodKey;
   tokens: any;
 }
@@ -22,12 +19,9 @@ export interface PaymentStepProps {
 export const PaymentStep: React.FC<PaymentStepProps> = ({
   onBack,
   onNext,
-  onSelectInstallments,
   onSelectPaymentMethod,
   paymentCopy,
-  paymentInstallments,
   paymentMethods,
-  selectedInstallments,
   selectedPaymentMethod,
   tokens,
 }) => {
@@ -52,18 +46,6 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
             </Button>
           );
         })}
-        <Text style={styles.title}>{paymentCopy.installmentsTitle}</Text>
-        {paymentInstallments.map((installment) => (
-          <Button
-            appearance={installment === selectedInstallments ? "soft" : "transparent"}
-            key={installment}
-            onAction={() => onSelectInstallments(installment)}
-            style={{ ...styles.option, ...(installment === selectedInstallments ? styles.optionActive : {}) }}
-            tone={installment === selectedInstallments ? "primary" : "neutral"}
-          >
-            {`${installment}${paymentCopy.installmentsSuffix}`}
-          </Button>
-        ))}
         <Button onAction={onBack}>{paymentCopy.back}</Button>
         <Button onAction={onNext} style={styles.action}>{paymentCopy.next}</Button>
       </Stack>

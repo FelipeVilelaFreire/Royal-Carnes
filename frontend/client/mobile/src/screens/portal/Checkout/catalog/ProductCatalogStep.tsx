@@ -19,10 +19,13 @@ export interface ProductCatalogStepProps {
   categories: ClientCheckoutProductCategory[];
   categoryById: Map<string, ClientCheckoutProductCategory>;
   formatMoney: (value: number) => string;
+  hasCatalogError: boolean;
+  isCatalogLoading: boolean;
   onClearFilters: () => void;
   onDecreaseProduct: (productId: string) => void;
   onProductSelect: (product: ClientCheckoutProduct) => void;
   onQueryChange: (value: string) => void;
+  onReloadCatalog: () => Promise<unknown>;
   onSelectCategory: (categoryId: string) => void;
   query: string;
   selectedCategoryId: string;
@@ -38,10 +41,13 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
   categories,
   categoryById,
   formatMoney,
+  hasCatalogError,
+  isCatalogLoading,
   onClearFilters,
   onDecreaseProduct,
   onProductSelect,
   onQueryChange,
+  onReloadCatalog,
   onSelectCategory,
   query,
   selectedCategoryId,
@@ -53,6 +59,7 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
   const styles = createCheckoutStyles(tokens);
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [draftCategoryId, setDraftCategoryId] = React.useState(selectedCategoryId);
+  const parentCategories = categories.filter((category) => !category.parentId);
 
   return (
     <Surface style={styles.panel}>
@@ -68,7 +75,17 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
         >
           {strings.hero.filterLabel}
         </Button>
-        {availableProducts.length ? (
+        {hasCatalogError ? (
+          <Surface style={styles.panel}>
+            <Stack gap="sm">
+              <Text variant="h3">{strings.catalog.errorTitle}</Text>
+              <Text>{strings.catalog.errorDescription}</Text>
+              <Button disabled={isCatalogLoading} onAction={() => void onReloadCatalog()} tone="neutral">
+                {strings.catalog.retry}
+              </Button>
+            </Stack>
+          </Surface>
+        ) : availableProducts.length ? (
           <CheckoutProductGrid
             availableProducts={availableProducts}
             canAddProduct={canAddProduct}
@@ -92,8 +109,7 @@ export const ProductCatalogStep: React.FC<ProductCatalogStepProps> = ({
         title={strings.filters.modalTitle}
       >
         <Stack gap="sm">
-          <Text style={styles.muted} variant="caption">{strings.filters.categoryTitle}</Text>
-          {[{ id: "all", name: strings.filters.allCategories }, ...categories].map((category) => (
+          {[{ id: "all", name: strings.filters.allCategories }, ...parentCategories].map((category) => (
             <Button
               appearance={draftCategoryId === category.id ? "soft" : "transparent"}
               key={category.id}

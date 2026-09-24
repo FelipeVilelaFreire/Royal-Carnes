@@ -1,0 +1,75 @@
+export const deliveryPromisePoliciesConfig = {
+  screenKey: "deliveryPromisePolicies",
+  screenType: "standard",
+  entityNameKey: "entities.deliveryPromisePolicy",
+  dataSource: { key: "deliveryPromisePolicies", fallbackOnError: false },
+  listPage: {
+    titleKey: "deliveryPromisePolicies.title",
+    subtitleKey: "deliveryPromisePolicies.subtitle",
+    actionLabelKey: "deliveryPromisePolicies.ctaAdd",
+    searchPlaceholderKey: "deliveryPromisePolicies.searchPlaceholder",
+    columns: [
+      { key: "name", labelKey: "deliveryPromisePolicies.tableHeaders.name" },
+      { key: "promiseWindow", labelKey: "deliveryPromisePolicies.tableHeaders.promiseWindow" },
+      { key: "alertWindow", labelKey: "deliveryPromisePolicies.tableHeaders.alertWindow" },
+      { key: "statusLabelKey", labelKey: "common.status", valueType: "translationKey", statusToneKey: "statusTone" },
+    ],
+    filters: [
+      {
+        key: "statusKey",
+        labelKey: "common.status",
+        options: [
+          { value: "active", labelKey: "deliveryPromisePolicies.status.active" },
+          { value: "inactive", labelKey: "deliveryPromisePolicies.status.inactive" },
+        ],
+      },
+    ],
+  },
+  detailPage: {
+    titleKey: "deliveryPromisePolicies.detail.title",
+    displayNameKey: "name",
+    tabs: [{
+      id: "dados",
+      labelKey: "deliveryPromisePolicies.detail.tabs.data",
+      sections: [{
+        key: "policy",
+        type: "fields",
+        titleKey: "deliveryPromisePolicies.detail.sections.policy",
+        iconIntent: "delivery",
+        grid: { desktop: 3, tablet: 2, mobile: 1 },
+        fields: [
+          { key: "key", labelKey: "deliveryPromisePolicies.fields.key" },
+          { key: "name", labelKey: "deliveryPromisePolicies.fields.name", editable: true, edit: { type: "text" } },
+          { key: "minBusinessDays", labelKey: "deliveryPromisePolicies.fields.minBusinessDays", editable: true, edit: { type: "number", min: 1 } },
+          { key: "maxBusinessDays", labelKey: "deliveryPromisePolicies.fields.maxBusinessDays", editable: true, edit: { type: "number", min: 1 } },
+          { key: "approachingBusinessDays", labelKey: "deliveryPromisePolicies.fields.approachingBusinessDays", editable: true, edit: { type: "number", min: 0 } },
+          { key: "isActive", labelKey: "deliveryPromisePolicies.fields.isActive", editable: true, edit: { type: "select", options: [{ value: "true", labelKey: "deliveryPromisePolicies.booleanOptions.yes" }, { value: "false", labelKey: "deliveryPromisePolicies.booleanOptions.no" }] } },
+          { key: "isDefault", labelKey: "deliveryPromisePolicies.fields.isDefault", editable: true, edit: { type: "select", options: [{ value: "true", labelKey: "deliveryPromisePolicies.booleanOptions.yes" }, { value: "false", labelKey: "deliveryPromisePolicies.booleanOptions.no" }] } },
+          { key: "sortOrder", labelKey: "deliveryPromisePolicies.fields.sortOrder", editable: true, edit: { type: "number", min: 0 } },
+          { key: "orderKindKeys", labelKey: "deliveryPromisePolicies.fields.orderKindKeys", editable: true, edit: { type: "multiSelect", source: "tiposPedido" } },
+          { key: "subscriptionPlanKeys", labelKey: "deliveryPromisePolicies.fields.subscriptionPlanKeys", editable: true, edit: { type: "multiSelect", source: "planos" } },
+        ],
+      }],
+    }],
+  },
+  addPage: {
+    titleKey: "deliveryPromisePolicies.add.title",
+    submitLabelKey: "deliveryPromisePolicies.add.submit",
+    sections: [{
+      key: "policy",
+      titleKey: "deliveryPromisePolicies.detail.sections.policy",
+      fields: [
+        { key: "key", labelKey: "deliveryPromisePolicies.fields.key", type: "text", required: true },
+        { key: "name", labelKey: "deliveryPromisePolicies.fields.name", type: "text", required: true },
+        { key: "minBusinessDays", labelKey: "deliveryPromisePolicies.fields.minBusinessDays", type: "number", min: 1, required: true },
+        { key: "maxBusinessDays", labelKey: "deliveryPromisePolicies.fields.maxBusinessDays", type: "number", min: 1, required: true },
+        { key: "approachingBusinessDays", labelKey: "deliveryPromisePolicies.fields.approachingBusinessDays", type: "number", min: 0, required: true },
+        { key: "orderKindKeys", labelKey: "deliveryPromisePolicies.fields.orderKindKeys", type: "multiSelect", source: "tiposPedido" },
+        { key: "subscriptionPlanKeys", labelKey: "deliveryPromisePolicies.fields.subscriptionPlanKeys", type: "multiSelect", source: "planos" },
+        { key: "isDefault", labelKey: "deliveryPromisePolicies.fields.isDefault", type: "select", options: [{ value: "true", labelKey: "deliveryPromisePolicies.booleanOptions.yes" }, { value: "false", labelKey: "deliveryPromisePolicies.booleanOptions.no" }] },
+        { key: "isActive", labelKey: "deliveryPromisePolicies.fields.isActive", type: "select", options: [{ value: "true", labelKey: "deliveryPromisePolicies.booleanOptions.yes" }, { value: "false", labelKey: "deliveryPromisePolicies.booleanOptions.no" }] },
+        { key: "sortOrder", labelKey: "deliveryPromisePolicies.fields.sortOrder", type: "number", min: 0 },
+      ],
+    }],
+  },
+};

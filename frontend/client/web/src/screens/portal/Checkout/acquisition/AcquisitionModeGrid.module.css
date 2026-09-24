@@ -3,184 +3,9 @@
   gap: var(--theme--spacing-spaceLg);
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
-.card {
-  --acquisition-accent: var(--theme--color-accent);
-  --acquisition-bg: var(--theme--color-surface-container, var(--theme--color-surfaceContainer));
-  --acquisition-border: var(--theme--color-border);
-  --acquisition-muted: var(--theme--color-text-muted, var(--theme--color-textMuted));
-  --acquisition-text: var(--theme--color-text);
-  --ui-button-height: auto;
-  --ui-button-min-width: 0;
-  --ui-surface-bg: var(--acquisition-bg);
-  --ui-surface-border: var(--acquisition-border);
-  --ui-surface-border-width: var(--theme--borders-hairline);
-  --ui-surface-color: var(--acquisition-text);
-  --ui-surface-radius: var(--theme--radius-2xl);
-  --ui-surface-shadow: none;
-  align-items: stretch;
-  display: grid;
-  min-height: calc(var(--theme--dimensions-height-3xl) + var(--theme--dimensions-height-2xl));
-  padding: var(--theme--spacing-spaceXl);
-  text-align: left;
-  transition:
-    background var(--theme--motion-durationLg) ease,
-    border-color var(--theme--motion-durationLg) ease,
-    min-height var(--theme--motion-durationLg) ease,
-    padding var(--theme--motion-durationLg) ease,
-    transform var(--theme--motion-durationLg) ease;
-  width: 100%;
-}
-
-.cardFrame {
-  display: grid;
-  gap: var(--theme--spacing-spaceLg);
-  grid-template-rows: minmax(0, 1fr) auto;
-  min-height: 100%;
-  transition: gap var(--theme--motion-durationLg) ease;
-  width: 100%;
-}
-
-.cardHeading {
-  align-items: start;
-  display: flex;
-  gap: var(--theme--spacing-spaceMd);
-  justify-content: space-between;
-  position: relative;
-}
-
-.iconFrame {
-  align-items: center;
-  background: color-mix(in srgb, var(--acquisition-accent) 13%, var(--acquisition-bg));
-  border: var(--theme--borders-hairline) solid color-mix(in srgb, var(--acquisition-accent) 32%, var(--acquisition-border));
-  border-radius: var(--theme--radius-xl);
-  color: var(--acquisition-accent);
-  display: inline-flex;
-  flex: 0 0 auto;
-  height: var(--theme--dimensions-height-xl);
-  justify-content: center;
-  width: var(--theme--dimensions-height-xl);
-}
-
-.icon {
-  height: var(--theme--typography-sizeLg);
-  width: var(--theme--typography-sizeLg);
-}
-
-.copy {
-  align-items: flex-end;
-  display: grid;
-  gap: var(--theme--spacing-space2xs);
-  justify-items: end;
-  min-width: 0;
-}
-
-.eyebrow {
-  color: var(--acquisition-accent);
-  font-size: var(--theme--typography-sizeXs);
-  font-weight: var(--theme--typography-bold);
-  letter-spacing: var(--theme--typography-letterSpacingMd);
-  text-align: end;
-  text-transform: uppercase;
-}
-
-.title {
-  color: var(--acquisition-text);
-  font-family: var(--theme--typography-headingFamily);
-  font-size: var(--theme--typography-size2xl);
-  font-weight: var(--theme--typography-bold);
-  line-height: var(--theme--typography-lineHeightSm);
-  overflow-wrap: anywhere;
-  text-align: end;
-}
-
-.badge {
-  align-items: center;
-  background: color-mix(in srgb, var(--acquisition-accent) 14%, var(--acquisition-bg));
-  border: var(--theme--borders-hairline) solid var(--acquisition-accent);
-  border-radius: var(--theme--radius-full);
-  color: var(--acquisition-accent);
-  display: inline-flex;
-  font-size: var(--theme--typography-size2xs);
-  font-weight: var(--theme--typography-bold);
-  letter-spacing: var(--theme--typography-letterSpacingMd);
-  padding: var(--theme--spacing-space2xs) var(--theme--spacing-spaceXs);
-  text-transform: uppercase;
-}
-
-.card[data-active="true"] .badge {
-  background: var(--acquisition-accent);
-  color: var(--theme--color-background);
-}
-
-.description {
-  color: var(--acquisition-muted);
-  font-size: var(--theme--typography-sizeSm);
-  line-height: var(--theme--typography-lineHeightMd);
-  max-block-size: var(--theme--dimensions-height-3xl);
-  opacity: 1;
-  overflow: hidden;
-  text-align: end;
-  transition:
-    max-block-size var(--theme--motion-durationLg) ease,
-    opacity var(--theme--motion-durationLg) ease;
-}
-
-.action {
-  align-items: center;
-  border-block-start: var(--theme--borders-hairline) solid color-mix(in srgb, var(--acquisition-border) 82%, transparent);
-  color: var(--acquisition-accent);
-  display: inline-flex;
-  font-size: var(--theme--typography-sizeXs);
-  font-weight: var(--theme--typography-bold);
-  gap: var(--theme--spacing-spaceXs);
-  letter-spacing: var(--theme--typography-letterSpacingMd);
-  max-block-size: var(--theme--dimensions-height-xl);
-  overflow: hidden;
-  padding-block-start: var(--theme--spacing-spaceMd);
-  text-transform: uppercase;
-  transition:
-    border-color var(--theme--motion-durationLg) ease,
-    max-block-size var(--theme--motion-durationLg) ease,
-    opacity var(--theme--motion-durationLg) ease,
-    padding var(--theme--motion-durationLg) ease;
-  width: 100%;
-}
-
-.action svg {
-  height: var(--theme--typography-sizeMd);
-  width: var(--theme--typography-sizeMd);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    --ui-surface-border: color-mix(in srgb, var(--acquisition-accent) 68%, var(--acquisition-border));
-    transform: translateY(calc(var(--theme--spacing-space2xs) * -1));
-  }
-}
-
 .grid[data-compact="true"] {
   gap: var(--theme--spacing-spaceSm);
-}
-
-.grid[data-compact="true"] .card {
-  min-height: auto;
-  padding: var(--theme--spacing-spaceMd);
-}
-
-.grid[data-compact="true"] .cardFrame {
-  gap: var(--theme--spacing-spaceSm);
-}
-
-.grid[data-compact="true"] .description,
-.grid[data-compact="true"] .action {
-  max-block-size: 0;
-  opacity: 0;
-  padding-block-start: 0;
-}
-
-.grid[data-compact="true"] .title {
-  font-size: var(--theme--typography-sizeLg);
+  transition: gap var(--theme--motion-durationLg) ease;
 }
 
 @media (max-width: 1100px) {
@@ -191,9 +16,6 @@
     scroll-snap-type: x mandatory;
   }
 
-  .card {
-    scroll-snap-align: start;
-  }
 }
 
 @media (max-width: 760px) {
@@ -201,16 +23,4 @@
     gap: var(--theme--spacing-spaceXs);
   }
 
-  .card {
-    min-height: auto;
-    padding: var(--theme--spacing-spaceLg);
-  }
-
-  .title {
-    font-size: var(--theme--typography-sizeXl);
-  }
-
-  .grid[data-compact="true"] .card {
-    min-width: var(--theme--dimensions-minWidth-3xl);
-  }
 }

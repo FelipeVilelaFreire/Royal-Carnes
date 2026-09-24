@@ -52,6 +52,7 @@ export const ModalFrame: React.FC<ModalFrameProps> = ({
   return createPortal(
     <div
       className={styles.backdrop}
+      data-size={size}
       data-variant={variantToData(variant)}
       onMouseDown={onClose}
       role="presentation"

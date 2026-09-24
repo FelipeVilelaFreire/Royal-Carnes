@@ -187,9 +187,12 @@ def admin_plans(request):
         key=data["key"],
         name=data["name"],
         description=data.get("description", ""),
+        accent_color=data.get("accent_color", "#FFC665"),
         status=data.get("status", Plan.Status.ACTIVE),
         billing_interval=data.get("billing_interval", Plan.BillingInterval.MONTH),
         trial_days=data.get("trial_days", 0),
+        delivery_min_business_days=data.get("delivery_min_business_days", 3),
+        delivery_max_business_days=data.get("delivery_max_business_days", 8),
         sort_order=data.get("sort_order", 0),
     )
     if "price_cents" in data:

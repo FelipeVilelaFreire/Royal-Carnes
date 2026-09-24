@@ -25,6 +25,21 @@ export const LockIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentCo
   </svg>
 );
 
+export const GoogleIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" {...props}>
+    <path d="M21.8 12.23c0-.73-.07-1.42-.2-2.08H12v3.93h5.49a4.71 4.71 0 0 1-2.04 3.09v2.55h3.29c1.93-1.78 3.06-4.4 3.06-7.49Z" fill={color} />
+    <path d="M12 22c2.75 0 5.05-.91 6.74-2.47l-3.29-2.55c-.91.61-2.08.97-3.45.97-2.65 0-4.9-1.79-5.7-4.2H2.9v2.63A10.18 10.18 0 0 0 12 22Z" fill={color} opacity="0.8" />
+    <path d="M6.3 13.75A6.12 6.12 0 0 1 5.98 12c0-.61.11-1.2.32-1.75V7.62H2.9A10.01 10.01 0 0 0 1.82 12c0 1.6.38 3.11 1.08 4.38l3.4-2.63Z" fill={color} opacity="0.6" />
+    <path d="M12 6.05c1.5 0 2.84.52 3.9 1.53l2.92-2.92C17.04 3 14.75 2 12 2a10.18 10.18 0 0 0-9.1 5.62l3.4 2.63c.8-2.41 3.05-4.2 5.7-4.2Z" fill={color} opacity="0.4" />
+  </svg>
+);
+
+export const AppleIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} {...props}>
+    <path d="M16.7 12.55c0-2.1 1.72-3.1 1.8-3.15a3.87 3.87 0 0 0-3.04-1.66c-1.28-.14-2.52.77-3.17.77-.66 0-1.65-.76-2.73-.74a4.04 4.04 0 0 0-3.4 2.08c-1.47 2.55-.37 6.3 1.03 8.34.7 1 1.5 2.11 2.56 2.07 1.03-.04 1.41-.66 2.65-.66 1.22 0 1.58.66 2.66.64 1.12-.02 1.82-1 2.5-2.02a8.3 8.3 0 0 0 1.15-2.34 3.63 3.63 0 0 1-2.01-3.33ZM14.62 6.38c.57-.72.96-1.7.85-2.69-.83.04-1.87.58-2.47 1.28-.54.63-1.02 1.65-.9 2.6.94.07 1.9-.47 2.52-1.19Z" />
+  </svg>
+);
+
 export const CartIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <circle cx="9" cy="21" r="1" />
@@ -152,6 +167,47 @@ export const BoxIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentCol
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
     <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
     <line x1="12" y1="22.08" x2="12" y2="12" />
+  </svg>
+);
+
+export const PlanIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M7 9h10" />
+    <path d="M7 14h4" />
+    <path d="m15 14 1.5 1.5L19 12" />
+  </svg>
+);
+
+export const CreditCardIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="2.5" y="5" width="19" height="14" rx="2" />
+    <path d="M2.5 10h19" />
+    <path d="M6 15h4" />
+  </svg>
+);
+
+export const RepeatIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="m17 2 3 3-3 3" />
+    <path d="M4 11V9a4 4 0 0 1 4-4h12" />
+    <path d="m7 22-3-3 3-3" />
+    <path d="M20 13v2a4 4 0 0 1-4 4H4" />
+  </svg>
+);
+
+export const TagIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 3 12V5a2 2 0 0 1 2-2h7a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.6Z" />
+    <circle cx="8" cy="8" r="1" />
+  </svg>
+);
+
+export const LayersIcon: React.FC<SvgIconProps> = ({ size = 20, color = "currentColor", ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+    <path d="m3 12 9 5 9-5" />
+    <path d="m3 16 9 5 9-5" />
   </svg>
 );
 

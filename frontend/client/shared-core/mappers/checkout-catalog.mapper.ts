@@ -1,4 +1,4 @@
-import type { ProductBase } from "../../../shared-core";
+import type { CategoryBase, ProductBase } from "../../../shared-core";
 import type {
   ClientCheckoutProduct,
   ClientCheckoutProductCategory,
@@ -21,8 +21,21 @@ function resolveKind(product: ProductBase): ClientCheckoutProductKind {
   return "meat";
 }
 
-export function mapCheckoutCatalog(products: ProductBase[]) {
-  const categories = new Map<string, ClientCheckoutProductCategory>();
+export function mapCheckoutCatalog(products: ProductBase[], catalogCategories: CategoryBase[] = []) {
+  const categoryById = new Map(catalogCategories.map((category) => [String(category.id), category]));
+  const categories = new Map<string, ClientCheckoutProductCategory>(
+    catalogCategories
+      .filter((category) => category.isActive)
+      .map((category) => [category.key, {
+        id: category.key,
+        name: category.name,
+        kind: "meat" as ClientCheckoutProductKind,
+        description: "",
+        image: "",
+        order: category.sortOrder,
+        parentId: category.parentId ? String(category.parentId) : null,
+      }]),
+  );
   const mappedProducts = products.map((product): ClientCheckoutProduct => {
     const primaryCategory = product.categories.find((category) => category.key === product.primaryCategoryKey) || product.categories[0];
     const categoryId = primaryCategory?.key || "all";
@@ -35,7 +48,19 @@ export function mapCheckoutCatalog(products: ProductBase[]) {
         description: "",
         image: "",
         order: category.sortOrder,
+        parentId: category.parentId ? String(category.parentId) : null,
       });
+    });
+    const categoryKeys = product.categories.flatMap((category) => {
+      const keys = [category.key];
+      let parentId = category.parentId ? String(category.parentId) : null;
+      while (parentId) {
+        const parent = categoryById.get(parentId);
+        if (!parent) break;
+        keys.push(parent.key);
+        parentId = parent.parentId ? String(parent.parentId) : null;
+      }
+      return keys;
     });
     const preferredPrice = product.prices.find((price) => price.commercialModeKey === "delivery") || product.prices[0];
     const primaryVariant = product.variants.find((variant) => variant.isActive) || product.variants[0];
@@ -59,7 +84,7 @@ export function mapCheckoutCatalog(products: ProductBase[]) {
         .map((key) => checkoutModeByCatalogMode[key])
         .filter((mode): mode is ClientCheckoutProductExperience => Boolean(mode)),
       planTiers: ["basic", "premium", "pro"],
-      tags: product.categories.map((category) => category.key),
+      tags: [...new Set(categoryKeys)],
     };
   });
   return {

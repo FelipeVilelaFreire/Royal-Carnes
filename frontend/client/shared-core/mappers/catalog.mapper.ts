@@ -32,6 +32,8 @@ export function mapClientCollectionDto(dto: ClientCollectionDto): CollectionBase
     key: dto.key,
     name: dto.name,
     description: dto.description ?? null,
+    imageUrl: dto.image_url ?? null,
+    imageAlt: dto.image_alt ?? null,
     status: dto.status,
     sortOrder: dto.sort_order ?? 0,
     productIds: dto.product_ids || [],

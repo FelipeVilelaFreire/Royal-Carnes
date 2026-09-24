@@ -1,12 +1,22 @@
 {
   "schemaVersion": 1,
   "kit": "deliveries",
+  "promisePolicies": [
+    {
+      "key": "test-default",
+      "name": "Test default",
+      "minBusinessDays": 1,
+      "maxBusinessDays": 1,
+      "approachingBusinessDays": 1,
+      "isDefault": true
+    }
+  ],
   "codeSequences": [
     { "key": "deliveries", "prefix": "TDL", "padding": 4, "nextNumber": 1, "template": "{prefix}-{number}" }
   ],
   "statuses": [
     { "key": "new", "label": "New", "isInitial": true, "allowedNextKeys": ["done"], "sortOrder": 1 },
-    { "key": "done", "label": "Done", "isTerminal": true, "effects": { "confirmDelivery": true }, "sortOrder": 2 }
+    { "key": "done", "label": "Done", "isTerminal": true, "effects": { "confirmDelivery": true }, "metadata": { "deliveryPromiseOutcome": "fulfilled" }, "sortOrder": 2 }
   ],
   "deliveries": []
 }

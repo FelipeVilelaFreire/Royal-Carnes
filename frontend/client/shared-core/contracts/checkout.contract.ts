@@ -14,6 +14,7 @@ export interface ClientCheckoutProductCategory {
   description: string;
   image: string;
   order: number;
+  parentId?: string | null;
 }
 
 export interface ClientCheckoutProduct {
@@ -42,6 +43,7 @@ export interface ClientCheckoutSubscriptionPlan {
   id: string;
   key: ClientCheckoutSubscriptionTier;
   name: string;
+  accentColor: string;
   subtitle: string;
   monthlyPrice: number;
   annualMonthlyPrice: number;
@@ -59,6 +61,12 @@ export interface ClientCheckoutSubscriptionPlan {
   shipping: ClientCheckoutShippingPolicy;
   description: string;
   features: string[];
+  capacity: Array<{
+    key: string;
+    label: string;
+    limitQuantity: number;
+    measurementUnitSymbol?: string | null;
+  }>;
 }
 
 export interface ClientCheckoutAddress {

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "../../../ui/web/Button";
-import { MenuIcon, MoonIcon, SunIcon } from "../../../ui/web/Icon/AppIcons";
+import { MenuIcon, MoonIcon, SettingsIcon, SunIcon } from "../../../ui/web/Icon/AppIcons";
 import { Container, Inline, type ContainerProps, type InlineProps } from "../../../ui/web/Layout";
 import { Surface } from "../../../ui/web/Surface";
 import { AppShellBrand } from "./AppShellBrand";
@@ -17,6 +17,7 @@ export interface AppShellHeaderProps {
   model: ResolvedAppShellModel;
   onNavigate?: (path: string) => void;
   onOpenDrawer: () => void;
+  onOpenAppearanceEditor?: () => void;
   onThemeModeToggle?: () => void;
   rightSlot?: React.ReactNode;
   surfaceStyle?: string;
@@ -30,6 +31,7 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
   model,
   onNavigate,
   onOpenDrawer,
+  onOpenAppearanceEditor,
   onThemeModeToggle,
   rightSlot,
   surfaceStyle,
@@ -144,11 +146,13 @@ export const AppShellHeader: React.FC<AppShellHeaderProps> = ({
             })}
           </nav>
         </div>
-        {rightSlot || (
-          <div className={styles.headerActions}>
-            {(headerConfig?.actions || []).map((action: AppShellHeaderAction) => renderHeaderAction(action))}
-          </div>
-        )}
+        <div className={styles.headerActions}>
+          {rightSlot}
+          {(headerConfig?.actions || []).map((action: AppShellHeaderAction) => renderHeaderAction(action))}
+          {headerConfig?.appearanceEditor?.enabled ? (
+            <Button aria-label={model.strings.appearanceEditor?.open} appearance="outline" className={styles.iconButton} icon={<SettingsIcon color="currentColor" />} iconPosition="only" onClick={onOpenAppearanceEditor} size="sm" tone="neutral" type="button" />
+          ) : null}
+        </div>
       </Inline>
       </Container>
     </Surface>

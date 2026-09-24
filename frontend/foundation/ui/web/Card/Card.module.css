@@ -14,3 +14,8 @@
 .card[data-width="content"] {
   width: max-content;
 }
+
+.cardSkeleton {
+  border-radius: var(--semicomposed--card-skeleton-radius);
+  min-block-size: var(--semicomposed--card-skeleton-min-height);
+}

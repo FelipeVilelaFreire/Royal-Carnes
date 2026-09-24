@@ -1,18 +1,14 @@
-.skeleton {
-  animation: shimmer var(--semicomposed--skeleton--pulse-duration) var(--semicomposed--skeleton--easing) infinite;
+.skeleton.skeleton {
+  animation: skeleton-wave var(--semicomposed--skeleton--wave-duration) var(--semicomposed--skeleton--easing) infinite;
+  background-color: var(--semicomposed--skeleton--base);
+  background-image: var(--semicomposed--skeleton--background);
+  background-repeat: no-repeat;
+  background-size: var(--semicomposed--skeleton--background-size);
   border: var(--semicomposed--skeleton--border);
+  box-shadow: var(--semicomposed--skeleton--shadow);
   display: block;
   overflow: hidden;
-  position: relative;
-}
-
-.skeleton::after {
-  animation: sweep var(--semicomposed--skeleton--sweep-duration) var(--semicomposed--skeleton--easing) infinite;
-  background: linear-gradient(90deg, transparent, var(--semicomposed--skeleton--shimmer), transparent);
-  content: "";
-  inset: 0;
-  position: absolute;
-  transform: translateX(-100%);
+  pointer-events: none;
 }
 
 .skeleton[data-shape="circle"] { border-radius: var(--semicomposed--skeleton--radius-circle); }
@@ -30,10 +26,11 @@
 .skeleton[data-width="sm"] { inline-size: var(--semicomposed--skeleton--width-sm); }
 .skeleton[data-width="xs"] { inline-size: var(--semicomposed--skeleton--width-xs); }
 
-@keyframes shimmer { 50% { opacity: var(--semicomposed--skeleton--pulse-opacity); } }
-@keyframes sweep { to { transform: translateX(100%); } }
+@keyframes skeleton-wave {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .skeleton,
-  .skeleton::after { animation: none; }
+  .skeleton { animation: none; }
 }

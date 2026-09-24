@@ -31,6 +31,7 @@ def upsert_collection(
     description: str = "",
     image_url: str = "",
     image_alt: str = "",
+    sort_order: int = 0,
 ) -> Collection:
     collection, _created = Collection.objects.update_or_create(
         organization=organization,
@@ -40,6 +41,7 @@ def upsert_collection(
             "description": description,
             "image_url": image_url,
             "image_alt": image_alt,
+            "sort_order": sort_order,
             "status": Collection.Status.ACTIVE,
         },
     )
@@ -56,7 +58,7 @@ def upsert_category(
     sort_order: int = 0,
     is_active: bool = True,
 ) -> Category:
-    category, _created = Category.objects.update_or_create(
+    category, _created = Category.all_objects.update_or_create(
         organization=organization,
         key=key,
         defaults={
@@ -64,6 +66,7 @@ def upsert_category(
             "parent": parent,
             "sort_order": sort_order,
             "is_active": is_active,
+            "deleted_at": None,
         },
     )
     return category

@@ -141,6 +141,7 @@ export const royalPrimeThemeTokens = {
     },
     layout: {
       desktopCols: 20,
+      "hero-peek-viewport": "90vh",
       tabletCols: 8,
       mobileCols: 4,
       gutterDesktop: 24,

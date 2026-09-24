@@ -1,10 +1,18 @@
 from django.shortcuts import get_object_or_404
 
-from .models import Delivery, DeliveryStatusDefinition
+from .models import Delivery, DeliveryPromisePolicy, DeliveryStatusDefinition
 
 
 def delivery_statuses_for_organization(organization):
     return DeliveryStatusDefinition.objects.filter(organization=organization)
+
+
+def delivery_promise_policies_for_organization(organization):
+    return DeliveryPromisePolicy.objects.filter(organization=organization)
+
+
+def delivery_promise_policy_detail(policy_id, organization):
+    return get_object_or_404(delivery_promise_policies_for_organization(organization), id=policy_id)
 
 
 def deliveries_for_customer(organization, customer):

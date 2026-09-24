@@ -22,10 +22,13 @@ if errorlevel 1 (
 )
 
 python manage.py runserver 127.0.0.1:8000
+set "BACKEND_EXIT_CODE=%ERRORLEVEL%"
 
-if errorlevel 1 (
+if not "%BACKEND_EXIT_CODE%"=="0" (
   echo.
-  echo ERRO: falha ao iniciar o backend.
+  echo Backend encerrado com codigo %BACKEND_EXIT_CODE%.
+  echo Se houve respostas HTTP 200 acima, ele iniciou corretamente.
+  echo Consulte as mensagens do Django acima para a causa do encerramento.
   pause
-  exit /b 1
+  exit /b %BACKEND_EXIT_CODE%
 )

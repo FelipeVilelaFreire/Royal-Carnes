@@ -282,7 +282,10 @@
 }
 
 @media (max-width: 760px) {
-  .kpiGrid,
+  .kpiGrid {
+    --ui-layout-columns: 2 !important;
+  }
+
   .panelGrid,
   .attentionGrid {
     --ui-layout-columns: 1 !important;

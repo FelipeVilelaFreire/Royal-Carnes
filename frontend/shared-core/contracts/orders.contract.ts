@@ -77,6 +77,7 @@ export interface OrderBase {
   customerId: string | number;
   customerName: string;
   addressId?: string | number | null;
+  addressLabel?: string;
   subscriptionId?: string | number | null;
   subscriptionPlanKey?: string | null;
   subscriptionPlanName?: string | null;
@@ -85,6 +86,13 @@ export interface OrderBase {
   subscriptionCycleStatus?: string | null;
   subscriptionCycleStartsAt?: string | null;
   subscriptionCycleEndsAt?: string | null;
+  boxCycleId?: string | number | null;
+  boxCycleKey?: string | null;
+  boxCycleScheduledFor?: string | null;
+  boxCycleStatus?: string | null;
+  boxTemplateName?: string | null;
+  boxOrderCreationPolicy?: string | null;
+  boxRecurrenceDay?: number | null;
   currency: string;
   subtotalCents: number;
   discountCents: number;
@@ -141,6 +149,12 @@ export type OrderErrorCode =
   | "subscription_required_for_cycle"
   | "subscription_required_for_order"
   | "subscription_cycle_required_for_order"
+  | "box_cycle_required_for_order"
+  | "box_recurrence_required_for_order"
+  | "box_cycle_organization_mismatch"
+  | "box_cycle_customer_mismatch"
+  | "box_cycle_address_mismatch"
+  | "box_cycle_mismatch"
   | "order_items_required"
   | "product_price_not_found"
   | "inventory_item_not_found"

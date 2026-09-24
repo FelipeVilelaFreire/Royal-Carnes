@@ -84,7 +84,8 @@ Tudo que varia por empresa deve ser seed/config:
 ```text
 status
 workflow
-allowedNextKeys
+allowedNextKeys somente quando um dominio declarar workflow restrito; Pedidos
+do RoyalPrime usam catalogo livre de status
 effects
 commercial modes
 plan entitlements

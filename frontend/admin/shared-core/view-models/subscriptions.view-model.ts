@@ -10,6 +10,7 @@ import type {
   AdminSubscriptionView,
   AdminSubscriptionCycleView,
 } from "../contracts/subscriptions.contract";
+import { formatAdminDateTime } from "../formatters/date-time.formatter";
 
 type SubscriptionStatusTone = "success" | "warning" | "danger" | "neutral";
 
@@ -30,6 +31,7 @@ export interface AdminPlanRowViewModel {
   key: string;
   name: string;
   description: string | null;
+  accentColor: string;
   status: string;
   statusLabelKey: string;
   statusTone: SubscriptionStatusTone;
@@ -38,6 +40,8 @@ export interface AdminPlanRowViewModel {
   billingInterval: string;
   billingIntervalLabelKey: string;
   trialDays: number;
+  deliveryMinBusinessDays: number;
+  deliveryMaxBusinessDays: number;
   sortOrder: number;
   entitlementCount: number;
   entitlementSummary: string;
@@ -146,17 +150,6 @@ function formatPrice(plan: AdminPlanView): string | null {
     style: "currency",
     currency: price.currency,
   }).format(price.amountCents / 100);
-}
-
-function formatDate(value: string | null | undefined): string | null {
-  if (!value) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
 }
 
 function formatDateTimeInput(value: string | null | undefined): string {
@@ -273,6 +266,7 @@ export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowVi
     key: plan.key,
     name: plan.name,
     description: plan.description ?? null,
+    accentColor: plan.accentColor,
     status: plan.status,
     statusLabelKey: `common.status${plan.status.charAt(0).toUpperCase()}${plan.status.slice(1)}`,
     statusTone: resolvePlanStatusTone(plan.status),
@@ -281,6 +275,8 @@ export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowVi
     billingInterval: plan.billingInterval,
     billingIntervalLabelKey: `planos.billingIntervals.${plan.billingInterval}`,
     trialDays: plan.trialDays,
+    deliveryMinBusinessDays: plan.deliveryMinBusinessDays,
+    deliveryMaxBusinessDays: plan.deliveryMaxBusinessDays,
     sortOrder: plan.sortOrder,
     entitlementCount: planEntitlements.length,
     entitlementSummary: firstEntitlements.length ? firstEntitlements.join(", ") : "",
@@ -295,8 +291,8 @@ export function createAdminPlanRowViewModel(plan: AdminPlanView): AdminPlanRowVi
       customerName: subscriber.customerName,
       status: subscriber.status,
       statusLabelKey: `common.status${subscriber.status.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("")}`,
-      startedAt: formatDate(subscriber.startedAt) || subscriber.startedAt,
-      currentCycleEndsAt: formatDate(subscriber.currentCycleEndsAt) || null,
+      startedAt: formatAdminDateTime(subscriber.startedAt),
+      currentCycleEndsAt: formatAdminDateTime(subscriber.currentCycleEndsAt) || null,
     })),
   };
 }
@@ -322,8 +318,8 @@ export function createAdminSubscriptionRowViewModel(
   const currentCycleLimitSummary = summarizeQuantities(limitTotals);
   const currentCycleConsumedSummary = summarizeQuantities(consumedTotals);
   const currentCycleRemainingSummary = summarizeQuantities(subtractQuantities(limitTotals, consumedTotals));
-  const currentCycleStartsAt = formatDate(subscription.currentCycleStartsAt ?? currentCycle?.startsAt);
-  const currentCycleEndsAt = formatDate(subscription.currentCycleEndsAt ?? currentCycle?.endsAt);
+  const currentCycleStartsAt = formatAdminDateTime(subscription.currentCycleStartsAt ?? currentCycle?.startsAt) || null;
+  const currentCycleEndsAt = formatAdminDateTime(subscription.currentCycleEndsAt ?? currentCycle?.endsAt) || null;
   const currentCycleUsageItems = subscription.plan.entitlements.map((entitlement) => {
     const cycleItems = (currentCycle?.items || []).filter((item) => item.entitlementKey === entitlement.key);
     const unit = entitlement.measurementUnitSymbol || entitlement.measurementUnitKey || "";
@@ -348,7 +344,7 @@ export function createAdminSubscriptionRowViewModel(
 
   return {
     cancelReason: subscription.cancelReason ?? null,
-    cancelledAt: formatDate(subscription.cancelledAt),
+    cancelledAt: formatAdminDateTime(subscription.cancelledAt) || null,
     cancelledAtInput: formatDateTimeInput(subscription.cancelledAt),
     currentCycleConsumedSummary,
     currentCycleEndsAt,
@@ -375,19 +371,19 @@ export function createAdminSubscriptionRowViewModel(
     deliveryPreferences: subscription.deliveryPreferences || "",
     deliveryWindow: subscription.deliveryWindow || "",
     id: subscription.id,
-    endedAt: formatDate(subscription.endedAt),
+    endedAt: formatAdminDateTime(subscription.endedAt) || null,
     endedAtInput: formatDateTimeInput(subscription.endedAt),
     internalNotes: subscription.internalNotes || "",
     orders: subscriptionOrders.map((order) => ({
       code: order.code,
-      createdAt: formatDate(order.createdAt) || order.createdAt,
+      createdAt: formatAdminDateTime(order.createdAt),
       id: order.id,
       statusLabel: resolveOrderStatusLabel(orderConfig, order.statusKey),
       totalLabel: formatMoney(order.totalCents, order.currency),
     })),
     payments: subscriptionPayments.map((payment) => ({
       amountLabel: formatMoney(payment.amountCents, payment.currency),
-      dueAt: formatDate(payment.dueAt) || "",
+      dueAt: formatAdminDateTime(payment.dueAt),
       id: payment.id,
       reference: payment.reference,
       statusLabelKey: resolvePaymentStatusLabelKey(payment.status),
@@ -399,7 +395,7 @@ export function createAdminSubscriptionRowViewModel(
     status: subscription.status,
     statusLabelKey: `common.status${subscription.status.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("")}`,
     statusTone: resolveSubscriptionStatusTone(subscription.status),
-    startedAt: formatDate(subscription.startedAt) || subscription.startedAt,
+    startedAt: formatAdminDateTime(subscription.startedAt),
     startedAtInput: formatDateTimeInput(subscription.startedAt),
   };
 }
@@ -411,8 +407,8 @@ export function createAdminCycleRowViewModel(
     id: cycle.id,
     cycleNumber: cycle.cycleNumber,
     status: cycle.status,
-    startsAt: formatDate(cycle.startsAt) || cycle.startsAt,
-    endsAt: formatDate(cycle.endsAt) || cycle.endsAt,
+    startsAt: formatAdminDateTime(cycle.startsAt),
+    endsAt: formatAdminDateTime(cycle.endsAt),
     itemCount: cycle.items.length,
   };
 }

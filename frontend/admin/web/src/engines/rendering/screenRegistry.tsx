@@ -5,6 +5,7 @@ import { clientesConfig } from "@/manifest/pages/clientes.config";
 import { colecoesConfig } from "@/manifest/pages/colecoes.config";
 import { dashboardConfig } from "@/manifest/pages/dashboard.config";
 import { deliveriesConfig } from "@/manifest/pages/deliveries.config";
+import { deliveryPromisePoliciesConfig } from "@/manifest/pages/delivery-promise-policies.config";
 import { estoqueConfig } from "@/manifest/pages/estoque.config";
 import { pagamentosConfig } from "@/manifest/pages/pagamentos.config";
 import { pedidosConfig } from "@/manifest/pages/pedidos.config";
@@ -23,6 +24,7 @@ const standardScreenConfigs: Record<string, any> = {
   clientes: clientesConfig,
   colecoes: colecoesConfig,
   deliveries: deliveriesConfig,
+  deliveryPromisePolicies: deliveryPromisePoliciesConfig,
   estoque: estoqueConfig,
   pagamentos: pagamentosConfig,
   pedidos: pedidosConfig,
@@ -37,6 +39,7 @@ export interface RenderAdminScreenOptions {
   backToList: () => void;
   createNew: () => void;
   navigate: (path: string) => void;
+  openRelatedDetail: (screenKey: string, row: Record<string, any>) => void;
   routeAction?: AdminRouteAction;
   selectedRow?: Record<string, any> | null;
   selectRow: (row: Record<string, any>) => void;
@@ -48,6 +51,7 @@ export function renderAdminScreen({
   backToList,
   createNew,
   navigate,
+  openRelatedDetail,
   routeAction,
   selectedRow,
   selectRow,
@@ -68,6 +72,7 @@ export function renderAdminScreen({
         entityConfig={activeConfig}
         onBackToList={backToList}
         onCreateRow={createNew}
+        onOpenRelatedRow={openRelatedDetail}
         onSelectRow={selectRow}
         onSubmit={backToList}
         routeAction={routeAction}

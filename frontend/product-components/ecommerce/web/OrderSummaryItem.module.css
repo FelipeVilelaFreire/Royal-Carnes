@@ -14,6 +14,32 @@
   padding: var(--theme--spacing-spaceSm);
 }
 
+.item[data-density="comfortable"] {
+  gap: var(--theme--spacing-spaceMd);
+  grid-template-columns: var(--theme--dimensions-height-xl) minmax(0, 1fr) auto;
+  padding: var(--theme--spacing-spaceMd);
+}
+
+.item[data-density="comfortable"] .media {
+  height: var(--theme--dimensions-height-xl);
+  width: var(--theme--dimensions-height-xl);
+}
+
+.item[data-density="comfortable"] .quantityControl {
+  grid-template-columns: repeat(3, var(--theme--dimensions-height-md));
+  inline-size: calc(var(--theme--dimensions-height-md) * 3);
+  min-height: var(--theme--dimensions-height-md);
+}
+
+.item[data-density="comfortable"] .quantityButton {
+  block-size: var(--theme--dimensions-height-md) !important;
+  inline-size: var(--theme--dimensions-height-md) !important;
+  max-block-size: var(--theme--dimensions-height-md) !important;
+  max-inline-size: var(--theme--dimensions-height-md) !important;
+  min-block-size: var(--theme--dimensions-height-md) !important;
+  min-inline-size: var(--theme--dimensions-height-md) !important;
+}
+
 .media {
   align-items: center;
   background: var(--theme--color-surfaceContainer, var(--theme--color-surface));
@@ -93,6 +119,10 @@
   min-block-size: var(--theme--dimensions-height-sm) !important;
   min-inline-size: var(--theme--dimensions-height-sm) !important;
   padding: 0 !important;
+}
+
+button.quantityButton {
+  border-radius: 0 !important;
 }
 
 button.quantityButton[data-appearance="outline"]:not(:disabled) {

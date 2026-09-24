@@ -97,14 +97,32 @@ class OrderSerializer(serializers.ModelSerializer):
     customer_id = serializers.IntegerField(source="customer.id", read_only=True)
     customer_name = serializers.CharField(source="customer.name", read_only=True)
     address_id = serializers.IntegerField(source="address.id", read_only=True, allow_null=True)
+    address_label = serializers.SerializerMethodField()
     subscription_plan_key = serializers.CharField(source="subscription.plan.key", read_only=True, allow_null=True)
     subscription_plan_name = serializers.CharField(source="subscription.plan.name", read_only=True, allow_null=True)
     subscription_cycle_number = serializers.IntegerField(source="subscription_cycle.cycle_number", read_only=True, allow_null=True)
     subscription_cycle_status = serializers.CharField(source="subscription_cycle.status", read_only=True, allow_null=True)
     subscription_cycle_starts_at = serializers.DateTimeField(source="subscription_cycle.starts_at", read_only=True, allow_null=True)
     subscription_cycle_ends_at = serializers.DateTimeField(source="subscription_cycle.ends_at", read_only=True, allow_null=True)
+    box_cycle_key = serializers.CharField(source="box_cycle.cycle_key", read_only=True, allow_null=True)
+    box_cycle_scheduled_for = serializers.DateTimeField(source="box_cycle.scheduled_for", read_only=True, allow_null=True)
+    box_cycle_status = serializers.CharField(source="box_cycle.status", read_only=True, allow_null=True)
+    box_template_name = serializers.CharField(source="box_cycle.subscription.template.name", read_only=True, allow_null=True)
+    box_order_creation_policy = serializers.CharField(source="box_cycle.subscription.order_creation_policy", read_only=True, allow_null=True)
+    box_recurrence_day = serializers.SerializerMethodField()
     items = OrderItemSerializer(many=True, read_only=True)
     status_history = OrderStatusHistorySerializer(many=True, read_only=True)
+
+    def get_address_label(self, order):
+        if order.address is None:
+            return ""
+        return ", ".join(part for part in [order.address.street, order.address.number, order.address.city, order.address.state] if part)
+
+    def get_box_recurrence_day(self, order):
+        if order.box_cycle is None:
+            return None
+        day = (order.box_cycle.subscription.schedule.recurrence_rule or {}).get("dayOfMonth")
+        return day if isinstance(day, int) else None
 
     class Meta:
         model = Order
@@ -116,6 +134,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "customer_id",
             "customer_name",
             "address_id",
+            "address_label",
             "subscription_id",
             "subscription_plan_key",
             "subscription_plan_name",
@@ -124,6 +143,13 @@ class OrderSerializer(serializers.ModelSerializer):
             "subscription_cycle_status",
             "subscription_cycle_starts_at",
             "subscription_cycle_ends_at",
+            "box_cycle_id",
+            "box_cycle_key",
+            "box_cycle_scheduled_for",
+            "box_cycle_status",
+            "box_template_name",
+            "box_order_creation_policy",
+            "box_recurrence_day",
             "currency",
             "subtotal_cents",
             "discount_cents",
@@ -153,6 +179,12 @@ class OrderCreateSerializer(serializers.Serializer):
     subscription_id = serializers.IntegerField(required=False, allow_null=True)
     subscription_cycle_id = serializers.IntegerField(required=False, allow_null=True)
     notes = serializers.CharField(required=False, allow_blank=True, default="")
+    items = serializers.ListField(child=OrderItemCreateSerializer(), allow_empty=False)
+
+
+class RoyalBoxCheckoutSerializer(serializers.Serializer):
+    address_id = serializers.IntegerField()
+    recurrence_day = serializers.IntegerField(min_value=1, max_value=31)
     items = serializers.ListField(child=OrderItemCreateSerializer(), allow_empty=False)
 
 

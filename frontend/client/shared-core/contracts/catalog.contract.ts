@@ -20,6 +20,8 @@ export interface ClientCollectionDto {
   key: string;
   name: string;
   description?: string | null;
+  image_url?: string | null;
+  image_alt?: string | null;
   status: "active" | "draft" | "archived";
   sort_order?: number;
   product_ids?: ProductId[];

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import type { ApiClientConfig, ApiErrorEnvelope } from "../../../shared-core";
 import {
   createAdminStandardRow,
@@ -6,8 +6,10 @@ import {
   loadAdminStandardOptionSources,
   loadAdminStandardRow,
   loadAdminStandardRows,
+  transitionAdminStandardRow,
   updateAdminStandardRow,
   type AdminStandardDataSourceConfig,
+  type AdminStandardOptionSourceScope,
 } from "../data-sources/standard.data-source";
 import {
   createAdminStandardDetailViewModel,
@@ -15,6 +17,7 @@ import {
   createAdminStandardInitialFilters,
   createAdminStandardListViewModel,
   type AdminStandardOptionSources,
+  type AdminStandardSortCriterionViewModel,
 } from "../view-models/standard.view-model";
 import { readAdminSessionCache, writeAdminSessionCache } from "../state/adminSessionCache";
 
@@ -24,6 +27,7 @@ export interface UseAdminStandardScreenOptions {
   initialSelectedRow?: Record<string, any> | null;
   onBack?: () => void;
   onSubmit?: (values: Record<string, any>) => void;
+  routeAction?: "create" | "detail" | "list";
 }
 
 function collectFormFields(formConfig: any): any[] {
@@ -62,31 +66,49 @@ export function useAdminStandardScreen({
   initialSelectedRow,
   onBack,
   onSubmit,
+  routeAction = "list",
 }: UseAdminStandardScreenOptions) {
   const config = entityConfig?.listPage || entityConfig || {};
   const dataSource = entityConfig?.dataSource as AdminStandardDataSourceConfig | undefined;
   const rowsCacheKey = dataSource?.key ? `standard-rows:${dataSource.key}` : null;
   const cachedRows = rowsCacheKey ? readAdminSessionCache<any[]>(rowsCacheKey) : null;
+  const optionSourceScope: AdminStandardOptionSourceScope = routeAction === "create"
+    ? "form"
+    : routeAction === "detail"
+      ? "detail"
+      : "list";
   const [search, setSearch] = useState("");
   const [filterValues, setFilterValues] = useState<Record<string, string>>(() =>
     createAdminStandardInitialFilters(config.filters || []),
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(config.pagination?.pageSize || 10);
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortCriterion, setSortCriterion] = useState<AdminStandardSortCriterionViewModel | null>(() => (
+    config.defaultSort?.key ? { key: config.defaultSort.key, direction: config.defaultSort.direction === "asc" ? "asc" : "desc" } : null
+  ));
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [activeTab, setActiveTab] = useState("summary");
   const [rowsOverride, setRowsOverride] = useState<any[] | null>(cachedRows);
+  const [loadedRowsCacheKey, setLoadedRowsCacheKey] = useState<string | null>(cachedRows ? rowsCacheKey : null);
   const [optionSources, setOptionSources] = useState<AdminStandardOptionSources>({});
+  const [isOptionSourcesLoading, setIsOptionSourcesLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(!cachedRows && Boolean(dataSource?.key));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updatingWorkflowRowId, setUpdatingWorkflowRowId] = useState<string | number | null>(null);
   const [isDeletingDetail, setIsDeletingDetail] = useState(false);
   const [isEditingDetail, setIsEditingDetail] = useState(false);
   const [isFallback, setIsFallback] = useState(false);
   const [error, setError] = useState<ApiErrorEnvelope | null>(null);
   const [selectedRowOverride, setSelectedRowOverride] = useState<Record<string, any> | null>(null);
-  const detailRow = selectedRowOverride || initialSelectedRow || {};
+  const [loadedDetailId, setLoadedDetailId] = useState<string | null>(null);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const previousRouteActionRef = useRef(routeAction);
+  const rowsForCurrentDataSource = loadedRowsCacheKey === rowsCacheKey ? rowsOverride : cachedRows;
+  const selectedRowId = initialSelectedRow?.id === undefined ? null : String(initialSelectedRow.id);
+  const enteredDetail = routeAction === "detail" && previousRouteActionRef.current !== "detail";
+  const detailRow = selectedRowOverride && String(selectedRowOverride.id) === selectedRowId
+    ? selectedRowOverride
+    : initialSelectedRow || {};
   const detailConfig = entityConfig?.detailPage;
   const formConfig = entityConfig?.addPage || entityConfig?.form;
   const editableDetailFields = collectDetailFields(detailConfig).filter((field: any) => field.editable);
@@ -95,10 +117,12 @@ export function useAdminStandardScreen({
     let isActive = true;
 
     async function loadSources() {
-      const result = await loadAdminStandardOptionSources(entityConfig, apiConfig);
+      setIsOptionSourcesLoading(true);
+      const result = await loadAdminStandardOptionSources(entityConfig, apiConfig, { scope: optionSourceScope });
       if (!isActive) return;
       setOptionSources(result.optionSources);
       if (result.error) setError(result.error);
+      setIsOptionSourcesLoading(false);
     }
 
     loadSources();
@@ -106,7 +130,7 @@ export function useAdminStandardScreen({
     return () => {
       isActive = false;
     };
-  }, [apiConfig, entityConfig]);
+  }, [apiConfig, entityConfig, optionSourceScope]);
 
   useEffect(() => {
     let isActive = true;
@@ -114,17 +138,22 @@ export function useAdminStandardScreen({
     async function loadRows() {
       if (!dataSource?.key) {
         setRowsOverride(null);
+        setLoadedRowsCacheKey(null);
         setIsFallback(false);
         setError(null);
         setIsLoading(false);
         return;
       }
 
-      setIsLoading(true);
+      setRowsOverride(cachedRows);
+      setLoadedRowsCacheKey(cachedRows ? rowsCacheKey : null);
+      setIsLoading(!cachedRows);
       const result = await loadAdminStandardRows(dataSource, apiConfig);
       if (!isActive) return;
 
-      setRowsOverride(result.rows);
+      const nextRows = result.error && cachedRows ? cachedRows : result.rows;
+      setRowsOverride(nextRows);
+      setLoadedRowsCacheKey(nextRows ? rowsCacheKey : null);
       if (!result.error && rowsCacheKey && Array.isArray(result.rows)) {
         writeAdminSessionCache(rowsCacheKey, result.rows);
       }
@@ -138,7 +167,16 @@ export function useAdminStandardScreen({
     return () => {
       isActive = false;
     };
-  }, [apiConfig, dataSource]);
+  }, [apiConfig, dataSource, rowsCacheKey]);
+
+  useEffect(() => {
+    previousRouteActionRef.current = routeAction;
+  }, [routeAction]);
+
+  useEffect(() => {
+    setSortCriterion(config.defaultSort?.key ? { key: config.defaultSort.key, direction: config.defaultSort.direction === "asc" ? "asc" : "desc" } : null);
+    setCurrentPage(1);
+  }, [config.defaultSort?.direction, config.defaultSort?.key]);
 
   useEffect(() => {
     let isActive = true;
@@ -146,15 +184,25 @@ export function useAdminStandardScreen({
 
     async function loadDetail() {
       setSelectedRowOverride(null);
-      if (!dataSource?.key || rowId === undefined) return;
+      setLoadedDetailId(null);
+      if (routeAction !== "detail" || !dataSource?.key || rowId === undefined) {
+        setIsDetailLoading(false);
+        return;
+      }
+
+      setIsDetailLoading(true);
 
       const result = await loadAdminStandardRow(dataSource, rowId, apiConfig);
       if (!isActive) return;
       if (result.error) {
         setError(result.error);
+        setLoadedDetailId(String(rowId));
+        setIsDetailLoading(false);
         return;
       }
       setSelectedRowOverride(result.row);
+      setLoadedDetailId(String(rowId));
+      setIsDetailLoading(false);
     }
 
     loadDetail();
@@ -162,7 +210,7 @@ export function useAdminStandardScreen({
     return () => {
       isActive = false;
     };
-  }, [apiConfig, dataSource, initialSelectedRow?.id]);
+  }, [apiConfig, dataSource, initialSelectedRow?.id, routeAction]);
 
   const setFilterValue = useCallback((key: string, value: string) => {
     setFilterValues((current) => ({ ...current, [key]: value }));
@@ -180,14 +228,10 @@ export function useAdminStandardScreen({
     setCurrentPage(1);
   }, [config.filters]);
 
-  const setListSort = useCallback((key: string) => {
-    setSortKey((currentKey) => {
-      if (currentKey === key) {
-        setSortDirection((currentDirection) => (currentDirection === "asc" ? "desc" : "asc"));
-        return currentKey;
-      }
-      setSortDirection("asc");
-      return key;
+  const cycleListSortDirection = useCallback((key: string) => {
+    setSortCriterion((current) => {
+      if (current?.key !== key) return { key, direction: "desc" };
+      return { key, direction: current.direction === "desc" ? "asc" : "desc" };
     });
     setCurrentPage(1);
   }, []);
@@ -252,6 +296,23 @@ export function useAdminStandardScreen({
     setIsEditingDetail(false);
   }, [apiConfig, dataSource, detailRow, formValues]);
 
+  const transitionWorkflowRow = useCallback(async (rowId: string | number, statusKey: string) => {
+    const workflow = entityConfig?.listPage?.workflow;
+    if (!workflow?.actionKey) return;
+    setError(null);
+    setUpdatingWorkflowRowId(rowId);
+    const result = await transitionAdminStandardRow(dataSource, rowId, workflow.actionKey, statusKey, apiConfig);
+    setUpdatingWorkflowRowId(null);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    if (result.row) {
+      setRowsOverride((current) => current?.map((row) => String(row.id) === String(result.row.id) ? result.row : row) || current);
+      setSelectedRowOverride((current) => current && String(current.id) === String(result.row?.id) ? result.row : current);
+    }
+  }, [apiConfig, dataSource, entityConfig?.listPage?.workflow]);
+
   const deleteDetail = useCallback(async () => {
     const rowId = detailRow?.id;
     if (!dataSource?.key || rowId === undefined) return;
@@ -284,34 +345,46 @@ export function useAdminStandardScreen({
       error,
       formViewModel: createAdminStandardFormViewModel(formConfig, formValues, optionSources),
       formValues,
+      hasEditableDetailFields: editableDetailFields.length > 0,
+      isDetailInitialLoading: routeAction === "detail"
+        && Boolean(dataSource?.key)
+        && selectedRowId !== null
+        && (enteredDetail || isDetailLoading || loadedDetailId !== selectedRowId),
+      isFormInitialLoading: isOptionSourcesLoading,
       isEditingDetail,
       isDeletingDetail,
+      isDetailLoading,
       isFallback,
-      isInitialLoading: isLoading && rowsOverride === null,
+      isInitialLoading: Boolean(dataSource?.key) && rowsForCurrentDataSource === null,
       isLoading,
+      isOptionSourcesLoading,
       isSubmitting,
+      updatingWorkflowRowId,
+      enteredDetail,
       listViewModel: createAdminStandardListViewModel(
         entityConfig,
         search,
         filterValues,
-        rowsOverride,
+        rowsForCurrentDataSource,
         currentPage,
         pageSize,
-        sortKey,
-        sortDirection,
+        sortCriterion,
+        optionSources,
       ),
       onBack,
       optionSources,
       resetListFilters,
+      routeAction,
       search,
       setActiveTab,
       setCurrentPage,
       setFilterValue,
       setFormValue,
-      setListSort,
+      cycleListSortDirection,
       setSearch: setSearchValue,
       submitDetailEdit,
       submitForm,
+      transitionWorkflowRow,
     }),
     [
       activeTab,
@@ -319,6 +392,7 @@ export function useAdminStandardScreen({
       cancelDetailEdit,
       deleteDetail,
       currentPage,
+      dataSource?.key,
       entityConfig,
       filterValues,
       formValues,
@@ -327,24 +401,32 @@ export function useAdminStandardScreen({
       formConfig,
       isEditingDetail,
       isDeletingDetail,
+      isDetailLoading,
       isFallback,
       isLoading,
+      isOptionSourcesLoading,
       isSubmitting,
+      updatingWorkflowRowId,
+      enteredDetail,
       onBack,
       optionSources,
       pageSize,
       resetListFilters,
+      routeAction,
       rowsOverride,
+      rowsForCurrentDataSource,
       rowsCacheKey,
       search,
-      setListSort,
+      selectedRowId,
+      loadedDetailId,
+      cycleListSortDirection,
       setFilterValue,
       setFormValue,
       setSearchValue,
-      sortDirection,
-      sortKey,
+      sortCriterion,
       submitDetailEdit,
       submitForm,
+      transitionWorkflowRow,
     ],
   );
 }

@@ -9,6 +9,8 @@ import type {
   AdminDeliveryConfirmInput,
   AdminDeliveryCreateInput,
   AdminDeliveryDto,
+  AdminDeliveryPromisePolicyDto,
+  AdminDeliveryPromisePolicyInput,
   AdminDeliveryTransitionInput,
   AdminDeliveryView,
 } from "../contracts/deliveries.contract";
@@ -17,6 +19,8 @@ import {
   mapAdminDeliveryConfirmInput,
   mapAdminDeliveryCreateInput,
   mapAdminDeliveryDto,
+  mapAdminDeliveryPromisePolicyDto,
+  mapAdminDeliveryPromisePolicyInput,
   mapAdminDeliveryTransitionInput,
 } from "../mappers/deliveries.mapper";
 
@@ -53,6 +57,38 @@ export function createAdminDeliveriesApi(config: ApiClientConfig = {}) {
 
       await throwIfApiError(response);
       return ((await response.json()) as AdminDeliveryDto[]).map(mapAdminDeliveryDto);
+    },
+    async listPromisePolicies() {
+      const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/deliveries/admin/promise-policies/"), {
+        headers: buildAdminDeliveriesHeaders(config),
+      });
+      await throwIfApiError(response);
+      return ((await response.json()) as AdminDeliveryPromisePolicyDto[]).map(mapAdminDeliveryPromisePolicyDto);
+    },
+    async detailPromisePolicy(policyId: string | number) {
+      const response = await fetcher(resolveUrl(config.baseUrl, `/api/v1/deliveries/admin/promise-policies/${policyId}/`), {
+        headers: buildAdminDeliveriesHeaders(config),
+      });
+      await throwIfApiError(response);
+      return mapAdminDeliveryPromisePolicyDto((await response.json()) as AdminDeliveryPromisePolicyDto);
+    },
+    async createPromisePolicy(input: AdminDeliveryPromisePolicyInput) {
+      const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/deliveries/admin/promise-policies/"), {
+        method: "POST",
+        headers: buildAdminDeliveriesHeaders(config),
+        body: JSON.stringify(mapAdminDeliveryPromisePolicyInput(input)),
+      });
+      await throwIfApiError(response);
+      return mapAdminDeliveryPromisePolicyDto((await response.json()) as AdminDeliveryPromisePolicyDto);
+    },
+    async updatePromisePolicy(policyId: string | number, input: AdminDeliveryPromisePolicyInput) {
+      const response = await fetcher(resolveUrl(config.baseUrl, `/api/v1/deliveries/admin/promise-policies/${policyId}/`), {
+        method: "PUT",
+        headers: buildAdminDeliveriesHeaders(config),
+        body: JSON.stringify(mapAdminDeliveryPromisePolicyInput(input)),
+      });
+      await throwIfApiError(response);
+      return mapAdminDeliveryPromisePolicyDto((await response.json()) as AdminDeliveryPromisePolicyDto);
     },
     async detail(deliveryId: string | number): Promise<AdminDeliveryView> {
       const response = await fetcher(

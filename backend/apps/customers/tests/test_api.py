@@ -74,3 +74,37 @@ class CustomersApiTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 403, response.data)
+
+    def test_customer_can_save_a_named_address_and_read_it_from_profile(self):
+        self.authenticate("cliente@royalprime.local", "RoyalPrime123!")
+
+        create_response = self.client.post(
+            "/api/v1/customers/me/addresses/",
+            {
+                "label": "Casa",
+                "postal_code": "01310-100",
+                "street": "Avenida Paulista",
+                "number": "1000",
+                "complement": "Apto 12",
+                "district": "Bela Vista",
+                "city": "São Paulo",
+                "state": "SP",
+                "is_default": True,
+            },
+            format="json",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(create_response.status_code, 201, create_response.data)
+        self.assertEqual(create_response.data["label"], "Casa")
+
+        profile_response = self.client.get(
+            "/api/v1/customers/me/",
+            HTTP_X_ORGANIZATION_SLUG="royalprime",
+        )
+
+        self.assertEqual(profile_response.status_code, 200, profile_response.data)
+        saved_address = next(address for address in profile_response.data["addresses"] if address["id"] == create_response.data["id"])
+        self.assertEqual(saved_address["label"], "Casa")
+        self.assertEqual(saved_address["state"], "SP")
+        self.assertTrue(saved_address["is_default"])

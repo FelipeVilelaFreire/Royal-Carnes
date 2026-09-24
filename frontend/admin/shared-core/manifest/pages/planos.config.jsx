@@ -1,9 +1,15 @@
+import { subscriptionPlanAccentDefault } from "../../../../shared-core/manifest";
+
 const planEntitlementColumns = [
   {
     key: "targetKey",
     labelKey: "planos.fields.capacity",
+    presentation: "media",
     type: "select",
     required: true,
+    searchable: true,
+    searchPlaceholderKey: "planos.fields.searchCapacityPlaceholder",
+    searchEmptyKey: "planos.fields.emptyCapacitySearch",
     source: "capacidadeAlvosPai",
     writeOptionMeta: {
       hierarchyLabel: "hierarchyLabel",
@@ -31,7 +37,7 @@ export const planosConfig = {
     actionLabelKey: "planos.ctaAdd",
     searchPlaceholderKey: "planos.searchPlaceholder",
     columns: [
-      { key: "name", labelKey: "planos.tableHeaders.name" },
+      { key: "name", labelKey: "planos.tableHeaders.name", showAvatar: true, avatarColorKey: "accentColor", avatarShowInitials: false },
       { key: "priceCents", labelKey: "planos.tableHeaders.price", valueType: "currency", currency: "BRL", locale: "pt-BR" },
       { key: "billingIntervalLabelKey", labelKey: "planos.tableHeaders.billingInterval", valueType: "translationKey" },
       { key: "entitlementCount", labelKey: "planos.tableHeaders.includedItems" },
@@ -39,6 +45,15 @@ export const planosConfig = {
       { key: "statusLabelKey", labelKey: "planos.tableHeaders.status", valueType: "translationKey", statusToneKey: "statusTone" }
     ],
     filters: [
+      {
+        key: "billingInterval",
+        labelKey: "planos.tableHeaders.billingInterval",
+        options: [
+          { value: "week", labelKey: "planos.billingIntervals.week" },
+          { value: "month", labelKey: "planos.billingIntervals.month" },
+          { value: "year", labelKey: "planos.billingIntervals.year" }
+        ]
+      },
       {
         key: "status",
         labelKey: "planos.filters.status",
@@ -104,6 +119,12 @@ export const planosConfig = {
                   { value: "month", labelKey: "planos.billingIntervals.month" },
                   { value: "year", labelKey: "planos.billingIntervals.year" }
                 ]
+              },
+              {
+                key: "accentColor",
+                labelKey: "planos.fields.accentColor",
+                type: "color",
+                editable: true,
               },
               { key: "priceCents", displayKey: "priceLabel", labelKey: "planos.fields.price", type: "currency", currency: "BRL", locale: "pt-BR", editable: true },
               { key: "trialDays", labelKey: "planos.fields.trialDays", type: "number", editable: true },
@@ -172,6 +193,13 @@ export const planosConfig = {
               { value: "month", labelKey: "planos.billingIntervals.month" },
               { value: "year", labelKey: "planos.billingIntervals.year" }
             ]
+          },
+          {
+            key: "accentColor",
+            labelKey: "planos.fields.accentColor",
+            type: "color",
+            defaultValue: subscriptionPlanAccentDefault,
+            required: true,
           },
           { key: "priceCents", labelKey: "planos.fields.price", type: "currency", currency: "BRL", locale: "pt-BR", required: true },
           { key: "trialDays", labelKey: "planos.fields.trialDays", type: "number", defaultValue: 0 },

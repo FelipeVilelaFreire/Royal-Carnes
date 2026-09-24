@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useClientOrders } from "../../../../../shared-core/hooks/useClientOrders";
 import { useClientStrings } from "../../../../../shared-core/hooks/useClientStrings";
-import { Button, Container, Inline, Modal, Stack, Surface, Text } from "@foundation/ui/native";
+import { Button, Container, Inline, Stack, Surface, Text } from "@foundation/ui/native";
 import { useUi } from "@foundation/ui/native/context";
 import { ScreenHeader } from "@foundation/product-components/screens/native/ScreenHeader";
 import { normalizeScreenHeaderScrollProgress } from "@foundation/product-components/screens/shared";
 import { type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 import { EmptyStateScreen } from "../feedback/EmptyStateScreen/EmptyStateScreen";
+import { CurrentOrderPanel } from "./components/CurrentOrderPanel";
+import { OrderDetailDialog } from "./components/OrderDetailDialog";
+import { OrdersHistory } from "./components/OrdersHistory";
 
 export interface MeusPedidosViewProps {
   activePath?: string;
@@ -111,122 +114,11 @@ export const MeusPedidosView: React.FC<MeusPedidosViewProps> = () => {
             </Inline>
           </Surface>
 
-          {currentOrder ? (
-            <Surface appearance="outline" tone="neutral">
-              <Stack gap="sm">
-                <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
-                  <Stack gap="xs">
-                    <Text tone="muted" variant="caption" weight="bold">
-                      {strings.currentOrder.badge}
-                    </Text>
-                    <Text variant="h3" weight="bold">{currentOrder.code}</Text>
-                    <Text tone="muted" variant="caption">
-                      {strings.format.dashSeparated
-                        .replace("{first}", currentOrder.kindLabel)
-                        .replace("{second}", currentOrder.statusLabel)}
-                    </Text>
-                  </Stack>
-                  <Text tone="primary" weight="bold">{currentOrder.totalLabel}</Text>
-                </Inline>
-                <Text tone="muted">{currentOrder.summary}</Text>
-                <Stack gap="sm">
-                  {currentOrder.items.slice(0, 4).map((item) => (
-                    <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
-                      <Text weight="bold">{item.name}</Text>
-                      <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
-                    </Inline>
-                  ))}
-                </Stack>
-                <Button appearance="outline" tone="neutral" size="sm" onPress={() => setSelectedOrderId(currentOrder.id)}>
-                  {strings.history.details}
-                </Button>
-              </Stack>
-            </Surface>
-          ) : null}
+          {currentOrder ? <CurrentOrderPanel nextBox={nextBox} onOpenDetails={setSelectedOrderId} order={currentOrder} /> : null}
 
-          {nextBox ? (
-            <Surface appearance="outline" tone="neutral">
-              <Stack gap="sm">
-                <Text tone="primary" variant="caption" weight="bold">
-                  {strings.nextBox.badge}
-                </Text>
-                <Text variant="h3" weight="bold">{strings.nextBox.title}</Text>
-                <Text weight="bold">{nextBox.deliveryEstimateLabel}</Text>
-                <Text tone="muted">{nextBox.summary}</Text>
-              </Stack>
-            </Surface>
-          ) : null}
-
-        <Stack gap="sm">
-          <Text variant="h3" weight="bold">{strings.history.title}</Text>
-          {rows.length ? (
-            rows.map((order) => (
-              <Surface
-                key={order.id}
-                appearance="outline"
-                tone="neutral"
-              >
-                <Stack gap="sm">
-                  <Inline gap="sm" style={{ justifyContent: "space-between" }}>
-                    <Text weight="bold">{order.code}</Text>
-                    <Text tone="primary" variant="caption" weight="bold">{order.totalLabel}</Text>
-                  </Inline>
-                  <Text tone="muted" variant="caption">
-                    {strings.format.dashSeparated.replace("{first}", order.statusLabel).replace("{second}", `${order.itemCount} ${strings.history.itemSuffix}`)}
-                  </Text>
-                  <Button appearance="outline" tone="neutral" size="sm" onPress={() => setSelectedOrderId(order.id)}>
-                    {strings.history.details}
-                  </Button>
-                </Stack>
-              </Surface>
-            ))
-          ) : (
-            <Surface
-              appearance="soft"
-              tone="neutral"
-            >
-              <Text tone="muted">
-                {strings.states.empty}
-              </Text>
-            </Surface>
-          )}
+          <OrdersHistory onOpenDetails={setSelectedOrderId} orders={rows} />
         </Stack>
-        </Stack>
-        <Modal
-          closeLabel={strings.detail.close}
-          description={selectedOrder ? `${selectedOrder.code} - ${selectedOrder.kindLabel}` : undefined}
-          onClose={() => setSelectedOrderId(null)}
-          open={Boolean(selectedOrder)}
-          title={selectedOrder?.title || strings.detail.title}
-        >
-          {selectedOrder ? (
-            <Stack gap="sm">
-              <Inline gap="sm" style={{ alignItems: "flex-start", justifyContent: "space-between" }}>
-                <Text tone="muted" variant="caption">{selectedOrder.statusLabel}</Text>
-                <Text tone="primary" weight="bold">{selectedOrder.totalLabel}</Text>
-              </Inline>
-              <Text tone="muted">{selectedOrder.summary}</Text>
-              <Surface appearance="outline" tone="neutral">
-                <Stack gap="xs">
-                  <Text tone="muted" variant="caption" weight="bold">
-                    {strings.detail.payment}
-                  </Text>
-                  <Text weight="bold">
-                    {selectedOrder.paymentMethodLabel}
-                  </Text>
-                </Stack>
-              </Surface>
-              <Stack gap="sm">
-                {selectedOrder.items.map((item) => (
-                  <Inline gap="sm" key={item.id} style={{ justifyContent: "space-between" }}>
-                    <Text weight="bold">{item.name}</Text>
-                    <Text tone="muted" variant="caption">{item.quantityLabel}</Text>
-                  </Inline>
-                ))}
-              </Stack>
-            </Stack>
-          ) : null}
-        </Modal>
+        <OrderDetailDialog onClose={() => setSelectedOrderId(null)} open={Boolean(selectedOrder)} order={selectedOrder} />
       </Container>
     </ScrollContainer>
   );

@@ -1,7 +1,7 @@
 .emptyPanel {
   --ui-surface-bg: color-mix(in srgb, var(--theme--color-surface-container, var(--theme--color-surfaceContainer)) 90%, var(--theme--color-background));
-  --ui-surface-border: color-mix(in srgb, var(--theme--color-border) 84%, transparent);
-  --ui-surface-border-width: var(--theme--borders-hairline);
+  --ui-surface-border: transparent !important;
+  --ui-surface-border-width: var(--theme--borders-none) !important;
   --ui-surface-color: var(--theme--color-text);
   --ui-surface-padding-x: var(--theme--spacing-space2xl);
   --ui-surface-padding-y: var(--theme--spacing-space2xl);

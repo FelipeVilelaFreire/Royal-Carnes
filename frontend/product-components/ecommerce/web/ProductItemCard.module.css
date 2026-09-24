@@ -17,7 +17,11 @@
 }
 
 .card[data-selected="true"] {
+  --ui-surface-bg: linear-gradient(180deg, color-mix(in srgb, var(--product-card-bg) 88%, var(--product-card-accent)), var(--product-card-bg));
   --ui-surface-border: var(--product-card-accent);
+  box-shadow:
+    0 0 0 var(--theme--borders-hairline) color-mix(in srgb, var(--product-card-accent) 72%, transparent),
+    0 0 var(--theme--spacing-spaceLg) color-mix(in srgb, var(--product-card-accent) 18%, transparent);
 }
 
 .card[data-disabled="true"] {
@@ -74,6 +78,93 @@
   gap: var(--theme--spacing-space2xs);
   min-width: 0;
   padding: var(--theme--spacing-spaceSm);
+}
+
+.skeletonCard {
+  pointer-events: none;
+}
+
+/* Loading needs an edge to preserve the card silhouette while its content is absent. */
+.skeletonCard[data-preset="catalogo"] {
+  --ui-surface-border: color-mix(in srgb, var(--product-card-border) 82%, transparent);
+  border-radius: var(--theme--radius-2xl) !important;
+  overflow: hidden !important;
+}
+
+.skeletonMedia {
+  flex: 0 0 auto;
+}
+
+.skeletonMediaFill {
+  block-size: 100% !important;
+  inline-size: 100%;
+}
+
+.skeletonMetaHeader,
+.skeletonFooter {
+  align-items: center;
+  display: flex;
+  gap: var(--theme--spacing-spaceSm);
+  justify-content: space-between;
+}
+
+.skeletonMetaHeader {
+  justify-content: start;
+}
+
+.skeletonCopy,
+.skeletonPrice {
+  display: grid;
+  gap: var(--theme--spacing-space2xs);
+  min-inline-size: 0;
+}
+
+.skeletonCopy {
+  margin-block-start: 0;
+}
+
+.skeletonTitle {
+  max-inline-size: 72%;
+}
+
+.skeletonDescription {
+  max-inline-size: 58%;
+}
+
+.skeletonDetail {
+  margin-block-start: var(--theme--spacing-spaceXs);
+  max-inline-size: 36%;
+}
+
+.skeletonFooter {
+  margin-block-start: auto;
+  min-inline-size: 0;
+  padding-block-start: var(--theme--spacing-spaceSm);
+}
+
+.skeletonFooter[data-with-price="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.skeletonPriceLabel {
+  max-inline-size: 42%;
+}
+
+.skeletonPriceValue {
+  max-inline-size: 68%;
+}
+
+.skeletonAction {
+  max-inline-size: 42%;
+}
+
+.skeletonFooter[data-with-price="false"] {
+  justify-content: end;
+}
+
+.skeletonFooter[data-with-price="false"] .skeletonAction {
+  max-inline-size: 58%;
 }
 
 .catalogMetaHeader {
@@ -152,7 +243,7 @@
   min-width: 0;
   overflow: hidden;
   position: relative;
-  transition: width var(--theme--motion-durationMd) var(--theme--motion-easingStandard);
+  transition: width var(--theme--motion-durationLg) var(--theme--motion-easingEmphasized);
   width: var(--theme--dimensions-height-md);
 }
 
@@ -192,7 +283,7 @@
 .catalogAction[data-expanded="true"] .catalogCartButton {
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.84);
+  transform: translateX(calc(var(--theme--spacing-space2xs) * -1)) scale(0.72);
 }
 
 .catalogAction[data-presentation="label"] .catalogCartButton {
@@ -223,8 +314,8 @@
   padding-inline: 0;
   pointer-events: none;
   position: absolute;
-  transform: scale(0.9);
-  transition: opacity var(--theme--motion-durationSm) var(--theme--motion-easingStandard), transform var(--theme--motion-durationSm) var(--theme--motion-easingStandard);
+  transform: translateX(var(--theme--spacing-spaceXs)) scale(0.9);
+  transition: opacity var(--theme--motion-durationMd) var(--theme--motion-easingEmphasized), transform var(--theme--motion-durationMd) var(--theme--motion-easingEmphasized);
 }
 
 .catalogAction[data-expanded="true"] .catalogQuantityControl {

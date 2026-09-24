@@ -55,6 +55,31 @@ componente.
 Todos os textos vem do locale ativo. `mobileTitle` e opcional e reduz somente a
 copy exibida no mobile; nao cria uma segunda fonte de texto.
 
+`containerWidth` usa a mesma receita de `Container`. O padrao `wide` preserva
+o Portal; uma surface administrativa que ja ocupa a largura total pode declarar
+`full` para alinhar o cabecalho ao seu `SectionContainer`, sem CSS local de
+compensacao.
+
+`contentWidth` controla a largura da composicao do cabecalho. O
+padrao `sm` preserva o Portal; uma surface administrativa pode declarar `md`
+quando esse era o ritmo do cabecalho da pagina existente.
+
+Uma lista administrativa com comandos distantes pode declarar `full`: titulo,
+subtitulo e `metadata` ficam no inicio, enquanto `actionsAlign="end"` fixa os
+comandos no final da largura do cabecalho. `metadata` e o local para contexto
+como a contagem de registros; `actions` fica restrito a comandos da rota.
+Quando esse contexto pertence diretamente ao titulo, `metadataPosition="title"`
+o posiciona ao lado dele. `descriptionVariant="caption"` reduz uma descricao
+operacional sem alterar o padrao de leitura do Portal.
+
+`containerInset="sectionFull"` alinha o inicio do texto a uma
+`SectionContainer` de 20 colunas. O padrao `page` preserva o gutter normal do
+Portal; a receita tambem resolve o inset equivalente no mobile.
+
+`actions` recebe controles operacionais da rota, como contagem, troca de
+visualizacao e criacao. No desktop eles ficam alinhados ao titulo; no mobile
+acompanham o cabecalho recolhivel, sem uma segunda faixa local.
+
 ## Modos mobile
 
 - `full`: titulo, eyebrow e descricao.

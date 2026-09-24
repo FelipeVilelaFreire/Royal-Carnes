@@ -1,5 +1,6 @@
 export type ScreenHeaderMobileMode = "collapsible" | "compact" | "full";
 export type ScreenHeaderMobileGutter = "none" | "page";
+export type ScreenHeaderAlign = "start" | "center";
 
 export interface ScreenHeaderContent {
   description?: string;

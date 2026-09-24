@@ -26,7 +26,10 @@ export function createClientOrdersApi(config: ApiClientConfig = {}) {
   return {
     async config(): Promise<ClientOrderConfigView> {
       const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/orders/config/"), {
-        headers: buildApiHeaders({ organizationSlug: config.organizationSlug }),
+        headers: buildApiHeaders({
+          token: config.getAccessToken?.(),
+          organizationSlug: config.organizationSlug,
+        }),
       });
 
       await throwIfApiError(response);
@@ -62,6 +65,23 @@ export function createClientOrdersApi(config: ApiClientConfig = {}) {
           organizationSlug: config.organizationSlug,
         }),
         body: JSON.stringify(mapClientOrderCreateInput(input)),
+      });
+
+      await throwIfApiError(response);
+      return mapClientOrderDto((await response.json()) as ClientOrderDto);
+    },
+    async createRoyalBox(input: ClientOrderCreateInput, recurrenceDay: number): Promise<ClientOrderView> {
+      const response = await fetcher(resolveUrl(config.baseUrl, "/api/v1/orders/me/royal-box/"), {
+        method: "POST",
+        headers: buildApiHeaders({
+          token: config.getAccessToken?.(),
+          organizationSlug: config.organizationSlug,
+        }),
+        body: JSON.stringify({
+          address_id: input.addressId,
+          recurrence_day: recurrenceDay,
+          items: mapClientOrderCreateInput(input).items,
+        }),
       });
 
       await throwIfApiError(response);

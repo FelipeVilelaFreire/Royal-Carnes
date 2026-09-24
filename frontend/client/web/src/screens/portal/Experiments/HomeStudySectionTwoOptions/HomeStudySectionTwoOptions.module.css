@@ -1,0 +1,28 @@
+.section { background: #11100d; color: #f6f0e5; font-family: Arial, sans-serif; padding: 52px 9vw; }
+.section > p, .section > div > p { color: #e4bd56; font-size: 10px; font-weight: 700; letter-spacing: .16em; margin: 0; }
+.section h2 { font: 400 clamp(30px, 4vw, 51px)/.98 Georgia, serif; letter-spacing: -.05em; margin: 11px 0 25px; }
+.asymmetricGrid { display: grid; gap: 10px; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: repeat(2, 170px); }
+.asymmetricGrid a { overflow: hidden; position: relative; text-decoration: none; }
+.asymmetricGrid a:first-child { grid-row: span 2; }
+.asymmetricGrid img, .collectionRail img, .mosaic img, .banners img { filter: brightness(.66); height: 100%; object-fit: cover; position: absolute; width: 100%; }
+.asymmetricGrid span, .collectionRail span, .mosaic span { bottom: 15px; color: #f6f0e5; font: 400 22px Georgia, serif; left: 15px; position: absolute; }
+.optionTwo { display: grid; gap: 25px; }
+.optionTwo h2 { margin-bottom: 0; }
+.collectionRail { display: grid; gap: 12px; grid-auto-columns: minmax(245px, 1fr); grid-auto-flow: column; overflow-x: auto; }
+.collectionRail a { aspect-ratio: .9; overflow: hidden; position: relative; text-decoration: none; }
+.mosaic { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+.mosaic a { aspect-ratio: 1.65; overflow: hidden; position: relative; text-decoration: none; }
+.optionFour > p { margin-bottom: 18px; }
+.banners { display: grid; gap: 12px; }
+.banners a { min-height: 250px; overflow: hidden; position: relative; text-decoration: none; }
+.banners img { filter: brightness(.56); }
+.banners span { bottom: 25px; color: #f6f0e5; display: grid; gap: 8px; left: 25px; position: absolute; }
+.banners b { color: #e4bd56; font: 700 10px Arial, sans-serif; letter-spacing: .15em; }
+.banners strong { font: 400 clamp(28px, 3.7vw, 48px)/.98 Georgia, serif; letter-spacing: -.05em; }
+.collectionList { border-top: 1px solid #4d442f; }
+.collectionList a { align-items: center; border-bottom: 1px solid #4d442f; color: #f6f0e5; display: grid; gap: 20px; grid-template-columns: 140px 1fr; padding: 12px 0; text-decoration: none; }
+.collectionList img { aspect-ratio: 1.5; object-fit: cover; width: 100%; }
+.collectionList span { display: grid; gap: 7px; }
+.collectionList strong { font: 400 26px Georgia, serif; }
+.collectionList small { color: #c9c0ae; font-size: 12px; }
+@media (max-width: 700px) { .section { padding: 38px 24px; }.asymmetricGrid { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 150px); }.asymmetricGrid a:first-child { grid-column: span 2; grid-row: auto; }.collectionRail { grid-auto-columns: 76%; }.mosaic { grid-template-columns: 1fr; }.mosaic a { aspect-ratio: 1.35; }.banners a { min-height: 210px; }.collectionList a { grid-template-columns: 100px 1fr; }.collectionList strong { font-size: 21px; } }

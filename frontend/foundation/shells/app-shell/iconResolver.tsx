@@ -6,11 +6,15 @@ import {
   CartIcon,
   CheckIcon,
   ChevronRightIcon,
+  CreditCardIcon,
   FlameIcon,
+  LayersIcon,
   MenuIcon,
-  SearchIcon,
+  PlanIcon,
+  RepeatIcon,
   SettingsIcon,
   StoreIcon,
+  TagIcon,
   TruckIcon,
   UserIcon,
 } from "../../ui/web/Icon/AppIcons";
@@ -24,10 +28,15 @@ export function renderAppShellIcon(item: AppShellNavigationItem, color: string, 
   if (item.icon && React.isValidElement(item.icon)) return item.icon;
 
   const name = normalizeIconName(item);
-  if (["box", "package", "inventory", "estoque", "subscription", "assinaturas", "planos", "minhacaixa"].includes(name)) return <BoxIcon size={size} color={color} />;
-  if (["cart", "order", "orders", "pedidos", "pedir", "checkout", "payment", "payments", "pagamentos"].includes(name)) return <CartIcon size={size} color={color} />;
+  if (["box", "package", "inventory", "estoque", "minhacaixa"].includes(name)) return <BoxIcon size={size} color={color} />;
+  if (["cart", "order", "orders", "pedidos", "pedir", "checkout"].includes(name)) return <CartIcon size={size} color={color} />;
   if (["catalog", "catalogo", "store", "produtos", "categorias", "cortes", "home", "dashboard"].includes(name)) return <StoreIcon size={size} color={color} />;
   if (["delivery", "deliveries", "truck", "royaldelivery", "tracking"].includes(name)) return <TruckIcon size={size} color={color} />;
+  if (["plan", "plans", "planos"].includes(name)) return <PlanIcon size={size} color={color} />;
+  if (["billing", "payment", "payments", "pagamentos"].includes(name)) return <CreditCardIcon size={size} color={color} />;
+  if (["membership", "subscription", "subscriptions", "assinaturas"].includes(name)) return <RepeatIcon size={size} color={color} />;
+  if (["category-management"].includes(name)) return <TagIcon size={size} color={color} />;
+  if (["collection-discovery"].includes(name)) return <LayersIcon size={size} color={color} />;
   if (["settings", "configuracoes"].includes(name)) return <SettingsIcon size={size} color={color} />;
   if (["success", "check"].includes(name)) return <CheckIcon size={size} color={color} />;
   if (["more", "ellipsis", "menu"].includes(name)) return <MenuIcon size={size} color={color} />;

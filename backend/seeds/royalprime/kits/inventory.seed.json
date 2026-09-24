@@ -3,6 +3,33 @@
   "kit": "inventory",
   "items": [
     {
+      "productKey": "alcatra",
+      "variantSku": "ALCATRA-BIFE-500G",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 20,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 4,
+      "notes": "Disponível para assinatura, Royal Box e delivery."
+    },
+    {
+      "productKey": "acem-bovino",
+      "variantSku": "ACEM-1KG",
+      "measurementUnitKey": "kg",
+      "availableQuantity": 20,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 4,
+      "notes": "Disponivel para assinatura, Royal Box e delivery."
+    },
+    {
+      "productKey": "acendedor-ecologico",
+      "variantSku": "ACENDEDOR-ECO-24UN",
+      "measurementUnitKey": "unit",
+      "availableQuantity": 40,
+      "reservedQuantity": 0,
+      "lowStockThreshold": 8,
+      "notes": "Disponivel para assinatura, Royal Box e delivery."
+    },
+    {
       "productKey": "picanha",
       "variantSku": "PICANHA-1KG",
       "measurementUnitKey": "kg",

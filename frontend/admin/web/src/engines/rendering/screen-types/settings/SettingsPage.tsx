@@ -2,12 +2,12 @@ import React from "react";
 import { Button } from "@foundation/ui/web/Button";
 import { Stack } from "@foundation/ui/web/Layout";
 import { SectionContainer } from "@foundation/ui/web/SectionContainer";
+import { AdminScreenHeader } from "../../components/AdminScreenHeader/AdminScreenHeader";
 import { CartIcon, SettingsIcon, TruckIcon } from "@foundation/ui/web/Icon/AppIcons";
 import { Text } from "@foundation/ui/web/Text";
 import { useAdminI18n } from "@/locales/i18n";
 import { settingsConfig } from "@/manifest/pages/settings.config";
 import styles from "./SettingsPage.module.css";
-import { SettingsHeader } from "./SettingsHeader";
 import { SettingsSection } from "./SettingsSection";
 
 export interface SettingsPageProps {
@@ -28,10 +28,9 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ config = settingsCon
 
   return (
     <div className={styles.page}>
-      <SectionContainer atmosphere="transparent" usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
+      <AdminScreenHeader description={t(config.subtitleKey)} title={t(config.titleKey)} />
+      <SectionContainer atmosphere="transparent" headerSafety usefulColumns={config.layout.usefulColumns} heightRecipe="auto">
         <Stack className={styles.content} gap="lg">
-          <SettingsHeader config={config} t={t} />
-
           <div className={styles.settingsLayout} data-navigation={config.layout.navigation}>
             <aside aria-label={t(config.navigationLabelKey)} className={styles.settingsNavigation}>
               <Stack className={styles.navigationList} gap="xs">

@@ -45,8 +45,9 @@ export const resolveSemiTheme = (theme: SemiThemeInput): ResolvedSemiTheme => {
       tokens: resolveThemePhysicalTokens(theme?.tokens),
     };
   }
-  const mode = (theme as any)?.defaultMode || "dark";
-  const colors = theme.modes[mode as keyof typeof theme.modes] || theme.modes.dark || theme.modes.light;
+  const mode = theme.defaultMode || "dark";
+  const configuredColors = theme.colors && Object.keys(theme.colors).length ? theme.colors : undefined;
+  const colors = configuredColors || theme.modes[mode as keyof typeof theme.modes] || theme.modes.dark || theme.modes.light;
   return {
     colors,
     tokens: resolveThemePhysicalTokens(theme.tokens),
@@ -235,7 +236,7 @@ export const resolveSurfaceRecipe = (
 
   const bgToken = appearanceRecipe.useToneSurface ? toneRecipe.softBgToken : toneRecipe.bgToken;
   const bgOpacity = opacityValue(theme.tokens, appearanceRecipe.bgOpacityToken);
-  const foregroundToken = appearance === "solid" || appearance === "glass" || appearance === "gradient" || appearance === "soft"
+  const foregroundToken = appearance === "solid" || appearance === "glass" || appearance === "gradient" || (appearance === "soft" && tone === "neutral")
     ? toneRecipe.fgToken
     : tone === "neutral" ? toneRecipe.fgToken : toneRecipe.bgToken;
 

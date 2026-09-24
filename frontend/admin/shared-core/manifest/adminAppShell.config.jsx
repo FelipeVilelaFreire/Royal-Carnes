@@ -69,13 +69,13 @@ export const adminAppShellConfig = {
       enabled: false
     },
     sidebar: {
-      routeKeys: ["dashboard", "clientes", "produtos", "pedidos", "deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes"]
+      routeKeys: ["dashboard", "pedidos", "clientes", "produtos", "deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes"]
     },
     drawer: {
       routeKeys: ["deliveries", "planos", "assinaturas", "pagamentos", "categorias", "colecoes", "configuracoes"]
     },
     bottomTabBar: {
-      routeKeys: ["dashboard", "clientes", "produtos", "pedidos"]
+      routeKeys: ["dashboard", "pedidos", "clientes", "produtos"]
     },
     nativeTabBar: {
       inheritFrom: "bottomTabBar"

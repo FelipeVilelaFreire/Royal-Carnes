@@ -44,6 +44,25 @@ export const createCheckoutStyles = (theme: any) => {
     optionActive: {
       borderColor: colors.copper,
     },
+    deliveryDayPicker: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spaceSm,
+    },
+    deliveryDayButton: {
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: spaceLg + spaceSm,
+      minWidth: spaceLg + spaceSm,
+      padding: spaceSm,
+    },
+    deliveryDayInput: {
+      minHeight: spaceLg + spaceSm,
+      minWidth: spaceLg + spaceSm,
+      padding: spaceSm,
+      textAlign: "center",
+      width: spaceLg + spaceSm,
+    },
     modeRail: {
       marginHorizontal: -spaceLg,
       paddingHorizontal: spaceLg,
@@ -113,6 +132,62 @@ export const createCheckoutStyles = (theme: any) => {
       alignItems: "center",
       flexDirection: "row",
       justifyContent: "space-between",
+    },
+    summaryBadge: {
+      color: colors.copper,
+      fontWeight: "700",
+      textAlign: "right",
+    },
+    summaryProgress: {
+      flexDirection: "row",
+      gap: spaceSm,
+      justifyContent: "flex-end",
+    },
+    summaryStep: {
+      borderColor: colors.border,
+      borderRadius: radiusMd,
+      borderWidth: stroke,
+      color: colors.textMuted,
+      minWidth: spaceLg + spaceSm,
+      paddingHorizontal: spaceSm,
+      paddingVertical: spaceSm,
+      textAlign: "center",
+    },
+    summaryStepCurrent: {
+      backgroundColor: colors.copper,
+      borderColor: colors.copper,
+      color: colors.surface,
+    },
+    summaryCapacity: {
+      borderColor: colors.border,
+      borderRadius: radiusMd,
+      borderWidth: stroke,
+      gap: spaceSm,
+      padding: spaceMd,
+    },
+    summaryProduct: {
+      borderColor: colors.border,
+      borderRadius: radiusMd,
+      borderWidth: stroke,
+      padding: spaceMd,
+    },
+    summaryQuantityControl: {
+      alignItems: "center",
+      flexDirection: "row",
+      gap: spaceSm,
+    },
+    summaryQuantityButton: {
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: spaceLg + spaceSm,
+      minWidth: spaceLg + spaceSm,
+      padding: spaceSm,
+    },
+    summaryQuantity: {
+      color: colors.text,
+      fontWeight: "700",
+      minWidth: spaceLg,
+      textAlign: "center",
     },
     action: {
       backgroundColor: colors.text,

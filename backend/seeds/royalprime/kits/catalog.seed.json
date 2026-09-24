@@ -1,41 +1,47 @@
 {
   "schemaVersion": 1,
   "kit": "catalog",
+  "reconcileCategories": true,
   "collections": [
     {
       "key": "colecao-inverno",
-      "name": "Colecao Inverno",
-      "description": "Cortes mais encorpados para preparo lento, forno, panela e noites frias.",
-      "imageUrl": "https://assets.instabuy.app.br/ib.item.image.large/l-77969cdca50e4e709d62789d090b9005.jpeg",
-      "imageAlt": "Colecao Inverno"
+      "name": "Cortes para preparar",
+      "description": "Cortes para forno, panela, churrasqueira e preparos com mais tempo.",
+      "sortOrder": 30,
+      "imageUrl": "/assets/brand/home-collection-cortes-v1.png",
+      "imageAlt": "Cortes para preparar"
     },
     {
       "key": "colecao-verao",
-      "name": "Colecao Verao",
-      "description": "Itens leves e praticos para grelha rapida, praia e encontros ao ar livre.",
-      "imageUrl": "https://images.tcdn.com.br/img/img_prod/1249907/contra_file_bovino_550gr_557_1_6a4425fca4f02e4e54e749351360a442.jpg",
-      "imageAlt": "Colecao Verao"
+      "name": "Churrasco",
+      "description": "Itens para grelha, encontros ao ar livre e churrasco em casa.",
+      "sortOrder": 20,
+      "imageUrl": "/assets/brand/home-collection-churrasco-v1.png",
+      "imageAlt": "Churrasco"
     },
     {
       "key": "colecao-familia",
-      "name": "Colecao Familia",
-      "description": "Produtos pensados para compras recorrentes e mesas de quatro a seis pessoas.",
-      "imageUrl": "https://images.tcdn.com.br/img/img_prod/1249907/fraldinha_bovina_550gr_559_1_2ae4c4513c71640d2d05985830f922b0.jpg",
-      "imageAlt": "Colecao Familia"
+      "name": "Para compartilhar",
+      "description": "Produtos para preparar e compartilhar em casa.",
+      "sortOrder": 40,
+      "imageUrl": "/assets/brand/home-collection-compartilhar-v1.png",
+      "imageAlt": "Produtos para compartilhar"
     },
     {
       "key": "churrasco-premium",
-      "name": "Churrasco Premium",
-      "description": "Selecao principal para a experiencia Royal Carnes de fim de semana.",
-      "imageUrl": "https://images.ctfassets.net/ttw7uwgviuml/GEXQDyQ8utHO9stbH5hl0/b0fbf991ca9f14d65270a9139e575398/SKU_81718_1.jpg?fm=webp&h=650&w=650",
-      "imageAlt": "Churrasco Premium"
+      "name": "Selecao da churrasqueira",
+      "description": "Cortes e itens escolhidos para a churrasqueira.",
+      "sortOrder": 10,
+      "imageUrl": "/assets/brand/home-churrasqueira-hero-v1.png",
+      "imageAlt": "Selecao da churrasqueira"
     },
     {
       "key": "dia-a-dia",
-      "name": "Dia a Dia",
-      "description": "Itens de recompra simples para abastecer a rotina da casa.",
-      "imageUrl": "https://images.tcdn.com.br/img/img_prod/1249907/file_de_frango_550gr_563_1_b81e4f972d628576b5a03bbbe48e86d3.jpg",
-      "imageAlt": "Dia a Dia"
+      "name": "Essenciais",
+      "description": "Itens simples para ter sempre em casa.",
+      "sortOrder": 50,
+      "imageUrl": "/assets/brand/home-collection-essenciais-v1.png",
+      "imageAlt": "Itens essenciais"
     }
   ],
   "categories": [
@@ -43,29 +49,20 @@
     { "key": "bovinos", "name": "Bovinos", "parentKey": "carnes", "sortOrder": 20 },
     { "key": "aves", "name": "Aves", "parentKey": "carnes", "sortOrder": 60 },
     { "key": "suinos", "name": "Suinos", "parentKey": "carnes", "sortOrder": 70 },
-    { "key": "linguicas", "name": "Linguicas", "parentKey": "suinos", "sortOrder": 80 },
-    { "key": "suinos-preparo-lento", "name": "Suinos para preparo lento", "parentKey": "suinos", "sortOrder": 90 },
-    { "key": "acompanhamentos", "name": "Acompanhamentos", "sortOrder": 100 },
-    { "key": "temperos", "name": "Temperos", "parentKey": "acompanhamentos", "sortOrder": 110 },
-    { "key": "molhos", "name": "Molhos", "parentKey": "acompanhamentos", "sortOrder": 115 },
-    { "key": "paes", "name": "Paes e acompanhamentos", "parentKey": "acompanhamentos", "sortOrder": 118 },
-    { "key": "carvao", "name": "Carvao", "sortOrder": 120 },
-    { "key": "acendedores", "name": "Acendedores", "sortOrder": 125 },
-    { "key": "utensilios", "name": "Utensilios", "sortOrder": 130 },
-    { "key": "espetos", "name": "Espetos", "parentKey": "utensilios", "sortOrder": 140 },
-    { "key": "facas", "name": "Facas e jogos", "parentKey": "utensilios", "sortOrder": 150 },
-    { "key": "grelhas", "name": "Grelhas", "parentKey": "utensilios", "sortOrder": 160 },
-    { "key": "tabuas", "name": "Tabuas", "parentKey": "utensilios", "sortOrder": 165 },
-    { "key": "acessorios-churrasco", "name": "Acessorios", "parentKey": "utensilios", "sortOrder": 168 },
-    { "key": "brindes", "name": "Brindes", "sortOrder": 170 },
-    { "key": "preparo-lento", "name": "Preparo lento (legado)", "parentKey": "bovinos", "sortOrder": 890, "isActive": false },
-    { "key": "combos", "name": "Combos e kits (legado)", "sortOrder": 900, "isActive": false },
-    { "key": "kits-churrasco", "name": "Kits para churrasco (legado)", "parentKey": "combos", "sortOrder": 910, "isActive": false },
-    { "key": "kits-familia", "name": "Kits familia (legado)", "parentKey": "combos", "sortOrder": 920, "isActive": false }
+    { "key": "temperos", "name": "Temperos", "sortOrder": 80 },
+    { "key": "fogo", "name": "Fogo", "sortOrder": 90 },
+    { "key": "carvao", "name": "Carvao", "parentKey": "fogo", "sortOrder": 100 },
+    { "key": "acendedores", "name": "Acendedores", "parentKey": "fogo", "sortOrder": 110 },
+    { "key": "utensilios", "name": "Utensilios", "sortOrder": 120 },
+    { "key": "espetos", "name": "Espetos", "parentKey": "utensilios", "sortOrder": 130 },
+    { "key": "facas", "name": "Facas", "parentKey": "utensilios", "sortOrder": 140 },
+    { "key": "grelhas", "name": "Grelhas", "parentKey": "utensilios", "sortOrder": 150 },
+    { "key": "tabuas", "name": "Tabuas", "parentKey": "utensilios", "sortOrder": 160 },
+    { "key": "acessorios-churrasco", "name": "Acessorios", "parentKey": "utensilios", "sortOrder": 170 }
   ],
   "commercialModes": [
     { "key": "subscription", "name": "Assinatura" },
-    { "key": "delivery", "name": "Royal Delivery" },
+    { "key": "delivery", "name": "Avulso" },
     { "key": "box", "name": "Royal Box" }
   ],
   "measurementUnits": [
@@ -109,7 +106,7 @@
     {
       "key": "picanha",
       "name": "Picanha",
-      "description": "Corte premium com capa de gordura uniforme para churrasco, box mensal e pedidos de ultima hora.",
+      "description": "Corte com capa de gordura uniforme para churrasco, caixa mensal e pedidos de ultima hora.",
       "categoryKeys": ["bovinos"],
       "collections": ["colecao-familia", "churrasco-premium"],
       "unit": "kg",
@@ -135,7 +132,7 @@
             "packageType": "vacuum"
           },
           "priceCents": 4990,
-          "commercialModes": ["delivery", "box"]
+          "commercialModes": ["subscription", "delivery", "box"]
         },
         {
           "sku": "PICANHA-1KG",
@@ -170,7 +167,7 @@
     {
       "key": "maminha",
       "name": "Maminha",
-      "description": "Corte macio e versatil para churrasco familiar, forno e preparo do dia a dia.",
+      "description": "Corte macio e versatil para churrasco familiar e forno.",
       "categoryKeys": ["bovinos"],
       "collections": ["colecao-familia", "dia-a-dia", "churrasco-premium"],
       "unit": "kg",
@@ -207,7 +204,7 @@
     {
       "key": "fraldinha",
       "name": "Fraldinha",
-      "description": "Corte versatil para churrasco familiar e preparo do dia a dia, com alta recorrencia de compra.",
+      "description": "Corte versatil para churrasco familiar e preparo em casa.",
       "categoryKeys": ["bovinos"],
       "collections": ["colecao-familia", "dia-a-dia"],
       "unit": "kg",
@@ -281,7 +278,7 @@
     {
       "key": "contra-file",
       "name": "Contra-file",
-      "description": "Corte bovino de churrascaria para bifes altos, grelha rapida e kit premium.",
+      "description": "Corte bovino para bifes altos e grelha rapida.",
       "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium", "colecao-familia"],
       "unit": "kg",
@@ -318,7 +315,7 @@
     {
       "key": "ancho",
       "name": "Ancho",
-      "description": "Bife ancho marmorizado para linha premium, com preco separado por canal comercial.",
+      "description": "Bife ancho marmorizado para grelha, com preco separado por canal comercial.",
       "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium"],
       "unit": "kg",
@@ -429,7 +426,7 @@
     {
       "key": "tomahawk",
       "name": "Tomahawk",
-      "description": "Corte de alto impacto visual para ocasioes especiais, campanhas premium e box presenteavel.",
+      "description": "Corte de alto impacto visual para ocasioes especiais e caixa para presentear.",
       "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium", "colecao-inverno"],
       "unit": "kg",
@@ -541,7 +538,7 @@
       "key": "linguica-toscana",
       "name": "Linguica toscana",
       "description": "Classico de churrasco para combos, box mensal e venda rapida por quilo.",
-      "categoryKeys": ["linguicas"],
+      "categoryKeys": ["suinos"],
       "collections": ["colecao-familia", "churrasco-premium", "dia-a-dia"],
       "unit": "kg",
       "priceCents": 2990,
@@ -578,7 +575,7 @@
       "key": "panceta-suina",
       "name": "Panceta suina",
       "description": "Corte suino de gordura e carne para pururuca, grelha e kits especiais.",
-      "categoryKeys": ["suinos-preparo-lento"],
+      "categoryKeys": ["suinos"],
       "collections": ["colecao-inverno", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 3990,
@@ -724,7 +721,7 @@
       "key": "avental-churrasco",
       "name": "Avental de churrasco",
       "description": "Avental de algodao para presentear clientes e completar a experiencia de churrasco em casa.",
-      "categoryKeys": ["brindes"],
+      "categoryKeys": ["utensilios"],
       "collections": ["churrasco-premium"],
       "unit": "unit",
       "priceCents": 0,
@@ -756,7 +753,7 @@
       "unit": "kg",
       "priceCents": 10990,
       "commercialModes": ["subscription", "delivery", "box"],
-      "media": [{ "url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80", "alt": "Corte bovino premium para churrasco", "isPrimary": true }],
+      "media": [{ "url": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80", "alt": "Corte bovino para churrasco", "isPrimary": true }],
       "variants": [
         { "sku": "FILE-MIGNON-500G", "name": "File mignon 500g", "unit": "kg", "unitQuantity": 0.5, "weightGrams": 500, "priceCents": 5690, "commercialModes": ["subscription", "delivery", "box"] },
         { "sku": "FILE-MIGNON-1KG", "name": "File mignon 1kg", "unit": "kg", "unitQuantity": 1, "weightGrams": 1000, "priceCents": 10990, "commercialModes": ["subscription", "delivery", "box"] }
@@ -765,7 +762,7 @@
     {
       "key": "bife-de-chorizo",
       "name": "Bife de chorizo",
-      "description": "Corte alto e marmorizado, ideal para uma grelha intensa e churrasco premium.",
+      "description": "Corte alto e marmorizado, ideal para uma grelha intensa.",
       "categoryKeys": ["bovinos"],
       "collections": ["churrasco-premium"],
       "unit": "kg",
@@ -870,7 +867,7 @@
       "key": "costelinha-suina",
       "name": "Costelinha suina",
       "description": "Costelinha para assar lentamente ou finalizar na churrasqueira.",
-      "categoryKeys": ["suinos-preparo-lento"],
+      "categoryKeys": ["suinos"],
       "collections": ["colecao-inverno", "churrasco-premium"],
       "unit": "kg",
       "priceCents": 3690,
@@ -885,7 +882,7 @@
       "key": "lombo-suino",
       "name": "Lombo suino",
       "description": "Lombo suino para assar inteiro, fatiar ou levar para a grelha.",
-      "categoryKeys": ["suinos-preparo-lento"],
+      "categoryKeys": ["suinos"],
       "collections": ["dia-a-dia", "colecao-familia"],
       "unit": "kg",
       "priceCents": 3590,
@@ -900,7 +897,7 @@
       "key": "pernil-suino",
       "name": "Pernil suino",
       "description": "Pernil para preparo lento, ceias, churrascos e porcoes de familia.",
-      "categoryKeys": ["suinos-preparo-lento"],
+      "categoryKeys": ["suinos"],
       "collections": ["colecao-inverno", "colecao-familia"],
       "unit": "kg",
       "priceCents": 3290,
@@ -929,7 +926,7 @@
       "key": "molho-barbecue",
       "name": "Molho barbecue",
       "description": "Molho barbecue para finalizar carnes, hamburgueres e acompanhamentos.",
-      "categoryKeys": ["molhos"],
+      "categoryKeys": ["temperos"],
       "collections": ["churrasco-premium", "colecao-familia"],
       "unit": "unit",
       "priceCents": 2290,
@@ -943,7 +940,7 @@
       "key": "pao-de-alho",
       "name": "Pao de alho",
       "description": "Pao de alho para grelhar e completar a caixa de churrasco.",
-      "categoryKeys": ["paes"],
+      "categoryKeys": ["temperos"],
       "collections": ["colecao-familia", "colecao-verao"],
       "unit": "unit",
       "priceCents": 1690,
@@ -957,7 +954,7 @@
       "key": "farofa-artesanal",
       "name": "Farofa artesanal",
       "description": "Farofa crocante para acompanhar carnes e o churrasco completo.",
-      "categoryKeys": ["paes"],
+      "categoryKeys": ["temperos"],
       "collections": ["colecao-familia", "dia-a-dia"],
       "unit": "unit",
       "priceCents": 1490,
@@ -1025,8 +1022,8 @@
     },
     {
       "key": "carvao-premium",
-      "name": "Carvao Premium",
-      "description": "Carvao de apoio para pedido de churrasco, box e venda avulsa com ticket complementar.",
+      "name": "Carvao vegetal",
+      "description": "Carvao de apoio para churrasco, caixa e venda avulsa.",
       "categoryKeys": ["carvao"],
       "collections": ["churrasco-premium", "dia-a-dia"],
       "unit": "bag",
@@ -1042,7 +1039,7 @@
       "variants": [
         {
           "sku": "CARVAO-5KG",
-          "name": "Carvao Premium 5kg",
+          "name": "Carvao vegetal 5kg",
           "unit": "bag",
           "unitQuantity": 1,
           "weightGrams": 5000,
@@ -1055,7 +1052,7 @@
         },
         {
           "sku": "CARVAO-10KG",
-          "name": "Carvao Premium 10kg",
+          "name": "Carvao vegetal 10kg",
           "unit": "bag",
           "unitQuantity": 1,
           "weightGrams": 10000,

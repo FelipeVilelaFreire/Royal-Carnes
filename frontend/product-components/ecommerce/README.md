@@ -61,6 +61,26 @@ Icon
 Layout
 ```
 
+## Loading composition
+
+Todo componente ecommerce que representa dados assincronos possui um skeleton
+co-localizado com sua implementacao e CSS Module. O skeleton reproduz a
+geometria e a densidade do componente real, mas nao recebe dados comerciais,
+nao executa callbacks e nao simula persistencia.
+
+Para `ProductItemCard`, a fronteira e:
+
+```text
+ProductItemCard
+  -> ProductItemCardSkeleton
+       -> Image/Text/Price skeletons
+       -> ButtonSkeleton quando a composicao real exibe Button
+```
+
+`ProductItemCardSkeleton` compoe primitives Foundation; nao desenha versoes
+locais de botao, texto ou imagem. A screen consumidora decide se renderiza a
+grade real, seu skeleton, erro ou vazio. Erro e vazio nao sao skeletons.
+
 As render surfaces importam o card pela variante da propria plataforma;
 nenhuma delas mantem uma copia local do componente.
 

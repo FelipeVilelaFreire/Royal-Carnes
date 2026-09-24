@@ -89,6 +89,13 @@ class Order(OrganizationScopedModel, TimestampedModel):
         on_delete=models.SET_NULL,
         related_name="orders",
     )
+    box_cycle = models.OneToOneField(
+        "boxes.BoxCycle",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="order",
+    )
     code = models.CharField(max_length=80)
     kind_key = models.SlugField(max_length=80)
     status_key = models.SlugField(max_length=80)

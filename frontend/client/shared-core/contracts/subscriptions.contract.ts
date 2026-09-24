@@ -33,6 +33,7 @@ export interface ClientPlanDto {
   key: string;
   name: string;
   description?: string | null;
+  accent_color?: string;
   status: "active" | "draft" | "archived";
   billing_interval: "day" | "week" | "month" | "year";
   trial_days?: number;

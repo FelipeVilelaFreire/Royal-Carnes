@@ -19,6 +19,7 @@ class Plan(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
     key = models.SlugField(max_length=100)
     name = models.CharField(max_length=160)
     description = models.TextField(blank=True)
+    accent_color = models.CharField(max_length=7, default="#FFC665")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
     billing_interval = models.CharField(
         max_length=20,
@@ -26,6 +27,8 @@ class Plan(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
         default=BillingInterval.MONTH,
     )
     trial_days = models.PositiveIntegerField(default=0)
+    delivery_min_business_days = models.PositiveIntegerField(default=3)
+    delivery_max_business_days = models.PositiveIntegerField(default=8)
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -34,7 +37,11 @@ class Plan(OrganizationScopedModel, TimestampedModel, SoftDeleteModel):
             models.UniqueConstraint(
                 fields=["organization", "key"],
                 name="subscriptions_plan_unique_key",
-            )
+            ),
+            models.CheckConstraint(
+                condition=models.Q(delivery_min_business_days__lte=models.F("delivery_max_business_days")),
+                name="subscriptions_plan_delivery_business_days_range",
+            ),
         ]
         indexes = [
             models.Index(fields=["organization", "status"]),

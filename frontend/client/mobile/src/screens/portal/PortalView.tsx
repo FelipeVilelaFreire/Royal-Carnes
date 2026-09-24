@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { NativeAppShell, type NativeAppShellHostComponents } from "../../../../../foundation/shells/app-shell/native";
 import { resolveNativeUiManifest } from "../../../../../foundation/native";
 import { NativeAccessShell } from "../../../../../foundation/shells/access-shell";
+import { Modal } from "../../../../../foundation/ui/native/Modal";
 import type { ApiClientConfig } from "../../../../../shared-core";
 import { useClientPortalAuthSession } from "../../../../shared-core";
 import { ClientApiProvider } from "../../../../shared-core/runtime/ClientApiProvider";
@@ -14,6 +15,7 @@ import { UiProvider } from "@foundation/ui/native";
 import { createMobileAppShellConfig, type AppThemeMode } from "@royalprime/client/manifest/portal/native-appshell.config";
 import { CatalogoView } from "./Catalogo/CatalogoView/CatalogoView";
 import { HomeView } from "./Home/HomeView";
+import { LibraryView } from "./Library/LibraryView";
 import { PerfilView } from "./Perfil/PerfilView";
 import { MeusPedidosView } from "./MeusPedidos/MeusPedidosView";
 import { CheckoutView } from "./Checkout/CheckoutView";
@@ -22,7 +24,7 @@ export interface PortalViewProps {
   authApiConfig?: ApiClientConfig;
   authStorage?: ClientAuthStorage;
   hosts: NativeAppShellHostComponents;
-  initialTab?: "catalogo" | "home" | "meusPedidos" | "minhaConta" | "produtos";
+  initialTab?: "catalogo" | "home" | "library" | "meusPedidos" | "minhaConta" | "produtos";
   strings: ReturnType<typeof useClientStrings>;
   themeMode?: AppThemeMode;
 }
@@ -72,7 +74,9 @@ export const PortalView: React.FC<PortalViewProps> = ({
       tabs: strings.accessShell.tabs,
   };
   const activePath =
-    activeScreenKey === "catalogo"
+    activeScreenKey === "library"
+      ? clientRoutes.library
+      : activeScreenKey === "catalogo"
       ? clientRoutes.catalogo
       : activeScreenKey === "produtos"
         ? clientRoutes.produtos
@@ -110,7 +114,42 @@ export const PortalView: React.FC<PortalViewProps> = ({
       }}
       routesMap={clientRoutes}
     >
-      {isAccessOpen ? (
+      {activeScreenKey === "library" ? (
+        <LibraryView strings={strings} />
+      ) : activeScreenKey === "catalogo" ? (
+        <CatalogoView strings={strings} />
+      ) : activeScreenKey === "produtos" ? (
+        <CheckoutView
+          activePath={activePath}
+          isAuthenticated={auth.isAuthenticated}
+          onRequestAccess={() => setIsAccessOpen(true)}
+          strings={strings}
+          themeMode={themeMode}
+        />
+      ) : activeScreenKey === "meusPedidos" ? (
+        <MeusPedidosView activePath={activePath} themeMode={themeMode} />
+      ) : activeScreenKey === "minhaConta" ? (
+        <PerfilView activePath={activePath} onLogout={() => auth.logout()} strings={strings} themeMode={themeMode} />
+      ) : (
+        <HomeView
+          onNavigate={(path) => {
+            const item = portalNavigation.find((candidate) => clientRoutes[candidate.key as keyof typeof clientRoutes] === path);
+            if (item?.auth === "required" && !auth.isAuthenticated) {
+              setIsAccessOpen(true);
+              return;
+            }
+            setActiveScreenKey(item?.key === "catalogo" ? "catalogo" : item?.key === "produtos" ? "produtos" : item?.key === "meusPedidos" ? "meusPedidos" : item?.key === "minhaConta" ? "minhaConta" : "home");
+          }}
+          strings={strings}
+        />
+      )}
+      <Modal
+        closeLabel={strings.accessShell.close}
+        description={strings.accessShell.portal.calloutDescription}
+        onClose={() => setIsAccessOpen(false)}
+        open={isAccessOpen}
+        title={strings.accessShell.portal.calloutTitle}
+      >
         <NativeAccessShell
           config={clientPortalAccessShellConfig as any}
           errorMessage={auth.error ? strings.accessShell.error : null}
@@ -129,33 +168,7 @@ export const PortalView: React.FC<PortalViewProps> = ({
           strings={accessStrings}
           themeMode={themeMode}
         />
-      ) : activeScreenKey === "catalogo" ? (
-        <CatalogoView strings={strings} />
-      ) : activeScreenKey === "produtos" ? (
-        <CheckoutView
-          activePath={activePath}
-          isAuthenticated={auth.isAuthenticated}
-          onRequestAccess={() => setIsAccessOpen(true)}
-          strings={strings}
-          themeMode={themeMode}
-        />
-      ) : activeScreenKey === "meusPedidos" ? (
-        <MeusPedidosView activePath={activePath} themeMode={themeMode} />
-      ) : activeScreenKey === "minhaConta" ? (
-        <PerfilView activePath={activePath} strings={strings} themeMode={themeMode} />
-      ) : (
-        <HomeView
-          onNavigate={(path) => {
-            const item = portalNavigation.find((candidate) => clientRoutes[candidate.key as keyof typeof clientRoutes] === path);
-            if (item?.auth === "required" && !auth.isAuthenticated) {
-              setIsAccessOpen(true);
-              return;
-            }
-            setActiveScreenKey(item?.key === "catalogo" ? "catalogo" : item?.key === "produtos" ? "produtos" : item?.key === "meusPedidos" ? "meusPedidos" : item?.key === "minhaConta" ? "minhaConta" : "home");
-          }}
-          strings={strings}
-        />
-      )}
+      </Modal>
     </NativeAppShell>
     </UiProvider>
     </ClientApiProvider>

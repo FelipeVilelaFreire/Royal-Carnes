@@ -1,0 +1,15 @@
+.buttonSkeleton {
+  border-radius: var(--semicomposed--button-radius);
+}
+
+.buttonSkeleton[data-button-size="sm"] {
+  block-size: var(--semicomposed--skeleton--button-height-sm);
+}
+
+.buttonSkeleton[data-button-size="md"] {
+  block-size: var(--semicomposed--skeleton--button-height-md);
+}
+
+.buttonSkeleton[data-button-size="lg"] {
+  block-size: var(--semicomposed--skeleton--button-height-lg);
+}

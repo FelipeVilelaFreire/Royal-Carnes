@@ -1,6 +1,6 @@
 # Continuacao 4 - RoyalPrime Home Client
 
-> Handoff operacional da reconstrucao da Home Client. Atualizado em 2026-09-21.
+> Handoff operacional da reconstrucao da Home Client. Atualizado em 2026-09-24.
 > Este arquivo e exclusivo da Home/vitrine; `continuacao.md` permanece geral,
 > Admin e backend, e `continuacao2.md` cobre o estado amplo de Client/Checkout.
 
@@ -26,6 +26,163 @@ Confirme branch e `git status` antes de editar. O worktree e compartilhado e
 contem trabalho paralelo em Admin, Checkout, Perfil, Catalogo e Foundation.
 Nao usar `reset`, `clean`, `checkout`, `git add .`, commit ou push sem
 autorizacao explicita.
+
+## Atualizacao 2026-09-24: laboratorio visual da Home
+
+Foi criado um laboratorio Web-only e estatico para escolher a direcao visual
+antes de implementar a Home oficial. Ele fica isolado em:
+
+```text
+frontend/client/web/src/screens/portal/Experiments/
+```
+
+As rotas abaixo usam o `PortalView` somente para preservar AppShell/Header e
+nao entram na navegacao oficial:
+
+```text
+/home-teste-1
+/home-teste-2
+/home-teste-3
+/home-teste-4
+/home-teste-5
+```
+
+O modal `Aparencia da experiencia` do Header do Portal oferece os atalhos para
+essas rotas, alem dos testes de Landing e Catalogo ja existentes. O modal foi
+reduzido aos botoes de prototipos; ele nao persiste tema, tipografia, material,
+raio ou bordas.
+
+### Estado das secoes dos testes
+
+```text
+Secao 1
+  -> congelada nas cinco rotas
+  -> abertura fotografica "Selecao da churrasqueira"
+
+Secao 2
+  -> opcoes restauradas, uma por rota
+  -> 1: mosaico assimetrico
+  -> 2: faixa horizontal de colecoes
+  -> 3: quatro colecoes no mesmo plano
+  -> 4: dois banners editoriais
+  -> 5: lista por forma de servir
+
+Secao 3
+  -> cinco leituras de cards/produtos
+  -> 1: carrossel de cards pretos com setas sobrepostas nas pontas do trilho
+  -> 2: carrossel de cards escuros em carvao quente, com setas no cabecalho
+  -> 3: carrossel de cards claros em amarelo queimado, com setas nas laterais
+  -> 4: ProductItemCard real com controles abaixo do trilho, sem alteracao visual interna
+  -> 5: carrossel editorial amarelo com progresso, contador e botoes
+  -> todas as rotas: min-height explicito de 760px no desktop e 700px no mobile
+
+Secao 4
+  -> quatro variacoes implementadas nas Homes 1 a 4; Home 5 preserva a referencia anterior
+  -> Royal Assinatura: selecao pronta recorrente, por plano definido
+  -> Royal Box: caixa personalizada recorrente mensal, no dia escolhido
+  -> Royal Delivery/Avulso: pedido unico, sem recorrencia
+  -> 1: tres cards verticais
+  -> 2: Royal Box em destaque e duas opcoes laterais
+  -> 3: tres faixas horizontais
+  -> 4: foto grande e lista editorial
+  -> ainda hardcoded no laboratorio; nao simular plano ativo, preco, frete,
+     elegibilidade ou criacao de assinatura
+
+Secao 5
+  -> cinco variacoes implementadas: catalogo de complementos
+  -> titulo: "Voce tambem pode escolher."
+  -> carrossel: carvao, sal e temperos, utensilios, acompanhamentos e presentes
+  -> 1: cards escuros, fundo amarelo e setas compactas no cabecalho
+  -> 2: catalogo claro e controles em texto
+  -> 3: cards fotograficos e setas externas
+  -> 4: tiles compactos por arraste
+  -> 5: catalogo editorial com linha de progresso
+
+Secao 6
+  -> cinco variacoes estaticas de feedback, sem dados reais
+  -> seis depoimentos ficticios por variacao, para comparar densidade
+  -> 1: foto grande, depoimento editorial e mini-carrossel de apoios
+  -> 2: seis cartoes de feedback
+  -> 3: mosaico de seis mesas
+  -> 4: trilho horizontal de seis depoimentos
+  -> 5: frase central em fundo escuro e cinco apoios menores
+  -> producao exige reviews reais, autorizados e provenientes de fonte valida
+
+Secao 7
+  -> cinco fechamentos implementados
+  -> 1: CTA central em fundo preto com foto sutil
+  -> 2: foto grande e CTA lateral
+  -> 3: fechamento amarelo direto
+  -> 4: composicao editorial clara
+  -> 5: tres caminhos finais (Cortes, Royal Box e Assinatura)
+
+Home teste 6 - cliente recorrente
+  -> rota isolada `/home-teste-6`, dentro do AppShell e Web-only
+  -> estudo hardcoded de Home de uso recorrente, nao Landing
+  -> topo contextual: proximo ciclo da Royal Box
+  -> atalhos: Cortes, Minha Box, Pedidos e Assinatura
+  -> prateleira curta de recompra e uma unica selecao editorial
+  -> responsivo: grid de atalhos vira duas colunas e prateleira vira gesto
+  -> nao representa sessao, pedido, ciclo, precos ou recomendacoes reais
+
+Home testes 7 e 8 - enquadramento WebIsMobile
+  -> rotas isoladas `/home-teste-7` e `/home-teste-8`, dentro do AppShell e Web-only
+  -> 7: visitante, com descoberta curta por ocasiao, duas portas de catalogo e acesso
+  -> 8: cliente, com proxima entrega, atalhos, recompra e revisao da Box
+  -> ambos usam conteudo hardcoded apenas para comparar a fisica compacta
+  -> eles nao substituem Native, nao declaram paridade funcional e nao criam uma segunda Home oficial
+```
+
+Os cinco testes agora permitem comparar navegacao de carrossel. Cada um
+tem oito opcoes estaticas, quatro cards inteiros e parte do quinto no desktop,
+scroll horizontal com snap e sem barra aparente: 1 usa setas sobrepostas nas
+pontas, 2 usa setas no cabecalho, 3 usa setas nas laterais, 4 usa controles
+abaixo do ProductItemCard e 5 usa progresso, contador e botoes. Falta decidir
+a direcao aprovada e entao consolidar
+gestos, setas, indicadores, quantidade de cards visiveis e comportamento
+responsivo em uma unica versao.
+
+A sequencia alvo da Home em estudo e: abertura -> colecoes -> produtos ->
+forma de comprar -> selecao correspondente -> reviews -> CTA final. A Secao 4
+nao deve repetir cortes ou colecoes: ela explica os tres modelos comerciais que
+ja existem no produto. A fonte de verdade atual e `productOptions` no locale
+pt-BR; quando a direcao visual for aprovada, a Home oficial deve renderizar a
+copy via locale e o fluxo funcional real, nunca a copia hardcoded do estudo.
+
+### Limites obrigatorios do laboratorio
+
+- Conteudo, imagens, precos, links e CSS sao hardcoded deliberadamente para
+  prototipagem rapida; nao representam catalogo, estoque ou compra reais.
+- Nao conectar backend, shared-core, manifest de produto, preco, estoque ou
+  regras comerciais enquanto a direcao ainda estiver em comparacao.
+- Nenhum teste substitui `/home`, `/catalogo`, Web/Mobile, locale ativo ou a
+  cadeia oficial `backend -> shared-core -> manifest -> JSX render-only`.
+- Somente apos uma direcao ser aprovada ela pode migrar para a Home oficial com
+  dados reais, Foundation, locales e paridade Web/Native.
+
+O guia operacional curto e a matriz completa ficam em:
+
+```text
+frontend/client/web/src/screens/portal/Experiments/HOME_TESTES.md
+frontend/client/web/src/screens/portal/Experiments/README.md
+```
+
+### Evidencias e proximo passo seguro do laboratorio
+
+```text
+node scripts/code-rules.test.mjs
+  -> 30/30 passaram
+
+npm run verify:rules
+  -> continua bloqueado por 6 violacoes legadas fora do laboratorio:
+     theme.manifest.js (ui-copy) e Button/Card/Input/Surface (inline-style)
+```
+
+Nao houve QA visual em navegador nesta retomada. O proximo passo seguro e abrir
+as cinco rotas, escolher a combinacao de Secao 2 e Secao 3 com mais potencial,
+congelar essas escolhas e so entao comparar alternativas para a Secao 4. Nao
+promover nenhum teste para a Home oficial antes dessa decisao e da adaptacao
+real de dados/contratos.
 
 ## Decisao de produto
 

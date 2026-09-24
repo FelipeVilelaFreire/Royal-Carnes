@@ -233,7 +233,7 @@ serviceos-candidate
 | Subscriptions | local foundation | Fase 3 | Planos, beneficios recorrentes, ciclos e assinaturas |
 | Royal Carnes Seed | local scaffold | Fase 1 | Seed principal da primeira organization |
 | Orders | local foundation | Fase 5A | Ecommerce, restaurante, delivery, pedidos internos |
-| Scheduling | planned | Fase futura | Entrega agendada, recorrencia, reserva, appointments |
+| Scheduling & Recurrence | local foundation | Kit 08 / Fase futura | Ciclos, agenda, reserva e appointments |
 | Admin Operations | planned | Fase 3 | Painel operacional para loja/equipe |
 | Inventory | local foundation | Fase 4 | Estoque simples de produto/insumo |
 | Fulfillment & Delivery | local foundation | Fase 5B | Entrega simples, separacao, confirmacao |
@@ -403,6 +403,7 @@ docs/kits/subscriptions-kit.md
 docs/kits/inventory-kit.md
 docs/kits/orders-kit.md
 docs/kits/fulfillment-delivery-kit.md
+docs/kits/scheduling-recurrence-kit.md
 backend/seeds/royalprime/seed.manifest.json
 backend/seeds/royalprime/kits/*.seed.json
 backend/seeds/examples/bikeclub/seed.manifest.json

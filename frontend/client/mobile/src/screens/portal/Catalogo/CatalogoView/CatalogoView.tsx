@@ -41,7 +41,6 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({ onProductAction, str
     >
       <ScreenHeader
         description={strings.description}
-        eyebrow={strings.badge}
         mobileMode="collapsible"
         mobileTitle={strings.mobileTitle}
         scrollProgress={headerScrollProgress}

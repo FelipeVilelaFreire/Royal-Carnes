@@ -41,78 +41,116 @@ export const clientesConfig = {
       meta: [
         { key: "document", labelKey: "clientes.fields.document", format: "taxIdBR" },
         { key: "email", labelKey: "clientes.fields.email" }
-      ],
-      status: {
-        key: "status",
-        displayKey: "statusLabelKey",
-        labelKey: "clientes.fields.status",
-        valueType: "translationKey"
-      }
+      ]
     },
     tabs: [
       {
         id: "dados",
         labelKey: "clientes.detail.tabs.data",
         emptyKey: "clientes.detail.emptyData",
-        sections: [{
-          key: "identity",
-          type: "fields",
-          titleKey: "clientes.detail.tabs.data",
-          iconIntent: "identity",
-          grid: { desktop: 3, tablet: 2, mobile: 1 },
-          fields: [
-          { key: "name", labelKey: "clientes.fields.name", editable: true },
-          { key: "email", labelKey: "clientes.fields.email", editable: true },
-          { key: "phone", labelKey: "clientes.fields.phone", editable: true, format: "phoneBR" },
-          { key: "document", labelKey: "clientes.fields.document", editable: true, format: "taxIdBR" },
+        sections: [
           {
-            key: "status",
-            labelKey: "clientes.fields.status",
-            editable: true,
-            type: "select",
-            valueType: "optionLabel",
-            options: [
-              { value: "active", labelKey: "common.statusActive" },
-              { value: "paused", labelKey: "common.statusPaused" },
-              { value: "blocked", labelKey: "common.statusBlocked" },
-              { value: "archived", labelKey: "common.statusArchived" }
+            key: "identity",
+            type: "fields",
+            titleKey: "clientes.detail.tabs.data",
+            iconIntent: "identity",
+            grid: { desktop: 3, tablet: 2, mobile: 1 },
+            fields: [
+              { key: "name", labelKey: "clientes.fields.name", editable: true },
+              { key: "email", labelKey: "clientes.fields.email", editable: true },
+              { key: "phone", labelKey: "clientes.fields.phone", editable: true, format: "phoneBR" },
+              { key: "document", labelKey: "clientes.fields.document", editable: true, format: "taxIdBR" },
+              {
+                key: "status",
+                labelKey: "clientes.fields.status",
+                editable: true,
+                type: "select",
+                valueType: "optionLabel",
+                statusToneKey: "statusTone",
+                options: [
+                  { value: "active", labelKey: "common.statusActive" },
+                  { value: "paused", labelKey: "common.statusPaused" },
+                  { value: "blocked", labelKey: "common.statusBlocked" },
+                  { value: "archived", labelKey: "common.statusArchived" }
+                ]
+              },
+              { key: "memberSince", labelKey: "clientes.fields.memberSince" },
+              { key: "defaultAddress", labelKey: "clientes.fields.defaultAddress", layout: "full" }
             ]
           },
-          { key: "memberSince", labelKey: "clientes.fields.memberSince" }
+          {
+            key: "subscriptionOverview",
+            type: "fields",
+            titleKey: "clientes.detail.sections.subscriptionOverview",
+            iconIntent: "commerce",
+            grid: { desktop: 3, tablet: 2, mobile: 1 },
+            fields: [
+              { key: "activePlanName", labelKey: "clientes.fields.activePlan" },
+              { key: "subscriptionStatusLabelKey", labelKey: "clientes.fields.subscriptionStatus", valueType: "translationKey" },
+              { key: "currentCycleWindow", labelKey: "clientes.fields.currentCycle" },
+              { key: "deliveryWindowLabelKey", labelKey: "clientes.fields.deliveryWindow", valueType: "translationKey" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "subscriptions",
+        labelKey: "clientes.detail.tabs.subscriptions",
+        emptyKey: "clientes.detail.emptySubscriptions",
+        hideWhenEmpty: false,
+        sections: [{
+          key: "subscriptionsHistory",
+          type: "lineItems",
+          itemsKey: "subscriptions",
+          iconIntent: "commerce",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          columns: [
+            { key: "planName", labelKey: "assinaturas.tableHeaders.plan", type: "text" },
+            { key: "statusLabelKey", labelKey: "assinaturas.tableHeaders.status", type: "text", valueType: "translationKey" },
+            { key: "currentCycleWindow", labelKey: "assinaturas.tableHeaders.currentCycle", type: "text" },
+            { key: "startedAt", labelKey: "clientes.fields.subscriptionSince", type: "text" }
           ]
         }]
       },
       {
-        id: "enderecos",
-        labelKey: "clientes.detail.tabs.addresses",
-        emptyKey: "clientes.detail.emptyAddresses",
+        id: "orders",
+        labelKey: "clientes.detail.tabs.orders",
+        emptyKey: "clientes.detail.emptyOrders",
+        hideWhenEmpty: false,
         sections: [{
-          key: "address",
-          type: "fields",
-          titleKey: "clientes.detail.tabs.addresses",
-          iconIntent: "delivery",
-          grid: { desktop: 2, tablet: 2, mobile: 1 },
-          fields: [
-          { key: "defaultAddress", labelKey: "clientes.fields.defaultAddress" }
+          key: "ordersHistory",
+          type: "lineItems",
+          itemsKey: "orders",
+          iconIntent: "box",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          columns: [
+            { key: "code", labelKey: "pedidos.fields.code", type: "text", detailScreenKey: "pedidos" },
+            { key: "statusLabel", labelKey: "pedidos.fields.status", type: "text" },
+            { key: "totalFormatted", labelKey: "pedidos.fields.total", type: "text", align: "end" },
+            { key: "createdAt", labelKey: "pedidos.fields.createdAt", type: "text" }
           ]
         }]
       },
       {
-        id: "historico",
-        labelKey: "clientes.detail.tabs.history",
-        emptyKey: "clientes.detail.emptyHistory",
+        id: "payments",
+        labelKey: "clientes.detail.tabs.payments",
+        emptyKey: "clientes.detail.emptyPayments",
+        hideWhenEmpty: false,
         sections: [{
-          key: "history",
-          type: "fields",
-          titleKey: "clientes.detail.tabs.history",
-          iconIntent: "settings",
-          grid: { desktop: 2, tablet: 2, mobile: 1 },
-          fields: [
-          { key: "createdAt", labelKey: "clientes.fields.createdAt" },
-          { key: "updatedAt", labelKey: "clientes.fields.updatedAt" }
+          key: "paymentsHistory",
+          type: "lineItems",
+          itemsKey: "payments",
+          iconIntent: "commerce",
+          grid: { desktop: 1, tablet: 1, mobile: 1 },
+          columns: [
+            { key: "reference", labelKey: "pagamentos.fields.reference", type: "text", detailScreenKey: "pagamentos" },
+            { key: "subscriptionPlanName", labelKey: "pagamentos.fields.subscription", type: "text" },
+            { key: "statusLabelKey", labelKey: "pagamentos.fields.status", type: "text", valueType: "translationKey" },
+            { key: "amountLabel", labelKey: "pagamentos.fields.amount", type: "text", align: "end" },
+            { key: "paidAt", labelKey: "pagamentos.fields.paidAt", type: "text" }
           ]
         }]
-      }
+      },
     ]
   },
   addPage: {

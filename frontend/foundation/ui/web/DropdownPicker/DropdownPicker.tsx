@@ -7,6 +7,7 @@ import { AvatarCell } from "../Avatar";
 import { Button } from "../Button";
 import { Input } from "../Input";
 import { Stack } from "../Layout";
+import { Skeleton, type SkeletonWidth } from "../Skeleton";
 import { Surface } from "../Surface";
 import styles from "./DropdownPicker.module.css";
 
@@ -22,24 +23,27 @@ export interface DropdownPickerOption {
 export interface DropdownPickerProps {
   ariaLabel?: string;
   className?: string;
+  controlSize?: "md" | "lg";
   disabled?: boolean;
   label?: string;
   labelPlacement?: "inline" | "top";
   onChange?: (value: string) => void;
   optionPresentation?: "media" | "text";
-  options: DropdownPickerOption[];
+  options?: DropdownPickerOption[];
   emptySearchLabel?: string;
   placeholder?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
   showSelectionIndicator?: boolean;
+  state?: "default" | "skeleton";
   value?: string;
   width?: "auto" | "full";
 }
 
-export const DropdownPicker: React.FC<DropdownPickerProps> = ({
+const DropdownPickerControl: React.FC<DropdownPickerProps> = ({
   ariaLabel,
   className,
+  controlSize = "lg",
   disabled = false,
   label,
   labelPlacement = "inline",
@@ -184,6 +188,7 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
       data-open={isOpen || undefined}
       data-label-placement={labelPlacement}
       data-presentation={optionPresentation}
+      data-control-size={controlSize}
       data-width={width}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget) && !panelRef.current?.contains(event.relatedTarget as Node)) close();
@@ -313,3 +318,29 @@ export const DropdownPicker: React.FC<DropdownPickerProps> = ({
     </div>
   );
 };
+
+function DropdownPickerSkeleton({
+  className,
+  controlSize = "lg",
+  label,
+  labelPlacement = "inline",
+  width = "full",
+}: DropdownPickerProps) {
+  return (
+    <div
+      aria-busy="true"
+      className={[styles.root, className].filter(Boolean).join(" ")}
+      data-control-size={controlSize}
+      data-label-placement={labelPlacement}
+      data-state="skeleton"
+      data-width={width}
+    >
+      {label && labelPlacement === "top" ? <Skeleton shape="text" size="xs" width="sm" /> : null}
+      <Skeleton className={styles.skeletonTrigger} shape="block" size="lg" width={width === "full" ? "full" : "md"} />
+    </div>
+  );
+}
+
+export const DropdownPicker: React.FC<DropdownPickerProps> = (props) => (
+  props.state === "skeleton" ? <DropdownPickerSkeleton {...props} /> : <DropdownPickerControl {...props} />
+);

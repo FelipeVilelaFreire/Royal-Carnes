@@ -50,6 +50,10 @@
   justify-content: center;
 }
 
+.initials[data-accent-color] {
+  background: var(--ui-avatar-accent-color);
+}
+
 .content {
   display: flex;
   flex-direction: column;

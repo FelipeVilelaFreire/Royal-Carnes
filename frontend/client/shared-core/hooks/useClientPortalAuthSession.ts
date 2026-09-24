@@ -7,6 +7,7 @@ import { useClientAuthSession } from "./useClientAuthSession";
 
 export interface UseClientPortalAuthSessionOptions {
   apiConfig?: ApiClientConfig;
+  deferStoredSession?: boolean;
   initialSession?: ClientAuthSession | null;
   storage?: ClientAuthStorage;
 }
@@ -26,8 +27,8 @@ function readStoredSession(storage?: ClientAuthStorage): ClientAuthSession | nul
 export function useClientPortalAuthSession(options: UseClientPortalAuthSessionOptions = {}) {
   const api = useMemo(() => createClientAuthApi(options.apiConfig), [options.apiConfig]);
   const initialSession = useMemo(
-    () => options.initialSession || readStoredSession(options.storage),
-    [options.initialSession, options.storage],
+    () => options.initialSession || (options.deferStoredSession ? null : readStoredSession(options.storage)),
+    [options.deferStoredSession, options.initialSession, options.storage],
   );
 
   return useClientAuthSession({

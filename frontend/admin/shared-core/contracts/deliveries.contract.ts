@@ -27,6 +27,33 @@ export interface AdminDeliveryConfigDto {
   statuses: AdminDeliveryStatusDto[];
 }
 
+export interface AdminDeliveryPromisePolicyDto {
+  id: string | number;
+  key: string;
+  name: string;
+  min_business_days: number;
+  max_business_days: number;
+  approaching_business_days: number;
+  order_kind_keys?: string[];
+  subscription_plan_keys?: string[];
+  is_default: boolean;
+  is_active: boolean;
+  sort_order?: number;
+}
+
+export interface AdminDeliveryPromisePolicyInput {
+  key: string;
+  name: string;
+  minBusinessDays: number;
+  maxBusinessDays: number;
+  approachingBusinessDays: number;
+  orderKindKeys: string[];
+  subscriptionPlanKeys: string[];
+  isDefault: boolean;
+  isActive: boolean;
+  sortOrder: number;
+}
+
 export interface AdminDeliveryPackageDto {
   id: string | number;
   label?: string;
@@ -63,6 +90,13 @@ export interface AdminDeliveryDto {
   address_id?: string | number | null;
   status_key: string;
   confirmation_code?: string;
+  promised_delivery_starts_on?: string | null;
+  promised_delivery_by_on?: string | null;
+  delivery_promise_snapshot?: Record<string, unknown>;
+  delivery_promise_status?: {
+    state: "approaching" | "closed" | "due_today" | "fulfilled" | "on_track" | "overdue" | "untracked";
+    remainingBusinessDays: number | null;
+  };
   address_snapshot?: Record<string, unknown>;
   notes?: string;
   metadata?: Record<string, unknown>;

@@ -8,18 +8,44 @@ export interface AdminStandardFilterViewModel {
 }
 
 export interface AdminStandardColumnViewModel {
+  avatarColorKey?: string;
+  avatarShowInitials?: boolean;
   currency?: string;
   format?: "cpf" | "cnpj" | "taxIdBR" | "phoneBR" | "postalCodeBR" | "decimalBR";
   key: string;
   labelKey: string;
   locale?: string;
+  presentation?: "tree";
   showAvatar?: boolean;
   showMedia?: boolean;
   sortable?: boolean;
+  sortValueKey?: string;
   statusColorKey?: string;
   statusToneKey?: string;
   valueType?: "currency" | "status" | "text" | "translationKey";
   render?: (row: any) => React.ReactNode;
+}
+
+export interface AdminStandardSortCriterionViewModel {
+  direction: "asc" | "desc";
+  key: string;
+}
+
+export interface AdminStandardTreeViewModel {
+  nodeKey: string;
+  parentKey: string;
+}
+
+export interface AdminStandardWorkflowViewModel {
+  actionKey: string;
+  columns: Array<{ cards: any[]; key: string; label: string; statusColor?: string; statusTone?: "danger" | "neutral" | "primary" | "success" | "warning" }>;
+  defaultView: string;
+  emptyKey: string;
+  moveLabelKey: string;
+  openLabelKey: string;
+  statusOptions: Array<{ label: string; value: string }>;
+  viewLabelKey: string;
+  viewModes: Array<{ labelKey: string; value: string }>;
 }
 
 export interface AdminStandardListViewModel {
@@ -35,10 +61,11 @@ export interface AdminStandardListViewModel {
   rowsTotal: number;
   searchPlaceholderKey?: string;
   showActions: boolean;
-  sortDirection: "asc" | "desc";
-  sortKey: string;
+  sortCriterion: AdminStandardSortCriterionViewModel | null;
   subtitleKey?: string;
+  tree?: AdminStandardTreeViewModel;
   titleKey?: string;
+  workflow?: AdminStandardWorkflowViewModel;
 }
 
 export interface AdminStandardFormFieldViewModel {
@@ -60,7 +87,7 @@ export interface AdminStandardFormFieldViewModel {
   required?: boolean;
   source?: string;
   suffixKey?: string;
-  type: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  type: "asset" | "color" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   value: any;
 }
 
@@ -88,7 +115,7 @@ export interface AdminStandardDetailEntryViewModel {
   format?: "cpf" | "cnpj" | "taxIdBR" | "phoneBR" | "postalCodeBR" | "decimalBR";
   hierarchy?: AdminStandardLineItemsHierarchyViewModel;
   editable?: boolean;
-  editType?: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  editType?: "asset" | "color" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   key: string;
   labelKey: string;
   locale?: string;
@@ -99,12 +126,13 @@ export interface AdminStandardDetailEntryViewModel {
   optionPresentation?: "media" | "text";
   source?: string;
   searchable?: boolean;
+  statusTone?: "danger" | "neutral" | "primary" | "success" | "warning";
   searchEmptyKey?: string;
   searchPlaceholderKey?: string;
   suffixKey?: string;
   span?: 1 | 2 | 3 | 4 | 5 | 6 | "full";
   transitionOnly?: boolean;
-  type?: "asset" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
+  type?: "asset" | "color" | "currency" | "date" | "datetime" | "lineItems" | "multiSelect" | "number" | "select" | "textarea" | "text";
   value: any;
   rawValue: any;
   valueType?: "optionLabel" | "text" | "translationKey";
@@ -164,6 +192,7 @@ const excludedSummaryKeys = new Set([
 ]);
 
 export interface AdminStandardFieldOption {
+  disabled?: boolean;
   label?: string;
   labelKey?: string;
   meta?: Record<string, unknown>;
@@ -175,6 +204,7 @@ export type AdminStandardOptionSources = Record<string, AdminStandardFieldOption
 export interface AdminStandardLineItemColumnViewModel {
   align?: "end" | "start";
   currency?: string;
+  detailScreenKey?: string;
   format?: "decimalBR";
   key: string;
   labelKey: string;
@@ -184,6 +214,9 @@ export interface AdminStandardLineItemColumnViewModel {
   options?: AdminStandardFieldOption[];
   required?: boolean;
   readOnly?: boolean;
+  searchable?: boolean;
+  searchEmptyKey?: string;
+  searchPlaceholderKey?: string;
   source?: string;
   sourceBy?: string;
   sourceOptions?: Record<string, AdminStandardFieldOption[]>;
@@ -191,6 +224,7 @@ export interface AdminStandardLineItemColumnViewModel {
   sources?: Record<string, string>;
   suffixKey?: string;
   type: "currency" | "number" | "select" | "text";
+  valueType?: "optionLabel" | "text" | "translationKey";
   writeOptionMeta?: Record<string, string>;
   writeValues?: Record<string, unknown>;
 }
@@ -210,6 +244,7 @@ function resolveLineItemColumns(
   return columns.map((column: any) => ({
     align: column.align,
     currency: column.currency,
+    detailScreenKey: column.detailScreenKey,
     format: column.format,
     key: column.key,
     labelKey: column.labelKey,
@@ -217,6 +252,9 @@ function resolveLineItemColumns(
     maxKey: column.maxKey,
     presentation: column.presentation,
     readOnly: column.readOnly,
+    searchable: Boolean(column.searchable),
+    searchEmptyKey: column.searchEmptyKey,
+    searchPlaceholderKey: column.searchPlaceholderKey,
     options: resolveOptions(column, optionSources),
     required: column.required,
     source: column.source,
@@ -231,6 +269,7 @@ function resolveLineItemColumns(
     span: column.span,
     suffixKey: column.suffixKey,
     type: column.type || "text",
+    valueType: column.valueType,
     writeOptionMeta: column.writeOptionMeta,
     writeValues: column.writeValues,
   }));
@@ -314,6 +353,7 @@ function createDetailEntry(
     valueType: display.valueType || field.valueType,
   };
   const editorField = { ...field, ...edit };
+  const statusTone = row[field.statusToneKey];
   return {
     addLabelKey: editorField.addLabelKey,
     columns: resolveEntryColumns(editorField, optionSources),
@@ -334,6 +374,9 @@ function createDetailEntry(
     rawValue: row[field.key],
     source: editorField.source,
     searchable: Boolean(editorField.searchable),
+    statusTone: statusTone === "danger" || statusTone === "neutral" || statusTone === "primary" || statusTone === "success" || statusTone === "warning"
+      ? statusTone
+      : undefined,
     searchEmptyKey: editorField.searchEmptyKey,
     searchPlaceholderKey: editorField.searchPlaceholderKey,
     suffixKey: editorField.suffixKey,
@@ -349,6 +392,42 @@ export function createAdminStandardInitialFilters(filters: any[] = []) {
   return Object.fromEntries(filters.map((filter) => [filter.key, "all"]));
 }
 
+function resolveAllowedWorkflowStatusKeys(options: AdminStandardFieldOption[], statusKey: unknown): string[] | undefined {
+  const allowedNextKeys = options.find((option) => option.value === String(statusKey))?.meta?.allowedNextKeys;
+  return Array.isArray(allowedNextKeys) ? allowedNextKeys.map(String) : undefined;
+}
+
+function createWorkflowViewModel(workflowConfig: any, rows: any[], optionSources: AdminStandardOptionSources): AdminStandardWorkflowViewModel | undefined {
+  if (!workflowConfig?.fieldKey || !workflowConfig?.source || !workflowConfig?.actionKey) return undefined;
+  const options = optionSources[workflowConfig.source] || [];
+  const card = workflowConfig.card || {};
+  return {
+    actionKey: workflowConfig.actionKey,
+    defaultView: workflowConfig.defaultView || "table",
+    columns: options.map((option) => ({
+      cards: rows.filter((row) => String(row[workflowConfig.fieldKey]) === option.value).map((row) => ({
+        allowedStatusKeys: resolveAllowedWorkflowStatusKeys(options, row[workflowConfig.fieldKey]),
+        id: row[card.idKey || "id"],
+        metadata: (card.metadataKeys || []).map((key: string) => String(row[key] || "").trim()).filter(Boolean),
+        sourceRow: row,
+        statusKey: option.value,
+        subtitle: String(row[card.subtitleKey || ""] || ""),
+        title: String(row[card.titleKey || ""] || ""),
+      })),
+      key: option.value,
+      label: option.label || option.value,
+      statusColor: typeof option.meta?.statusColor === "string" ? option.meta.statusColor : undefined,
+      statusTone: option.meta?.statusTone === "danger" || option.meta?.statusTone === "neutral" || option.meta?.statusTone === "primary" || option.meta?.statusTone === "success" || option.meta?.statusTone === "warning" ? option.meta.statusTone : undefined,
+    })),
+    emptyKey: workflowConfig.emptyKey,
+    moveLabelKey: workflowConfig.moveLabelKey,
+    openLabelKey: workflowConfig.openLabelKey,
+    statusOptions: options.map((option) => ({ label: option.label || option.value, value: option.value })),
+    viewLabelKey: workflowConfig.viewLabelKey,
+    viewModes: workflowConfig.viewModes || [],
+  };
+}
+
 export function createAdminStandardListViewModel(
   entityConfig: any,
   search: string,
@@ -356,8 +435,8 @@ export function createAdminStandardListViewModel(
   rowsOverride?: any[] | null,
   page = 1,
   pageSize = 10,
-  sortKey = "",
-  sortDirection: "asc" | "desc" = "asc",
+  sortCriterion: AdminStandardSortCriterionViewModel | null = null,
+  optionSources: AdminStandardOptionSources = {},
 ): AdminStandardListViewModel {
   const config = entityConfig?.listPage || entityConfig || {};
   const columns = (config.columns || []).map((column: any) => ({
@@ -374,23 +453,26 @@ export function createAdminStandardListViewModel(
     const matchesSearch = !normalizedSearch || rowValuesString.includes(normalizedSearch);
     const matchesFilters = Object.entries(filterValues).every(([key, value]) => {
       if (value === "all") return true;
-      const rowValue = String(row[key] || "").toLowerCase();
-      return rowValue === value.toLowerCase();
+      const rowValue = row[key];
+      if (Array.isArray(rowValue)) return rowValue.some((item) => String(item).toLowerCase() === value.toLowerCase());
+      return String(rowValue || "").toLowerCase() === value.toLowerCase();
     });
     return matchesSearch && matchesFilters;
   });
   const sortedRows = [...filteredRows].sort((left: any, right: any) => {
-    if (!sortKey) return 0;
-    const leftValue = left[sortKey];
-    const rightValue = right[sortKey];
-    const direction = sortDirection === "desc" ? -1 : 1;
-    if (typeof leftValue === "number" && typeof rightValue === "number") {
-      return (leftValue - rightValue) * direction;
-    }
-    return String(leftValue ?? "").localeCompare(String(rightValue ?? ""), "pt-BR", {
-      numeric: true,
-      sensitivity: "base",
-    }) * direction;
+    if (!sortCriterion) return 0;
+    const sortColumn = columns.find((column) => column.key === sortCriterion.key);
+    const valueKey = sortColumn?.sortValueKey || sortCriterion.key;
+    const leftValue = left[valueKey];
+    const rightValue = right[valueKey];
+    const direction = sortCriterion.direction === "desc" ? -1 : 1;
+    const comparison = typeof leftValue === "number" && typeof rightValue === "number"
+      ? leftValue - rightValue
+      : String(leftValue ?? "").localeCompare(String(rightValue ?? ""), "pt-BR", {
+        numeric: true,
+        sensitivity: "base",
+      });
+    return comparison * direction;
   });
   const normalizedPageSize = Math.max(1, pageSize);
   const pageCount = Math.max(1, Math.ceil(sortedRows.length / normalizedPageSize));
@@ -407,7 +489,7 @@ export function createAdminStandardListViewModel(
     filters: filters.map((filter: any) => ({
       key: filter.key,
       labelKey: filter.labelKey,
-      options: filter.options || [],
+      options: filter.source ? optionSources[filter.source] || [] : filter.options || [],
       value: filterValues[filter.key] || "all",
     })),
     filteredRowsTotal: filteredRows.length,
@@ -417,10 +499,11 @@ export function createAdminStandardListViewModel(
     rowsTotal: rowsSource.length,
     searchPlaceholderKey: config.searchPlaceholderKey,
     showActions,
-    sortDirection,
-    sortKey,
+    sortCriterion,
     subtitleKey: config.subtitleKey,
+    tree: config.tree,
     titleKey: config.titleKey,
+    workflow: createWorkflowViewModel(config.workflow, sortedRows, optionSources),
   };
 }
 
@@ -517,10 +600,10 @@ export function createAdminStandardDetailViewModel(
   const configuredDetailSections = configuredSections
     .map((section: any): AdminStandardDetailSectionViewModel | null => {
       const base = {
-        grid: section.grid,
-        iconIntent: section.iconIntent || resolveDetailSectionIconIntent(currentTab?.id, section.key),
-        key: section.key,
-        titleKey: section.titleKey || currentTab?.labelKey,
+      grid: section.grid,
+      iconIntent: section.iconIntent || resolveDetailSectionIconIntent(currentTab?.id, section.key),
+      key: section.key,
+        titleKey: section.hideTitle ? undefined : section.titleKey || currentTab?.labelKey,
       };
 
       if (section.type === "lineItems") {

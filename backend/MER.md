@@ -953,7 +953,7 @@ codigo nao deve fazer if por nome comercial como Royal Delivery
 
 ### OrderStatusDefinition
 
-Define workflow de status por organization.
+Define o catalogo de status de Pedido por organization.
 
 Campos:
 
@@ -975,8 +975,9 @@ Regra:
 
 ```text
 status nao e enum fechado no codigo
-cada organization pode ter seu proprio fluxo por seed/config
-backend valida transicao usando allowedNextKeys
+cada organization pode ter seu proprio catalogo por seed/config
+no RoyalPrime, o Admin pode escolher qualquer status configurado; o backend
+registra o historico e sincroniza a Entrega vinculada
 ```
 
 ### Order
@@ -1032,7 +1033,7 @@ cancelado
 Observacao:
 
 Os nomes acima sao exemplo do seed RoyalPrime. BikeClub, CamisaClub ou outra
-empresa podem trocar keys, labels e transicoes sem alterar models/services.
+empresa podem trocar keys e labels sem alterar models/services.
 
 ### OrderItem
 
@@ -1091,7 +1092,7 @@ Pode derivar de status, delivery e pagamento.
 
 ### DeliveryStatusDefinition
 
-Define workflow logistico por organization.
+Define os metadados de apresentacao do status espelho da Entrega.
 
 Campos:
 
@@ -1112,9 +1113,9 @@ metadata
 Regra:
 
 ```text
-status logistico vem do seed/config
-backend valida transicao usando allowedNextKeys
-effects pode ligar comportamento simples como confirmDelivery
+o status vem do seed/config, com as mesmas keys do Pedido no RoyalPrime
+a Entrega nao possui transicao propria: ela espelha o Pedido vinculado
+confirmacao registra evidencia logistica e nao altera status
 ```
 
 ### Delivery

@@ -8,6 +8,7 @@ export interface SectionContainerProps {
   heightRecipe?: "heroPeek" | "auto" | "fullScreen";
   headerSafety?: boolean;
   backgroundImage?: string;
+  imageOverlay?: "strong" | "medium" | "soft";
   children: React.ReactNode;
   style?: React.CSSProperties;
 }
@@ -23,6 +24,7 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
   heightRecipe = "auto",
   headerSafety = false,
   backgroundImage,
+  imageOverlay = "strong",
   children,
   style
 }) => {
@@ -37,6 +39,7 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
       data-atmosphere={atmosphere}
       data-header-safety={headerSafety || undefined}
       data-height={heightRecipe}
+      data-image-overlay={atmosphere === "image" ? imageOverlay : undefined}
       id={id}
       style={sectionStyle}
     >

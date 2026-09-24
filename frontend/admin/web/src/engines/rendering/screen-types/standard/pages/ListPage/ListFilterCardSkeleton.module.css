@@ -1,3 +1,5 @@
 .card { width: 100%; }
-.toolbar { display: grid; gap: var(--theme--spacing-spaceSm); grid-template-columns: minmax(0, 1fr) minmax(0, var(--theme--layout-container-xs)); }
-@media (max-width: 760px) { .toolbar { grid-template-columns: minmax(0, 1fr); } }
+.toolbar { align-items: end; display: flex; flex-wrap: wrap; gap: var(--theme--spacing-spaceMd); }
+.search { flex: 1 1 var(--theme--layout-container-sm); }
+.filter { flex: 1 1 var(--theme--sizing-control-xl); }
+@media (max-width: 760px) { .search, .filter { flex-basis: 100%; } }
